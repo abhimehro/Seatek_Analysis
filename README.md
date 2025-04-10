@@ -1,3 +1,5 @@
+[![CodeQL Advanced](https://github.com/abhimehro/Seatek_Analysis/actions/workflows/codeql.yml/badge.svg)](https://github.com/abhimehro/Seatek_Analysis/actions/workflows/codeql.yml)
+
 # Seatek Analysis (R-Tier)
 
 ## Project Overview

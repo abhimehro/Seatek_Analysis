@@ -1,5 +1,7 @@
 {
   "cSpell.words": ["matplotlib", "numpy"],
   "diffEditor.codeLens": true,
-  "files.autoSave": "afterDelay"
+  "files.autoSave": "afterDelay",
+  "editor.fontSize": 13,
+  "editor.renderWhitespace": "selection"
 }

@@ -1,0 +1,317 @@
+2025-04-07 17:41:07 - Starting Seatek Analysis 
+2025-04-07 17:41:07 - Error in processing: No valid files found for processing 
+2025-04-07 17:41:42 - Starting Seatek Analysis 
+2025-04-07 17:41:42 - Found 20 valid files to process 
+2025-04-07 17:41:42 - Processing S26_Y01.txt 
+2025-04-07 17:41:42 - Processing S26_Y02.txt 
+2025-04-07 17:41:42 - Processing S26_Y03.txt 
+2025-04-07 17:41:42 - Processing S26_Y04.txt 
+2025-04-07 17:41:42 - Processing S26_Y05.txt 
+2025-04-07 17:41:42 - Processing S26_Y06.txt 
+2025-04-07 17:41:42 - Processing S26_Y07.txt 
+2025-04-07 17:41:42 - Processing S26_Y08.txt 
+2025-04-07 17:41:42 - Processing S26_Y09.txt 
+2025-04-07 17:41:42 - Processing S26_Y10.txt 
+2025-04-07 17:41:42 - Processing S26_Y11.txt 
+2025-04-07 17:41:42 - Processing S26_Y12.txt 
+2025-04-07 17:41:42 - Processing S26_Y13.txt 
+2025-04-07 17:41:42 - Processing S26_Y14.txt 
+2025-04-07 17:41:42 - Processing S26_Y15.txt 
+2025-04-07 17:41:42 - Processing S26_Y16.txt 
+2025-04-07 17:41:42 - Processing S26_Y17.txt 
+2025-04-07 17:41:42 - Processing S26_Y18.txt 
+2025-04-07 17:41:42 - Processing S26_Y19.txt 
+2025-04-07 17:41:42 - Processing S26_Y20.txt 
+2025-04-07 17:41:42 - Raw data for year 1995 (Y01) exported to: ~/RProjects/Seatek_Analysis/Data/Raw_Data_Year_1995 (Y01).xlsx 
+2025-04-07 17:41:43 - Raw data for year 1996 (Y02) exported to: ~/RProjects/Seatek_Analysis/Data/Raw_Data_Year_1996 (Y02).xlsx 
+2025-04-07 17:41:43 - Raw data for year 1997 (Y03) exported to: ~/RProjects/Seatek_Analysis/Data/Raw_Data_Year_1997 (Y03).xlsx 
+2025-04-07 17:41:43 - Raw data for year 1998 (Y04) exported to: ~/RProjects/Seatek_Analysis/Data/Raw_Data_Year_1998 (Y04).xlsx 
+2025-04-07 17:41:43 - Raw data for year 1999 (Y05) exported to: ~/RProjects/Seatek_Analysis/Data/Raw_Data_Year_1999 (Y05).xlsx 
+2025-04-07 17:41:43 - Raw data for year 2000 (Y06) exported to: ~/RProjects/Seatek_Analysis/Data/Raw_Data_Year_2000 (Y06).xlsx 
+2025-04-07 17:41:43 - Raw data for year 2002 (Y08) exported to: ~/RProjects/Seatek_Analysis/Data/Raw_Data_Year_2002 (Y08).xlsx 
+2025-04-07 17:41:43 - Raw data for year 2003 (Y09) exported to: ~/RProjects/Seatek_Analysis/Data/Raw_Data_Year_2003 (Y09).xlsx 
+2025-04-07 17:41:43 - Raw data for year 2005 (Y11) exported to: ~/RProjects/Seatek_Analysis/Data/Raw_Data_Year_2005 (Y11).xlsx 
+2025-04-07 17:41:43 - Raw data for year 2006 (Y12) exported to: ~/RProjects/Seatek_Analysis/Data/Raw_Data_Year_2006 (Y12).xlsx 
+2025-04-07 17:41:43 - Raw data for year 2007 (Y13) exported to: ~/RProjects/Seatek_Analysis/Data/Raw_Data_Year_2007 (Y13).xlsx 
+2025-04-07 17:41:43 - Raw data for year 2008 (Y14) exported to: ~/RProjects/Seatek_Analysis/Data/Raw_Data_Year_2008 (Y14).xlsx 
+2025-04-07 17:41:43 - Raw data for year 2009 (Y15) exported to: ~/RProjects/Seatek_Analysis/Data/Raw_Data_Year_2009 (Y15).xlsx 
+2025-04-07 17:41:43 - Raw data for year 2010 (Y16) exported to: ~/RProjects/Seatek_Analysis/Data/Raw_Data_Year_2010 (Y16).xlsx 
+2025-04-07 17:41:43 - Raw data for year 2011 (Y17) exported to: ~/RProjects/Seatek_Analysis/Data/Raw_Data_Year_2011 (Y17).xlsx 
+2025-04-07 17:41:43 - Raw data for year 2012 (Y18) exported to: ~/RProjects/Seatek_Analysis/Data/Raw_Data_Year_2012 (Y18).xlsx 
+2025-04-07 17:41:44 - Raw data for year 2013 (Y19) exported to: ~/RProjects/Seatek_Analysis/Data/Raw_Data_Year_2013 (Y19).xlsx 
+2025-04-07 17:41:44 - Raw data for year 2014 (Y20) exported to: ~/RProjects/Seatek_Analysis/Data/Raw_Data_Year_2014 (Y20).xlsx 
+2025-04-07 17:41:44 - Year 1995 (Y01) data saved to: ~/RProjects/Seatek_Analysis/Data/Year_1995 (Y01)_Data.xlsx 
+2025-04-07 17:41:44 - Year 1996 (Y02) data saved to: ~/RProjects/Seatek_Analysis/Data/Year_1996 (Y02)_Data.xlsx 
+2025-04-07 17:41:44 - Year 1997 (Y03) data saved to: ~/RProjects/Seatek_Analysis/Data/Year_1997 (Y03)_Data.xlsx 
+2025-04-07 17:41:44 - Year 1998 (Y04) data saved to: ~/RProjects/Seatek_Analysis/Data/Year_1998 (Y04)_Data.xlsx 
+2025-04-07 17:41:44 - Year 1999 (Y05) data saved to: ~/RProjects/Seatek_Analysis/Data/Year_1999 (Y05)_Data.xlsx 
+2025-04-07 17:41:44 - Year 2000 (Y06) data saved to: ~/RProjects/Seatek_Analysis/Data/Year_2000 (Y06)_Data.xlsx 
+2025-04-07 17:41:44 - Year 2002 (Y08) data saved to: ~/RProjects/Seatek_Analysis/Data/Year_2002 (Y08)_Data.xlsx 
+2025-04-07 17:41:44 - Year 2003 (Y09) data saved to: ~/RProjects/Seatek_Analysis/Data/Year_2003 (Y09)_Data.xlsx 
+2025-04-07 17:41:44 - Year 2005 (Y11) data saved to: ~/RProjects/Seatek_Analysis/Data/Year_2005 (Y11)_Data.xlsx 
+2025-04-07 17:41:44 - Year 2006 (Y12) data saved to: ~/RProjects/Seatek_Analysis/Data/Year_2006 (Y12)_Data.xlsx 
+2025-04-07 17:41:44 - Year 2007 (Y13) data saved to: ~/RProjects/Seatek_Analysis/Data/Year_2007 (Y13)_Data.xlsx 
+2025-04-07 17:41:44 - Year 2008 (Y14) data saved to: ~/RProjects/Seatek_Analysis/Data/Year_2008 (Y14)_Data.xlsx 
+2025-04-07 17:41:44 - Year 2009 (Y15) data saved to: ~/RProjects/Seatek_Analysis/Data/Year_2009 (Y15)_Data.xlsx 
+2025-04-07 17:41:44 - Year 2010 (Y16) data saved to: ~/RProjects/Seatek_Analysis/Data/Year_2010 (Y16)_Data.xlsx 
+2025-04-07 17:41:44 - Year 2011 (Y17) data saved to: ~/RProjects/Seatek_Analysis/Data/Year_2011 (Y17)_Data.xlsx 
+2025-04-07 17:41:44 - Year 2012 (Y18) data saved to: ~/RProjects/Seatek_Analysis/Data/Year_2012 (Y18)_Data.xlsx 
+2025-04-07 17:41:44 - Year 2013 (Y19) data saved to: ~/RProjects/Seatek_Analysis/Data/Year_2013 (Y19)_Data.xlsx 
+2025-04-07 17:41:44 - Year 2014 (Y20) data saved to: ~/RProjects/Seatek_Analysis/Data/Year_2014 (Y20)_Data.xlsx 
+2025-04-07 17:41:45 - Summary data saved to: ~/RProjects/Seatek_Analysis/Data/Seatek_Analysis_Summary.xlsx 
+2025-04-07 18:21:12 - Starting Seatek Analysis 
+2025-04-07 18:21:12 - Found 20 valid files to process 
+2025-04-07 18:21:12 - Processing S26_Y01.txt 
+2025-04-07 18:21:12 - Processing S26_Y02.txt 
+2025-04-07 18:21:12 - Processing S26_Y03.txt 
+2025-04-07 18:21:12 - Processing S26_Y04.txt 
+2025-04-07 18:21:12 - Processing S26_Y05.txt 
+2025-04-07 18:21:12 - Processing S26_Y06.txt 
+2025-04-07 18:21:12 - Processing S26_Y07.txt 
+2025-04-07 18:21:12 - Processing S26_Y08.txt 
+2025-04-07 18:21:12 - Processing S26_Y09.txt 
+2025-04-07 18:21:12 - Processing S26_Y10.txt 
+2025-04-07 18:21:12 - Processing S26_Y11.txt 
+2025-04-07 18:21:12 - Processing S26_Y12.txt 
+2025-04-07 18:21:12 - Processing S26_Y13.txt 
+2025-04-07 18:21:12 - Processing S26_Y14.txt 
+2025-04-07 18:21:12 - Processing S26_Y15.txt 
+2025-04-07 18:21:12 - Processing S26_Y16.txt 
+2025-04-07 18:21:12 - Processing S26_Y17.txt 
+2025-04-07 18:21:12 - Processing S26_Y18.txt 
+2025-04-07 18:21:12 - Processing S26_Y19.txt 
+2025-04-07 18:21:12 - Processing S26_Y20.txt 
+2025-04-07 18:21:12 - Raw data for year 1995 (Y01) exported to: ~/RProjects/Seatek_Analysis/Data/Raw_Data_Year_1995 (Y01).xlsx 
+2025-04-07 18:21:12 - Raw data for year 1996 (Y02) exported to: ~/RProjects/Seatek_Analysis/Data/Raw_Data_Year_1996 (Y02).xlsx 
+2025-04-07 18:21:12 - Raw data for year 1997 (Y03) exported to: ~/RProjects/Seatek_Analysis/Data/Raw_Data_Year_1997 (Y03).xlsx 
+2025-04-07 18:21:12 - Raw data for year 1998 (Y04) exported to: ~/RProjects/Seatek_Analysis/Data/Raw_Data_Year_1998 (Y04).xlsx 
+2025-04-07 18:21:12 - Raw data for year 1999 (Y05) exported to: ~/RProjects/Seatek_Analysis/Data/Raw_Data_Year_1999 (Y05).xlsx 
+2025-04-07 18:21:13 - Raw data for year 2000 (Y06) exported to: ~/RProjects/Seatek_Analysis/Data/Raw_Data_Year_2000 (Y06).xlsx 
+2025-04-07 18:21:13 - Raw data for year 2002 (Y08) exported to: ~/RProjects/Seatek_Analysis/Data/Raw_Data_Year_2002 (Y08).xlsx 
+2025-04-07 18:21:13 - Raw data for year 2003 (Y09) exported to: ~/RProjects/Seatek_Analysis/Data/Raw_Data_Year_2003 (Y09).xlsx 
+2025-04-07 18:21:13 - Raw data for year 2005 (Y11) exported to: ~/RProjects/Seatek_Analysis/Data/Raw_Data_Year_2005 (Y11).xlsx 
+2025-04-07 18:21:13 - Raw data for year 2006 (Y12) exported to: ~/RProjects/Seatek_Analysis/Data/Raw_Data_Year_2006 (Y12).xlsx 
+2025-04-07 18:21:13 - Raw data for year 2007 (Y13) exported to: ~/RProjects/Seatek_Analysis/Data/Raw_Data_Year_2007 (Y13).xlsx 
+2025-04-07 18:21:13 - Raw data for year 2008 (Y14) exported to: ~/RProjects/Seatek_Analysis/Data/Raw_Data_Year_2008 (Y14).xlsx 
+2025-04-07 18:21:13 - Raw data for year 2009 (Y15) exported to: ~/RProjects/Seatek_Analysis/Data/Raw_Data_Year_2009 (Y15).xlsx 
+2025-04-07 18:21:13 - Raw data for year 2010 (Y16) exported to: ~/RProjects/Seatek_Analysis/Data/Raw_Data_Year_2010 (Y16).xlsx 
+2025-04-07 18:21:13 - Raw data for year 2011 (Y17) exported to: ~/RProjects/Seatek_Analysis/Data/Raw_Data_Year_2011 (Y17).xlsx 
+2025-04-07 18:21:13 - Raw data for year 2012 (Y18) exported to: ~/RProjects/Seatek_Analysis/Data/Raw_Data_Year_2012 (Y18).xlsx 
+2025-04-07 18:21:13 - Raw data for year 2013 (Y19) exported to: ~/RProjects/Seatek_Analysis/Data/Raw_Data_Year_2013 (Y19).xlsx 
+2025-04-07 18:21:13 - Raw data for year 2014 (Y20) exported to: ~/RProjects/Seatek_Analysis/Data/Raw_Data_Year_2014 (Y20).xlsx 
+2025-04-07 18:21:13 - Year 1995 (Y01) data saved to: ~/RProjects/Seatek_Analysis/Data/Year_1995 (Y01)_Data.xlsx 
+2025-04-07 18:21:13 - Year 1996 (Y02) data saved to: ~/RProjects/Seatek_Analysis/Data/Year_1996 (Y02)_Data.xlsx 
+2025-04-07 18:21:13 - Year 1997 (Y03) data saved to: ~/RProjects/Seatek_Analysis/Data/Year_1997 (Y03)_Data.xlsx 
+2025-04-07 18:21:13 - Year 1998 (Y04) data saved to: ~/RProjects/Seatek_Analysis/Data/Year_1998 (Y04)_Data.xlsx 
+2025-04-07 18:21:13 - Year 1999 (Y05) data saved to: ~/RProjects/Seatek_Analysis/Data/Year_1999 (Y05)_Data.xlsx 
+2025-04-07 18:21:14 - Year 2000 (Y06) data saved to: ~/RProjects/Seatek_Analysis/Data/Year_2000 (Y06)_Data.xlsx 
+2025-04-07 18:21:14 - Year 2002 (Y08) data saved to: ~/RProjects/Seatek_Analysis/Data/Year_2002 (Y08)_Data.xlsx 
+2025-04-07 18:21:14 - Year 2003 (Y09) data saved to: ~/RProjects/Seatek_Analysis/Data/Year_2003 (Y09)_Data.xlsx 
+2025-04-07 18:21:14 - Year 2005 (Y11) data saved to: ~/RProjects/Seatek_Analysis/Data/Year_2005 (Y11)_Data.xlsx 
+2025-04-07 18:21:14 - Year 2006 (Y12) data saved to: ~/RProjects/Seatek_Analysis/Data/Year_2006 (Y12)_Data.xlsx 
+2025-04-07 18:21:14 - Year 2007 (Y13) data saved to: ~/RProjects/Seatek_Analysis/Data/Year_2007 (Y13)_Data.xlsx 
+2025-04-07 18:21:14 - Year 2008 (Y14) data saved to: ~/RProjects/Seatek_Analysis/Data/Year_2008 (Y14)_Data.xlsx 
+2025-04-07 18:21:14 - Year 2009 (Y15) data saved to: ~/RProjects/Seatek_Analysis/Data/Year_2009 (Y15)_Data.xlsx 
+2025-04-07 18:21:14 - Year 2010 (Y16) data saved to: ~/RProjects/Seatek_Analysis/Data/Year_2010 (Y16)_Data.xlsx 
+2025-04-07 18:21:14 - Year 2011 (Y17) data saved to: ~/RProjects/Seatek_Analysis/Data/Year_2011 (Y17)_Data.xlsx 
+2025-04-07 18:21:14 - Year 2012 (Y18) data saved to: ~/RProjects/Seatek_Analysis/Data/Year_2012 (Y18)_Data.xlsx 
+2025-04-07 18:21:14 - Year 2013 (Y19) data saved to: ~/RProjects/Seatek_Analysis/Data/Year_2013 (Y19)_Data.xlsx 
+2025-04-07 18:21:14 - Year 2014 (Y20) data saved to: ~/RProjects/Seatek_Analysis/Data/Year_2014 (Y20)_Data.xlsx 
+2025-04-07 18:21:15 - Summary data saved to: ~/RProjects/Seatek_Analysis/Data/Seatek_Analysis_Summary.xlsx 
+2025-04-07 18:21:40 - Starting Seatek Analysis 
+2025-04-07 18:21:40 - Found 20 valid files to process 
+2025-04-07 18:21:40 - Processing S26_Y01.txt 
+2025-04-07 18:21:40 - Processing S26_Y02.txt 
+2025-04-07 18:21:40 - Processing S26_Y03.txt 
+2025-04-07 18:21:40 - Processing S26_Y04.txt 
+2025-04-07 18:21:40 - Processing S26_Y05.txt 
+2025-04-07 18:21:40 - Processing S26_Y06.txt 
+2025-04-07 18:21:40 - Processing S26_Y07.txt 
+2025-04-07 18:21:40 - Processing S26_Y08.txt 
+2025-04-07 18:21:40 - Processing S26_Y09.txt 
+2025-04-07 18:21:40 - Processing S26_Y10.txt 
+2025-04-07 18:21:40 - Processing S26_Y11.txt 
+2025-04-07 18:21:40 - Processing S26_Y12.txt 
+2025-04-07 18:21:40 - Processing S26_Y13.txt 
+2025-04-07 18:21:40 - Processing S26_Y14.txt 
+2025-04-07 18:21:40 - Processing S26_Y15.txt 
+2025-04-07 18:21:40 - Processing S26_Y16.txt 
+2025-04-07 18:21:40 - Processing S26_Y17.txt 
+2025-04-07 18:21:40 - Processing S26_Y18.txt 
+2025-04-07 18:21:40 - Processing S26_Y19.txt 
+2025-04-07 18:21:40 - Processing S26_Y20.txt 
+2025-04-07 18:21:40 - Raw data for year 1995 (Y01) exported to: ~/RProjects/Seatek_Analysis/Data/Raw_Data_Year_1995 (Y01).xlsx 
+2025-04-07 18:21:40 - Raw data for year 1996 (Y02) exported to: ~/RProjects/Seatek_Analysis/Data/Raw_Data_Year_1996 (Y02).xlsx 
+2025-04-07 18:21:40 - Raw data for year 1997 (Y03) exported to: ~/RProjects/Seatek_Analysis/Data/Raw_Data_Year_1997 (Y03).xlsx 
+2025-04-07 18:21:40 - Raw data for year 1998 (Y04) exported to: ~/RProjects/Seatek_Analysis/Data/Raw_Data_Year_1998 (Y04).xlsx 
+2025-04-07 18:21:40 - Raw data for year 1999 (Y05) exported to: ~/RProjects/Seatek_Analysis/Data/Raw_Data_Year_1999 (Y05).xlsx 
+2025-04-07 18:21:40 - Raw data for year 2000 (Y06) exported to: ~/RProjects/Seatek_Analysis/Data/Raw_Data_Year_2000 (Y06).xlsx 
+2025-04-07 18:21:40 - Raw data for year 2002 (Y08) exported to: ~/RProjects/Seatek_Analysis/Data/Raw_Data_Year_2002 (Y08).xlsx 
+2025-04-07 18:21:40 - Raw data for year 2003 (Y09) exported to: ~/RProjects/Seatek_Analysis/Data/Raw_Data_Year_2003 (Y09).xlsx 
+2025-04-07 18:21:40 - Raw data for year 2005 (Y11) exported to: ~/RProjects/Seatek_Analysis/Data/Raw_Data_Year_2005 (Y11).xlsx 
+2025-04-07 18:21:40 - Raw data for year 2006 (Y12) exported to: ~/RProjects/Seatek_Analysis/Data/Raw_Data_Year_2006 (Y12).xlsx 
+2025-04-07 18:21:41 - Raw data for year 2007 (Y13) exported to: ~/RProjects/Seatek_Analysis/Data/Raw_Data_Year_2007 (Y13).xlsx 
+2025-04-07 18:21:41 - Raw data for year 2008 (Y14) exported to: ~/RProjects/Seatek_Analysis/Data/Raw_Data_Year_2008 (Y14).xlsx 
+2025-04-07 18:21:41 - Raw data for year 2009 (Y15) exported to: ~/RProjects/Seatek_Analysis/Data/Raw_Data_Year_2009 (Y15).xlsx 
+2025-04-07 18:21:41 - Raw data for year 2010 (Y16) exported to: ~/RProjects/Seatek_Analysis/Data/Raw_Data_Year_2010 (Y16).xlsx 
+2025-04-07 18:21:41 - Raw data for year 2011 (Y17) exported to: ~/RProjects/Seatek_Analysis/Data/Raw_Data_Year_2011 (Y17).xlsx 
+2025-04-07 18:21:41 - Raw data for year 2012 (Y18) exported to: ~/RProjects/Seatek_Analysis/Data/Raw_Data_Year_2012 (Y18).xlsx 
+2025-04-07 18:21:41 - Raw data for year 2013 (Y19) exported to: ~/RProjects/Seatek_Analysis/Data/Raw_Data_Year_2013 (Y19).xlsx 
+2025-04-07 18:21:41 - Raw data for year 2014 (Y20) exported to: ~/RProjects/Seatek_Analysis/Data/Raw_Data_Year_2014 (Y20).xlsx 
+2025-04-07 18:21:41 - Year 1995 (Y01) data saved to: ~/RProjects/Seatek_Analysis/Data/Year_1995 (Y01)_Data.xlsx 
+2025-04-07 18:21:41 - Year 1996 (Y02) data saved to: ~/RProjects/Seatek_Analysis/Data/Year_1996 (Y02)_Data.xlsx 
+2025-04-07 18:21:41 - Year 1997 (Y03) data saved to: ~/RProjects/Seatek_Analysis/Data/Year_1997 (Y03)_Data.xlsx 
+2025-04-07 18:21:41 - Year 1998 (Y04) data saved to: ~/RProjects/Seatek_Analysis/Data/Year_1998 (Y04)_Data.xlsx 
+2025-04-07 18:21:41 - Year 1999 (Y05) data saved to: ~/RProjects/Seatek_Analysis/Data/Year_1999 (Y05)_Data.xlsx 
+2025-04-07 18:21:41 - Year 2000 (Y06) data saved to: ~/RProjects/Seatek_Analysis/Data/Year_2000 (Y06)_Data.xlsx 
+2025-04-07 18:21:41 - Year 2002 (Y08) data saved to: ~/RProjects/Seatek_Analysis/Data/Year_2002 (Y08)_Data.xlsx 
+2025-04-07 18:21:41 - Year 2003 (Y09) data saved to: ~/RProjects/Seatek_Analysis/Data/Year_2003 (Y09)_Data.xlsx 
+2025-04-07 18:21:41 - Year 2005 (Y11) data saved to: ~/RProjects/Seatek_Analysis/Data/Year_2005 (Y11)_Data.xlsx 
+2025-04-07 18:21:41 - Year 2006 (Y12) data saved to: ~/RProjects/Seatek_Analysis/Data/Year_2006 (Y12)_Data.xlsx 
+2025-04-07 18:21:41 - Year 2007 (Y13) data saved to: ~/RProjects/Seatek_Analysis/Data/Year_2007 (Y13)_Data.xlsx 
+2025-04-07 18:21:41 - Year 2008 (Y14) data saved to: ~/RProjects/Seatek_Analysis/Data/Year_2008 (Y14)_Data.xlsx 
+2025-04-07 18:21:41 - Year 2009 (Y15) data saved to: ~/RProjects/Seatek_Analysis/Data/Year_2009 (Y15)_Data.xlsx 
+2025-04-07 18:21:41 - Year 2010 (Y16) data saved to: ~/RProjects/Seatek_Analysis/Data/Year_2010 (Y16)_Data.xlsx 
+2025-04-07 18:21:41 - Year 2011 (Y17) data saved to: ~/RProjects/Seatek_Analysis/Data/Year_2011 (Y17)_Data.xlsx 
+2025-04-07 18:21:42 - Year 2012 (Y18) data saved to: ~/RProjects/Seatek_Analysis/Data/Year_2012 (Y18)_Data.xlsx 
+2025-04-07 18:21:42 - Year 2013 (Y19) data saved to: ~/RProjects/Seatek_Analysis/Data/Year_2013 (Y19)_Data.xlsx 
+2025-04-07 18:21:42 - Year 2014 (Y20) data saved to: ~/RProjects/Seatek_Analysis/Data/Year_2014 (Y20)_Data.xlsx 
+2025-04-07 18:21:42 - Summary data saved to: ~/RProjects/Seatek_Analysis/Data/Seatek_Analysis_Summary.xlsx 
+2025-04-07 18:22:02 - Starting Seatek Analysis 
+2025-04-07 18:22:02 - Found 20 valid files to process 
+2025-04-07 18:22:02 - Processing S26_Y01.txt 
+2025-04-07 18:22:02 - Processing S26_Y02.txt 
+2025-04-07 18:22:02 - Processing S26_Y03.txt 
+2025-04-07 18:22:02 - Processing S26_Y04.txt 
+2025-04-07 18:22:02 - Processing S26_Y05.txt 
+2025-04-07 18:22:02 - Processing S26_Y06.txt 
+2025-04-07 18:22:02 - Processing S26_Y07.txt 
+2025-04-07 18:22:02 - Processing S26_Y08.txt 
+2025-04-07 18:22:02 - Processing S26_Y09.txt 
+2025-04-07 18:22:02 - Processing S26_Y10.txt 
+2025-04-07 18:22:02 - Processing S26_Y11.txt 
+2025-04-07 18:22:02 - Processing S26_Y12.txt 
+2025-04-07 18:22:02 - Processing S26_Y13.txt 
+2025-04-07 18:22:02 - Processing S26_Y14.txt 
+2025-04-07 18:22:02 - Processing S26_Y15.txt 
+2025-04-07 18:22:02 - Processing S26_Y16.txt 
+2025-04-07 18:22:02 - Processing S26_Y17.txt 
+2025-04-07 18:22:02 - Processing S26_Y18.txt 
+2025-04-07 18:22:02 - Processing S26_Y19.txt 
+2025-04-07 18:22:02 - Processing S26_Y20.txt 
+2025-04-07 18:22:02 - Raw data for year 1995 (Y01) exported to: ~/RProjects/Seatek_Analysis/Data/Raw_Data_Year_1995 (Y01).xlsx 
+2025-04-07 18:22:02 - Raw data for year 1996 (Y02) exported to: ~/RProjects/Seatek_Analysis/Data/Raw_Data_Year_1996 (Y02).xlsx 
+2025-04-07 18:22:02 - Raw data for year 1997 (Y03) exported to: ~/RProjects/Seatek_Analysis/Data/Raw_Data_Year_1997 (Y03).xlsx 
+2025-04-07 18:22:03 - Raw data for year 1998 (Y04) exported to: ~/RProjects/Seatek_Analysis/Data/Raw_Data_Year_1998 (Y04).xlsx 
+2025-04-07 18:22:03 - Raw data for year 1999 (Y05) exported to: ~/RProjects/Seatek_Analysis/Data/Raw_Data_Year_1999 (Y05).xlsx 
+2025-04-07 18:22:03 - Raw data for year 2000 (Y06) exported to: ~/RProjects/Seatek_Analysis/Data/Raw_Data_Year_2000 (Y06).xlsx 
+2025-04-07 18:22:03 - Raw data for year 2002 (Y08) exported to: ~/RProjects/Seatek_Analysis/Data/Raw_Data_Year_2002 (Y08).xlsx 
+2025-04-07 18:22:03 - Raw data for year 2003 (Y09) exported to: ~/RProjects/Seatek_Analysis/Data/Raw_Data_Year_2003 (Y09).xlsx 
+2025-04-07 18:22:03 - Raw data for year 2005 (Y11) exported to: ~/RProjects/Seatek_Analysis/Data/Raw_Data_Year_2005 (Y11).xlsx 
+2025-04-07 18:22:03 - Raw data for year 2006 (Y12) exported to: ~/RProjects/Seatek_Analysis/Data/Raw_Data_Year_2006 (Y12).xlsx 
+2025-04-07 18:22:03 - Raw data for year 2007 (Y13) exported to: ~/RProjects/Seatek_Analysis/Data/Raw_Data_Year_2007 (Y13).xlsx 
+2025-04-07 18:22:03 - Raw data for year 2008 (Y14) exported to: ~/RProjects/Seatek_Analysis/Data/Raw_Data_Year_2008 (Y14).xlsx 
+2025-04-07 18:22:03 - Raw data for year 2009 (Y15) exported to: ~/RProjects/Seatek_Analysis/Data/Raw_Data_Year_2009 (Y15).xlsx 
+2025-04-07 18:22:03 - Raw data for year 2010 (Y16) exported to: ~/RProjects/Seatek_Analysis/Data/Raw_Data_Year_2010 (Y16).xlsx 
+2025-04-07 18:22:03 - Raw data for year 2011 (Y17) exported to: ~/RProjects/Seatek_Analysis/Data/Raw_Data_Year_2011 (Y17).xlsx 
+2025-04-07 18:22:04 - Raw data for year 2012 (Y18) exported to: ~/RProjects/Seatek_Analysis/Data/Raw_Data_Year_2012 (Y18).xlsx 
+2025-04-07 18:22:04 - Raw data for year 2013 (Y19) exported to: ~/RProjects/Seatek_Analysis/Data/Raw_Data_Year_2013 (Y19).xlsx 
+2025-04-07 18:22:04 - Raw data for year 2014 (Y20) exported to: ~/RProjects/Seatek_Analysis/Data/Raw_Data_Year_2014 (Y20).xlsx 
+2025-04-07 18:22:04 - Year 1995 (Y01) data saved to: ~/RProjects/Seatek_Analysis/Data/Year_1995 (Y01)_Data.xlsx 
+2025-04-07 18:22:04 - Year 1996 (Y02) data saved to: ~/RProjects/Seatek_Analysis/Data/Year_1996 (Y02)_Data.xlsx 
+2025-04-07 18:22:04 - Year 1997 (Y03) data saved to: ~/RProjects/Seatek_Analysis/Data/Year_1997 (Y03)_Data.xlsx 
+2025-04-07 18:22:04 - Year 1998 (Y04) data saved to: ~/RProjects/Seatek_Analysis/Data/Year_1998 (Y04)_Data.xlsx 
+2025-04-07 18:22:04 - Year 1999 (Y05) data saved to: ~/RProjects/Seatek_Analysis/Data/Year_1999 (Y05)_Data.xlsx 
+2025-04-07 18:22:04 - Year 2000 (Y06) data saved to: ~/RProjects/Seatek_Analysis/Data/Year_2000 (Y06)_Data.xlsx 
+2025-04-07 18:22:04 - Year 2002 (Y08) data saved to: ~/RProjects/Seatek_Analysis/Data/Year_2002 (Y08)_Data.xlsx 
+2025-04-07 18:22:04 - Year 2003 (Y09) data saved to: ~/RProjects/Seatek_Analysis/Data/Year_2003 (Y09)_Data.xlsx 
+2025-04-07 18:22:04 - Year 2005 (Y11) data saved to: ~/RProjects/Seatek_Analysis/Data/Year_2005 (Y11)_Data.xlsx 
+2025-04-07 18:22:05 - Year 2006 (Y12) data saved to: ~/RProjects/Seatek_Analysis/Data/Year_2006 (Y12)_Data.xlsx 
+2025-04-07 18:22:05 - Year 2007 (Y13) data saved to: ~/RProjects/Seatek_Analysis/Data/Year_2007 (Y13)_Data.xlsx 
+2025-04-07 18:22:05 - Year 2008 (Y14) data saved to: ~/RProjects/Seatek_Analysis/Data/Year_2008 (Y14)_Data.xlsx 
+2025-04-07 18:22:05 - Year 2009 (Y15) data saved to: ~/RProjects/Seatek_Analysis/Data/Year_2009 (Y15)_Data.xlsx 
+2025-04-07 18:22:05 - Year 2010 (Y16) data saved to: ~/RProjects/Seatek_Analysis/Data/Year_2010 (Y16)_Data.xlsx 
+2025-04-07 18:22:05 - Year 2011 (Y17) data saved to: ~/RProjects/Seatek_Analysis/Data/Year_2011 (Y17)_Data.xlsx 
+2025-04-07 18:22:05 - Year 2012 (Y18) data saved to: ~/RProjects/Seatek_Analysis/Data/Year_2012 (Y18)_Data.xlsx 
+2025-04-07 18:22:05 - Year 2013 (Y19) data saved to: ~/RProjects/Seatek_Analysis/Data/Year_2013 (Y19)_Data.xlsx 
+2025-04-07 18:22:05 - Year 2014 (Y20) data saved to: ~/RProjects/Seatek_Analysis/Data/Year_2014 (Y20)_Data.xlsx 
+2025-04-07 18:22:06 - Summary data saved to: ~/RProjects/Seatek_Analysis/Data/Seatek_Analysis_Summary.xlsx 
+2025-04-07 19:04:11 - Starting Seatek Analysis 
+2025-04-07 19:04:11 - Found 20 valid files to process 
+2025-04-07 19:04:11 - Processing S26_Y01.txt 
+2025-04-07 19:04:11 - Processing file: S26_Y01.txt (48670 bytes) 
+2025-04-07 19:04:11 - Processing S26_Y02.txt 
+2025-04-07 19:04:11 - Processing file: S26_Y02.txt (38078 bytes) 
+2025-04-07 19:04:11 - Processing S26_Y03.txt 
+2025-04-07 19:04:11 - Processing file: S26_Y03.txt (67858 bytes) 
+2025-04-07 19:04:11 - Processing S26_Y04.txt 
+2025-04-07 19:04:11 - Processing file: S26_Y04.txt (41910 bytes) 
+2025-04-07 19:04:11 - Processing S26_Y05.txt 
+2025-04-07 19:04:11 - Processing file: S26_Y05.txt (41138 bytes) 
+2025-04-07 19:04:11 - Processing S26_Y06.txt 
+2025-04-07 19:04:11 - Processing file: S26_Y06.txt (27714 bytes) 
+2025-04-07 19:04:11 - Processing S26_Y07.txt 
+2025-04-07 19:04:11 - Skipping empty file: S26_Y07.txt (0 bytes) 
+2025-04-07 19:04:11 - Processing S26_Y08.txt 
+2025-04-07 19:04:11 - Processing file: S26_Y08.txt (37790 bytes) 
+2025-04-07 19:04:11 - Processing S26_Y09.txt 
+2025-04-07 19:04:11 - Processing file: S26_Y09.txt (42080 bytes) 
+2025-04-07 19:04:11 - Processing S26_Y10.txt 
+2025-04-07 19:04:11 - Skipping empty file: S26_Y10.txt (0 bytes) 
+2025-04-07 19:04:11 - Processing S26_Y11.txt 
+2025-04-07 19:04:11 - Processing file: S26_Y11.txt (53067 bytes) 
+2025-04-07 19:04:11 - Processing S26_Y12.txt 
+2025-04-07 19:04:11 - Processing file: S26_Y12.txt (25855 bytes) 
+2025-04-07 19:04:11 - Processing S26_Y13.txt 
+2025-04-07 19:04:11 - Processing file: S26_Y13.txt (54586 bytes) 
+2025-04-07 19:04:11 - Processing S26_Y14.txt 
+2025-04-07 19:04:11 - Processing file: S26_Y14.txt (51543 bytes) 
+2025-04-07 19:04:11 - Processing S26_Y15.txt 
+2025-04-07 19:04:11 - Processing file: S26_Y15.txt (50867 bytes) 
+2025-04-07 19:04:11 - Processing S26_Y16.txt 
+2025-04-07 19:04:11 - Processing file: S26_Y16.txt (60689 bytes) 
+2025-04-07 19:04:11 - Processing S26_Y17.txt 
+2025-04-07 19:04:11 - Processing file: S26_Y17.txt (42079 bytes) 
+2025-04-07 19:04:11 - Processing S26_Y18.txt 
+2025-04-07 19:04:11 - Processing file: S26_Y18.txt (33489 bytes) 
+2025-04-07 19:04:11 - Processing S26_Y19.txt 
+2025-04-07 19:04:11 - Processing file: S26_Y19.txt (39845 bytes) 
+2025-04-07 19:04:11 - Processing S26_Y20.txt 
+2025-04-07 19:04:11 - Processing file: S26_Y20.txt (43180 bytes) 
+2025-04-07 19:04:11 - Raw data for year 1995 (Y01) exported to: /Users/abhimehrotra/RProjects/Seatek_Analysis/Data/Raw_Data_Year_1995 (Y01).xlsx 
+2025-04-07 19:04:11 - Raw data for year 1996 (Y02) exported to: /Users/abhimehrotra/RProjects/Seatek_Analysis/Data/Raw_Data_Year_1996 (Y02).xlsx 
+2025-04-07 19:04:11 - Raw data for year 1997 (Y03) exported to: /Users/abhimehrotra/RProjects/Seatek_Analysis/Data/Raw_Data_Year_1997 (Y03).xlsx 
+2025-04-07 19:04:12 - Raw data for year 1998 (Y04) exported to: /Users/abhimehrotra/RProjects/Seatek_Analysis/Data/Raw_Data_Year_1998 (Y04).xlsx 
+2025-04-07 19:04:12 - Raw data for year 1999 (Y05) exported to: /Users/abhimehrotra/RProjects/Seatek_Analysis/Data/Raw_Data_Year_1999 (Y05).xlsx 
+2025-04-07 19:04:12 - Raw data for year 2000 (Y06) exported to: /Users/abhimehrotra/RProjects/Seatek_Analysis/Data/Raw_Data_Year_2000 (Y06).xlsx 
+2025-04-07 19:04:12 - Raw data for year 2002 (Y08) exported to: /Users/abhimehrotra/RProjects/Seatek_Analysis/Data/Raw_Data_Year_2002 (Y08).xlsx 
+2025-04-07 19:04:12 - Raw data for year 2003 (Y09) exported to: /Users/abhimehrotra/RProjects/Seatek_Analysis/Data/Raw_Data_Year_2003 (Y09).xlsx 
+2025-04-07 19:04:12 - Raw data for year 2005 (Y11) exported to: /Users/abhimehrotra/RProjects/Seatek_Analysis/Data/Raw_Data_Year_2005 (Y11).xlsx 
+2025-04-07 19:04:12 - Raw data for year 2006 (Y12) exported to: /Users/abhimehrotra/RProjects/Seatek_Analysis/Data/Raw_Data_Year_2006 (Y12).xlsx 
+2025-04-07 19:04:12 - Raw data for year 2007 (Y13) exported to: /Users/abhimehrotra/RProjects/Seatek_Analysis/Data/Raw_Data_Year_2007 (Y13).xlsx 
+2025-04-07 19:04:12 - Raw data for year 2008 (Y14) exported to: /Users/abhimehrotra/RProjects/Seatek_Analysis/Data/Raw_Data_Year_2008 (Y14).xlsx 
+2025-04-07 19:04:12 - Raw data for year 2009 (Y15) exported to: /Users/abhimehrotra/RProjects/Seatek_Analysis/Data/Raw_Data_Year_2009 (Y15).xlsx 
+2025-04-07 19:04:12 - Raw data for year 2010 (Y16) exported to: /Users/abhimehrotra/RProjects/Seatek_Analysis/Data/Raw_Data_Year_2010 (Y16).xlsx 
+2025-04-07 19:04:12 - Raw data for year 2011 (Y17) exported to: /Users/abhimehrotra/RProjects/Seatek_Analysis/Data/Raw_Data_Year_2011 (Y17).xlsx 
+2025-04-07 19:04:12 - Raw data for year 2012 (Y18) exported to: /Users/abhimehrotra/RProjects/Seatek_Analysis/Data/Raw_Data_Year_2012 (Y18).xlsx 
+2025-04-07 19:04:12 - Raw data for year 2013 (Y19) exported to: /Users/abhimehrotra/RProjects/Seatek_Analysis/Data/Raw_Data_Year_2013 (Y19).xlsx 
+2025-04-07 19:04:12 - Raw data for year 2014 (Y20) exported to: /Users/abhimehrotra/RProjects/Seatek_Analysis/Data/Raw_Data_Year_2014 (Y20).xlsx 
+2025-04-07 19:04:12 - Year 1995 (Y01) data saved to: /Users/abhimehrotra/RProjects/Seatek_Analysis/Data/Year_1995 (Y01)_Data.xlsx 
+2025-04-07 19:04:13 - Year 1996 (Y02) data saved to: /Users/abhimehrotra/RProjects/Seatek_Analysis/Data/Year_1996 (Y02)_Data.xlsx 
+2025-04-07 19:04:13 - Year 1997 (Y03) data saved to: /Users/abhimehrotra/RProjects/Seatek_Analysis/Data/Year_1997 (Y03)_Data.xlsx 
+2025-04-07 19:04:13 - Year 1998 (Y04) data saved to: /Users/abhimehrotra/RProjects/Seatek_Analysis/Data/Year_1998 (Y04)_Data.xlsx 
+2025-04-07 19:04:13 - Year 1999 (Y05) data saved to: /Users/abhimehrotra/RProjects/Seatek_Analysis/Data/Year_1999 (Y05)_Data.xlsx 
+2025-04-07 19:04:13 - Year 2000 (Y06) data saved to: /Users/abhimehrotra/RProjects/Seatek_Analysis/Data/Year_2000 (Y06)_Data.xlsx 
+2025-04-07 19:04:13 - Year 2002 (Y08) data saved to: /Users/abhimehrotra/RProjects/Seatek_Analysis/Data/Year_2002 (Y08)_Data.xlsx 
+2025-04-07 19:04:13 - Year 2003 (Y09) data saved to: /Users/abhimehrotra/RProjects/Seatek_Analysis/Data/Year_2003 (Y09)_Data.xlsx 
+2025-04-07 19:04:13 - Year 2005 (Y11) data saved to: /Users/abhimehrotra/RProjects/Seatek_Analysis/Data/Year_2005 (Y11)_Data.xlsx 
+2025-04-07 19:04:13 - Year 2006 (Y12) data saved to: /Users/abhimehrotra/RProjects/Seatek_Analysis/Data/Year_2006 (Y12)_Data.xlsx 
+2025-04-07 19:04:13 - Year 2007 (Y13) data saved to: /Users/abhimehrotra/RProjects/Seatek_Analysis/Data/Year_2007 (Y13)_Data.xlsx 
+2025-04-07 19:04:13 - Year 2008 (Y14) data saved to: /Users/abhimehrotra/RProjects/Seatek_Analysis/Data/Year_2008 (Y14)_Data.xlsx 
+2025-04-07 19:04:13 - Year 2009 (Y15) data saved to: /Users/abhimehrotra/RProjects/Seatek_Analysis/Data/Year_2009 (Y15)_Data.xlsx 
+2025-04-07 19:04:13 - Year 2010 (Y16) data saved to: /Users/abhimehrotra/RProjects/Seatek_Analysis/Data/Year_2010 (Y16)_Data.xlsx 
+2025-04-07 19:04:13 - Year 2011 (Y17) data saved to: /Users/abhimehrotra/RProjects/Seatek_Analysis/Data/Year_2011 (Y17)_Data.xlsx 
+2025-04-07 19:04:13 - Year 2012 (Y18) data saved to: /Users/abhimehrotra/RProjects/Seatek_Analysis/Data/Year_2012 (Y18)_Data.xlsx 
+2025-04-07 19:04:13 - Year 2013 (Y19) data saved to: /Users/abhimehrotra/RProjects/Seatek_Analysis/Data/Year_2013 (Y19)_Data.xlsx 
+2025-04-07 19:04:13 - Year 2014 (Y20) data saved to: /Users/abhimehrotra/RProjects/Seatek_Analysis/Data/Year_2014 (Y20)_Data.xlsx 
+2025-04-07 19:04:13 - Summary data saved to: /Users/abhimehrotra/RProjects/Seatek_Analysis/Data/Seatek_Analysis_Summary.xlsx 

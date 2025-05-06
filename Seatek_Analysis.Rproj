@@ -16,7 +16,3 @@ LaTeX: pdfLaTeX
 BuildType: Package
 PackageUseDevtools: Yes
 PackageInstallArgs: --no-multiarch --with-keep.source
-
-PythonType: system
-PythonVersion: 3.13.3
-PythonPath: /usr/local/bin/python3.13

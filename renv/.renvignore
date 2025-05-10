@@ -1,0 +1,13 @@
+^Series_26/Analysis/Processed_Data/
+^Series_26/Analysis/Raw_Data/
+^Series_27/Analysis/Processed_Data/
+^Series_27/Analysis/Raw_Data/
+^Series_27/Analysis/venv/
+^renv/library/
+^renv/staging/
+^Data/
+^.vscode/
+^.github/
+^.*\.log$
+^.*\.xlsx$
+^.*\.csv$

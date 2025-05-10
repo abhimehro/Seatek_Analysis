@@ -27,3 +27,5 @@ invisible(sapply(packages, install_if_missing))
 
 # Print session info for reproducibility
 sessionInfo()
+
+renv::restore()

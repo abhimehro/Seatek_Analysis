@@ -28,7 +28,7 @@ auto_detect_data_dir <- function(data_dir) {
     stop(paste0("Data directory not found: ", data_dir))
   }
   normalizePath(data_dir)
-    stop("The 'data_dir' argument is either missing or invalid. Please provide a valid directory path.")
+}
 
 # Default separator for reading files
 default_sep <- " "
@@ -63,9 +63,15 @@ read_sensor_data <- function(file_path) {
   }
   return(dt)
 }
-process_all_data <- function(data_dir) {
+
+process_all_data <- function(data_dir, file_pattern = "^S28_Y[0-9]{2}\\.txt$") {
   data_dir <- auto_detect_data_dir(data_dir)
-  files <- list.files(data_dir, pattern = "^S28_Y[0-9]{2}\\.txt$", full.names = TRUE)
+  print(paste("Looking for data in:", data_dir))
+  print(list.files(data_dir))
+  if (!file.exists(file.path(data_dir, "S28_Y01.txt"))) {
+    stop("File S28_Y01.txt not found in data_dir!")
+  }
+  files <- list.files(data_dir, pattern = file_pattern, full.names = TRUE)
   if (length(files) == 0) {
     log_error("No sensor .txt data files found in directory (pattern S28_Y##.txt).")
     stop("No sensor .txt data files found in directory (pattern S28_Y##.txt).")
@@ -111,30 +117,22 @@ write_summary_excel <- function(results, output_file) {
 }
 
 # Main execution
-  file_pattern <- "^S28_Y[0-9]{2}\\.txt$"  # Default pattern, can be modified if needed
-  results <- process_all_data(data_dir, file_pattern)
-  data_dir <- Sys.getenv("SEATEK_DATA_DIR", unset = "/Users/abhis_space/RProjects/Seatek_Analysis/Data")
+main <- function() {
+  data_dir <- file.path(getwd(), "Data")
+  print(paste("Running main(). Data directory:", data_dir))
   if (!dir.exists(data_dir)) {
     stop(paste("Data directory does not exist:", data_dir))
   }
-  results <- process_all_data(data_dir)
+  data_dir <- normalizePath(data_dir)
+  print(getwd())
+  file_pattern <- "^S28_Y[0-9]{2}\\.txt$"
+  results <- process_all_data(data_dir, file_pattern)
   summary_out <- file.path(data_dir, "Seatek_Summary.xlsx")
   write_summary_excel(results, summary_out)
   message("Processing complete.")
-# Automatically run the main function in non-interactive sessions (e.g., when the script is executed from the command line)
-if (!interactive()) {
-  # Ensure the main function is defined and called
-  main <- function() {
-    file_pattern <- "^S28_Y[0-9]{2}\\.txt$"  # Default pattern, can be modified if needed
-    data_dir <- "/Users/abhis_space/RProjects/Seatek_Analysis/Data"
-    results <- process_all_data(data_dir, file_pattern)
-    summary_out <- file.path(data_dir, "Seatek_Summary.xlsx")
-    write_summary_excel(results, summary_out)
-    message("Processing complete.")
-  }
-  main()
 }
-if (!interactive()) {
+
+if (sys.nframe() == 0 || interactive()) {
   main()
 }
 # End of script

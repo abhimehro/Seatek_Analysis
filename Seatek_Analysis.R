@@ -19,6 +19,7 @@ library(openxlsx)
 library(dplyr)
 library(tidyr)
 library(logger)
+log_appender(appender_file("seatek_analysis.log"))
 log_layout(layout_glue_colors)
 
 # Verify and normalize data directory path
@@ -36,7 +37,7 @@ default_sep <- " "
 read_sensor_data <- function(file_path) {
   file_path <- normalizePath(file_path)
   log_info("Reading sensor file: {basename(file_path)}")
-  if (!file.exists(file_path) || !grepl("\\.txt$", file_path, ignore.case = TRUE)) {
+  if (!file.exists(file_path) || !grepl("\\.txt$", file_path)) {
     log_error("Invalid file: {file_path}")
     stop(sprintf("Invalid file: %s", file_path))
   }
@@ -51,16 +52,10 @@ read_sensor_data <- function(file_path) {
     log_warn("File {basename(file_path)} has only {ncol(dt)} columns; expected >=33.")
   }
   cols <- ncol(dt)
-  if (cols < 33) {
-    log_error("File {basename(file_path)} has insufficient columns ({cols}); expected at least 33.")
-    stop(sprintf("File %s has insufficient columns (%d); expected at least 33.", basename(file_path), cols))
-  }
   sensor_cols <- min(cols - 1, 32)
   setnames(dt, 1:sensor_cols, paste0("Sensor", sprintf("%02d", 1:sensor_cols)))
-  if ("Timestamp" %in% colnames(dt) && all(suppressWarnings(!is.na(as.numeric(dt$Timestamp))))) {
-    dt[, Timestamp := as.POSIXct(as.numeric(Timestamp), origin = "1970-01-01")]
-  } else {
-    log_warn("Timestamp column is missing or contains non-numeric data.")
+  if (cols >= sensor_cols + 1) {
+    setnames(dt, sensor_cols + 1, "Timestamp")
   }
   dt <- dt[, c(paste0("Sensor", sprintf("%02d", 1:sensor_cols)), "Timestamp"), with = FALSE]
   if (all(!is.na(as.numeric(dt$Timestamp)))) {
@@ -68,16 +63,13 @@ read_sensor_data <- function(file_path) {
   }
   return(dt)
 }
-process_all_data <- function(data_dir, file_pattern = "^S28_Y[0-9]{2}\\.txt$") {
-  data_dir <- auto_detect_data_dir(data_dir)
-  files <- list.files(data_dir, pattern = file_pattern, full.names = TRUE)
+process_all_data <- function(data_dir) {
   data_dir <- auto_detect_data_dir(data_dir)
   files <- list.files(data_dir, pattern = "^S28_Y[0-9]{2}\\.txt$", full.names = TRUE)
   if (length(files) == 0) {
     log_error("No sensor .txt data files found in directory (pattern S28_Y##.txt).")
     stop("No sensor .txt data files found in directory (pattern S28_Y##.txt).")
   }
-  clean_vals <- function(x) x[!is.na(x) & x > 0]
   results <- list()
   for (f in files) {
     tryCatch({
@@ -87,6 +79,7 @@ process_all_data <- function(data_dir, file_pattern = "^S28_Y[0-9]{2}\\.txt$") {
       log_info("Raw data written to {raw_out}")
       year_tag <- sub("^.*S28_Y([0-9]{2})\\.txt$", "\\1", basename(f))
       year <- if (nchar(year_tag) == 2) paste0("20", year_tag) else basename(f)
+      clean_vals <- function(x) x[!is.na(x) & x > 0]
       first5 <- sapply(df[, 1:32, with = FALSE], function(x) mean(clean_vals(head(x, 5))))
       last5  <- sapply(df[, 1:32, with = FALSE], function(x) mean(clean_vals(tail(x, 5))))
       full   <- sapply(df[, 1:32, with = FALSE], function(x) mean(clean_vals(x)))

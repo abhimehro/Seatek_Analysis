@@ -17,20 +17,16 @@ jobs:
 
       - name: Install Changelog Generator
         run: |
-          echo "Installing changelog generator..."
-          mkdir -p ~/.gem/ruby
           gem install github_changelog_generator --user-install
-          export GEM_HOME="$HOME/.gem"
-          export PATH="$GEM_HOME/bin:$PATH"
-          echo "GEM_HOME=$GEM_HOME" >> $GITHUB_ENV
-          echo "PATH=$PATH" >> $GITHUB_ENV
-          echo "Installation complete."
+          GEM_BIN_DIR="$(ruby -e 'puts Gem.user_dir')/bin"
+          echo "PATH=$GEM_BIN_DIR:$PATH" >> $GITHUB_ENV
+          gem list
+          ls -l "$GEM_BIN_DIR"
+          which github_changelog_generator || true
 
       - name: Generate changelog
         run: |
-          echo "Generating changelog..."
           github_changelog_generator
-          echo "Changelog generated successfully."
 
       - name: Commit and Push Changes
         env:

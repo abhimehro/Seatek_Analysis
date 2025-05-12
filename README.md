@@ -95,4 +95,4 @@ This repository contains the R-based analysis tier for processing Seatek sensor 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ---
-_Verify license compatibility before use.
+Verify license compatibility before use.

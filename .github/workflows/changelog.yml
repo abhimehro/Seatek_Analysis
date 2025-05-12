@@ -15,7 +15,8 @@ jobs:
       - name: Install Changelog Generator
         run: |
           echo "Installing changelog generator..."
-          gem install github_changelog_generator
+          gem install --user-install github_changelog_generator
+          export PATH="$HOME/.gem/ruby/3.2.0/bin:$PATH"
 
       - name: Generate changelog
         run: |

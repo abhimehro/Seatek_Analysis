@@ -39,8 +39,12 @@ jobs:
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git add CHANGELOG.md
-          git commit -m "docs: update CHANGELOG [automated]"
-          git push https://x-access-token:${GH_PAT}@github.com/abhimehro/Seatek_Analysis.git
+          if ! git diff --cached --quiet; then
+            git commit -m "docs: update CHANGELOG [automated]"
+            git push https://x-access-token:${GH_PAT}@github.com/abhimehro/Seatek_Analysis.git
+          else
+            echo "No changes to commit."
+          fi
 
 # This workflow will automatically generate or update CHANGELOG.md on every push to main or when manually triggered.
 # It uses github-changelog-generator to pull PRs, issues, and release notes from GitHub.

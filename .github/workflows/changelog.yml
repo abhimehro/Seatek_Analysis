@@ -12,6 +12,11 @@ jobs:
   changelog:
     runs-on: ubuntu-latest
     steps:
+      - name: Set up Ruby 2.7
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 2.7
+
       - name: Checkout code
         uses: actions/checkout@v3
 
@@ -20,11 +25,10 @@ jobs:
           gem install github_changelog_generator --user-install
           GEM_BIN_DIR="$(ruby -e 'puts Gem.user_dir')/bin"
           echo "PATH=$GEM_BIN_DIR:$PATH" >> $GITHUB_ENV
-          gem list
-          ls -l "$GEM_BIN_DIR"
-          which github_changelog_generator || true
 
       - name: Generate changelog
+        env:
+          CHANGELOG_GITHUB_TOKEN: ${{ secrets.GH_PAT }}
         run: |
           github_changelog_generator --user "${GITHUB_REPOSITORY_OWNER}" --project "${GITHUB_REPOSITORY#*/}"
 

@@ -5,6 +5,9 @@ on:
     branches:
       - main
 
+permissions:
+  contents: write
+
 jobs:
   changelog:
     runs-on: ubuntu-latest
@@ -15,8 +18,11 @@ jobs:
       - name: Install Changelog Generator
         run: |
           echo "Installing changelog generator..."
-          gem install github_changelog_generator
-          export PATH="$HOME/.local/bin:$HOME/.gem/ruby/$(ls $HOME/.gem/ruby)/bin:$PATH"
+          mkdir -p ~/.gem/ruby
+          gem install github_changelog_generator --user-install
+          export GEM_HOME="$HOME/.gem"
+          export PATH="$GEM_HOME/bin:$PATH"
+          echo "GEM_HOME=$GEM_HOME" >> $GITHUB_ENV
           echo "PATH=$PATH" >> $GITHUB_ENV
           echo "Installation complete."
 

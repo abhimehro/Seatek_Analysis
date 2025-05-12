@@ -12,10 +12,10 @@ jobs:
   changelog:
     runs-on: ubuntu-latest
     steps:
-      - name: Set up Ruby 2.7
+      - name: Set up Ruby 3.1
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: 2.7
+          ruby-version: 3.1
 
       - name: Checkout code
         uses: actions/checkout@v3

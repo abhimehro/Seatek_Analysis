@@ -2,6 +2,9 @@
 
 [![CodeQL Advanced](https://github.com/abhimehro/Seatek_Analysis/actions/workflows/codeql.yml/badge.svg)](https://github.com/abhimehro/Seatek_Analysis/actions/workflows/codeql.yml)
 [![renv Reproducibility](https://img.shields.io/badge/reproducible%20environment-renv-blue?logo=R)](https://rstudio.github.io/renv/)
+[![Changelog Status](https://github.com/abhimehro/Seatek_Analysis/actions/workflows/changelog.yml/badge.svg)](https://github.com/abhimehro/Seatek_Analysis/actions/workflows/changelog.yml)
+
+---
 
 ## Project Overview
 
@@ -10,6 +13,8 @@ This repository contains the R-based analysis tier for processing Seatek sensor 
 1. **R-Tier (This Repository):** Ingests, validates, and processes raw Seatek sensor data (`S28_Yxx.txt`), exports cleaned data and summary metrics to Excel, and generates a combined summary workbook. Robust logging and error handling are included.
 2. **Excel-Tier:** Manages intermediate data processing and basic visualizations.
 3. **Python-Tier:** Handles advanced data visualization and large-scale data processing.
+
+---
 
 ## Repository Structure
 
@@ -27,44 +32,75 @@ This repository contains the R-based analysis tier for processing Seatek sensor 
 ├── processing_log.txt          # Detailed processing log
 ├── analysis_report_log.txt     # Analysis report generation log
 ├── Seatek_Analysis.Rproj       # R project configuration
+├── .github_changelog_generator # Changelog config (see below)
 └── README.md                   # Project documentation
 ```
 
-## Setup and Usage
+---
 
-1. Clone this repository.
-2. Open the project in RStudio using `Seatek_Analysis.Rproj`.
-3. Install required R packages by running `source("requirements.R")` in your R console. This will also restore the `renv` environment for reproducibility.
-4. Run the main analysis script: `source("Seatek_Analysis.R")` (or `Updated_Seatek_Analysis.R` for the latest workflow).
-5. Outputs (raw and summary Excel files) will be generated in the `Data/` directory. Logs are written to `seatek_analysis.log` and `processing_log.txt`.
-6. For troubleshooting, consult the log files (`seatek_analysis.log`, `processing_log.txt`, `analysis_report_log.txt`) in the project root. These provide detailed error and status messages for each run.
+## Visual Summary: Automated Changelog Workflow
 
-## Data Flow
+Below is a high-level diagram of the changelog automation process, designed for clarity and reproducibility in collaborative research environments:
 
-1. Raw sensor data (`S28_Yxx.txt`) is processed and validated by R scripts.
-2. Cleaned data and summary metrics are exported to Excel workbooks (one per year, plus a combined summary).
-3. Logs and reports are generated for traceability and debugging.
-4. Excel outputs are used by the Python tier for advanced visualization.
-5. Results feed into the broader analysis system.
+```mermaid
+flowchart TD
+    A[Push to main branch] --> B[GitHub Actions Workflow Triggered]
+    B --> C[Install github_changelog_generator]
+    C --> D[Read .github_changelog_generator config]
+    D --> E[Generate/Update CHANGELOG.md]
+    E --> F[Commit & Push if changes detected]
+    F --> G[Changelog Status Badge Updated]
+```
 
-## Related Repositories
+**How it works:**  
+- Every push to `main` triggers the changelog workflow.
+- The workflow installs dependencies, reads your changelog config, and generates or updates `CHANGELOG.md`.
+- If there are changes, it commits and pushes them back to the repository.
+- The [Changelog Status badge](https://github.com/abhimehro/Seatek_Analysis/actions/workflows/changelog.yml) at the top of this README reflects the latest workflow run.
 
-- [Hydrograph_Versus_Seatek_Sensors_Project](https://github.com/abhimehro/Hydrograph_Versus_Seatek_Sensors_Project) - Python visualization tier
+(Checkpoint: This step involves continuous integration and automated documentation, which are foundational for reproducible research and collaborative data science.)
 
-## Requirements
+---
 
-- R >= 4.0.0
-- RStudio (recommended)
-- Required R packages (see `requirements.R` for a full list, including: `tidyverse`, `data.table`, `openxlsx`, `janitor`, `here`, `lubridate`, `writexl`, `stringr`, `zoo`, etc.)
-- [renv](https://rstudio.github.io/renv/) for reproducible environments (auto-restored by `requirements.R`)
+## Changelog Automation
 
-## Troubleshooting
+This project uses [github_changelog_generator](https://github.com/github-changelog-generator/github-changelog-generator) for automated changelog management.  
+**Configuration:**  
+- The changelog generator is configured via the `.github_changelog_generator` file (located in the project root or `.github/` directory).
+- The changelog is automatically updated on each push to `main` via a GitHub Actions workflow.
 
-- If you encounter missing package errors, re-run `source("requirements.R")`.
-- For issues with data files, check that your `Data/` directory contains the expected raw `.txt` files.
-- Review log files for detailed error messages and processing steps.
+**Label conventions:**  
+To ensure your contributions are categorized correctly in the changelog, please use the following labels on issues and pull requests:
+
+| Section             | Example Labels                | Description                                  |
+|---------------------|------------------------------|----------------------------------------------|
+| **Enhancements**    | `enhancement`, `type: enhancement` | New features, improvements                   |
+| **Bug Fixes**       | `bug`, `type: bug`           | Fixes for errors or unexpected behavior      |
+| **Breaking Changes**| `breaking`, `backwards incompatible` | Changes that may break existing workflows    |
+| **Deprecated**      | `deprecated`                 | Features scheduled for removal               |
+| **Removed**         | `removed`                    | Features or code that have been removed      |
+| **Security**        | `security`                   | Security-related fixes or updates            |
+| **Data Updates**    | `data update`, `dataset`     | Updates to datasets or data sources          |
+| **Analysis**        | `analysis`, `results`        | New or updated analyses, results, or methods |
+| **Documentation**   | `documentation`              | Improvements to docs, guides, or READMEs     |
+
+*Excluded from changelog:* `duplicate`, `question`, `invalid`, `wontfix`, `Meta: Exclude From Changelog`
+
+**Tip:**  
+If you’re unsure which label to use, see [CONTRIBUTING.md](./CONTRIBUTING.md) for detailed guidance.
+
+---
+
+## Contributing
+
+We welcome contributions from all backgrounds!  
+Please see [CONTRIBUTING.md](./CONTRIBUTING.md) for our workflow, label conventions, and best practices for reproducible, transparent research and development.
+
+---
 
 ## Changelog
+
+See [CHANGELOG.md](./CHANGELOG.md) for a detailed, automatically generated history of project changes.
 
 ### 2025-05-10
 
@@ -74,25 +110,21 @@ This repository contains the R-based analysis tier for processing Seatek sensor 
 - Expanded package requirements and reproducibility via `renv`.
 - Improved Excel output structure and summary generation.
 
-### 2025-04-07
-
-- Major refactor of data processing scripts for Series 26/27.
-- Added comprehensive logging and analysis report generation.
-- Improved directory structure and output file naming.
-
-### 2024-12-15
-
-- Initial public release of Seatek Analysis R-Tier.
-
-## Contributing
-
-1. Create a feature branch.
-2. Make your changes.
-3. Submit a pull request.
+---
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+Verify license compatibility before use.
 
 ---
-Verify license compatibility before use.
+
+**Checkpoint:**  
+This README reflects the latest automation, changelog, and contribution practices. If you update label conventions, workflows, or project structure, please revise this document to keep it current and clear for all collaborators.
+
+---
+
+**Next Steps & Recommendations:**
+
+- If you’re contributing, review the [CONTRIBUTING.md](./CONTRIBUTING.md) for label usage and workflow details.
+- For changelog or workflow questions, consult the `.github_changelog_generator` config or open an issue.
+- Use browser-based features (e.g., highlight-to-note, integrated search) to streamline your workflow and documentation review.

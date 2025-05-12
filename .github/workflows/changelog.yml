@@ -12,10 +12,15 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
+      - name: Install Changelog Generator
+        run: |
+          echo "Installing changelog generator..."
+          gem install github_changelog_generator
+
       - name: Generate changelog
         run: |
           echo "Generating changelog..."
-          # Your changelog generation command here
+          github_changelog_generator
           echo "Changelog generated"
 
       - name: Commit and Push changes

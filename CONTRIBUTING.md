@@ -6,18 +6,33 @@ This guide outlines our workflow, label conventions, and best practices to ensur
 
 ---
 
+## Quick Links
+
+- [How to Contribute](#1-how-to-contribute)
+- [Label Conventions](#2-label-conventions)
+- [Best Practices](#3-best-practices-for-contributions)
+- [Automated Changelog](#4-automated-changelog)
+- [Additional Resources](#5-additional-resources)
+- [Questions or Suggestions?](#6-questions-or-suggestions)
+
+---
+
 ## 1. How to Contribute
 
-- **Bug Reports & Feature Requests:**  
-  Please use [GitHub Issues](https://github.com/abhimehro/Seatek_Analysis/issues) to report bugs, request features, or suggest improvements.  
-  When reporting, provide as much context as possible, including steps to reproduce, expected behavior, and relevant data or logs.
+**Bug Reports & Feature Requests:**
+- Please use [GitHub Issues](https://github.com/abhimehro/Seatek_Analysis/issues) to report bugs, request features, or suggest improvements.
+- When reporting, provide as much context as possible, including steps to reproduce, expected behavior, and relevant data or logs.
 
-- **Pull Requests:**  
-  1. Fork the repository and create a new branch for your changes.
-  2. Write clear, well-documented code and include tests or data examples where appropriate.
-  3. Reference related issues or discussions in your PR description.
-  4. Assign appropriate labels (see below) to help us categorize your contribution.
-  5. Submit your pull request and participate in the review process.
+**Pull Requests:**
+1. Fork the repository and create a new branch for your changes.
+2. Write clear, well-documented code and include tests or data examples where appropriate.
+3. Reference related issues or discussions in your PR description.
+4. Assign appropriate labels (see below) to help us categorize your contribution.
+   - **Tip:** In the GitHub web interface, use the "Labels" panel on the right sidebar when creating or editing an issue/PR.
+5. Submit your pull request and participate in the review process.
+
+**Browser Workflow Tip:**  
+Use your browser’s highlight, note, or split-screen features to track your PRs, review guidelines, or annotate this document as you contribute.
 
 ---
 
@@ -27,17 +42,17 @@ To maintain a clear and informative changelog, we use a set of standardized labe
 
 ### **Core Label Groups**
 
-| Label Group         | Example Labels                | Purpose/Section in Changelog         |
-|---------------------|------------------------------|--------------------------------------|
-| **Enhancements**    | `enhancement`, `type: enhancement` | New features, improvements           |
-| **Bug Fixes**       | `bug`, `type: bug`           | Fixes for errors or unexpected behavior |
+| Label Group         | Example Labels                | Purpose/Section in Changelog                |
+|---------------------|------------------------------|---------------------------------------------|
+| **Enhancements**    | `enhancement`, `type: enhancement` | New features, improvements                  |
+| **Bug Fixes**       | `bug`, `type: bug`           | Fixes for errors or unexpected behavior     |
 | **Breaking Changes**| `breaking`, `backwards incompatible` | Changes that require user action or may break existing workflows |
-| **Deprecated**      | `deprecated`                 | Features or methods scheduled for removal |
-| **Removed**         | `removed`                    | Features or code that have been removed |
-| **Security**        | `security`                   | Security-related fixes or updates     |
-| **Data Updates**    | `data update`, `dataset`     | Updates to datasets or data sources   |
-| **Analysis**        | `analysis`, `results`        | New or updated analyses, results, or methods |
-| **Documentation**   | `documentation`              | Improvements to docs, guides, or READMEs |
+| **Deprecated**      | `deprecated`                 | Features or methods scheduled for removal   |
+| **Removed**         | `removed`                    | Features or code that have been removed     |
+| **Security**        | `security`                   | Security-related fixes or updates           |
+| **Data Updates**    | `data update`, `dataset`     | Updates to datasets or data sources         |
+| **Analysis**        | `analysis`, `results`        | New or updated analyses, results, or methods|
+| **Documentation**   | `documentation`              | Improvements to docs, guides, or READMEs    |
 
 **Excluded Labels:**  
 The following labels are excluded from the changelog:  
@@ -53,7 +68,8 @@ If an issue or PR does not have a label, it will still be included in the change
 - **Clarity & Rigor:**  
   Write clear commit messages and PR descriptions. Summarize the impact of your changes, especially for data or analysis updates.
 - **Reproducibility:**  
-  For data or analysis contributions, include code, data sources, and documentation to support reproducibility.
+  For data or analysis contributions, include code, data sources, and documentation to support reproducibility.  
+  - **Tip:** Note the data source, code version, and analysis context in your PR description for provenance.
 - **Transparency:**  
   Reference related issues, datasets, or publications where relevant.
 - **Collaboration:**  
@@ -63,7 +79,8 @@ If an issue or PR does not have a label, it will still be included in the change
 
 ## 4. Automated Changelog
 
-We use [github_changelog_generator](https://github.com/github-changelog-generator/github-changelog-generator) to automate our changelog.  
+We use [github_changelog_generator](https://github.com/github-changelog-generator/github-changelog-generator) to automate our changelog.
+
 **How it works:**
 - The changelog groups changes by label, using the conventions above.
 - Each release includes merged pull requests, closed issues, and highlights for breaking changes, enhancements, bug fixes, and more.
@@ -89,7 +106,7 @@ We value clear communication, scientific integrity, and collaborative problem-so
 
 ---
 
-*Let’s build a transparent, impactful, and reproducible project together!*
+_Let’s build a transparent, impactful, and reproducible project together!_
 
 ---
 
@@ -98,7 +115,8 @@ This guide is a living document. As our project and community evolve, so will ou
 
 ---
 
-**Next Steps:**  
+**Next Steps:**
 - Review open issues and PRs for opportunities to contribute.
 - When submitting, use the label table above to guide your label selection.
 - If you’re unsure which label to use, ask in your PR or issue description—maintainers will help categorize it.
+- Use browser features (highlight, note, split-screen) to streamline your workflow and documentation review.

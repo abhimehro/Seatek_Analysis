@@ -15,9 +15,9 @@ jobs:
       - name: Install Changelog Generator
         run: |
           echo "Installing changelog generator..."
-          gem install github_changelog_generator
-          echo 'export PATH="$HOME/.gem/ruby/$(ls $HOME/.gem/ruby)/bin:$PATH"' >> $HOME/.bashrc
-          source $HOME/.bashrc
+          gem install --user-install github_changelog_generator
+          export PATH="$HOME/.gem/ruby/$(ls $HOME/.gem/ruby)/bin:$PATH"
+          echo "PATH=$PATH" >> $GITHUB_ENV
 
       - name: Generate changelog
         run: |
@@ -25,7 +25,7 @@ jobs:
           github_changelog_generator
           echo "Changelog generated"
 
-      - name: Commit and Push changes
+      - name: Commit and Push Changes
         env:
           GH_PAT: ${{ secrets.GH_PAT }}
         run: |

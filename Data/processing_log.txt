@@ -1,2 +1,0 @@
-2025-05-06 13:51:34 - Starting Seatek Analysis 
-2025-05-06 13:51:34 - Error in processing: No valid files found for processing 

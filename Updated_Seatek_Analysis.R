@@ -60,7 +60,7 @@ read_sensor_data <- function(file_path, sep = " ") {
 # Process all sensor files: export raw, compute metrics
 process_all_data <- function(data_dir) {
   data_dir <- auto_detect_data_dir(data_dir)
-  pattern <- "^S28_Y[0-9]{2}\\.txt$"
+  pattern <- "^SS_Y[0-9]{2}\\.txt$"  # Updated pattern to match your files
   files <- list.files(data_dir, pattern = pattern, full.names = TRUE)
   if (length(files) == 0) {
     stop(sprintf("No sensor files found matching %s in %s", pattern, data_dir))
@@ -79,7 +79,7 @@ process_all_data <- function(data_dir) {
     full   <- sapply(df[, 1:32, with = FALSE], function(x) mean(clean_vals(x)))
     diff   <- full - first5
     # Derive sheet/year name
-    year_tag <- sub("^S28_Y([0-9]{2})\\.txt$", "\\1", basename(f))
+    year_tag <- sub("^SS_Y([0-9]{2})\\.txt$", "\\1", basename(f))
     sheet_name <- if (nchar(year_tag) == 2) paste0("20", year_tag) else basename(f)
     results[[sheet_name]] <- data.frame(
       first5 = first5,
@@ -94,3 +94,65 @@ process_all_data <- function(data_dir) {
 }
 
 # Write combined summary workbook
+dump_summary_excel <- function(results, output_file, highlight_top_n = 5) {
+  wb <- createWorkbook()
+  headerStyle <- createStyle(textDecoration = "bold")
+  # Write each year's sheet
+  for (year in names(results)) {
+    addWorksheet(wb, year)
+    df <- as.data.frame(results[[year]])
+    writeData(wb, sheet = year, x = df, rowNames = TRUE, headerStyle = headerStyle)
+    freezePane(wb, sheet = year, firstRow = TRUE)
+    # Optional: highlight largest within_diff in each year
+    if ("within_diff" %in% colnames(df)) {
+      max_idx <- which.max(abs(df$within_diff))
+      highlightStyle <- createStyle(bgFill = "#FFD700")
+      addStyle(wb, sheet = year, style = highlightStyle, rows = max_idx + 1, cols = which(colnames(df) == "within_diff") + 1, gridExpand = TRUE, stack = TRUE)
+    }
+  }
+  # Add summary sheet with overall stats
+  all_stats <- do.call(rbind, results)
+  sensor_names <- rownames(all_stats)
+  sensors <- unique(sensor_names)
+  metrics <- colnames(all_stats)
+  summary_df <- data.frame(
+    Sensor = sensors,
+    stringsAsFactors = FALSE
+  )
+  for (metric in metrics) {
+    vals <- sapply(sensors, function(s) all_stats[sensor_names == s, metric])
+    vals <- as.matrix(vals)
+    summary_df[[paste0(metric, "_mean")]] <- rowMeans(vals, na.rm = TRUE)
+    summary_df[[paste0(metric, "_sd")]] <- apply(vals, 1, sd, na.rm = TRUE)
+    summary_df[[paste0(metric, "_min")]] <- apply(vals, 1, min, na.rm = TRUE)
+    summary_df[[paste0(metric, "_max")]] <- apply(vals, 1, max, na.rm = TRUE)
+    summary_df[[paste0(metric, "_count")]] <- apply(vals, 1, function(x) sum(!is.na(x)))
+  }
+  addWorksheet(wb, "Summary")
+  writeData(wb, sheet = "Summary", x = summary_df, headerStyle = headerStyle)
+  freezePane(wb, sheet = "Summary", firstRow = TRUE)
+  # Highlight top N sensors with largest absolute within_diff_mean
+  if ("within_diff_mean" %in% colnames(summary_df)) {
+    abs_diff <- abs(summary_df$within_diff_mean)
+    top_idx <- order(abs_diff, decreasing = TRUE)[seq_len(min(highlight_top_n, length(abs_diff)))]
+    highlightStyle <- createStyle(bgFill = "#FF9999")
+    addStyle(wb, sheet = "Summary", style = highlightStyle, rows = top_idx + 1, cols = which(colnames(summary_df) == "within_diff_mean") + 1, gridExpand = TRUE, stack = TRUE)
+  }
+  saveWorkbook(wb, output_file, overwrite = TRUE)
+  message(sprintf("Summary written to %s", output_file))
+}
+
+# Main execution block
+if (sys.nframe() == 0 || interactive()) {
+  data_dir <- file.path(getwd(), "Data")
+  message(sprintf("Running main(). Data directory: %s", data_dir))
+  if (!dir.exists(data_dir)) {
+    stop(sprintf("Data directory does not exist: %s", data_dir))
+  }
+  data_dir <- normalizePath(data_dir)
+  results <- process_all_data(data_dir)
+  summary_out <- file.path(data_dir, "Seatek_Summary.xlsx")
+  dump_summary_excel(results, summary_out)
+  message("Processing complete.")
+}
+# End of script

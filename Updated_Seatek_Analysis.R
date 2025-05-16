@@ -19,6 +19,13 @@ library(openxlsx)
 library(dplyr)
 library(tidyr)
 
+# Log all warnings, errors, and messages to a file for diagnostics
+log_file <- file.path(getwd(), "processing_warnings.log")
+if (file.exists(log_file)) file.remove(log_file)
+log_handler <- function(type, msg) {
+  cat(sprintf("[%s] %s\n", type, msg), file=log_file, append=TRUE)
+}
+
 # Utility: verify and normalize data directory path
 auto_detect_data_dir <- function(data_dir) {
   if (missing(data_dir) || !dir.exists(data_dir)) {
@@ -126,10 +133,63 @@ dump_summary_excel <- function(results, output_file, highlight_top_n = 5) {
     vals <- as.matrix(vals)
     summary_df[[paste0(metric, "_mean")]] <- rowMeans(vals, na.rm = TRUE)
     summary_df[[paste0(metric, "_sd")]] <- apply(vals, 1, sd, na.rm = TRUE)
-    summary_df[[paste0(metric, "_min")]] <- apply(vals, 1, min, na.rm = TRUE)
-    summary_df[[paste0(metric, "_max")]] <- apply(vals, 1, max, na.rm = TRUE)
+    summary_df[[paste0(metric, "_median")]] <- apply(vals, 1, median, na.rm = TRUE)
+    summary_df[[paste0(metric, "_mad")]] <- apply(vals, 1, mad, na.rm = TRUE)
+    summary_df[[paste0(metric, "_min")]] <- apply(vals, 1, function(x) {
+      x <- x[!is.na(x)]
+      if (length(x) == 0) NA else min(x)
+    })
+    summary_df[[paste0(metric, "_max")]] <- apply(vals, 1, function(x) {
+      x <- x[!is.na(x)]
+      if (length(x) == 0) NA else max(x)
+    })
     summary_df[[paste0(metric, "_count")]] <- apply(vals, 1, function(x) sum(!is.na(x)))
+    # Rolling mean (3-year) for each sensor
+    summary_df[[paste0(metric, "_rollmean3")]] <- apply(vals, 1, function(x) {
+      x <- x[!is.na(x)]
+      if (length(x) < 3) return(NA)
+      mean(tail(x, 3))
+    })
   }
+
+  # Calculate percent non-missing for 'full'
+  summary_df$full_pct_nonmissing <- 100 * summary_df$full_count / length(results)
+
+  # --- Comprehensive summary (all sensors) ---
+  summary_df_all <- summary_df # keep a copy before filtering
+  addWorksheet(wb, "Summary_All")
+  writeData(wb, sheet = "Summary_All", x = summary_df_all, headerStyle = headerStyle)
+  freezePane(wb, sheet = "Summary_All", firstRow = TRUE)
+  # Export comprehensive summary as CSV
+  csv_all <- sub("\\.xlsx$", "_all.csv", output_file)
+  write.csv(summary_df_all, csv_all, row.names = FALSE)
+  message(sprintf("Comprehensive summary CSV written to %s", csv_all))
+
+  # --- Filtered summary (sufficient data only) ---
+  min_count <- 5
+  summary_df_sufficient <- summary_df_all[summary_df_all$full_count >= min_count, ]
+  addWorksheet(wb, "Summary_Sufficient")
+  writeData(wb, sheet = "Summary_Sufficient", x = summary_df_sufficient, headerStyle = headerStyle)
+  freezePane(wb, sheet = "Summary_Sufficient", firstRow = TRUE)
+  # Export filtered summary as CSV
+  csv_sufficient <- sub("\\.xlsx$", "_sufficient.csv", output_file)
+  write.csv(summary_df_sufficient, csv_sufficient, row.names = FALSE)
+  message(sprintf("Filtered summary CSV written to %s", csv_sufficient))
+
+  # Continue with filtered summary for top sensors and highlighting
+  summary_df <- summary_df_sufficient
+  # Flag high-variability sensors (e.g., full_sd > threshold)
+  sd_threshold <- 2 # adjust as needed
+  summary_df$flag_high_variability <- summary_df$full_sd > sd_threshold
+
+  # Prepare top sensors by absolute within_diff_mean
+  if ("within_diff_mean" %in% colnames(summary_df)) {
+    abs_diff <- abs(summary_df$within_diff_mean)
+    top_n <- 5
+    top_sensors <- summary_df[order(-abs_diff), ][1:top_n, c("Sensor", "within_diff_mean", "full_mean", "full_sd", "full_pct_nonmissing")]
+    write.csv(top_sensors, sub("\\.xlsx$", "_top_sensors.csv", output_file), row.names = FALSE)
+  }
+
   addWorksheet(wb, "Summary")
   writeData(wb, sheet = "Summary", x = summary_df, headerStyle = headerStyle)
   freezePane(wb, sheet = "Summary", firstRow = TRUE)
@@ -142,19 +202,33 @@ dump_summary_excel <- function(results, output_file, highlight_top_n = 5) {
   }
   saveWorkbook(wb, output_file, overwrite = TRUE)
   message(sprintf("Summary written to %s", output_file))
+  # Also export summary as CSV for preview
+  csv_out <- sub("\\.xlsx$", ".csv", output_file)
+  write.csv(summary_df, csv_out, row.names = FALSE)
+  message(sprintf("Summary CSV written to %s", csv_out))
+  # Export robust stats as CSV
+  csv_robust <- sub("\\.xlsx$", "_robust.csv", output_file)
+  write.csv(summary_df, csv_robust, row.names = FALSE)
+  message(sprintf("Robust summary CSV written to %s", csv_robust))
 }
 
 # Main execution block
 if (sys.nframe() == 0 || interactive()) {
-  data_dir <- file.path(getwd(), "Data")
-  message(sprintf("Running main(). Data directory: %s", data_dir))
-  if (!dir.exists(data_dir)) {
-    stop(sprintf("Data directory does not exist: %s", data_dir))
-  }
-  data_dir <- normalizePath(data_dir)
-  results <- process_all_data(data_dir)
-  summary_out <- file.path(data_dir, "Seatek_Summary.xlsx")
-  dump_summary_excel(results, summary_out)
-  message("Processing complete.")
+  withCallingHandlers({
+    data_dir <- file.path(getwd(), "Data")
+    message(sprintf("Running main(). Data directory: %s", data_dir))
+    if (!dir.exists(data_dir)) {
+      stop(sprintf("Data directory does not exist: %s", data_dir))
+    }
+    data_dir <- normalizePath(data_dir)
+    results <- process_all_data(data_dir)
+    summary_out <- file.path(data_dir, "Seatek_Summary.xlsx")
+    dump_summary_excel(results, summary_out)
+    message("Processing complete.")
+  },
+  warning = function(w) { log_handler("WARNING", conditionMessage(w)); invokeRestart("muffleWarning") },
+  error   = function(e) { log_handler("ERROR", conditionMessage(e)); },
+  message = function(m) { log_handler("MESSAGE", conditionMessage(m)); invokeRestart("muffleMessage") }
+  )
 }
 # End of script

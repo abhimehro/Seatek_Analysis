@@ -130,3 +130,19 @@ This README reflects the latest automation, changelog, and contribution practice
 - If you're contributing, review the [CONTRIBUTING.md](./CONTRIBUTING.md) for label usage and workflow details.
 - For changelog or workflow questions, consult the `.github_changelog_generator` config or open an issue.
 - Use browser-based features (e.g., highlight-to-note, integrated search) to streamline your workflow and documentation review.
+
+## Robust Sensor Statistics and Outputs
+
+The analysis now computes and exports robust statistics for each sensor and metric, including:
+
+- **Mean** and **Standard Deviation (SD)**
+- **Median** and **Median Absolute Deviation (MAD)**
+- **3-year Rolling Mean** (where possible)
+
+These are available in the main summary workbook and in `Data/Seatek_Summary_robust.csv`.
+
+**Sufficient data threshold:** Sensors are included in the filtered summary if they have at least 5 valid data points.
+
+All outputs are updated automatically as new data is added to the `Data/` directory.
+
+These robust statistics support more reliable sensor diagnostics and anomaly detection.

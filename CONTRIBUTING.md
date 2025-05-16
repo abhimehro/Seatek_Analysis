@@ -78,6 +78,15 @@ If an issue or PR does not have a label, it will still be included in the change
 **Note on Summary Metrics and Year Mapping:**
 The analysis scripts now compute summary metrics using the first 10, last 5, full, and within_diff (full minus first 10) for each sensor. All Excel outputs and summary sheets reflect these metrics. Year mapping in Excel outputs is now corrected: Y01 = 1995, Y02 = 1996, ..., Y20 = 2014.
 
+**Note on Robust Sensor Statistics (2025 Update)**
+
+The analysis pipeline now computes and exports robust statistics for each sensor and metric:
+- Mean, Standard Deviation (SD), Median, Median Absolute Deviation (MAD), and 3-year Rolling Mean.
+- These are available in the summary workbook and in `Data/Seatek_Summary_robust.csv`.
+- The sufficient data threshold for inclusion in filtered summaries is now 5.
+
+Contributors should ensure new data and scripts maintain these outputs and update documentation as needed.
+
 ---
 
 ## 4. Automated Changelog

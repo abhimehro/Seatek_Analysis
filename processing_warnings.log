@@ -1,0 +1,70 @@
+[MESSAGE] Running main(). Data directory: /Users/abhimehrotra/Library/CloudStorage/OneDrive-SharedLibraries-LouisianaStateUniversity/Clinton S Willson - R Project, R Scripts, and Logs/Seatek_Analysis/Data
+
+[MESSAGE] Reading sensor file: SS_Y01.txt
+
+[MESSAGE] Raw data written to /Users/abhimehrotra/Library/CloudStorage/OneDrive-SharedLibraries-LouisianaStateUniversity/Clinton S Willson - R Project, R Scripts, and Logs/Seatek_Analysis/Data/SS_Y01.xlsx
+
+[MESSAGE] Reading sensor file: SS_Y02.txt
+
+[MESSAGE] Raw data written to /Users/abhimehrotra/Library/CloudStorage/OneDrive-SharedLibraries-LouisianaStateUniversity/Clinton S Willson - R Project, R Scripts, and Logs/Seatek_Analysis/Data/SS_Y02.xlsx
+
+[MESSAGE] Reading sensor file: SS_Y03.txt
+
+[MESSAGE] Raw data written to /Users/abhimehrotra/Library/CloudStorage/OneDrive-SharedLibraries-LouisianaStateUniversity/Clinton S Willson - R Project, R Scripts, and Logs/Seatek_Analysis/Data/SS_Y03.xlsx
+
+[MESSAGE] Reading sensor file: SS_Y04.txt
+
+[MESSAGE] Raw data written to /Users/abhimehrotra/Library/CloudStorage/OneDrive-SharedLibraries-LouisianaStateUniversity/Clinton S Willson - R Project, R Scripts, and Logs/Seatek_Analysis/Data/SS_Y04.xlsx
+
+[MESSAGE] Reading sensor file: SS_Y05.txt
+
+[MESSAGE] Raw data written to /Users/abhimehrotra/Library/CloudStorage/OneDrive-SharedLibraries-LouisianaStateUniversity/Clinton S Willson - R Project, R Scripts, and Logs/Seatek_Analysis/Data/SS_Y05.xlsx
+
+[MESSAGE] Reading sensor file: SS_Y06.txt
+
+[MESSAGE] Raw data written to /Users/abhimehrotra/Library/CloudStorage/OneDrive-SharedLibraries-LouisianaStateUniversity/Clinton S Willson - R Project, R Scripts, and Logs/Seatek_Analysis/Data/SS_Y06.xlsx
+
+[MESSAGE] Reading sensor file: SS_Y07.txt
+
+[MESSAGE] Raw data written to /Users/abhimehrotra/Library/CloudStorage/OneDrive-SharedLibraries-LouisianaStateUniversity/Clinton S Willson - R Project, R Scripts, and Logs/Seatek_Analysis/Data/SS_Y07.xlsx
+
+[MESSAGE] Reading sensor file: SS_Y08.txt
+
+[MESSAGE] Raw data written to /Users/abhimehrotra/Library/CloudStorage/OneDrive-SharedLibraries-LouisianaStateUniversity/Clinton S Willson - R Project, R Scripts, and Logs/Seatek_Analysis/Data/SS_Y08.xlsx
+
+[MESSAGE] Reading sensor file: SS_Y09.txt
+
+[MESSAGE] Raw data written to /Users/abhimehrotra/Library/CloudStorage/OneDrive-SharedLibraries-LouisianaStateUniversity/Clinton S Willson - R Project, R Scripts, and Logs/Seatek_Analysis/Data/SS_Y09.xlsx
+
+[MESSAGE] Reading sensor file: SS_Y10.txt
+
+[MESSAGE] Raw data written to /Users/abhimehrotra/Library/CloudStorage/OneDrive-SharedLibraries-LouisianaStateUniversity/Clinton S Willson - R Project, R Scripts, and Logs/Seatek_Analysis/Data/SS_Y10.xlsx
+
+[MESSAGE] Reading sensor file: SS_Y11.txt
+
+[MESSAGE] Raw data written to /Users/abhimehrotra/Library/CloudStorage/OneDrive-SharedLibraries-LouisianaStateUniversity/Clinton S Willson - R Project, R Scripts, and Logs/Seatek_Analysis/Data/SS_Y11.xlsx
+
+[MESSAGE] Reading sensor file: SS_Y12.txt
+
+[MESSAGE] Raw data written to /Users/abhimehrotra/Library/CloudStorage/OneDrive-SharedLibraries-LouisianaStateUniversity/Clinton S Willson - R Project, R Scripts, and Logs/Seatek_Analysis/Data/SS_Y12.xlsx
+
+[MESSAGE] Reading sensor file: SS_Y13.txt
+
+[MESSAGE] Raw data written to /Users/abhimehrotra/Library/CloudStorage/OneDrive-SharedLibraries-LouisianaStateUniversity/Clinton S Willson - R Project, R Scripts, and Logs/Seatek_Analysis/Data/SS_Y13.xlsx
+
+[MESSAGE] Reading sensor file: SS_Y14.txt
+
+[MESSAGE] Raw data written to /Users/abhimehrotra/Library/CloudStorage/OneDrive-SharedLibraries-LouisianaStateUniversity/Clinton S Willson - R Project, R Scripts, and Logs/Seatek_Analysis/Data/SS_Y14.xlsx
+
+[MESSAGE] Comprehensive summary CSV written to /Users/abhimehrotra/Library/CloudStorage/OneDrive-SharedLibraries-LouisianaStateUniversity/Clinton S Willson - R Project, R Scripts, and Logs/Seatek_Analysis/Data/Seatek_Summary_all.csv
+
+[MESSAGE] Filtered summary CSV written to /Users/abhimehrotra/Library/CloudStorage/OneDrive-SharedLibraries-LouisianaStateUniversity/Clinton S Willson - R Project, R Scripts, and Logs/Seatek_Analysis/Data/Seatek_Summary_sufficient.csv
+
+[MESSAGE] Summary written to /Users/abhimehrotra/Library/CloudStorage/OneDrive-SharedLibraries-LouisianaStateUniversity/Clinton S Willson - R Project, R Scripts, and Logs/Seatek_Analysis/Data/Seatek_Summary.xlsx
+
+[MESSAGE] Summary CSV written to /Users/abhimehrotra/Library/CloudStorage/OneDrive-SharedLibraries-LouisianaStateUniversity/Clinton S Willson - R Project, R Scripts, and Logs/Seatek_Analysis/Data/Seatek_Summary.csv
+
+[MESSAGE] Robust summary CSV written to /Users/abhimehrotra/Library/CloudStorage/OneDrive-SharedLibraries-LouisianaStateUniversity/Clinton S Willson - R Project, R Scripts, and Logs/Seatek_Analysis/Data/Seatek_Summary_robust.csv
+
+[MESSAGE] Processing complete.
+

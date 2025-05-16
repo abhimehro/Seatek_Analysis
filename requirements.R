@@ -1,5 +1,5 @@
 # Package requirements for Seatek Analysis Project
-# Note: Analysis scripts use summary metrics (first 10, last 5, full, within_diff) for each sensor, and year mapping in Excel outputs is Y01=1995, Y20=2014.
+# Note: Robust statistics (mean, SD, median, MAD, 3-year rolling mean) are now computed and exported for each sensor and metric. Sufficient data threshold is 5.
 
 # Package installation function
 install_if_missing <- function(package) {

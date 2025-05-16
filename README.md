@@ -53,6 +53,7 @@ flowchart TD
 ```
 
 **How it works:**  
+
 - Every push to `main` triggers the changelog workflow.
 - The workflow installs dependencies, reads your changelog config, and generates or updates `CHANGELOG.md`.
 - If there are changes, it commits and pushes them back to the repository.
@@ -66,6 +67,7 @@ flowchart TD
 
 This project uses [github_changelog_generator](https://github.com/github-changelog-generator/github-changelog-generator) for automated changelog management.  
 **Configuration:**  
+
 - The changelog generator is configured via the `.github_changelog_generator` file (located in the project root or `.github/` directory).
 - The changelog is automatically updated on each push to `main` via a GitHub Actions workflow.
 

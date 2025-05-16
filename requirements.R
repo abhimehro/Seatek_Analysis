@@ -1,4 +1,5 @@
 # Package requirements for Seatek Analysis Project
+# Note: Analysis scripts use summary metrics (first 10, last 5, full, within_diff) for each sensor, and year mapping in Excel outputs is Y01=1995, Y20=2014.
 
 # Package installation function
 install_if_missing <- function(package) {

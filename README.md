@@ -10,7 +10,7 @@
 
 This repository contains the R-based analysis tier for processing Seatek sensor data and generating Excel workbooks. It is part of a three-tier analysis system:
 
-1. **R-Tier (This Repository):** Ingests, validates, and processes raw Seatek sensor data (`S28_Yxx.txt`), exports cleaned data and summary metrics to Excel, and generates a combined summary workbook. Robust logging and error handling are included.
+1. **R-Tier (This Repository):** Ingests, validates, and processes raw Seatek sensor data (`S28_Yxx.txt`), exports cleaned data and summary metrics (first 10, last 5, full, and within_diff for each sensor) to Excel, and generates a combined summary workbook. Robust logging and error handling are included.
 2. **Excel-Tier:** Manages intermediate data processing and basic visualizations.
 3. **Python-Tier:** Handles advanced data visualization and large-scale data processing.
 
@@ -87,7 +87,7 @@ To ensure your contributions are categorized correctly in the changelog, please 
 *Excluded from changelog:* `duplicate`, `question`, `invalid`, `wontfix`, `Meta: Exclude From Changelog`
 
 **Tip:**  
-If you’re unsure which label to use, see [CONTRIBUTING.md](./CONTRIBUTING.md) for detailed guidance.
+If you're unsure which label to use, see [CONTRIBUTING.md](./CONTRIBUTING.md) for detailed guidance.
 
 ---
 
@@ -109,6 +109,8 @@ See [CHANGELOG.md](./CHANGELOG.md) for a detailed, automatically generated histo
 - Added `Updated_Seatek_Analysis.R` as an alternative workflow.
 - Expanded package requirements and reproducibility via `renv`.
 - Improved Excel output structure and summary generation.
+- Updated summary metrics: now uses first 10, last 5, full, and within_diff for each sensor in all outputs and summary sheets.
+- Corrected year mapping: Y01=1995, Y20=2014 in all Excel outputs.
 
 ---
 
@@ -125,6 +127,6 @@ This README reflects the latest automation, changelog, and contribution practice
 
 **Next Steps & Recommendations:**
 
-- If you’re contributing, review the [CONTRIBUTING.md](./CONTRIBUTING.md) for label usage and workflow details.
+- If you're contributing, review the [CONTRIBUTING.md](./CONTRIBUTING.md) for label usage and workflow details.
 - For changelog or workflow questions, consult the `.github_changelog_generator` config or open an issue.
 - Use browser-based features (e.g., highlight-to-note, integrated search) to streamline your workflow and documentation review.

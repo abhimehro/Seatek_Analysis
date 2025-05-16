@@ -4,7 +4,7 @@
 
 # This script processes Seatek sensor data to analyze riverbed changes over time.
 # It reads raw sensor data files (S28_Yxx.txt), validates them, exports each to Excel,
-# computes summary metrics, and generates a combined summary workbook.
+# computes summary metrics (first 10, last 5, full, within_diff), and generates a combined summary workbook.
 
 # Load required packages (install if missing)
 required_packages <- c("data.table", "openxlsx", "dplyr", "tidyr")
@@ -74,15 +74,17 @@ process_all_data <- function(data_dir) {
     message(sprintf("Raw data written to %s", out_raw))
     # Compute summary metrics
     clean_vals <- function(x) x[!is.na(x) & x > 0]
-    first5 <- sapply(df[, 1:32, with = FALSE], function(x) mean(clean_vals(head(x, 5))))
+    first10 <- sapply(df[, 1:32, with = FALSE], function(x) mean(clean_vals(head(x, 10))))
     last5  <- sapply(df[, 1:32, with = FALSE], function(x) mean(clean_vals(tail(x, 5))))
     full   <- sapply(df[, 1:32, with = FALSE], function(x) mean(clean_vals(x)))
-    diff   <- full - first5
+    diff   <- full - first10
     # Derive sheet/year name
     year_tag <- sub("^SS_Y([0-9]{2})\\.txt$", "\\1", basename(f))
-    sheet_name <- if (nchar(year_tag) == 2) paste0("20", year_tag) else basename(f)
+    # Map Y01=1995, Y02=1996, ..., Y20=2014
+    year_num <- as.integer(year_tag)
+    sheet_name <- if (!is.na(year_num) && year_num >= 1 && year_num <= 20) as.character(1994 + year_num) else basename(f)
     results[[sheet_name]] <- data.frame(
-      first5 = first5,
+      first10 = first10,
       last5 = last5,
       full = full,
       within_diff = diff,

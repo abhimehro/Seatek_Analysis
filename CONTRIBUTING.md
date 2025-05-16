@@ -32,7 +32,7 @@ This guide outlines our workflow, label conventions, and best practices to ensur
 5. Submit your pull request and participate in the review process.
 
 **Browser Workflow Tip:**  
-Use your browser’s highlight, note, or split-screen features to track your PRs, review guidelines, or annotate this document as you contribute.
+Use your browser's highlight, note, or split-screen features to track your PRs, review guidelines, or annotate this document as you contribute.
 
 ---
 
@@ -73,7 +73,10 @@ If an issue or PR does not have a label, it will still be included in the change
 - **Transparency:**  
   Reference related issues, datasets, or publications where relevant.
 - **Collaboration:**  
-  Engage in discussions, respond to feedback, and help review others’ contributions.
+  Engage in discussions, respond to feedback, and help review others' contributions.
+
+**Note on Summary Metrics and Year Mapping:**
+The analysis scripts now compute summary metrics using the first 10, last 5, full, and within_diff (full minus first 10) for each sensor. All Excel outputs and summary sheets reflect these metrics. Year mapping in Excel outputs is now corrected: Y01 = 1995, Y02 = 1996, ..., Y20 = 2014.
 
 ---
 
@@ -106,7 +109,7 @@ We value clear communication, scientific integrity, and collaborative problem-so
 
 ---
 
-_Let’s build a transparent, impactful, and reproducible project together!_
+_Let's build a transparent, impactful, and reproducible project together!_
 
 ---
 
@@ -118,5 +121,5 @@ This guide is a living document. As our project and community evolve, so will ou
 **Next Steps:**
 - Review open issues and PRs for opportunities to contribute.
 - When submitting, use the label table above to guide your label selection.
-- If you’re unsure which label to use, ask in your PR or issue description—maintainers will help categorize it.
+- If you're unsure which label to use, ask in your PR or issue description—maintainers will help categorize it.
 - Use browser features (highlight, note, split-screen) to streamline your workflow and documentation review.

@@ -46,6 +46,16 @@ jobs:
         shell: Rscript {0}
         continue-on-error: true
 
+      - name: Install R Dependencies for Testing
+        run: |
+          install.packages(c("testthat", "data.table", "openxlsx", "dplyr", "tidyr", "logger"), Ncpus = 2, repos = "https://cloud.r-project.org/")
+        shell: Rscript {0}
+
+      - name: Run testthat tests
+        run: |
+          testthat::test_dir("tests/testthat", reporter = "summary")
+        shell: Rscript {0}
+
       - name: Upload analysis results to GitHub
         uses: github/codeql-action/upload-sarif@v2
         with:

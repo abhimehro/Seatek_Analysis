@@ -86,13 +86,13 @@ read_sensor_data <- function(file_path) {
   if (total_cols >= (sensor_cols + 1)) {
     setnames(dt, sensor_cols + 1, "Timestamp")
     dt <- dt[, c(paste0("Sensor", sprintf("%02d", 1:sensor_cols)), "Timestamp"), with = FALSE]
-    if (is.numeric(dt$Timestamp) && all(!is.na(dt$Timestamp) | is.na(dt$Timestamp))) {
+    if (is.numeric(dt$Timestamp) && any(!is.na(dt$Timestamp))) {
         if (all(sapply(dt$Timestamp[!is.na(dt$Timestamp)], is.numeric))) {
              dt[, Timestamp := as.POSIXct(as.numeric(Timestamp), origin = "1970-01-01")]
         } else {
             log_warn("Timestamp column in {basename(file_path)} contains non-numeric values, not converted to POSIXct.")
         }
-    } else if (!is.numeric(dt$Timestamp)) {
+    } else if (!is.numeric(dt$Timestamp) || all(is.na(dt$Timestamp))) {
         log_info("Timestamp in {basename(file_path)} is not strictly numeric. Using as is.")
     }
   } else {

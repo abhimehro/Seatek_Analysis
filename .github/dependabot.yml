@@ -1,0 +1,13 @@
+version: 2
+updates:
+  # Enable version updates for R/renv
+  - package-ecosystem: "renv"
+    directory: "/"
+    schedule:
+      interval: "daily"
+
+  # Enable version updates for Python/pip
+  - package-ecosystem: "pip"
+    directory: "/Series_27/Analysis/"
+    schedule:
+      interval: "daily"

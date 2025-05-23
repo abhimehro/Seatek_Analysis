@@ -4,5 +4,33 @@ Series_26/
 Series_27/
 processing_log.txt
 seatek_analysis.log
-*.csv
 *.xlsx
+
+# Ignore patterns specific to renv configuration
+
+# Version control
+.git/
+.Rproj.user/
+
+# Data files - adjust as per your project structure
+*.csv
+*.csv
+*.rds
+
+# Output files
+output/
+plots/
+results/
+*.html
+*.pdf
+*.png
+
+# renv's own library
+renv/library/
+renv/staging/
+renv/cellar/
+
+# Other common ignores
+.DS_Store
+Thumbs.db
+node_modules/

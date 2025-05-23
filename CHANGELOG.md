@@ -6,6 +6,8 @@
 
 **Merged pull requests:**
 
+- Refactor R scripts for Seatek data analysis [\#3](https://github.com/abhimehro/Seatek_Analysis/pull/3) ([abhimehro](https://github.com/abhimehro))
+- I've added a test suite using testthat for your R scripts. [\#2](https://github.com/abhimehro/Seatek_Analysis/pull/2) ([abhimehro](https://github.com/abhimehro))
 - feat: Add Dependabot configuration [\#1](https://github.com/abhimehro/Seatek_Analysis/pull/1) ([abhimehro](https://github.com/abhimehro))
 
 

@@ -10,7 +10,7 @@
 
 This repository contains the R-based analysis tier for processing Seatek sensor data and generating Excel workbooks. It is part of a three-tier analysis system:
 
-1. **R-Tier (This Repository):** Ingests, validates, and processes raw Seatek sensor data (`S28_Yxx.txt`), exports cleaned data and summary metrics (first 10, last 5, full, and within_diff for each sensor) to Excel, and generates a combined summary workbook. Robust logging and error handling are included.
+1. **R-Tier (This Repository):** Ingests, validates, and processes raw Seatek sensor data (primarily `SS_Yxx.txt` for Series 28, and `S26_Yxx.txt` for Series 26), exports cleaned data and summary metrics (first 10, last 5, full, and within_diff for each sensor) to Excel, and generates a combined summary workbook. Robust logging and error handling are included.
 2. **Excel-Tier:** Manages intermediate data processing and basic visualizations.
 3. **Python-Tier:** Handles advanced data visualization and large-scale data processing.
 
@@ -19,21 +19,76 @@ This repository contains the R-based analysis tier for processing Seatek sensor 
 ## Repository Structure
 
 ```Markdown
-├── Data/
-│   ├── Series_26/              # Series 26 sensor data and analysis
-│   ├── Series_27/              # Series 27 sensor data and analysis
-│   ├── Raw_Data_*.xlsx         # Raw data files by year (auto-generated)
-│   ├── S26_*.txt / S28_*.txt   # Raw sensor text files (Series 26/28)
-│   └── *_Data.xlsx             # Processed data workbooks (auto-generated)
-├── Seatek_Analysis.R           # Main analysis script (entry point)
-├── Updated_Seatek_Analysis.R   # Alternate/newer analysis script
-├── requirements.R              # R package requirements and setup
-├── seatek_analysis.log         # Log file for analysis runs
-├── processing_log.txt          # Detailed processing log
-├── analysis_report_log.txt     # Analysis report generation log
-├── Seatek_Analysis.Rproj       # R project configuration
-├── .github_changelog_generator # Changelog config (see below)
-└── README.md                   # Project documentation
+├── Data/                             # Primary output directory for Updated_Seatek_Analysis.R
+│   ├── SS_Yxx.txt                    # Raw Series 28 data files (input for Updated_Seatek_Analysis.R, sourced from Data/ or Series_28/Raw_Data/)
+│   ├── S26_Yxx.txt                   # Raw Series 26 data files (input for Updated_Seatek_Analysis.R, sourced from Series_26/Raw_Data/Text_Files/) - if processed, results are here.
+│   ├── SS_Yxx.xlsx                   # Processed Series 28 data per year (output of Updated_Seatek_Analysis.R, placed in Data/)
+│   ├── S26_Yxx.xlsx                  # Processed Series 26 data per year (output of Updated_Seatek_Analysis.R, placed in Data/)
+│   ├── Seatek_Summary.xlsx           # Main summary Excel workbook from Updated_Seatek_Analysis.R (multi-sheet output)
+│   ├── Seatek_Summary.csv            # Main summary CSV (output of Updated_Seatek_Analysis.R)
+│   ├── Seatek_Summary_all.csv        # Comprehensive summary CSV (output of Updated_Seatek_Analysis.R)
+│   ├── Seatek_Summary_robust.csv     # Summary with robust statistics (output of Updated_Seatek_Analysis.R)
+│   ├── Seatek_Summary_sufficient.csv # Summary for sensors with sufficient data (output of Updated_Seatek_Analysis.R)
+│   └── Seatek_Summary_top_sensors.csv # Summary for top sensors (output of Updated_Seatek_Analysis.R)
+├── Series_26/                        # Data and analysis specific to Series 26 sensors
+│   ├── Raw_Data/
+│   │   ├── Text_Files/
+│   │   │   └── S26_Yxx.txt           # Raw Series 26 text files (input to Updated_Seatek_Analysis.R)
+│   │   └── Excel_Files/
+│   │       └── Raw_Data_Year_*.xlsx  # Raw Series 26 data in Excel format (often manually curated or from other processes)
+│   ├── Processed_Data/
+│   │   └── Year_YYYY (Yxx)_Data.xlsx # Processed Series 26 data per year (output of older scripts or specific S26 processing)
+│   └── Analysis/                     # Analysis summaries and logs for Series 26
+│       ├── Seatek_Analysis_Summary.xlsx
+│       ├── Seatek_Comprehensive_Analysis.xlsx
+│       ├── analysis_report_log.txt
+│       └── processing_log.txt
+├── Series_27/                        # Data and analysis specific to Series 27 sensors
+│   └── Analysis/                     # Main working directory for Series 27
+│       ├── Raw_Data/                 # Raw data for Series 27 (organized by year within Text_Files/ and Excel_Files/)
+│       │   ├── Text_Files/S27_Yxx.txt #(example, actual names might vary, typically not processed by Updated_Seatek_Analysis.R)
+│       │   └── Excel_Files/Raw_Data_Year_*.xlsx #(example)
+│       ├── Processed_Data/           # Processed data for Series 27
+│       │   └── Year_YYYY (Yxx)_Data.xlsx #(example)
+│       ├── outlier_analysis_series27.py # Python script for S27 outlier detection and correction
+│       ├── Data_Validation_Report.xlsx
+│       ├── Seatek_Analysis_Summary.xlsx
+│       ├── Seatek_Comprehensive_Analysis.xlsx
+│       ├── analysis_report_log.txt
+│       ├── processing_log.txt
+│       ├── requirements.txt          # Python requirements for outlier_analysis_series27.py
+│       └── validation_log.txt
+├── Series_28/                        # Data and analysis specific to Series 28 sensors (primary input for SS_Yxx files)
+│   ├── Raw_Data/
+│   │   └── SS_Yxx.txt                # Raw Series 28 text files (chronologically organized, primary input for Updated_Seatek_Analysis.R)
+│   ├── Processed_Data/
+│   │   └── SS_Yxx.xlsx               # Processed Series 28 data per year (can be an output of Updated_Seatek_Analysis.R if configured, or manual)
+│   └── Analysis/                     # Summary outputs specific to Series 28 processing (often mirrors content of top-level Data/ for SS_Yxx files)
+│       ├── Seatek_Summary.xlsx
+│       ├── Seatek_Summary.csv
+│       └── (other Seatek_Summary*.csv files like _all, _robust, _sufficient, _top_sensors)
+├── Updated_Seatek_Analysis.R   # Primary R analysis script.
+│                                     # Processes S26_Yxx.txt (from Series_26/Raw_Data/Text_Files/) and
+│                                     # SS_Yxx.txt (from Data/ or Series_28/Raw_Data/).
+│                                     # Key outputs are generated in the top-level Data/ directory:
+│                                     #   - Individual year Excel files: Data/SS_Yxx.xlsx, Data/S26_Yxx.xlsx
+│                                     #   - Main summary workbook: Data/Seatek_Summary.xlsx
+│                                     #   - Summary CSVs: Data/Seatek_Summary.csv, Data/Seatek_Summary_all.csv,
+│                                     #     Data/Seatek_Summary_robust.csv, Data/Seatek_Summary_sufficient.csv,
+│                                     #     Data/Seatek_Summary_top_sensors.csv.
+├── Seatek_Analysis.R           # Older/alternative R analysis script, for specific use cases or older S28_Yxx.txt data formats.
+│                                     # Uses 'logger', different metrics (first5), and different year naming (e.g. Y01 -> 2001).
+│                                     # Output: Data/Seatek_Summary_S28_OlderScript.xlsx (if run).
+│                                     # For current, comprehensive analysis, use Updated_Seatek_Analysis.R.
+├── requirements.R              # R package requirements for R scripts, managed by renv (see renv.lock).
+├── seatek_analysis.log         # General log file, may be used by Updated_Seatek_Analysis.R or other processes.
+├── processing_log.txt          # Detailed processing log, often appended to by analysis scripts.
+├── analysis_report_log.txt     # Log specific to analysis report generation.
+├── Seatek_Analysis.Rproj       # RStudio Project file.
+├── renv.lock                   # renv lockfile for reproducible R environment.
+├── renv/                         # renv library and activation scripts.
+├── .github_changelog_generator # Configuration for the changelog generator.
+└── README.md                   # This file.
 ```
 
 ---
@@ -102,17 +157,7 @@ Please see [CONTRIBUTING.md](./CONTRIBUTING.md) for our workflow, label conventi
 
 ## Changelog
 
-See [CHANGELOG.md](./CHANGELOG.md) for a detailed, automatically generated history of project changes.
-
-### 2025-05-10
-
-- README.md updated: added changelog, renv badge, troubleshooting, and clarified setup steps.
-- Enhanced logging and error handling in analysis scripts.
-- Added `Updated_Seatek_Analysis.R` as an alternative workflow.
-- Expanded package requirements and reproducibility via `renv`.
-- Improved Excel output structure and summary generation.
-- Updated summary metrics: now uses first 10, last 5, full, and within_diff for each sensor in all outputs and summary sheets.
-- Corrected year mapping: Y01=1995, Y20=2014 in all Excel outputs.
+See [CHANGELOG.md](./CHANGELOG.md) for a detailed, automatically generated history of project changes. This file is updated automatically by a GitHub Actions workflow using `github_changelog_generator`. Refer to the "Changelog Automation" section for more details on labels and configuration.
 
 ---
 

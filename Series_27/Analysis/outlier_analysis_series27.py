@@ -44,6 +44,24 @@ def parse_args():
 
 
 def detect_outliers(df, method, abs_thr, z_thr, iqr_fac):
+    """Detects outliers in a DataFrame based on a specified method.
+
+    Args:
+        df (pd.DataFrame): DataFrame containing a 'Difference' column to check for outliers.
+        method (str): The outlier detection method. Choices: 'abs', 'zscore', 'iqr'.
+        abs_thr (float): Absolute threshold for the 'abs' method.
+                         Outliers are where abs(Difference) >= abs_thr.
+        z_thr (float): Z-score threshold for the 'zscore' method.
+                       Outliers are where abs(Z-score of Difference) >= z_thr.
+        iqr_fac (float): IQR factor for the 'iqr' method.
+                         Outliers are < Q1 - iqr_fac * IQR or > Q3 + iqr_fac * IQR.
+
+    Returns:
+        pd.DataFrame: A DataFrame containing only the rows identified as outliers.
+    
+    Raises:
+        ValueError: If an unknown method is specified.
+    """
     col = df['Difference']
     if method == 'abs':
         return df[col.abs() >= abs_thr]
@@ -87,13 +105,15 @@ def main():
         except Exception as e:
             logging.warning(f"Could not read sheet '{sheet}': {e}")
             continue
-        # Drop last column if timestamp-like
+        # Drop the last column if its name contains 'time' (case-insensitive)
+        # This is to remove a potential timestamp column before applying corrections to sensor value columns.
         last_col = df_raw.columns[-1]
         if 'time' in last_col.lower():
             df_raw = df_raw.iloc[:, :-1]
-        col = f"V{sensor}"
-        offset = -diff
-        df_raw[col] = df_raw[col] + offset
+        
+        col = f"V{sensor}" # Sensor columns are named V1, V2, ... in the "Raw Data YYYY" sheets
+        offset = -diff # Apply correction in the opposite direction of the difference
+        df_raw[col] = df_raw[col] + offset # Apply the correction
         out_file = os.path.join(
             args.output,
             f"{os.path.splitext(os.path.basename(args.input))[0]}_{next_year}_corrected.xlsx"

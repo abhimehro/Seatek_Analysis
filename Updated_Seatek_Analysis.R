@@ -70,23 +70,34 @@ auto_detect_data_dir <- function(data_dir) {
 #'         Timestamp is converted to POSIXct if originally numeric.
 #' @stopifnot If the file does not exist, is not a .txt file, or if fread encounters an error.
 read_sensor_data <- function(file_path, sep = " ") {
-  file_path <- normalizePath(file_path)
+  file_path <- normalizePath(file_path) # Ensure path is absolute and normalized
   message(sprintf("Reading sensor file: %s", basename(file_path)))
-  if (!file.exists(file_path) || !grepl("\\.txt$", file_path)) {
-    stop(sprintf("Invalid file: %s. Must be a .txt file.", file_path))
+  
+  # Validate file existence and extension
+  if (!file.exists(file_path) || !grepl("\\.txt$", file_path, ignore.case = TRUE)) {
+    stop(sprintf("Invalid file: %s. Must be a .txt file.. Must be a .txt file.", file_path))
   }
+  
+  # Attempt to read the file using fread for efficiency
   dt <- tryCatch(
-    fread(file_path, header = FALSE, sep = sep, fill = TRUE, na.strings = c("NA")),
+    fread(file_path, header = FALSE, sep = sep, fill = TRUE, na.strings = c("NA", "", "NULL")), # Added more NA strings
     error = function(e) stop(sprintf("Error reading %s: %s", basename(file_path), e$message))
   )
+  # Basic validation of column count
+  if (ncol(dt) < 1) { # Check if any column is read
+      stop(sprintf("File %s appears to be empty or in an unexpected format.", basename(file_path)))
+  }
   if (ncol(dt) < 33) {
     warning(sprintf("File %s has only %d columns; expected at least 33 (32 sensors + 1 timestamp).", basename(file_path), ncol(dt)))
   }
+  
   total_cols <- ncol(dt)
   sensor_cols <- min(total_cols - 1, 32) # Use at most 32 sensor columns
   
   setnames(dt, 1:sensor_cols, paste0("Sensor", sprintf("%02d", 1:sensor_cols)))
-  if (total_cols > sensor_cols) { # If there's at least one more column for timestamp
+  
+  # Name timestamp column if it exists
+  if (total_cols > (sensor_cols)) { # If there's at least one more column for timestamp
     setnames(dt, sensor_cols + 1, "Timestamp")
   } else {
     warning(sprintf("No column found for Timestamp in %s.", basename(file_path)))
@@ -164,6 +175,7 @@ process_all_data <- function(data_dir) {
     stop(sprintf("No sensor files found matching pattern '%s' in directory %s", pattern, data_dir))
   }
   
+
   results <- list()
   for (f in files) {
     file_basename <- basename(f)
@@ -278,7 +290,7 @@ dump_summary_excel <- function(results, output_file, highlight_top_n = 5) {
   # --- Comprehensive summary (all sensors) ---
   summary_df_all <- summary_df
   addWorksheet(wb, "Summary_All")
-  writeData(wb, sheet = "Summary_All", x = summary_df_all, headerStyle = headerStyle)
+  writeData(wb, sheet = "Summary_All", x = summary_df_all, headerStyle = headerStyle, rowNames = FALSE) # rowNames=FALSE as Sensor is a column
   freezePane(wb, sheet = "Summary_All", firstRow = TRUE)
   csv_all <- sub("\\.xlsx$", "_all.csv", output_file)
   write.csv(summary_df_all, csv_all, row.names = FALSE)
@@ -288,7 +300,7 @@ dump_summary_excel <- function(results, output_file, highlight_top_n = 5) {
   min_data_points <- 5 # Min years of 'full' data for a sensor to be in "Sufficient" summary
   summary_df_sufficient <- summary_df_all[which(summary_df_all$full_count >= min_data_points), ]
   addWorksheet(wb, "Summary_Sufficient")
-  writeData(wb, sheet = "Summary_Sufficient", x = summary_df_sufficient, headerStyle = headerStyle)
+  writeData(wb, sheet = "Summary_Sufficient", x = summary_df_sufficient, headerStyle = headerStyle, rowNames = FALSE)
   freezePane(wb, sheet = "Summary_Sufficient", firstRow = TRUE)
   csv_sufficient <- sub("\\.xlsx$", "_sufficient.csv", output_file)
   write.csv(summary_df_sufficient, csv_sufficient, row.names = FALSE)
@@ -350,11 +362,11 @@ dump_summary_excel <- function(results, output_file, highlight_top_n = 5) {
   message(sprintf("Robust summary CSV (same as main 'Summary' sheet data) written to %s", sub("\\.xlsx$", "_robust.csv", output_file)))
 }
 
-# Main execution block:
+# Main execution block: Script entry point if run directly:
 # Sets up data directory, processes all files, and generates summary outputs.
 # All messages, warnings, and errors during execution are caught by handlers
 # and written to 'processing_warnings.log'.
-if (sys.nframe() == 0 || interactive()) {
+if (sys.nframe() == 0 || interactive()) { # Check if script is sourced or run directly
   withCallingHandlers({
     # Define the data directory relative to the script's location or current working directory.
     # Assumes a 'Data' subdirectory containing the SS_Yxx.txt files.

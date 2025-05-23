@@ -202,25 +202,25 @@ write_summary_excel <- function(results, output_file) {
 main <- function() {
   # Define the data directory - typically 'Data/' in the project root.
   # This script assumes S28_Yxx.txt files are directly in this data_dir.
-  data_dir_main <- file.path(getwd(), "Data") 
-  log_info("Running main(). Data directory targeted: {data_dir_main}")
+  data_dir <- file.path(getwd(), "Data") 
+  log_info("Running main(). Data directory targeted: {data_dir}")
 
-  if (!dir.exists(data_dir_main)) {
-    log_error("Data directory does not exist: {data_dir_main}")
-    stop(paste("Data directory does not exist:", data_dir_main))
+  if (!dir.exists(data_dir)) {
+    log_error("Data directory does not exist: {data_dir}")
+    stop(paste("Data directory does not exist:", data_dir))
   }
   
   # Normalize path (though auto_detect_data_dir in process_all_data will also do this)
-  data_dir_main <- normalizePath(data_dir_main)
+  data_dir <- normalizePath(data_dir)
   
   # Define file pattern for S28 series files
   # This was the primary focus of this older script.
   file_pattern_s28 <- "^S28_Y[0-9]{2}\\.txt$" 
   
-  results <- process_all_data(data_dir = data_dir_main, file_pattern = file_pattern_s28)
+  results <- process_all_data(data_dir = data_dir, file_pattern = file_pattern_s28)
   
   if (length(results) > 0) {
-    summary_out_excel_path <- file.path(data_dir_main, "Seatek_Summary_S28_OlderScript.xlsx") # Changed name to avoid conflict
+    summary_out_excel_path <- file.path(data_dir, "Seatek_Summary_S28_OlderScript.xlsx") # Changed name to avoid conflict
     write_summary_excel(results, summary_out_excel_path)
     log_info("Processing complete. Output: {summary_out_excel_path}")
     message(paste("Processing complete. Output:", summary_out_excel_path))

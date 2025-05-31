@@ -2,9 +2,12 @@
 # Author: Abhi Mehrotra
 # Last Updated: 2025-05-06
 
-# This script processes Seatek sensor data to analyze riverbed changes over time.
-# It reads raw sensor data files (S28_Yxx.txt), validates them, exports each to Excel,
-# computes summary metrics (first 10, last 5, full, within_diff), and generates a combined summary workbook.
+# This script processes Seatek sensor data to analyze riverbed changes
+# over time.
+# It reads raw sensor data files (S28_Yxx.txt), validates them,
+# exports each to Excel,
+# computes summary metrics (first 10, last 5, full, within_diff),
+# and generates a combined summary workbook.
 
 # Load required packages (install if missing)
 required_packages <- c("data.table", "openxlsx", "dplyr", "tidyr")
@@ -23,7 +26,7 @@ library(tidyr)
 log_file <- file.path(getwd(), "processing_warnings.log")
 if (file.exists(log_file)) file.remove(log_file)
 log_handler <- function(type, msg) {
-  cat(sprintf("[%s] %s\n", type, msg), file=log_file, append=TRUE)
+  cat(sprintf("[%s] %s\n", type, msg), file = log_file, append = TRUE)
 }
 
 # Utility: verify and normalize data directory path
@@ -42,11 +45,15 @@ read_sensor_data <- function(file_path, sep = " ") {
     stop(sprintf("Invalid file: %s", file_path))
   }
   dt <- tryCatch(
-    fread(file_path, header = FALSE, sep = sep, fill = TRUE, na.strings = c("NA")),
-    error = function(e) stop(sprintf("Error reading %s: %s", basename(file_path), e$message))
+    fread(file_path, header = FALSE, sep = sep, fill = TRUE,
+          na.strings = c("NA")),
+    error = function(e) {
+      stop(sprintf("Error reading %s: %s", basename(file_path), e$message))
+    }
   )
   if (ncol(dt) < 33) {
-    warning(sprintf("File %s has only %d columns; expected >=33.", basename(file_path), ncol(dt)))
+    warning(sprintf("File %s has only %d columns; expected >=33.",
+                    basename(file_path), ncol(dt)))
   }
   total_cols <- ncol(dt)
   sensor_cols <- min(total_cols - 1, 32)
@@ -56,12 +63,13 @@ read_sensor_data <- function(file_path, sep = " ") {
     setnames(dt, sensor_cols + 1, "Timestamp")
   }
   # Keep only sensor columns + Timestamp
-  dt <- dt[, c(paste0("Sensor", sprintf("%02d", 1:sensor_cols)), "Timestamp"), with = FALSE]
+  dt <- dt[, c(paste0("Sensor", sprintf("%02d", 1:sensor_cols)),
+               "Timestamp"), with = FALSE]
   # Convert timestamp if numeric
   if (all(!is.na(as.numeric(dt$Timestamp)))) {
     dt[, Timestamp := as.POSIXct(as.numeric(Timestamp), origin = "1970-01-01")]
   }
-  return(dt)
+  dt # Implicit return
 }
 
 # Process all sensor files: export raw, compute metrics
@@ -76,20 +84,28 @@ process_all_data <- function(data_dir) {
   for (f in files) {
     df <- read_sensor_data(f)
     # Export raw data to Excel
-    out_raw <- file.path(data_dir, paste0(tools::file_path_sans_ext(basename(f)), ".xlsx"))
+    out_raw <- file.path(data_dir, paste0(
+      tools::file_path_sans_ext(basename(f)), ".xlsx"
+    ))
     write.xlsx(df, out_raw, overwrite = TRUE)
     message(sprintf("Raw data written to %s", out_raw))
     # Compute summary metrics
     clean_vals <- function(x) x[!is.na(x) & x > 0]
-    first10 <- sapply(df[, 1:32, with = FALSE], function(x) mean(clean_vals(head(x, 10))))
-    last5  <- sapply(df[, 1:32, with = FALSE], function(x) mean(clean_vals(tail(x, 5))))
+    first10 <- sapply(df[, 1:32, with = FALSE],
+                      function(x) mean(clean_vals(head(x, 10))))
+    last5  <- sapply(df[, 1:32, with = FALSE],
+                     function(x) mean(clean_vals(tail(x, 5))))
     full   <- sapply(df[, 1:32, with = FALSE], function(x) mean(clean_vals(x)))
     diff   <- full - first10
     # Derive sheet/year name
     year_tag <- sub("^SS_Y([0-9]{2})\\.txt$", "\\1", basename(f))
     # Map Y01=1995, Y02=1996, ..., Y20=2014
     year_num <- as.integer(year_tag)
-    sheet_name <- if (!is.na(year_num) && year_num >= 1 && year_num <= 20) as.character(1994 + year_num) else basename(f)
+    sheet_name <- if (!is.na(year_num) && year_num >= 1 && year_num <= 20) {
+      as.character(1994 + year_num)
+    } else {
+      basename(f)
+    }
     results[[sheet_name]] <- data.frame(
       first10 = first10,
       last5 = last5,
@@ -99,24 +115,28 @@ process_all_data <- function(data_dir) {
       check.names = FALSE
     )
   }
-  return(results)
+  results # Implicit return
 }
 
 # Write combined summary workbook
 dump_summary_excel <- function(results, output_file, highlight_top_n = 5) {
   wb <- createWorkbook()
-  headerStyle <- createStyle(textDecoration = "bold")
+  header_style <- createStyle(textDecoration = "bold")
   # Write each year's sheet
   for (year in names(results)) {
     addWorksheet(wb, year)
     df <- as.data.frame(results[[year]])
-    writeData(wb, sheet = year, x = df, rowNames = TRUE, headerStyle = headerStyle)
+    writeData(wb, sheet = year, x = df, rowNames = TRUE,
+              headerStyle = header_style)
     freezePane(wb, sheet = year, firstRow = TRUE)
     # Optional: highlight largest within_diff in each year
     if ("within_diff" %in% colnames(df)) {
       max_idx <- which.max(abs(df$within_diff))
-      highlightStyle <- createStyle(bgFill = "#FFD700")
-      addStyle(wb, sheet = year, style = highlightStyle, rows = max_idx + 1, cols = which(colnames(df) == "within_diff") + 1, gridExpand = TRUE, stack = TRUE)
+      highlight_style_yearly <- createStyle(bgFill = "#FFD700")
+      addStyle(wb, sheet = year, style = highlight_style_yearly,
+               rows = max_idx + 1,
+               cols = which(colnames(df) == "within_diff") + 1,
+               gridExpand = TRUE, stack = TRUE)
     }
   }
   # Add summary sheet with overall stats
@@ -133,32 +153,36 @@ dump_summary_excel <- function(results, output_file, highlight_top_n = 5) {
     vals <- as.matrix(vals)
     summary_df[[paste0(metric, "_mean")]] <- rowMeans(vals, na.rm = TRUE)
     summary_df[[paste0(metric, "_sd")]] <- apply(vals, 1, sd, na.rm = TRUE)
-    summary_df[[paste0(metric, "_median")]] <- apply(vals, 1, median, na.rm = TRUE)
+    summary_df[[paste0(metric, "_median")]] <-
+      apply(vals, 1, median, na.rm = TRUE)
     summary_df[[paste0(metric, "_mad")]] <- apply(vals, 1, mad, na.rm = TRUE)
     summary_df[[paste0(metric, "_min")]] <- apply(vals, 1, function(x) {
-      x <- x[!is.na(x)]
-      if (length(x) == 0) NA else min(x)
+      x_clean <- x[!is.na(x)]
+      if (length(x_clean) == 0) NA else min(x_clean)
     })
     summary_df[[paste0(metric, "_max")]] <- apply(vals, 1, function(x) {
-      x <- x[!is.na(x)]
-      if (length(x) == 0) NA else max(x)
+      x_clean <- x[!is.na(x)]
+      if (length(x_clean) == 0) NA else max(x_clean)
     })
-    summary_df[[paste0(metric, "_count")]] <- apply(vals, 1, function(x) sum(!is.na(x)))
+    summary_df[[paste0(metric, "_count")]] <-
+      apply(vals, 1, function(x) sum(!is.na(x)))
     # Rolling mean (3-year) for each sensor
     summary_df[[paste0(metric, "_rollmean3")]] <- apply(vals, 1, function(x) {
-      x <- x[!is.na(x)]
-      if (length(x) < 3) return(NA)
-      mean(tail(x, 3))
+      x_clean <- x[!is.na(x)]
+      if (length(x_clean) < 3) return(NA)
+      mean(tail(x_clean, 3))
     })
   }
 
   # Calculate percent non-missing for 'full'
-  summary_df$full_pct_nonmissing <- 100 * summary_df$full_count / length(results)
+  summary_df$full_pct_nonmissing <-
+    100 * summary_df$full_count / length(results)
 
   # --- Comprehensive summary (all sensors) ---
   summary_df_all <- summary_df # keep a copy before filtering
   addWorksheet(wb, "Summary_All")
-  writeData(wb, sheet = "Summary_All", x = summary_df_all, headerStyle = headerStyle)
+  writeData(wb, sheet = "Summary_All", x = summary_df_all,
+            headerStyle = header_style)
   freezePane(wb, sheet = "Summary_All", firstRow = TRUE)
   # Export comprehensive summary as CSV
   csv_all <- sub("\\.xlsx$", "_all.csv", output_file)
@@ -167,9 +191,11 @@ dump_summary_excel <- function(results, output_file, highlight_top_n = 5) {
 
   # --- Filtered summary (sufficient data only) ---
   min_count <- 5
-  summary_df_sufficient <- summary_df_all[summary_df_all$full_count >= min_count, ]
+  summary_df_sufficient <-
+    summary_df_all[summary_df_all$full_count >= min_count, ]
   addWorksheet(wb, "Summary_Sufficient")
-  writeData(wb, sheet = "Summary_Sufficient", x = summary_df_sufficient, headerStyle = headerStyle)
+  writeData(wb, sheet = "Summary_Sufficient", x = summary_df_sufficient,
+            headerStyle = header_style)
   freezePane(wb, sheet = "Summary_Sufficient", firstRow = TRUE)
   # Export filtered summary as CSV
   csv_sufficient <- sub("\\.xlsx$", "_sufficient.csv", output_file)
@@ -186,19 +212,32 @@ dump_summary_excel <- function(results, output_file, highlight_top_n = 5) {
   if ("within_diff_mean" %in% colnames(summary_df)) {
     abs_diff <- abs(summary_df$within_diff_mean)
     top_n <- 5
-    top_sensors <- summary_df[order(-abs_diff), ][1:top_n, c("Sensor", "within_diff_mean", "full_mean", "full_sd", "full_pct_nonmissing")]
-    write.csv(top_sensors, sub("\\.xlsx$", "_top_sensors.csv", output_file), row.names = FALSE)
+    top_sensors <- summary_df[order(-abs_diff), ][1:top_n,
+      c(
+        "Sensor", "within_diff_mean",
+        "full_mean", "full_sd",
+        "full_pct_nonmissing"
+      )
+    ]
+    write.csv(top_sensors,
+              sub("\\.xlsx$", "_top_sensors.csv", output_file),
+              row.names = FALSE)
   }
 
   addWorksheet(wb, "Summary")
-  writeData(wb, sheet = "Summary", x = summary_df, headerStyle = headerStyle)
+  writeData(wb, sheet = "Summary", x = summary_df, headerStyle = header_style)
   freezePane(wb, sheet = "Summary", firstRow = TRUE)
   # Highlight top N sensors with largest absolute within_diff_mean
   if ("within_diff_mean" %in% colnames(summary_df)) {
     abs_diff <- abs(summary_df$within_diff_mean)
-    top_idx <- order(abs_diff, decreasing = TRUE)[seq_len(min(highlight_top_n, length(abs_diff)))]
-    highlightStyle <- createStyle(bgFill = "#FF9999")
-    addStyle(wb, sheet = "Summary", style = highlightStyle, rows = top_idx + 1, cols = which(colnames(summary_df) == "within_diff_mean") + 1, gridExpand = TRUE, stack = TRUE)
+    top_idx <- order(abs_diff, decreasing = TRUE)[
+      seq_len(min(highlight_top_n, length(abs_diff)))
+    ]
+    highlight_style_summary <- createStyle(bgFill = "#FF9999")
+    addStyle(wb, sheet = "Summary", style = highlight_style_summary,
+             rows = top_idx + 1,
+             cols = which(colnames(summary_df) == "within_diff_mean") + 1,
+             gridExpand = TRUE, stack = TRUE)
   }
   saveWorkbook(wb, output_file, overwrite = TRUE)
   message(sprintf("Summary written to %s", output_file))
@@ -226,9 +265,16 @@ if (sys.nframe() == 0 || interactive()) {
     dump_summary_excel(results, summary_out)
     message("Processing complete.")
   },
-  warning = function(w) { log_handler("WARNING", conditionMessage(w)); invokeRestart("muffleWarning") },
-  error   = function(e) { log_handler("ERROR", conditionMessage(e)); },
-  message = function(m) { log_handler("MESSAGE", conditionMessage(m)); invokeRestart("muffleMessage") }
-  )
+  warning = function(w) {
+    log_handler("WARNING", conditionMessage(w))
+    invokeRestart("muffleWarning")
+  },
+  error   = function(e) {
+    log_handler("ERROR", conditionMessage(e))
+  },
+  message = function(m) {
+    log_handler("MESSAGE", conditionMessage(m))
+    invokeRestart("muffleMessage")
+  })
 }
 # End of script

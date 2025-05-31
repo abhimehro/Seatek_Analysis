@@ -2,8 +2,10 @@
 # Author: Abhi Mehrotra
 # Last Updated: 2025-05-06
 
-# This script processes Seatek sensor data to analyze riverbed changes over time.
-# It reads raw sensor data files (S28_Yxx.txt), validates them, exports each to Excel,
+# This script processes Seatek sensor data to analyze riverbed changes
+# over time.
+# It reads raw sensor data files (S28_Yxx.txt), validates them,
+# exports each to Excel,
 # computes summary metrics, and generates a combined summary workbook.
 
 # Load required packages (install if missing)
@@ -42,14 +44,16 @@ read_sensor_data <- function(file_path) {
     stop(sprintf("Invalid file: %s", file_path))
   }
   dt <- tryCatch(
-    fread(file_path, header = FALSE, sep = default_sep, fill = TRUE, na.strings = c("NA")),
+    fread(file_path, header = FALSE, sep = default_sep, fill = TRUE,
+          na.strings = c("NA")),
     error = function(e) {
-      log_error("Error reading {basename(file_path)}: {e$message}")
+      log_error(paste0("Error reading ", basename(file_path), ": ", e$message))
       stop(sprintf("Error reading %s: %s", basename(file_path), e$message))
     }
   )
   if (ncol(dt) < 33) {
-    log_warn("File {basename(file_path)} has only {ncol(dt)} columns; expected >=33.")
+    log_warn(paste0("File ", basename(file_path), " has only ", ncol(dt),
+                    " columns; expected >=33."))
   }
   cols <- ncol(dt)
   sensor_cols <- min(cols - 1, 32)
@@ -57,11 +61,12 @@ read_sensor_data <- function(file_path) {
   if (cols >= sensor_cols + 1) {
     setnames(dt, sensor_cols + 1, "Timestamp")
   }
-  dt <- dt[, c(paste0("Sensor", sprintf("%02d", 1:sensor_cols)), "Timestamp"), with = FALSE]
+  dt <- dt[, c(paste0("Sensor", sprintf("%02d", 1:sensor_cols)),
+               "Timestamp"), with = FALSE]
   if (all(!is.na(as.numeric(dt$Timestamp)))) {
     dt[, Timestamp := as.POSIXct(as.numeric(Timestamp), origin = "1970-01-01")]
   }
-  return(dt)
+  dt # Implicit return
 }
 
 process_all_data <- function(data_dir, file_pattern = "^S28_Y[0-9]{2}\\.txt$") {
@@ -73,22 +78,29 @@ process_all_data <- function(data_dir, file_pattern = "^S28_Y[0-9]{2}\\.txt$") {
   }
   files <- list.files(data_dir, pattern = file_pattern, full.names = TRUE)
   if (length(files) == 0) {
-    log_error("No sensor .txt data files found in directory (pattern S28_Y##.txt).")
+    log_error(
+      "No sensor .txt data files found in directory (pattern S28_Y##.txt)."
+    )
     stop("No sensor .txt data files found in directory (pattern S28_Y##.txt).")
   }
   results <- list()
   for (f in files) {
     tryCatch({
       df <- read_sensor_data(f)
-      raw_out <- file.path(data_dir, paste0(tools::file_path_sans_ext(basename(f)), ".xlsx"))
+      raw_out <- file.path(data_dir,
+                           paste0(tools::file_path_sans_ext(basename(f)),
+                                  ".xlsx"))
       write.xlsx(df, raw_out, overwrite = TRUE)
       log_info("Raw data written to {raw_out}")
       year_tag <- sub("^.*S28_Y([0-9]{2})\\.txt$", "\\1", basename(f))
       year <- if (nchar(year_tag) == 2) paste0("20", year_tag) else basename(f)
       clean_vals <- function(x) x[!is.na(x) & x > 0]
-      first5 <- sapply(df[, 1:32, with = FALSE], function(x) mean(clean_vals(head(x, 5))))
-      last5  <- sapply(df[, 1:32, with = FALSE], function(x) mean(clean_vals(tail(x, 5))))
-      full   <- sapply(df[, 1:32, with = FALSE], function(x) mean(clean_vals(x)))
+      first5 <- sapply(df[, 1:32, with = FALSE],
+                       function(x) mean(clean_vals(head(x, 5))))
+      last5  <- sapply(df[, 1:32, with = FALSE],
+                       function(x) mean(clean_vals(tail(x, 5))))
+      full   <- sapply(df[, 1:32, with = FALSE],
+                       function(x) mean(clean_vals(x)))
       within_diff <- full - first5
       results[[year]] <- list(
         first5 = first5,

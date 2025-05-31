@@ -270,7 +270,15 @@ if (sys.nframe() == 0 || interactive()) {
     invokeRestart("muffleWarning")
   },
   error   = function(e) {
-    log_handler("ERROR", conditionMessage(e))
+    error_message <- conditionMessage(e)
+    if (grepl("could not find function|Error in library|there is no package called", error_message, ignore.case = TRUE)) {
+      log_handler("DEPENDENCY_ERROR", error_message)
+    } else {
+      log_handler("PROCESSING_ERROR", error_message)
+    }
+    if (interactive()) {
+      message(sprintf("An error occurred: %s. Check 'processing_warnings.log' for details.", error_message))
+    }
   },
   message = function(m) {
     log_handler("MESSAGE", conditionMessage(m))

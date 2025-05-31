@@ -271,7 +271,7 @@ if (sys.nframe() == 0 || interactive()) {
   },
   error   = function(e) {
     error_message <- conditionMessage(e)
-    if (grepl("could not find function|Error in library|there is no package called", error_message)) {
+    if (grepl("could not find function|Error in library|there is no package called", error_message, ignore.case = TRUE)) {
       log_handler("DEPENDENCY_ERROR", error_message)
     } else {
       log_handler("PROCESSING_ERROR", error_message)

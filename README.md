@@ -91,10 +91,6 @@ This script will:
 │                                     #   - Summary CSVs: Data/Seatek_Summary.csv, Data/Seatek_Summary_all.csv,
 │                                     #     Data/Seatek_Summary_robust.csv, Data/Seatek_Summary_sufficient.csv,
 │                                     #     Data/Seatek_Summary_top_sensors.csv.
-├── Seatek_Analysis.R           # Older/alternative R analysis script, for specific use cases or older S28_Yxx.txt data formats.
-│                                     # Uses 'logger', different metrics (first5), and different year naming (e.g. Y01 -> 2001).
-│                                     # Output: Data/Seatek_Summary_S28_OlderScript.xlsx (if run).
-│                                     # For current, comprehensive analysis, use Updated_Seatek_Analysis.R.
 ├── requirements.R              # R package requirements for R scripts, managed by renv (see renv.lock).
 ├── seatek_analysis.log         # General log file, may be used by Updated_Seatek_Analysis.R or other processes.
 ├── processing_log.txt          # Detailed processing log, often appended to by analysis scripts.

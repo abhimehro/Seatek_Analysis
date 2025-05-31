@@ -1,0 +1,39 @@
+# Downloading packages -------------------------------------------------------
+- Downloading devtools from CRAN ...            OK [file is up to date]
+- Downloading rcmdcheck from CRAN ...           OK [file is up to date]
+- Downloading rversions from CRAN ...           OK [file is up to date]
+- Downloading urlchecker from CRAN ...          OK [file is up to date]
+- Downloading usethis from CRAN ...             OK [file is up to date]
+- Downloading gert from CRAN ...                OK [file is up to date]
+- Downloading credentials from CRAN ...         OK [file is up to date]
+- Downloading gh from CRAN ...                  OK [45.3 Kb in 0.14s]
+Successfully downloaded 8 packages in 2.8 seconds.
+
+The following package(s) will be installed:
+- credentials [2.0.2]
+- devtools    [2.4.5]
+- gert        [2.1.5]
+- gh          [1.5.0]
+- rcmdcheck   [1.4.0]
+- rversions   [2.1.2]
+- urlchecker  [1.0.1]
+- usethis     [3.1.0]
+These packages will be installed into "/app/renv/library/R-4.3/x86_64-pc-linux-gnu".
+
+The following required system packages are not installed:
+- libgit2-dev  [required by gert]
+The R packages depending on these system packages may fail to install.
+
+An administrator can install these packages with:
+- sudo apt install libgit2-dev
+
+# Installing packages --------------------------------------------------------
+- Installing rcmdcheck ...                      OK [built from source and cached in 7.0s]
+- Installing rversions ...                      OK [built from source and cached in 2.3s]
+- Installing urlchecker ...                     OK [built from source and cached in 1.6s]
+- Installing credentials ...                    OK [built from source and cached in 2.1s]
+- Installing gert ...                           OK [built from source and cached in 7.9s]
+- Installing gh ...                             OK [built from source and cached in 2.8s]
+- Installing usethis ...                        OK [built from source and cached in 8.1s]
+- Installing devtools ...                       OK [built from source and cached in 7.0s]
+Successfully installed 8 packages in 39 seconds.

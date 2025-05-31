@@ -4,6 +4,10 @@
 
 [Full Changelog](https://github.com/abhimehro/Seatek_Analysis/compare/1a1b13df64135ab9e6e08ef052f5fdbf33164ffb...HEAD)
 
+**Implemented enhancements:**
+
+- Add setup script for R and Python dependencies [\#7](https://github.com/abhimehro/Seatek_Analysis/pull/7) ([abhimehro](https://github.com/abhimehro))
+
 **Merged pull requests:**
 
 - Refactor: Improve documentation and code comments. [\#4](https://github.com/abhimehro/Seatek_Analysis/pull/4) ([abhimehro](https://github.com/abhimehro))

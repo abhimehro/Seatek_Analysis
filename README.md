@@ -208,3 +208,17 @@ These are available in the main summary workbook and in `Data/Seatek_Summary_rob
 All outputs are updated automatically as new data is added to the `Data/` directory.
 
 These robust statistics support more reliable sensor diagnostics and anomaly detection.
+
+## Linting
+
+This project uses `lintr` for static code analysis of R scripts. The `lintr` package is managed via `renv`.
+To run the linter locally, ensure `lintr` is installed in your project environment (`renv::install("lintr")` if needed, though it should be picked up from `requirements.R` during `renv::restore()`).
+You can then run the linter using:
+```R
+lintr::lint_dir(".")
+```
+The linter configuration is currently the default provided by `lintr`. Key changes during the recent linter upgrade (February 2025):
+- `lintr` was added to `requirements.R` and its version (and dependencies) are now tracked in `renv.lock`.
+- Several style issues (line length, spacing, brace placement, etc.) were autofixed across project R files.
+- Some variable names in `Updated_Seatek_Analysis.R` (`headerStyle`, `highlightStyle`) were refactored to `header_style`, `highlight_style_yearly`, and `highlight_style_summary` for style consistency. These were internal changes to a function and are not expected to be breaking.
+- `lintr` currently flags potential `object_usage_linter` warnings for the 'Timestamp' variable within `data.table` assignments. These are believed to be false positives due to `data.table`'s non-standard evaluation and have been left as is for now.

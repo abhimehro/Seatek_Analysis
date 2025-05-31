@@ -1,0 +1,168 @@
+requirements.R:2:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 160 characters.
+# Note: Robust statistics (mean, SD, median, MAD, 3-year rolling mean) are now computed and exported for each sensor and metric. Sufficient data threshold is 5.
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+requirements.R:32:16: style: [trailing_blank_lines_linter] Add a terminal newline.
+renv::restore()
+               ^
+Seatek_Analysis.R:5:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 81 characters.
+# This script processes Seatek sensor data to analyze riverbed changes over time.
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+Seatek_Analysis.R:6:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 86 characters.
+# It reads raw sensor data files (S28_Yxx.txt), validates them, exports each to Excel,
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~
+Seatek_Analysis.R:45:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 91 characters.
+    fread(file_path, header = FALSE, sep = default_sep, fill = TRUE, na.strings = c("NA")),
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~
+Seatek_Analysis.R:52:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 86 characters.
+    log_warn("File {basename(file_path)} has only {ncol(dt)} columns; expected >=33.")
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~
+Seatek_Analysis.R:60:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 92 characters.
+  dt <- dt[, c(paste0("Sensor", sprintf("%02d", 1:sensor_cols)), "Timestamp"), with = FALSE]
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~
+Seatek_Analysis.R:62:10: warning: [object_usage_linter] no visible binding for global variable 'Timestamp'
+    dt[, Timestamp := as.POSIXct(as.numeric(Timestamp), origin = "1970-01-01")]
+         ^~~~~~~~~
+Seatek_Analysis.R:62:10: warning: [object_usage_linter] no visible binding for global variable 'Timestamp'
+    dt[, Timestamp := as.POSIXct(as.numeric(Timestamp), origin = "1970-01-01")]
+         ^~~~~~~~~
+Seatek_Analysis.R:64:3: style: [return_linter] Use implicit return behavior; explicit return() is not needed.
+  return(dt)
+  ^~~~~~
+Seatek_Analysis.R:76:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 84 characters.
+    log_error("No sensor .txt data files found in directory (pattern S28_Y##.txt).")
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~
+Seatek_Analysis.R:83:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 93 characters.
+      raw_out <- file.path(data_dir, paste0(tools::file_path_sans_ext(basename(f)), ".xlsx"))
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~
+Seatek_Analysis.R:89:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 90 characters.
+      first5 <- sapply(df[, 1:32, with = FALSE], function(x) mean(clean_vals(head(x, 5))))
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~
+Seatek_Analysis.R:90:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 90 characters.
+      last5  <- sapply(df[, 1:32, with = FALSE], function(x) mean(clean_vals(tail(x, 5))))
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~
+Seatek_Analysis.R:91:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 81 characters.
+      full   <- sapply(df[, 1:32, with = FALSE], function(x) mean(clean_vals(x)))
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+Seatek_Analysis.R:138:16: style: [trailing_blank_lines_linter] Add a terminal newline.
+# End of script
+               ^
+Updated_Seatek_Analysis.R:5:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 81 characters.
+# This script processes Seatek sensor data to analyze riverbed changes over time.
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+Updated_Seatek_Analysis.R:6:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 86 characters.
+# It reads raw sensor data files (S28_Yxx.txt), validates them, exports each to Excel,
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~
+Updated_Seatek_Analysis.R:7:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 108 characters.
+# computes summary metrics (first 10, last 5, full, within_diff), and generates a combined summary workbook.
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Updated_Seatek_Analysis.R:26:44: style: [infix_spaces_linter] Put spaces around all infix operators.
+  cat(sprintf("[%s] %s\n", type, msg), file=log_file, append=TRUE)
+                                           ^
+Updated_Seatek_Analysis.R:26:61: style: [infix_spaces_linter] Put spaces around all infix operators.
+  cat(sprintf("[%s] %s\n", type, msg), file=log_file, append=TRUE)
+                                                            ^
+Updated_Seatek_Analysis.R:45:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 83 characters.
+    fread(file_path, header = FALSE, sep = sep, fill = TRUE, na.strings = c("NA")),
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~
+Updated_Seatek_Analysis.R:46:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 93 characters.
+    error = function(e) stop(sprintf("Error reading %s: %s", basename(file_path), e$message))
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~
+Updated_Seatek_Analysis.R:49:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 98 characters.
+    warning(sprintf("File %s has only %d columns; expected >=33.", basename(file_path), ncol(dt)))
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~
+Updated_Seatek_Analysis.R:59:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 92 characters.
+  dt <- dt[, c(paste0("Sensor", sprintf("%02d", 1:sensor_cols)), "Timestamp"), with = FALSE]
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~
+Updated_Seatek_Analysis.R:62:10: warning: [object_usage_linter] no visible binding for global variable 'Timestamp'
+    dt[, Timestamp := as.POSIXct(as.numeric(Timestamp), origin = "1970-01-01")]
+         ^~~~~~~~~
+Updated_Seatek_Analysis.R:62:10: warning: [object_usage_linter] no visible binding for global variable 'Timestamp'
+    dt[, Timestamp := as.POSIXct(as.numeric(Timestamp), origin = "1970-01-01")]
+         ^~~~~~~~~
+Updated_Seatek_Analysis.R:79:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 91 characters.
+    out_raw <- file.path(data_dir, paste0(tools::file_path_sans_ext(basename(f)), ".xlsx"))
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~
+Updated_Seatek_Analysis.R:84:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 90 characters.
+    first10 <- sapply(df[, 1:32, with = FALSE], function(x) mean(clean_vals(head(x, 10))))
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~
+Updated_Seatek_Analysis.R:85:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 88 characters.
+    last5  <- sapply(df[, 1:32, with = FALSE], function(x) mean(clean_vals(tail(x, 5))))
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~
+Updated_Seatek_Analysis.R:92:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 121 characters.
+    sheet_name <- if (!is.na(year_num) && year_num >= 1 && year_num <= 20) as.character(1994 + year_num) else basename(f)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Updated_Seatek_Analysis.R:102:3: style: [return_linter] Use implicit return behavior; explicit return() is not needed.
+  return(results)
+  ^~~~~~
+Updated_Seatek_Analysis.R:108:3: style: [object_name_linter] Variable and function name style should match snake_case or symbols.
+  headerStyle <- createStyle(textDecoration = "bold")
+  ^~~~~~~~~~~
+Updated_Seatek_Analysis.R:113:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 83 characters.
+    writeData(wb, sheet = year, x = df, rowNames = TRUE, headerStyle = headerStyle)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~
+Updated_Seatek_Analysis.R:118:7: style: [object_name_linter] Variable and function name style should match snake_case or symbols.
+      highlightStyle <- createStyle(bgFill = "#FFD700")
+      ^~~~~~~~~~~~~~
+Updated_Seatek_Analysis.R:119:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 158 characters.
+      addStyle(wb, sheet = year, style = highlightStyle, rows = max_idx + 1, cols = which(colnames(df) == "within_diff") + 1, gridExpand = TRUE, stack = TRUE)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Updated_Seatek_Analysis.R:136:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 83 characters.
+    summary_df[[paste0(metric, "_median")]] <- apply(vals, 1, median, na.rm = TRUE)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~
+Updated_Seatek_Analysis.R:146:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 88 characters.
+    summary_df[[paste0(metric, "_count")]] <- apply(vals, 1, function(x) sum(!is.na(x)))
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~
+Updated_Seatek_Analysis.R:156:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 81 characters.
+  summary_df$full_pct_nonmissing <- 100 * summary_df$full_count / length(results)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+Updated_Seatek_Analysis.R:161:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 85 characters.
+  writeData(wb, sheet = "Summary_All", x = summary_df_all, headerStyle = headerStyle)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~
+Updated_Seatek_Analysis.R:170:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 83 characters.
+  summary_df_sufficient <- summary_df_all[summary_df_all$full_count >= min_count, ]
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~
+Updated_Seatek_Analysis.R:172:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 99 characters.
+  writeData(wb, sheet = "Summary_Sufficient", x = summary_df_sufficient, headerStyle = headerStyle)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~
+Updated_Seatek_Analysis.R:189:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 138 characters.
+    top_sensors <- summary_df[order(-abs_diff), ][1:top_n, c("Sensor", "within_diff_mean", "full_mean", "full_sd", "full_pct_nonmissing")]
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Updated_Seatek_Analysis.R:190:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 95 characters.
+    write.csv(top_sensors, sub("\\.xlsx$", "_top_sensors.csv", output_file), row.names = FALSE)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~
+Updated_Seatek_Analysis.R:199:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 98 characters.
+    top_idx <- order(abs_diff, decreasing = TRUE)[seq_len(min(highlight_top_n, length(abs_diff)))]
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~
+Updated_Seatek_Analysis.R:200:5: style: [object_name_linter] Variable and function name style should match snake_case or symbols.
+    highlightStyle <- createStyle(bgFill = "#FF9999")
+    ^~~~~~~~~~~~~~
+Updated_Seatek_Analysis.R:201:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 174 characters.
+    addStyle(wb, sheet = "Summary", style = highlightStyle, rows = top_idx + 1, cols = which(colnames(summary_df) == "within_diff_mean") + 1, gridExpand = TRUE, stack = TRUE)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Updated_Seatek_Analysis.R:229:25: style: [brace_linter] Opening curly braces should never go on their own line and should always be followed by a new line.
+  warning = function(w) { log_handler("WARNING", conditionMessage(w)); invokeRestart("muffleWarning") },
+                        ^
+Updated_Seatek_Analysis.R:229:70: style: [semicolon_linter] Replace compound semicolons by a newline.
+  warning = function(w) { log_handler("WARNING", conditionMessage(w)); invokeRestart("muffleWarning") },
+                                                                     ^
+Updated_Seatek_Analysis.R:229:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 104 characters.
+  warning = function(w) { log_handler("WARNING", conditionMessage(w)); invokeRestart("muffleWarning") },
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~
+Updated_Seatek_Analysis.R:230:25: style: [brace_linter] Opening curly braces should never go on their own line and should always be followed by a new line.
+  error   = function(e) { log_handler("ERROR", conditionMessage(e)); },
+                        ^
+Updated_Seatek_Analysis.R:230:68: style: [semicolon_linter] Remove trailing semicolons.
+  error   = function(e) { log_handler("ERROR", conditionMessage(e)); },
+                                                                   ^
+Updated_Seatek_Analysis.R:231:25: style: [brace_linter] Opening curly braces should never go on their own line and should always be followed by a new line.
+  message = function(m) { log_handler("MESSAGE", conditionMessage(m)); invokeRestart("muffleMessage") }
+                        ^
+Updated_Seatek_Analysis.R:231:70: style: [semicolon_linter] Replace compound semicolons by a newline.
+  message = function(m) { log_handler("MESSAGE", conditionMessage(m)); invokeRestart("muffleMessage") }
+                                                                     ^
+Updated_Seatek_Analysis.R:231:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 103 characters.
+  message = function(m) { log_handler("MESSAGE", conditionMessage(m)); invokeRestart("muffleMessage") }
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~
+Updated_Seatek_Analysis.R:231:103: style: [brace_linter] Closing curly-braces should always be on their own line, unless they are followed by an else.
+  message = function(m) { log_handler("MESSAGE", conditionMessage(m)); invokeRestart("muffleMessage") }
+                                                                                                      ^

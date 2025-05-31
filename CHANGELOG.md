@@ -7,6 +7,7 @@
 **Implemented enhancements:**
 
 - Add setup script for R and Python dependencies [\#7](https://github.com/abhimehro/Seatek_Analysis/pull/7) ([abhimehro](https://github.com/abhimehro))
+- Jules was unable to complete the task in time. Please review the work… [\#6](https://github.com/abhimehro/Seatek_Analysis/pull/6) ([abhimehro](https://github.com/abhimehro))
 
 **Merged pull requests:**
 

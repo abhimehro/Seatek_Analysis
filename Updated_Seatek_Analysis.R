@@ -393,12 +393,14 @@ if (sys.nframe() == 0 || interactive()) { # Check if script is sourced or run di
     log_handler("WARNING", conditionMessage(w))
     invokeRestart("muffleWarning") # Continue execution after logging warning
   },
-  error   = function(e) { 
-    log_handler("ERROR", conditionMessage(e))
-    # invokeRestart("muffleRestart") # This would attempt to continue, which might not be desired for all errors.
-                                     # For critical errors, it's often better to let the script stop after logging.
-    message(sprintf("An error occurred: %s. Check 'processing_warnings.log' for details.", conditionMessage(e)))
-    # Depending on R environment, script might terminate here or require explicit quit().
+  error   = function(e) {
+    error_message <- conditionMessage(e)
+    if (grepl("could not find function|Error in library|there is no package called", error_message)) {
+      log_handler("DEPENDENCY_ERROR", error_message)
+    } else {
+      log_handler("PROCESSING_ERROR", error_message)
+    }
+    message(sprintf("An error occurred: %s. Check 'processing_warnings.log' for details.", error_message))
   },
   message = function(m) { 
     log_handler("MESSAGE", conditionMessage(m))

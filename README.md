@@ -16,6 +16,21 @@ This repository contains the R-based analysis tier for processing Seatek sensor 
 
 ---
 
+## Setup
+
+To get started with this project and ensure all dependencies are correctly installed, please run the setup script:
+
+```bash
+./setup.sh
+```
+
+This script will:
+- Check for R and Python installations.
+- Install required R packages using `renv`.
+- Create a Python virtual environment (if it doesn't exist) and install required Python packages.
+
+---
+
 ## Repository Structure
 
 ```Markdown

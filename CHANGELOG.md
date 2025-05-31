@@ -8,9 +8,6 @@
 
 - Add setup script for R and Python dependencies [\#7](https://github.com/abhimehro/Seatek_Analysis/pull/7) ([abhimehro](https://github.com/abhimehro))
 - Jules was unable to complete the task in time. Please review the work… [\#6](https://github.com/abhimehro/Seatek_Analysis/pull/6) ([abhimehro](https://github.com/abhimehro))
-
-**Merged pull requests:**
-
 - Refactor: Improve documentation and code comments. [\#4](https://github.com/abhimehro/Seatek_Analysis/pull/4) ([abhimehro](https://github.com/abhimehro))
 - Refactor R scripts for Seatek data analysis [\#3](https://github.com/abhimehro/Seatek_Analysis/pull/3) ([abhimehro](https://github.com/abhimehro))
 - I've added a test suite using testthat for your R scripts. [\#2](https://github.com/abhimehro/Seatek_Analysis/pull/2) ([abhimehro](https://github.com/abhimehro))

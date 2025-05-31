@@ -40,6 +40,10 @@ fi
 
 # Activate virtual environment, install packages, then deactivate
 echo "Installing Python packages from $REQUIREMENTS_FILE..."
+if [ ! -f "$REQUIREMENTS_FILE" ]; then
+    echo "Error: Requirements file $REQUIREMENTS_FILE not found. Please ensure the file exists and try again."
+    exit 1
+fi
 source "$VENV_DIR/bin/activate" && pip install -r "$REQUIREMENTS_FILE"
 deactivate
 

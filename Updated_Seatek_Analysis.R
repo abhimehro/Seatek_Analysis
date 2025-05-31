@@ -276,7 +276,9 @@ if (sys.nframe() == 0 || interactive()) {
     } else {
       log_handler("PROCESSING_ERROR", error_message)
     }
-    message(sprintf("An error occurred: %s. Check 'processing_warnings.log' for details.", error_message))
+    if (interactive()) {
+      message(sprintf("An error occurred: %s. Check 'processing_warnings.log' for details.", error_message))
+    }
   },
   message = function(m) {
     log_handler("MESSAGE", conditionMessage(m))

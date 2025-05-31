@@ -1,7 +1,3 @@
-Absolutely! Here’s a revised and modernized SECURITY.md for your Seatek_Analysis repo, tailored for data analysis projects using Python and R. This version follows best practices, is concise, and includes references to official resources:
-
----
-
 # SECURITY POLICY
 
 ## Overview

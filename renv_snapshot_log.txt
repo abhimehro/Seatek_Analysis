@@ -1,0 +1,18 @@
+A large number of files (9214 in total) have been discovered.
+It may take renv a long time to scan these files for dependencies.
+Consider using .renvignore to ignore irrelevant files.
+See `?renv::dependencies` for more information.
+Set `options(renv.config.dependencies.limit = Inf)` to disable this warning.
+
+The following package(s) will be updated in the lockfile:
+
+# CRAN -----------------------------------------------------------------------
+- backports      [1.4.0 -> *]
+- digest         [0.6.37 -> *]
+- knitr          [1.50 -> *]
+- lintr          [3.2.0 -> *]
+- rex            [1.2.1 -> *]
+- xml2           [1.0.0 -> *]
+- xmlparsedata   [1.0.5 -> *]
+
+- Lockfile written to "/app/renv.lock".

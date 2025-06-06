@@ -1,5 +1,7 @@
 library(testthat)
-# library(Seatek_Analysis) # Assuming the main script can be sourced or treated as a package
+if (interactive()) {
+  library(Seatek_Analysis) # Assuming the main script can be sourced or treated as a package
+}
 
 # Get the path to the main analysis script
 # This might need adjustment based on how Updated_Seatek_Analysis.R is structured

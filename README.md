@@ -218,3 +218,8 @@ The linter configuration is currently the default provided by `lintr`. Key chang
 - Several style issues (line length, spacing, brace placement, etc.) were autofixed across project R files.
 - Some variable names in `Updated_Seatek_Analysis.R` (`headerStyle`, `highlightStyle`) were refactored to `header_style`, `highlight_style_yearly`, and `highlight_style_summary` for style consistency. These were internal changes to a function and are not expected to be breaking.
 - `lintr` currently flags potential `object_usage_linter` warnings for the 'Timestamp' variable within `data.table` assignments. These are believed to be false positives due to `data.table`'s non-standard evaluation and have been left as is for now.
+
+When running CI workflows where packages are installed manually (such as GitHub
+Actions), disable renv's autoloader to avoid interfering with `install.packages`
+by setting the environment variable `RENV_CONFIG_AUTOLOADER_ENABLED=FALSE`.
+The provided `lintr` workflow already sets this variable.

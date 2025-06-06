@@ -16,6 +16,7 @@
 
 **Merged pull requests:**
 
+- Fix summary filename in README [\#10](https://github.com/abhimehro/Seatek_Analysis/pull/10) ([abhimehro](https://github.com/abhimehro))
 - Fix sensor column handling in process\_all\_data [\#9](https://github.com/abhimehro/Seatek_Analysis/pull/9) ([abhimehro](https://github.com/abhimehro))
 
 

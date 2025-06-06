@@ -25,7 +25,7 @@ To get started with this project and ensure all dependencies are correctly insta
 ```
 
 This script will:
-- Check for R and Python installations.
+- Install system packages (R, Python, libgit2-dev, pandoc) if missing.
 - Install required R packages using `renv`.
 - Create a Python virtual environment (if it doesn't exist) and install required Python packages.
 

@@ -54,7 +54,7 @@ This script will:
 │   ├── Processed_Data/
 │   │   └── Year_YYYY (Yxx)_Data.xlsx # Processed Series 26 data per year (output of older scripts or specific S26 processing)
 │   └── Analysis/                     # Analysis summaries and logs for Series 26
-│       ├── Seatek_Analysis_Summary.xlsx
+│       ├── Seatek_Summary.xlsx
 │       ├── Seatek_Comprehensive_Analysis.xlsx
 │       ├── analysis_report_log.txt
 │       └── processing_log.txt
@@ -67,7 +67,7 @@ This script will:
 │       │   └── Year_YYYY (Yxx)_Data.xlsx #(example)
 │       ├── outlier_analysis_series27.py # Python script for S27 outlier detection and correction
 │       ├── Data_Validation_Report.xlsx
-│       ├── Seatek_Analysis_Summary.xlsx
+│       ├── Seatek_Summary.xlsx
 │       ├── Seatek_Comprehensive_Analysis.xlsx
 │       ├── analysis_report_log.txt
 │       ├── processing_log.txt
@@ -218,3 +218,8 @@ The linter configuration is currently the default provided by `lintr`. Key chang
 - Several style issues (line length, spacing, brace placement, etc.) were autofixed across project R files.
 - Some variable names in `Updated_Seatek_Analysis.R` (`headerStyle`, `highlightStyle`) were refactored to `header_style`, `highlight_style_yearly`, and `highlight_style_summary` for style consistency. These were internal changes to a function and are not expected to be breaking.
 - `lintr` currently flags potential `object_usage_linter` warnings for the 'Timestamp' variable within `data.table` assignments. These are believed to be false positives due to `data.table`'s non-standard evaluation and have been left as is for now.
+
+When running CI workflows where packages are installed manually (such as GitHub
+Actions), disable renv's autoloader to avoid interfering with `install.packages`
+by setting the environment variable `RENV_CONFIG_AUTOLOADER_ENABLED=FALSE`.
+The provided `lintr` workflow already sets this variable.

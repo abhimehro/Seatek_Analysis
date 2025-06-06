@@ -54,7 +54,7 @@ This script will:
 │   ├── Processed_Data/
 │   │   └── Year_YYYY (Yxx)_Data.xlsx # Processed Series 26 data per year (output of older scripts or specific S26 processing)
 │   └── Analysis/                     # Analysis summaries and logs for Series 26
-│       ├── Seatek_Analysis_Summary.xlsx
+│       ├── Seatek_Summary.xlsx
 │       ├── Seatek_Comprehensive_Analysis.xlsx
 │       ├── analysis_report_log.txt
 │       └── processing_log.txt
@@ -67,7 +67,7 @@ This script will:
 │       │   └── Year_YYYY (Yxx)_Data.xlsx #(example)
 │       ├── outlier_analysis_series27.py # Python script for S27 outlier detection and correction
 │       ├── Data_Validation_Report.xlsx
-│       ├── Seatek_Analysis_Summary.xlsx
+│       ├── Seatek_Summary.xlsx
 │       ├── Seatek_Comprehensive_Analysis.xlsx
 │       ├── analysis_report_log.txt
 │       ├── processing_log.txt

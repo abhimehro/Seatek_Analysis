@@ -16,6 +16,7 @@
 
 **Merged pull requests:**
 
+- Adjust testthat setup [\#15](https://github.com/abhimehro/Seatek_Analysis/pull/15) ([abhimehro](https://github.com/abhimehro))
 - Add Top Sensors worksheet to summary output [\#14](https://github.com/abhimehro/Seatek_Analysis/pull/14) ([abhimehro](https://github.com/abhimehro))
 - Add dependency setup for Codex [\#13](https://github.com/abhimehro/Seatek_Analysis/pull/13) ([abhimehro](https://github.com/abhimehro))
 - Fix lintr workflow [\#12](https://github.com/abhimehro/Seatek_Analysis/pull/12) ([abhimehro](https://github.com/abhimehro))

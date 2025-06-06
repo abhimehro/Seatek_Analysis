@@ -91,11 +91,12 @@ process_all_data <- function(data_dir) {
     message(sprintf("Raw data written to %s", out_raw))
     # Compute summary metrics
     clean_vals <- function(x) x[!is.na(x) & x > 0]
-    first10 <- sapply(df[, 1:32, with = FALSE],
+    sensor_names <- grep("^Sensor", names(df), value = TRUE)
+    first10 <- sapply(df[, ..sensor_names],
                       function(x) mean(clean_vals(head(x, 10))))
-    last5  <- sapply(df[, 1:32, with = FALSE],
+    last5  <- sapply(df[, ..sensor_names],
                      function(x) mean(clean_vals(tail(x, 5))))
-    full   <- sapply(df[, 1:32, with = FALSE], function(x) mean(clean_vals(x)))
+    full   <- sapply(df[, ..sensor_names], function(x) mean(clean_vals(x)))
     diff   <- full - first10
     # Derive sheet/year name
     year_tag <- sub("^SS_Y([0-9]{2})\\.txt$", "\\1", basename(f))
@@ -111,7 +112,7 @@ process_all_data <- function(data_dir) {
       last5 = last5,
       full = full,
       within_diff = diff,
-      row.names = paste0("Sensor", sprintf("%02d", 1:32)),
+      row.names = sensor_names,
       check.names = FALSE
     )
   }

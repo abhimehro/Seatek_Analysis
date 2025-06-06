@@ -231,6 +231,7 @@ dump_summary_excel <- function(results, output_file, highlight_top_n = 5) {
       headerStyle = header_style
     )
     freezePane(wb, sheet = "Summary_Top_Sensors", firstRow = TRUE)
+    setColWidths(wb, sheet = "Summary_Top_Sensors", cols = 1:ncol(top_sensors), widths = "auto")
   }
 
   addWorksheet(wb, "Summary")

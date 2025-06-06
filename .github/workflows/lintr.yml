@@ -24,6 +24,8 @@ jobs:
   lintr:
     name: Run lintr scanning
     runs-on: ubuntu-latest
+    env:
+      RENV_CONFIG_AUTOLOADER_ENABLED: "FALSE"
     permissions:
       contents: read
       security-events: write

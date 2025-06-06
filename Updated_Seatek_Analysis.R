@@ -223,6 +223,14 @@ dump_summary_excel <- function(results, output_file, highlight_top_n = 5) {
     write.csv(top_sensors,
               sub("\\.xlsx$", "_top_sensors.csv", output_file),
               row.names = FALSE)
+    addWorksheet(wb, "Summary_Top_Sensors")
+    writeData(
+      wb,
+      sheet = "Summary_Top_Sensors",
+      x = top_sensors,
+      headerStyle = header_style
+    )
+    freezePane(wb, sheet = "Summary_Top_Sensors", firstRow = TRUE)
   }
 
   addWorksheet(wb, "Summary")

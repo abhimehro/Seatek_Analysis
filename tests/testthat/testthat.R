@@ -14,7 +14,6 @@ if (!file.exists(script_path)) {
 source(script_path) # Source the script to make functions available
 
 # Run all tests in the directory
-# test_check("Seatek_Analysis") # This assumes your tests are for a package named Seatek_Analysis
 # If not a package, a more common way to run all tests in the dir is:
 # test_dir(".", stop_on_failure = TRUE)
 # Let's use test_dir for now as it's simpler for non-package structures.

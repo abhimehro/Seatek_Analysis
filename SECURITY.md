@@ -9,7 +9,7 @@ The security of Seatek_Analysis is a top priority. This project processes potent
 If you discover a security vulnerability or suspect a potential issue:
 
 - **Do not open a public issue.**
-- Please email [AbhiMhrtr@pm.me] or use [GitHub’s private security advisories](https://docs.github.com/en/code-security/security-advisories/repository-advisories/about-repository-security-advisories).
+- Please email [AbhiMehrotra@pm.me] or use [GitHub’s private security advisories](https://docs.github.com/en/code-security/security-advisories/repository-advisories/about-repository-security-advisories).
 - Provide as much detail as possible, including steps to reproduce the issue.
 - We aim to respond within 5 business days.
 
@@ -50,4 +50,4 @@ This repository uses:
 
 ## Need Help?
 
-For security-related questions, contact the maintainers at [AbhiMhrtr@pm.me].
+For security-related questions, contact the maintainers at [AbhiMehrotra@pm.me].

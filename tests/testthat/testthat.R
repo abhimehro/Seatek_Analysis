@@ -13,11 +13,10 @@ if (!file.exists(script_path)) {
 }
 source(script_path) # Source the script to make functions available
 
-# Run all tests in the directory
-# If not a package, a more common way to run all tests in the dir is:
-# test_dir(".", stop_on_failure = TRUE)
-# Let's use test_dir for now as it's simpler for non-package structures.
-
-test_dir(".", stop_on_failure = TRUE)
-
-print("testthat.R executed: All tests in tests/testthat will be run.")
+# Run all tests in the directory when executed interactively
+# The workflow calls `testthat::test_dir()` externally, so we avoid
+# re-invoking it here to prevent nested calls and related errors.
+if (interactive()) {
+  test_dir(".", stop_on_failure = TRUE)
+  print("testthat.R executed: All tests in tests/testthat will be run.")
+}

@@ -22,7 +22,7 @@ fi
 
 # Restore R packages using renv
 echo "Restoring R packages with renv..."
-Rscript -e "if(!'renv' %in% rownames(installed.packages())) install.packages('renv', repos='https://cloud.r-project.org'); renv::restore()" || echo "renv restore failed - proceeding with base install"
+Rscript -e "if(!'renv' %in% rownames(installed.packages())) install.packages('renv', repos='https://cloud.r-project.org'); renv::restore()" > renv_restore.log 2>&1 || echo "renv restore failed - check renv_restore.log for details. Proceeding with base install."
 
 # Install additional packages needed for linting and testing
 echo "Installing core R packages for linting and testing..."

@@ -22,7 +22,19 @@ fi
 
 # Restore R packages using renv
 echo "Restoring R packages with renv..."
-Rscript -e "if(!'renv' %in% rownames(installed.packages())) install.packages('renv', repos='https://cloud.r-project.org'); renv::restore()"
+Rscript -e "if(!'renv' %in% rownames(installed.packages())) install.packages('renv', repos='https://cloud.r-project.org'); renv::restore()" || echo "renv restore failed - proceeding with base install"
+
+# Install additional packages needed for linting and testing
+echo "Installing core R packages for linting and testing..."
+Rscript - <<'EOF'
+packages <- c('testthat', 'data.table', 'openxlsx', 'dplyr', 'tidyr', 'logger', 'lintr')
+install_if_missing <- function(pkg) {
+  if (!requireNamespace(pkg, quietly = TRUE)) {
+    install.packages(pkg, repos = 'https://cloud.r-project.org')
+  }
+}
+invisible(lapply(packages, install_if_missing))
+EOF
 
 # Setup Python virtual environment
 VENV_DIR="Series_27/Analysis/venv"

@@ -1,0 +1,35 @@
+version: "1.0"
+linter: jetbrains/qodana-jvm:latest
+profile:
+  name: qodana.recommended
+
+include:
+  - name: CheckDependencyLicenses
+  - name: SecureX509TrustManager
+  - name: CryptoCipherInsecureAsymmetricCryptography
+  - name: XmlHighlighting
+  - name: AllFilesPresentInPropertiesFile
+
+exclude:
+  # Exclude generated files and data
+  - name: All
+    paths:
+      - Data/**/*.txt
+      - Data/**/*.xlsx
+      - .Rproj.user/**
+      - .Rhistory
+      - .RData
+      - .Ruserdata
+
+# Custom R linting rules
+customFiles:
+  - .lintr  # R specific linting rules
+
+# Project specific settings
+projectJDK: "11"
+failThreshold: 0
+
+# Bootstrap
+bootstrap: |
+  apt-get update && apt-get install -y r-base r-base-dev
+

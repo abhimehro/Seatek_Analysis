@@ -1,0 +1,51 @@
+Seatek_Analysis.R:47:69: style: [trailing_whitespace_linter] Remove trailing whitespace.
+    fread(file_path, header = FALSE, sep = default_sep, fill = TRUE,
+                                                                    ^
+Seatek_Analysis.R:56:19: style: [indentation_linter] Hanging indent should be 20 spaces but is 19 spaces.
+                   " columns; expected >=33."))
+                  ^~
+Seatek_Analysis.R:64:65: style: [trailing_whitespace_linter] Remove trailing whitespace.
+  dt <- dt[, c(paste0("Sensor", sprintf("%02d", 1:sensor_cols)),
+                                                                ^
+Seatek_Analysis.R:67:10: warning: [object_usage_linter] no visible binding for global variable 'Timestamp'
+    dt[, Timestamp := as.POSIXct(as.numeric(Timestamp), origin = "1970-01-01")]
+         ^~~~~~~~~
+Seatek_Analysis.R:67:10: warning: [object_usage_linter] no visible binding for global variable 'Timestamp'
+    dt[, Timestamp := as.POSIXct(as.numeric(Timestamp), origin = "1970-01-01")]
+         ^~~~~~~~~
+Seatek_Analysis.R:90:37: style: [trailing_whitespace_linter] Remove trailing whitespace.
+      raw_out <- file.path(data_dir,
+                                    ^
+Seatek_Analysis.R:91:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 83 characters.
+                           paste0(tools::file_path_sans_ext(basename(f)), ".xlsx"))
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~
+Seatek_Analysis.R:97:49: style: [trailing_whitespace_linter] Remove trailing whitespace.
+      first5 <- sapply(df[, 1:32, with = FALSE],
+                                                ^
+Seatek_Analysis.R:99:49: style: [trailing_whitespace_linter] Remove trailing whitespace.
+      last5  <- sapply(df[, 1:32, with = FALSE],
+                                                ^
+Seatek_Analysis.R:101:49: style: [trailing_whitespace_linter] Remove trailing whitespace.
+      full   <- sapply(df[, 1:32, with = FALSE],
+                                                ^
+Updated_Seatek_Analysis.R:70:10: warning: [object_usage_linter] no visible binding for global variable 'Timestamp'
+    dt[, Timestamp := as.POSIXct(as.numeric(Timestamp), origin = "1970-01-01")]
+         ^~~~~~~~~
+Updated_Seatek_Analysis.R:70:10: warning: [object_usage_linter] no visible binding for global variable 'Timestamp'
+    dt[, Timestamp := as.POSIXct(as.numeric(Timestamp), origin = "1970-01-01")]
+         ^~~~~~~~~
+Updated_Seatek_Analysis.R:88:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 81 characters.
+                         paste0(tools::file_path_sans_ext(basename(f)), ".xlsx"))
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+Updated_Seatek_Analysis.R:135:65: style: [trailing_whitespace_linter] Remove trailing whitespace.
+      addStyle(wb, sheet = year, style = highlight_style_yearly,
+                                                                ^
+Updated_Seatek_Analysis.R:136:35: style: [trailing_whitespace_linter] Remove trailing whitespace.
+               rows = max_idx + 1,
+                                  ^
+Updated_Seatek_Analysis.R:177:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 81 characters.
+  summary_df$full_pct_nonmissing <- 100 * summary_df$full_count / length(results)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+Updated_Seatek_Analysis.R:214:48: style: [indentation_linter] Hanging indent should be 50 spaces but is 48 spaces.
+                                                c("Sensor", "within_diff_mean",
+                                               ^~~

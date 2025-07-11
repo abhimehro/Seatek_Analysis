@@ -1,0 +1,159 @@
+requirements.R:2:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 160 characters.
+# Note: Robust statistics (mean, SD, median, MAD, 3-year rolling mean) are now computed and exported for each sensor and metric. Sufficient data threshold is 5.
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+requirements.R:32:16: style: [trailing_blank_lines_linter] Add a terminal newline.
+renv::restore()
+               ^
+Seatek_Analysis.R:5:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 81 characters.
+# This script processes Seatek sensor data to analyze riverbed changes over time.
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+Seatek_Analysis.R:6:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 86 characters.
+# It reads raw sensor data files (S28_Yxx.txt), validates them, exports each to Excel,
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~
+Seatek_Analysis.R:45:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 91 characters.
+    fread(file_path, header = FALSE, sep = default_sep, fill = TRUE, na.strings = c("NA")),
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~
+Seatek_Analysis.R:52:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 86 characters.
+    log_warn("File {basename(file_path)} has only {ncol(dt)} columns; expected >=33.")
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~
+Seatek_Analysis.R:60:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 92 characters.
+  dt <- dt[, c(paste0("Sensor", sprintf("%02d", 1:sensor_cols)), "Timestamp"), with = FALSE]
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~
+Seatek_Analysis.R:62:10: warning: [object_usage_linter] no visible binding for global variable 'Timestamp'
+    dt[, Timestamp := as.POSIXct(as.numeric(Timestamp), origin = "1970-01-01")]
+         ^~~~~~~~~
+Seatek_Analysis.R:62:10: warning: [object_usage_linter] no visible binding for global variable 'Timestamp'
+    dt[, Timestamp := as.POSIXct(as.numeric(Timestamp), origin = "1970-01-01")]
+         ^~~~~~~~~
+Seatek_Analysis.R:64:3: style: [return_linter] Use implicit return behavior; explicit return() is not needed.
+  return(dt)
+  ^~~~~~
+Seatek_Analysis.R:76:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 84 characters.
+    log_error("No sensor .txt data files found in directory (pattern S28_Y##.txt).")
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~
+Seatek_Analysis.R:83:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 93 characters.
+      raw_out <- file.path(data_dir, paste0(tools::file_path_sans_ext(basename(f)), ".xlsx"))
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~
+Seatek_Analysis.R:89:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 90 characters.
+      first5 <- sapply(df[, 1:32, with = FALSE], function(x) mean(clean_vals(head(x, 5))))
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~
+Seatek_Analysis.R:90:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 90 characters.
+      last5  <- sapply(df[, 1:32, with = FALSE], function(x) mean(clean_vals(tail(x, 5))))
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~
+Seatek_Analysis.R:91:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 81 characters.
+      full   <- sapply(df[, 1:32, with = FALSE], function(x) mean(clean_vals(x)))
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+Seatek_Analysis.R:138:16: style: [trailing_blank_lines_linter] Add a terminal newline.
+# End of script
+               ^
+Updated_Seatek_Analysis.R:5:71: style: [trailing_whitespace_linter] Remove trailing whitespace.
+# This script processes Seatek sensor data to analyze riverbed changes
+                                                                      ^
+Updated_Seatek_Analysis.R:7:64: style: [trailing_whitespace_linter] Remove trailing whitespace.
+# It reads raw sensor data files (S28_Yxx.txt), validates them,
+                                                               ^
+Updated_Seatek_Analysis.R:9:66: style: [trailing_whitespace_linter] Remove trailing whitespace.
+# computes summary metrics (first 10, last 5, full, within_diff),
+                                                                 ^
+Updated_Seatek_Analysis.R:48:61: style: [trailing_whitespace_linter] Remove trailing whitespace.
+    fread(file_path, header = FALSE, sep = sep, fill = TRUE,
+                                                            ^
+Updated_Seatek_Analysis.R:55:67: style: [trailing_whitespace_linter] Remove trailing whitespace.
+    warning(sprintf("File %s has only %d columns; expected >=33.",
+                                                                  ^
+Updated_Seatek_Analysis.R:66:65: style: [trailing_whitespace_linter] Remove trailing whitespace.
+  dt <- dt[, c(paste0("Sensor", sprintf("%02d", 1:sensor_cols)),
+                                                                ^
+Updated_Seatek_Analysis.R:70:10: warning: [object_usage_linter] no visible binding for global variable 'Timestamp'
+    dt[, Timestamp := as.POSIXct(as.numeric(Timestamp), origin = "1970-01-01")]
+         ^~~~~~~~~
+Updated_Seatek_Analysis.R:70:10: warning: [object_usage_linter] no visible binding for global variable 'Timestamp'
+    dt[, Timestamp := as.POSIXct(as.numeric(Timestamp), origin = "1970-01-01")]
+         ^~~~~~~~~
+Updated_Seatek_Analysis.R:87:35: style: [trailing_whitespace_linter] Remove trailing whitespace.
+    out_raw <- file.path(data_dir,
+                                  ^
+Updated_Seatek_Analysis.R:88:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 81 characters.
+                         paste0(tools::file_path_sans_ext(basename(f)), ".xlsx"))
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+Updated_Seatek_Analysis.R:93:48: style: [trailing_whitespace_linter] Remove trailing whitespace.
+    first10 <- sapply(df[, 1:32, with = FALSE],
+                                               ^
+Updated_Seatek_Analysis.R:95:47: style: [trailing_whitespace_linter] Remove trailing whitespace.
+    last5  <- sapply(df[, 1:32, with = FALSE],
+                                              ^
+Updated_Seatek_Analysis.R:128:57: style: [trailing_whitespace_linter] Remove trailing whitespace.
+    writeData(wb, sheet = year, x = df, rowNames = TRUE,
+                                                        ^
+Updated_Seatek_Analysis.R:135:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 85 characters.
+      addStyle(wb, sheet = year, style = highlight_style_yearly, rows = max_idx + 1,
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~
+Updated_Seatek_Analysis.R:135:85: style: [trailing_whitespace_linter] Remove trailing whitespace.
+      addStyle(wb, sheet = year, style = highlight_style_yearly, rows = max_idx + 1,
+                                                                                    ^
+Updated_Seatek_Analysis.R:136:64: style: [trailing_whitespace_linter] Remove trailing whitespace.
+               cols = which(colnames(df) == "within_diff") + 1,
+                                                               ^
+Updated_Seatek_Analysis.R:154:47: style: [trailing_whitespace_linter] Remove trailing whitespace.
+    summary_df[[paste0(metric, "_median")]] <-
+                                              ^
+Updated_Seatek_Analysis.R:165:46: style: [trailing_whitespace_linter] Remove trailing whitespace.
+    summary_df[[paste0(metric, "_count")]] <-
+                                             ^
+Updated_Seatek_Analysis.R:176:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 81 characters.
+  summary_df$full_pct_nonmissing <- 100 * summary_df$full_count / length(results)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+Updated_Seatek_Analysis.R:181:59: style: [trailing_whitespace_linter] Remove trailing whitespace.
+  writeData(wb, sheet = "Summary_All", x = summary_df_all,
+                                                          ^
+Updated_Seatek_Analysis.R:191:27: style: [trailing_whitespace_linter] Remove trailing whitespace.
+  summary_df_sufficient <-
+                          ^
+Updated_Seatek_Analysis.R:194:73: style: [trailing_whitespace_linter] Remove trailing whitespace.
+  writeData(wb, sheet = "Summary_Sufficient", x = summary_df_sufficient,
+                                                                        ^
+Updated_Seatek_Analysis.R:212:59: style: [trailing_whitespace_linter] Remove trailing whitespace.
+    top_sensors <- summary_df[order(-abs_diff), ][1:top_n,
+                                                          ^
+Updated_Seatek_Analysis.R:213:48: style: [indentation_linter] Hanging indent should be 50 spaces but is 48 spaces.
+                                                c("Sensor", "within_diff_mean",
+                                               ^~~
+Updated_Seatek_Analysis.R:213:80: style: [trailing_whitespace_linter] Remove trailing whitespace.
+                                                c("Sensor", "within_diff_mean",
+                                                                               ^
+Updated_Seatek_Analysis.R:214:74: style: [trailing_whitespace_linter] Remove trailing whitespace.
+                                                  "full_mean", "full_sd",
+                                                                         ^
+Updated_Seatek_Analysis.R:216:27: style: [trailing_whitespace_linter] Remove trailing whitespace.
+    write.csv(top_sensors,
+                          ^
+Updated_Seatek_Analysis.R:217:64: style: [trailing_whitespace_linter] Remove trailing whitespace.
+              sub("\\.xlsx$", "_top_sensors.csv", output_file),
+                                                               ^
+Updated_Seatek_Analysis.R:231:69: style: [trailing_whitespace_linter] Remove trailing whitespace.
+    addStyle(wb, sheet = "Summary", style = highlight_style_summary,
+                                                                    ^
+Updated_Seatek_Analysis.R:232:33: style: [trailing_whitespace_linter] Remove trailing whitespace.
+             rows = top_idx + 1,
+                                ^
+Updated_Seatek_Analysis.R:233:75: style: [trailing_whitespace_linter] Remove trailing whitespace.
+             cols = which(colnames(summary_df) == "within_diff_mean") + 1,
+                                                                          ^
+Updated_Seatek_Analysis.R:262:26: style: [trailing_whitespace_linter] Remove trailing whitespace.
+  warning = function(w) {
+                         ^
+Updated_Seatek_Analysis.R:264:35: style: [trailing_whitespace_linter] Remove trailing whitespace.
+    invokeRestart("muffleWarning")
+                                  ^
+Updated_Seatek_Analysis.R:266:26: style: [trailing_whitespace_linter] Remove trailing whitespace.
+  error   = function(e) {
+                         ^
+Updated_Seatek_Analysis.R:269:26: style: [trailing_whitespace_linter] Remove trailing whitespace.
+  message = function(m) {
+                         ^
+Updated_Seatek_Analysis.R:271:35: style: [trailing_whitespace_linter] Remove trailing whitespace.
+    invokeRestart("muffleMessage")
+                                  ^
+Updated_Seatek_Analysis.R:275:1: style: [trailing_blank_lines_linter] Remove trailing blank lines.
+
+^

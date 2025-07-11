@@ -16,6 +16,7 @@
 
 **Merged pull requests:**
 
+- Review and analyze Seatek sensor data repository [\#17](https://github.com/abhimehro/Seatek_Analysis/pull/17) ([abhimehro](https://github.com/abhimehro))
 - Improve setup and test runner [\#16](https://github.com/abhimehro/Seatek_Analysis/pull/16) ([abhimehro](https://github.com/abhimehro))
 - Adjust testthat setup [\#15](https://github.com/abhimehro/Seatek_Analysis/pull/15) ([abhimehro](https://github.com/abhimehro))
 - Add Top Sensors worksheet to summary output [\#14](https://github.com/abhimehro/Seatek_Analysis/pull/14) ([abhimehro](https://github.com/abhimehro))

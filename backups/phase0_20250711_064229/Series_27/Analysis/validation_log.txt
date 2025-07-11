@@ -1,0 +1,23 @@
+2025-03-17 16:34:38 - Starting Data Validation 
+2025-03-17 16:34:38 - Found 20 valid files to validate 
+2025-03-17 16:34:38 - Validating S27_Y01.txt 
+2025-03-17 16:34:38 - Validating S27_Y02.txt 
+2025-03-17 16:34:38 - Validating S27_Y03.txt 
+2025-03-17 16:34:38 - Validating S27_Y04.txt 
+2025-03-17 16:34:38 - Validating S27_Y05.txt 
+2025-03-17 16:34:38 - Validating S27_Y06.txt 
+2025-03-17 16:34:38 - Validating S27_Y07.txt 
+2025-03-17 16:34:38 - Validating S27_Y08.txt 
+2025-03-17 16:34:38 - Validating S27_Y09.txt 
+2025-03-17 16:34:38 - Validating S27_Y10.txt 
+2025-03-17 16:34:38 - Validating S27_Y11.txt 
+2025-03-17 16:34:38 - Validating S27_Y12.txt 
+2025-03-17 16:34:38 - Validating S27_Y13.txt 
+2025-03-17 16:34:38 - Validating S27_Y14.txt 
+2025-03-17 16:34:38 - Validating S27_Y15.txt 
+2025-03-17 16:34:38 - Validating S27_Y16.txt 
+2025-03-17 16:34:38 - Validating S27_Y17.txt 
+2025-03-17 16:34:38 - Validating S27_Y18.txt 
+2025-03-17 16:34:38 - Validating S27_Y19.txt 
+2025-03-17 16:34:38 - Validating S27_Y20.txt 
+2025-03-17 16:34:39 - Validation report saved to: ~/R Projects/Seatek_Analysis/Data/Data_Validation_Report.xlsx 

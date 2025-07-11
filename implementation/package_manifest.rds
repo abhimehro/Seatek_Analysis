@@ -1,0 +1,14 @@
+# Mock package manifest
+# This is a placeholder since R is not available for actual testing
+# When R is available, this will be replaced with actual package information
+
+Mock Package Manifest:
+- data.table: 1.14.8
+- openxlsx: 4.2.5
+- tidyverse: 2.0.0
+- testthat: 3.1.7
+- logger: 0.2.2
+- config: 0.3.1
+
+R Version: R version 4.2.3 (2023-03-15)
+Setup Timestamp: $(date)

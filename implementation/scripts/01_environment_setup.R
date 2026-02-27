@@ -22,12 +22,24 @@ REQUIRED_PACKAGES <- c(
 # Package installation sources
 CRAN_REPO <- "https://cran.rstudio.com/"
 
+# Configuration Constants
+PACKAGE_MANIFEST_PATH <- "implementation/package_manifest.rds"
+VERIFICATION_RESULTS_PATH <- "implementation/verification_results.rds"
+KEY_DIRECTORIES <- c(
+  "Data",
+  "implementation",
+  "implementation/scripts",
+  "implementation/tests",
+  "logs"
+)
+
 #' Install and verify required packages
 #' 
 #' @param packages Vector of package names to install
 #' @param cran_repo CRAN repository URL
+#' @param manifest_path Path to save the package manifest
 #' @return List with installation status and package manifest
-install_and_verify <- function(packages = REQUIRED_PACKAGES, cran_repo = CRAN_REPO) {
+install_and_verify <- function(packages = REQUIRED_PACKAGES, cran_repo = CRAN_REPO, manifest_path = PACKAGE_MANIFEST_PATH) {
   
   cat("=== Seatek R Environment Setup ===\n")
   cat("Starting package installation and verification...\n\n")
@@ -101,7 +113,6 @@ install_and_verify <- function(packages = REQUIRED_PACKAGES, cran_repo = CRAN_RE
   cat("\n3. Creating package manifest...\n")
   
   # Create package manifest
-  manifest_path <- "implementation/package_manifest.rds"
   tryCatch({
     saveRDS(results, manifest_path)
     cat("   ✓ Package manifest saved to: ", manifest_path, "\n")
@@ -185,16 +196,9 @@ load_and_verify_packages <- function(packages = REQUIRED_PACKAGES) {
 
 #' Check write permissions in key directories
 #' 
+#' @param key_directories Vector of directories to check
 #' @return List with permission status for each directory
-check_write_permissions <- function() {
-  
-  key_directories <- c(
-    "Data",
-    "implementation",
-    "implementation/scripts",
-    "implementation/tests",
-    "logs"
-  )
+check_write_permissions <- function(key_directories = KEY_DIRECTORIES) {
   
   cat("Checking write permissions in key directories...\n")
   

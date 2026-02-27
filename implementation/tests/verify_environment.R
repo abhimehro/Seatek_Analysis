@@ -63,7 +63,7 @@ verify_environment <- function() {
   cat("\nStep 4: Additional Verification Checks\n")
   
   # Check if package manifest exists
-  manifest_path <- "implementation/package_manifest.rds"
+  manifest_path <- PACKAGE_MANIFEST_PATH
   manifest_exists <- file.exists(manifest_path)
   cat("  Package manifest exists: ", ifelse(manifest_exists, "✓ YES", "✗ NO"), "\n")
   
@@ -79,7 +79,7 @@ verify_environment <- function() {
   }
   
   # Check key directories exist
-  key_dirs <- c("Data", "implementation", "implementation/scripts", "implementation/tests", "logs")
+  key_dirs <- KEY_DIRECTORIES
   dir_check_results <- sapply(key_dirs, dir.exists)
   cat("  Key directories exist: ", sum(dir_check_results), "/", length(key_dirs), "\n")
   
@@ -114,7 +114,7 @@ verify_environment <- function() {
   }
   
   # Save verification results
-  verification_path <- "implementation/verification_results.rds"
+  verification_path <- VERIFICATION_RESULTS_PATH
   tryCatch({
     saveRDS(verification_results, verification_path)
     cat("  Verification results saved to: ", verification_path, "\n")

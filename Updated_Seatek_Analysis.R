@@ -22,6 +22,20 @@ library(openxlsx)
 library(dplyr)
 library(tidyr)
 
+# --- Configuration Constants ---
+MAX_SENSORS <- 32
+MIN_EXPECTED_COLS <- 33
+SUMMARY_FIRST_N <- 10
+SUMMARY_LAST_N <- 5
+ROLLING_WINDOW_SIZE <- 3
+MIN_DATA_COUNT <- 5
+HIGH_VARIABILITY_SD_THRESHOLD <- 2
+TOP_N_SENSORS <- 5
+MIN_YEAR_NUM <- 1
+MAX_YEAR_NUM <- 20
+BASE_YEAR <- 1994
+# -------------------------------
+
 # Log all warnings, errors, and messages to a file for diagnostics
 log_file <- file.path(getwd(), "processing_warnings.log")
 if (file.exists(log_file)) file.remove(log_file)
@@ -51,12 +65,12 @@ read_sensor_data <- function(file_path, sep = " ") {
       stop(sprintf("Error reading %s: %s", basename(file_path), e$message))
     }
   )
-  if (ncol(dt) < 33) {
-    warning(sprintf("File %s has only %d columns; expected >=33.",
-                    basename(file_path), ncol(dt)))
+  if (ncol(dt) < MIN_EXPECTED_COLS) {
+    warning(sprintf("File %s has only %d columns; expected >=%d.",
+                    basename(file_path), ncol(dt), MIN_EXPECTED_COLS))
   }
   total_cols <- ncol(dt)
-  sensor_cols <- min(total_cols - 1, 32)
+  sensor_cols <- min(total_cols - 1, MAX_SENSORS)
   # Name sensors and timestamp
   setnames(dt, 1:sensor_cols, paste0("Sensor", sprintf("%02d", 1:sensor_cols)))
   if (total_cols >= sensor_cols + 1) {
@@ -93,17 +107,17 @@ process_all_data <- function(data_dir) {
     clean_vals <- function(x) x[!is.na(x) & x > 0]
     sensor_names <- grep("^Sensor", names(df), value = TRUE)
     first10 <- sapply(df[, ..sensor_names],
-                      function(x) mean(clean_vals(head(x, 10))))
+                      function(x) mean(clean_vals(head(x, SUMMARY_FIRST_N))))
     last5  <- sapply(df[, ..sensor_names],
-                     function(x) mean(clean_vals(tail(x, 5))))
+                     function(x) mean(clean_vals(tail(x, SUMMARY_LAST_N))))
     full   <- sapply(df[, ..sensor_names], function(x) mean(clean_vals(x)))
     diff   <- full - first10
     # Derive sheet/year name
     year_tag <- sub("^SS_Y([0-9]{2})\\.txt$", "\\1", basename(f))
     # Map Y01=1995, Y02=1996, ..., Y20=2014
     year_num <- as.integer(year_tag)
-    sheet_name <- if (!is.na(year_num) && year_num >= 1 && year_num <= 20) {
-      as.character(1994 + year_num)
+    sheet_name <- if (!is.na(year_num) && year_num >= MIN_YEAR_NUM && year_num <= MAX_YEAR_NUM) {
+      as.character(BASE_YEAR + year_num)
     } else {
       basename(f)
     }
@@ -120,7 +134,7 @@ process_all_data <- function(data_dir) {
 }
 
 # Write combined summary workbook
-dump_summary_excel <- function(results, output_file, highlight_top_n = 5) {
+dump_summary_excel <- function(results, output_file, highlight_top_n = TOP_N_SENSORS) {
   wb <- createWorkbook()
   header_style <- createStyle(textDecoration = "bold")
   # Write each year's sheet
@@ -167,11 +181,11 @@ dump_summary_excel <- function(results, output_file, highlight_top_n = 5) {
     })
     summary_df[[paste0(metric, "_count")]] <-
       apply(vals, 1, function(x) sum(!is.na(x)))
-    # Rolling mean (3-year) for each sensor
-    summary_df[[paste0(metric, "_rollmean3")]] <- apply(vals, 1, function(x) {
+    # Rolling mean for each sensor
+    summary_df[[paste0(metric, "_rollmean", ROLLING_WINDOW_SIZE)]] <- apply(vals, 1, function(x) {
       x_clean <- x[!is.na(x)]
-      if (length(x_clean) < 3) return(NA)
-      mean(tail(x_clean, 3))
+      if (length(x_clean) < ROLLING_WINDOW_SIZE) return(NA)
+      mean(tail(x_clean, ROLLING_WINDOW_SIZE))
     })
   }
 
@@ -191,9 +205,8 @@ dump_summary_excel <- function(results, output_file, highlight_top_n = 5) {
   message(sprintf("Comprehensive summary CSV written to %s", csv_all))
 
   # --- Filtered summary (sufficient data only) ---
-  min_count <- 5
   summary_df_sufficient <-
-    summary_df_all[summary_df_all$full_count >= min_count, ]
+    summary_df_all[summary_df_all$full_count >= MIN_DATA_COUNT, ]
   addWorksheet(wb, "Summary_Sufficient")
   writeData(wb, sheet = "Summary_Sufficient", x = summary_df_sufficient,
             headerStyle = header_style)
@@ -206,14 +219,12 @@ dump_summary_excel <- function(results, output_file, highlight_top_n = 5) {
   # Continue with filtered summary for top sensors and highlighting
   summary_df <- summary_df_sufficient
   # Flag high-variability sensors (e.g., full_sd > threshold)
-  sd_threshold <- 2 # adjust as needed
-  summary_df$flag_high_variability <- summary_df$full_sd > sd_threshold
+  summary_df$flag_high_variability <- summary_df$full_sd > HIGH_VARIABILITY_SD_THRESHOLD
 
   # Prepare top sensors by absolute within_diff_mean
   if ("within_diff_mean" %in% colnames(summary_df)) {
     abs_diff <- abs(summary_df$within_diff_mean)
-    top_n <- 5
-    top_sensors <- summary_df[order(-abs_diff), ][1:top_n,
+    top_sensors <- summary_df[order(-abs_diff), ][1:TOP_N_SENSORS,
       c(
         "Sensor", "within_diff_mean",
         "full_mean", "full_sd",

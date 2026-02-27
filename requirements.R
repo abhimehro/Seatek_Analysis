@@ -6,7 +6,8 @@
 # Package installation function
 install_if_missing <- function(package) {
   if (!require(package, character.only = TRUE)) {
-    install.packages(package)
+    # Use HTTPS to prevent MITM attacks
+    install.packages(package, repos = "https://cloud.r-project.org")
     library(package, character.only = TRUE)
   }
 }

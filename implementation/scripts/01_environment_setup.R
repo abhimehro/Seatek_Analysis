@@ -134,11 +134,11 @@ install_and_verify <- function(packages = REQUIRED_PACKAGES, cran_repo = CRAN_RE
 
 #' Check R version compatibility
 #' 
+#' @param r_version_data List containing R version information (defaults to R.version)
 #' @return List with success status and message
-check_r_version <- function() {
-  r_version <- R.version
-  major_version <- as.numeric(r_version$major)
-  minor_version <- as.numeric(r_version$minor)
+check_r_version <- function(r_version_data = R.version) {
+  major_version <- as.numeric(r_version_data$major)
+  minor_version <- as.numeric(r_version_data$minor)
   
   # Check if R version is >= 4.0.0
   if (major_version > 4 || (major_version == 4 && minor_version >= 0)) {
@@ -146,7 +146,7 @@ check_r_version <- function() {
   } else {
     return(list(
       success = FALSE, 
-      message = paste("R version", r_version$version.string, "is not compatible. Required: >= 4.0.0")
+      message = paste("R version", r_version_data$version.string, "is not compatible. Required: >= 4.0.0")
     ))
   }
 }
@@ -286,9 +286,9 @@ main_setup <- function() {
 }
 
 # Run setup if script is executed directly
-if (!interactive()) {
+if (sys.nframe() == 0 && !interactive()) {
   main_setup()
-} else {
+} else if (interactive()) {
   cat("Environment setup script loaded.\n")
   cat("Run main_setup() to execute the complete setup.\n")
 }

@@ -34,7 +34,7 @@ auto_detect_data_dir <- function(data_dir) {
   if (missing(data_dir) || !dir.exists(data_dir)) {
     stop(sprintf("Data directory not found: %s", data_dir))
   }
-  normalizePath(data_dir)
+  return(normalizePath(data_dir))
 }
 
 # Read a single sensor data file
@@ -69,7 +69,7 @@ read_sensor_data <- function(file_path, sep = " ") {
   if (all(!is.na(as.numeric(dt$Timestamp)))) {
     dt[, Timestamp := as.POSIXct(as.numeric(Timestamp), origin = "1970-01-01")]
   }
-  dt # Implicit return
+  return(dt)
 }
 
 # Process all sensor files: export raw, compute metrics
@@ -116,7 +116,7 @@ process_all_data <- function(data_dir) {
       check.names = FALSE
     )
   }
-  results # Implicit return
+  return(results)
 }
 
 # Write combined summary workbook

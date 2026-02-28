@@ -16,6 +16,8 @@
 
 **Merged pull requests:**
 
+- Refactor dump\_summary\_excel into helper functions [\#24](https://github.com/abhimehro/Seatek_Analysis/pull/24) ([abhimehro](https://github.com/abhimehro))
+- Add unit tests for check\_r\_version in environment setup [\#23](https://github.com/abhimehro/Seatek_Analysis/pull/23) ([abhimehro](https://github.com/abhimehro))
 - ⚡ Optimize Seatek Aggregation Logic [\#22](https://github.com/abhimehro/Seatek_Analysis/pull/22) ([abhimehro](https://github.com/abhimehro))
 - 🛡️ Sentinel: \[MEDIUM\] Fix insecure R package installation [\#20](https://github.com/abhimehro/Seatek_Analysis/pull/20) ([abhimehro](https://github.com/abhimehro))
 - 🎨 Palette: Add progress bar to analysis script [\#19](https://github.com/abhimehro/Seatek_Analysis/pull/19) ([abhimehro](https://github.com/abhimehro))

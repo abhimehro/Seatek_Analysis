@@ -142,39 +142,46 @@ dump_summary_excel <- function(results, output_file, highlight_top_n = 5) {
     }
   }
   # Add summary sheet with overall stats
-  all_stats <- do.call(rbind, results)
-  sensor_names <- rownames(all_stats)
-  sensors <- unique(sensor_names)
-  metrics <- colnames(all_stats)
-  summary_df <- data.frame(
-    Sensor = sensors,
-    stringsAsFactors = FALSE
-  )
-  for (metric in metrics) {
-    vals <- sapply(sensors, function(s) all_stats[sensor_names == s, metric])
-    vals <- as.matrix(vals)
-    summary_df[[paste0(metric, "_mean")]] <- rowMeans(vals, na.rm = TRUE)
-    summary_df[[paste0(metric, "_sd")]] <- apply(vals, 1, sd, na.rm = TRUE)
-    summary_df[[paste0(metric, "_median")]] <-
-      apply(vals, 1, median, na.rm = TRUE)
-    summary_df[[paste0(metric, "_mad")]] <- apply(vals, 1, mad, na.rm = TRUE)
-    summary_df[[paste0(metric, "_min")]] <- apply(vals, 1, function(x) {
-      x_clean <- x[!is.na(x)]
-      if (length(x_clean) == 0) NA else min(x_clean)
-    })
-    summary_df[[paste0(metric, "_max")]] <- apply(vals, 1, function(x) {
-      x_clean <- x[!is.na(x)]
-      if (length(x_clean) == 0) NA else max(x_clean)
-    })
-    summary_df[[paste0(metric, "_count")]] <-
-      apply(vals, 1, function(x) sum(!is.na(x)))
-    # Rolling mean (3-year) for each sensor
-    summary_df[[paste0(metric, "_rollmean3")]] <- apply(vals, 1, function(x) {
-      x_clean <- x[!is.na(x)]
-      if (length(x_clean) < 3) return(NA)
-      mean(tail(x_clean, 3))
-    })
-  }
+  # Convert results list to data.table, preserving row names (Sensor) and order (Year)
+  dt_list <- lapply(results, function(x) {
+    as.data.table(x, keep.rownames = "Sensor")
+  })
+  all_stats_dt <- rbindlist(dt_list, idcol = "Year")
+
+  # Identify metric columns (numeric columns excluding ID columns)
+  metrics <- setdiff(names(all_stats_dt), c("Sensor", "Year"))
+
+  # Melt to long format: Sensor, Year, Metric, Value
+  long_dt <- melt(all_stats_dt, id.vars = c("Sensor", "Year"),
+                  measure.vars = metrics,
+                  variable.name = "Metric", value.name = "Value")
+
+  # Calculate aggregated statistics
+  agg_dt <- long_dt[, .(
+    mean      = mean(Value, na.rm = TRUE),
+    sd        = sd(Value, na.rm = TRUE),
+    median    = median(Value, na.rm = TRUE),
+    mad       = mad(Value, na.rm = TRUE),
+    min       = if (all(is.na(Value))) NA_real_ else min(Value, na.rm = TRUE),
+    max       = if (all(is.na(Value))) NA_real_ else max(Value, na.rm = TRUE),
+    count     = sum(!is.na(Value)),
+    rollmean3 = {
+      v <- na.omit(Value)
+      if (length(v) < 3) NA_real_ else mean(tail(v, 3))
+    }
+  ), by = .(Sensor, Metric)]
+
+  # Reshape to wide format: Sensor ~ Metric_Stat
+  # Melt the aggregated stats to stack them
+  agg_long <- melt(agg_dt, id.vars = c("Sensor", "Metric"),
+                   variable.name = "Stat", value.name = "Value")
+
+  # Cast to final wide format with combined column names (Metric_Stat)
+  # dcast automatically uses "_" as separator, producing "first10_mean", "full_sd", etc.
+  summary_wide <- dcast(agg_long, Sensor ~ Metric + Stat, value.var = "Value", sep = "_")
+
+  # Convert to data.frame to match expected output type
+  summary_df <- as.data.frame(summary_wide)
 
   # Calculate percent non-missing for 'full'
   summary_df$full_pct_nonmissing <-

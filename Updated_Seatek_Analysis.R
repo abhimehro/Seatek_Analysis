@@ -120,27 +120,26 @@ process_all_data <- function(data_dir) {
   results # Implicit return
 }
 
-# Write combined summary workbook
-dump_summary_excel <- function(results, output_file, highlight_top_n = 5) {
-  wb <- createWorkbook()
-  header_style <- createStyle(textDecoration = "bold")
-  # Write each year's sheet
-  for (year in names(results)) {
-    addWorksheet(wb, year)
-    df <- as.data.frame(results[[year]])
-    writeData(wb, sheet = year, x = df, rowNames = TRUE,
-              headerStyle = header_style)
-    freezePane(wb, sheet = year, firstRow = TRUE)
-    # Optional: highlight largest within_diff in each year
-    if ("within_diff" %in% colnames(df)) {
-      max_idx <- which.max(abs(df$within_diff))
-      highlight_style_yearly <- createStyle(bgFill = "#FFD700")
-      addStyle(wb, sheet = year, style = highlight_style_yearly,
-               rows = max_idx + 1,
-               cols = which(colnames(df) == "within_diff") + 1,
-               gridExpand = TRUE, stack = TRUE)
-    }
+# Write a single year's sheet to the workbook
+write_year_sheet <- function(wb, year, data, header_style) {
+  addWorksheet(wb, year)
+  df <- as.data.frame(data)
+  writeData(wb, sheet = year, x = df, rowNames = TRUE,
+            headerStyle = header_style)
+  freezePane(wb, sheet = year, firstRow = TRUE)
+  # Optional: highlight largest within_diff in each year
+  if ("within_diff" %in% colnames(df)) {
+    max_idx <- which.max(abs(df$within_diff))
+    highlight_style_yearly <- createStyle(bgFill = "#FFD700")
+    addStyle(wb, sheet = year, style = highlight_style_yearly,
+             rows = max_idx + 1,
+             cols = which(colnames(df) == "within_diff") + 1,
+             gridExpand = TRUE, stack = TRUE)
   }
+}
+
+# Compute summary statistics across all years
+calculate_summary_stats <- function(results) {
   # Add summary sheet with overall stats
   # Convert results list to data.table, preserving row names (Sensor) and order (Year)
   dt_list <- lapply(results, function(x) {
@@ -187,6 +186,12 @@ dump_summary_excel <- function(results, output_file, highlight_top_n = 5) {
   summary_df$full_pct_nonmissing <-
     100 * summary_df$full_count / length(results)
 
+  summary_df # Implicit return
+}
+
+# Write summary sheets and CSVs
+write_summary_sheets <- function(wb, summary_df, output_file,
+                                 header_style, highlight_top_n) {
   # --- Comprehensive summary (all sensors) ---
   summary_df_all <- summary_df # keep a copy before filtering
   addWorksheet(wb, "Summary_All")
@@ -239,7 +244,8 @@ dump_summary_excel <- function(results, output_file, highlight_top_n = 5) {
       headerStyle = header_style
     )
     freezePane(wb, sheet = "Summary_Top_Sensors", firstRow = TRUE)
-    setColWidths(wb, sheet = "Summary_Top_Sensors", cols = 1:ncol(top_sensors), widths = "auto")
+    setColWidths(wb, sheet = "Summary_Top_Sensors", cols = 1:ncol(top_sensors),
+                 widths = "auto")
   }
 
   addWorksheet(wb, "Summary")
@@ -267,6 +273,21 @@ dump_summary_excel <- function(results, output_file, highlight_top_n = 5) {
   csv_robust <- sub("\\.xlsx$", "_robust.csv", output_file)
   write.csv(summary_df, csv_robust, row.names = FALSE)
   message(sprintf("Robust summary CSV written to %s", csv_robust))
+}
+
+# Write combined summary workbook
+dump_summary_excel <- function(results, output_file, highlight_top_n = 5) {
+  wb <- createWorkbook()
+  header_style <- createStyle(textDecoration = "bold")
+  # Write each year's sheet
+  for (year in names(results)) {
+    write_year_sheet(wb, year, results[[year]], header_style)
+  }
+  # Compute summary statistics
+  summary_df <- calculate_summary_stats(results)
+  # Write summary sheets and CSVs
+  write_summary_sheets(wb, summary_df, output_file,
+                       header_style, highlight_top_n)
 }
 
 # Main execution block

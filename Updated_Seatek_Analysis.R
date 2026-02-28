@@ -13,7 +13,8 @@
 required_packages <- c("data.table", "openxlsx", "dplyr", "tidyr")
 for (pkg in required_packages) {
   if (!requireNamespace(pkg, quietly = TRUE)) {
-    install.packages(pkg)
+    # Use HTTPS to prevent MITM attacks
+    install.packages(pkg, repos = "https://cloud.r-project.org")
   }
 }
 

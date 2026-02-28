@@ -70,7 +70,7 @@ read_sensor_data <- function(file_path, sep = " ") {
   if (all(!is.na(as.numeric(dt$Timestamp)))) {
     dt[, Timestamp := as.POSIXct(as.numeric(Timestamp), origin = "1970-01-01")]
   }
-  dt # Implicit return
+  return(dt)
 }
 
 # Process all sensor files: export raw, compute metrics
@@ -117,7 +117,7 @@ process_all_data <- function(data_dir) {
       check.names = FALSE
     )
   }
-  results # Implicit return
+  return(results)
 }
 
 # Write a single year's sheet to the workbook

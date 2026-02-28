@@ -16,6 +16,7 @@
 
 **Merged pull requests:**
 
+- ⚡ Optimize Seatek Aggregation Logic [\#22](https://github.com/abhimehro/Seatek_Analysis/pull/22) ([abhimehro](https://github.com/abhimehro))
 - 🛡️ Sentinel: \[MEDIUM\] Fix insecure R package installation [\#20](https://github.com/abhimehro/Seatek_Analysis/pull/20) ([abhimehro](https://github.com/abhimehro))
 - 🎨 Palette: Add progress bar to analysis script [\#19](https://github.com/abhimehro/Seatek_Analysis/pull/19) ([abhimehro](https://github.com/abhimehro))
 - Development environment setup [\#18](https://github.com/abhimehro/Seatek_Analysis/pull/18) ([abhimehro](https://github.com/abhimehro))

@@ -200,7 +200,7 @@ write_summary_sheets <- function(wb, summary_df, output_file,
   freezePane(wb, sheet = "Summary_All", firstRow = TRUE)
   # Export comprehensive summary as CSV
   csv_all <- sub("\\.xlsx$", "_all.csv", output_file)
-  write.csv(summary_df_all, csv_all, row.names = FALSE)
+  data.table::fwrite(summary_df_all, csv_all, row.names = FALSE)
   message(sprintf("Comprehensive summary CSV written to %s", csv_all))
 
   # --- Filtered summary (sufficient data only) ---
@@ -213,7 +213,7 @@ write_summary_sheets <- function(wb, summary_df, output_file,
   freezePane(wb, sheet = "Summary_Sufficient", firstRow = TRUE)
   # Export filtered summary as CSV
   csv_sufficient <- sub("\\.xlsx$", "_sufficient.csv", output_file)
-  write.csv(summary_df_sufficient, csv_sufficient, row.names = FALSE)
+  data.table::fwrite(summary_df_sufficient, csv_sufficient, row.names = FALSE)
   message(sprintf("Filtered summary CSV written to %s", csv_sufficient))
 
   # Continue with filtered summary for top sensors and highlighting
@@ -233,7 +233,7 @@ write_summary_sheets <- function(wb, summary_df, output_file,
         "full_pct_nonmissing"
       )
     ]
-    write.csv(top_sensors,
+    data.table::fwrite(top_sensors,
               sub("\\.xlsx$", "_top_sensors.csv", output_file),
               row.names = FALSE)
     addWorksheet(wb, "Summary_Top_Sensors")
@@ -267,11 +267,11 @@ write_summary_sheets <- function(wb, summary_df, output_file,
   message(sprintf("Summary written to %s", output_file))
   # Also export summary as CSV for preview
   csv_out <- sub("\\.xlsx$", ".csv", output_file)
-  write.csv(summary_df, csv_out, row.names = FALSE)
+  data.table::fwrite(summary_df, csv_out, row.names = FALSE)
   message(sprintf("Summary CSV written to %s", csv_out))
   # Export robust stats as CSV
   csv_robust <- sub("\\.xlsx$", "_robust.csv", output_file)
-  write.csv(summary_df, csv_robust, row.names = FALSE)
+  data.table::fwrite(summary_df, csv_robust, row.names = FALSE)
   message(sprintf("Robust summary CSV written to %s", csv_robust))
 }
 

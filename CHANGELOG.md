@@ -16,6 +16,18 @@
 
 **Merged pull requests:**
 
+- 🧪 Refactor year mapping logic and add testing [\#40](https://github.com/abhimehro/Seatek_Analysis/pull/40) ([abhimehro](https://github.com/abhimehro))
+- 🧪 \[Testing\] Fix edge case handling for all-NA within\_diff [\#39](https://github.com/abhimehro/Seatek_Analysis/pull/39) ([abhimehro](https://github.com/abhimehro))
+- 🧪 \[testing improvement\] Ignore Non-Matching Files in process\_all\_data [\#38](https://github.com/abhimehro/Seatek_Analysis/pull/38) ([abhimehro](https://github.com/abhimehro))
+- 🧪 \[testing\] Handle Empty Results List in dump\_summary\_excel [\#37](https://github.com/abhimehro/Seatek_Analysis/pull/37) ([abhimehro](https://github.com/abhimehro))
+- 🧹 \[code health\] Refactor year extraction logic into reusable helper function [\#36](https://github.com/abhimehro/Seatek_Analysis/pull/36) ([abhimehro](https://github.com/abhimehro))
+- ⚡ Optimize intermediate data export from Excel to CSV [\#35](https://github.com/abhimehro/Seatek_Analysis/pull/35) ([abhimehro](https://github.com/abhimehro))
+- 🔒 Remove global warning suppression in environment setup script [\#34](https://github.com/abhimehro/Seatek_Analysis/pull/34) ([abhimehro](https://github.com/abhimehro))
+- 🧹 \[code health improvement\] Remove commented-out example usage [\#33](https://github.com/abhimehro/Seatek_Analysis/pull/33) ([abhimehro](https://github.com/abhimehro))
+- 🛡️ Sentinel: \[MEDIUM\] Enforce HTTPS for R package installations [\#31](https://github.com/abhimehro/Seatek_Analysis/pull/31) ([abhimehro](https://github.com/abhimehro))
+- ⚡ Bolt: Optimize summary aggregation using data.table [\#30](https://github.com/abhimehro/Seatek_Analysis/pull/30) ([abhimehro](https://github.com/abhimehro))
+- broom: Make implicit returns explicit in Updated\_Seatek\_Analysis.R [\#28](https://github.com/abhimehro/Seatek_Analysis/pull/28) ([abhimehro](https://github.com/abhimehro))
+- Extract hardcoded paths for package manifest and environment setup [\#27](https://github.com/abhimehro/Seatek_Analysis/pull/27) ([abhimehro](https://github.com/abhimehro))
 - Refactor: Use explicit returns in Updated\_Seatek\_Analysis.R [\#26](https://github.com/abhimehro/Seatek_Analysis/pull/26) ([abhimehro](https://github.com/abhimehro))
 - Refactor dump\_summary\_excel into helper functions [\#24](https://github.com/abhimehro/Seatek_Analysis/pull/24) ([abhimehro](https://github.com/abhimehro))
 - Add unit tests for check\_r\_version in environment setup [\#23](https://github.com/abhimehro/Seatek_Analysis/pull/23) ([abhimehro](https://github.com/abhimehro))

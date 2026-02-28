@@ -35,7 +35,7 @@ auto_detect_data_dir <- function(data_dir) {
   if (missing(data_dir) || !dir.exists(data_dir)) {
     stop(sprintf("Data directory not found: %s", data_dir))
   }
-  normalizePath(data_dir)
+  return(normalizePath(data_dir))
 }
 
 # Read a single sensor data file

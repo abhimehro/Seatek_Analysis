@@ -82,6 +82,8 @@ process_all_data <- function(data_dir) {
     stop(sprintf("No sensor files found matching %s in %s", pattern, data_dir))
   }
   results <- list()
+  pb <- txtProgressBar(min = 0, max = length(files), style = 3)
+  i <- 0
   for (f in files) {
     df <- read_sensor_data(f)
     # Export raw data to Excel
@@ -116,7 +118,10 @@ process_all_data <- function(data_dir) {
       row.names = sensor_names,
       check.names = FALSE
     )
+    i <- i + 1
+    setTxtProgressBar(pb, i)
   }
+  close(pb)
   return(results)
 }
 

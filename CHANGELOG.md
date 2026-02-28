@@ -16,6 +16,8 @@
 
 **Merged pull requests:**
 
+- 🛡️ Sentinel: \[MEDIUM\] Fix insecure R package installation [\#20](https://github.com/abhimehro/Seatek_Analysis/pull/20) ([abhimehro](https://github.com/abhimehro))
+- 🎨 Palette: Add progress bar to analysis script [\#19](https://github.com/abhimehro/Seatek_Analysis/pull/19) ([abhimehro](https://github.com/abhimehro))
 - Development environment setup [\#18](https://github.com/abhimehro/Seatek_Analysis/pull/18) ([abhimehro](https://github.com/abhimehro))
 - Review and analyze Seatek sensor data repository [\#17](https://github.com/abhimehro/Seatek_Analysis/pull/17) ([abhimehro](https://github.com/abhimehro))
 - Improve setup and test runner [\#16](https://github.com/abhimehro/Seatek_Analysis/pull/16) ([abhimehro](https://github.com/abhimehro))

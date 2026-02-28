@@ -16,6 +16,7 @@
 
 **Merged pull requests:**
 
+- Refactor: Use explicit returns in Updated\_Seatek\_Analysis.R [\#26](https://github.com/abhimehro/Seatek_Analysis/pull/26) ([abhimehro](https://github.com/abhimehro))
 - Refactor dump\_summary\_excel into helper functions [\#24](https://github.com/abhimehro/Seatek_Analysis/pull/24) ([abhimehro](https://github.com/abhimehro))
 - Add unit tests for check\_r\_version in environment setup [\#23](https://github.com/abhimehro/Seatek_Analysis/pull/23) ([abhimehro](https://github.com/abhimehro))
 - ⚡ Optimize Seatek Aggregation Logic [\#22](https://github.com/abhimehro/Seatek_Analysis/pull/22) ([abhimehro](https://github.com/abhimehro))

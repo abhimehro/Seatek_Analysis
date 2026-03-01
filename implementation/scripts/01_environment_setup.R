@@ -20,7 +20,7 @@ REQUIRED_PACKAGES <- c(
 )
 
 # Package installation sources
-CRAN_REPO <- "https://cran.rstudio.com/"
+CRAN_REPO <- "https://cloud.r-project.org"
 
 # Configuration Constants
 PACKAGE_MANIFEST_PATH <- "implementation/package_manifest.rds"

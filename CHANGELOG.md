@@ -16,6 +16,7 @@
 
 **Merged pull requests:**
 
+- 🎨 Palette: Add `txtProgressBar` visual feedback to sensor data processing loop [\#42](https://github.com/abhimehro/Seatek_Analysis/pull/42) ([abhimehro](https://github.com/abhimehro))
 - ⚡ Bolt: replace write.csv with fast fwrite for summary exports [\#41](https://github.com/abhimehro/Seatek_Analysis/pull/41) ([abhimehro](https://github.com/abhimehro))
 - 🧪 Refactor year mapping logic and add testing [\#40](https://github.com/abhimehro/Seatek_Analysis/pull/40) ([abhimehro](https://github.com/abhimehro))
 - 🧪 \[Testing\] Fix edge case handling for all-NA within\_diff [\#39](https://github.com/abhimehro/Seatek_Analysis/pull/39) ([abhimehro](https://github.com/abhimehro))

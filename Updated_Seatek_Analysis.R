@@ -83,6 +83,7 @@ process_all_data <- function(data_dir) {
   }
   results <- list()
   pb <- txtProgressBar(min = 0, max = length(files), style = 3)
+  on.exit(close(pb), add = TRUE)
   i <- 0
   for (f in files) {
     df <- read_sensor_data(f)

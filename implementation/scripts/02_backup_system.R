@@ -48,9 +48,15 @@ restore_backup <- function(backup_file, restore_dir = getwd()) {
     if (!dir.exists(restore_dir)) {
       dir.create(restore_dir, recursive = TRUE, showWarnings = FALSE)
     }
+
+    # SECURITY: Verify contents for path traversal vulnerabilities before extraction
+    contents <- utils::untar(backup_file, list = TRUE)
+    if (any(grepl("^/|(^|/)\\.\\.(/|$)", contents))) {
+      stop("Security Error: Backup archive contains absolute paths or path traversal patterns.")
+    }
+
     utils::untar(backup_file, exdir = restore_dir)
     # Verify restoration
-    contents <- utils::untar(backup_file, list = TRUE)
     restored <- all(file.exists(file.path(restore_dir, contents)))
     if (!restored) {
       stop("Restore verification failed: Not all files restored.")

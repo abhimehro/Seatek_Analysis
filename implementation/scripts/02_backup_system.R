@@ -51,7 +51,13 @@ restore_backup <- function(backup_file, restore_dir = getwd()) {
 
     # SECURITY: Verify contents for path traversal vulnerabilities before extraction
     contents <- utils::untar(backup_file, list = TRUE)
-    if (any(grepl("^/|(^|/)\\.\\.(/|$)", contents))) {
+    # Reject:
+    # - POSIX absolute paths starting with '/'
+    # - Windows drive-letter absolute paths like 'C:\...' or 'D:/...'
+    # - UNC paths like '\\server\share\...'
+    # - Any '..' traversal using either '/' or '\' as a separator
+    pattern <- "^(?:/|[A-Za-z]:[\\\\/]|\\\\\\\\)|(^|[\\\\/])\\.\\.(?:[\\\\/]|$)"
+    if (any(grepl(pattern, contents))) {
       stop("Security Error: Backup archive contains absolute paths or path traversal patterns.")
     }
 

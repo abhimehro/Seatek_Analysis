@@ -131,7 +131,7 @@ def main():
             # Drop the last column if its name contains 'time' (case-insensitive)
             last_col = df_raw.columns[-1]
             if 'time' in last_col.lower():
-                df_raw = df_raw.iloc[:, :-1]
+                df_raw = df_raw.iloc[:, :-1].copy()
 
             next_year = group.iloc[0]['next_year']
             out_file = os.path.join(

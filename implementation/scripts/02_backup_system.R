@@ -57,7 +57,7 @@ restore_backup <- function(backup_file, restore_dir = getwd()) {
     # - UNC paths like '\\server\share\...'
     # - Any '..' traversal using either '/' or '\' as a separator
     pattern <- "^(?:/|[A-Za-z]:[\\\\/]|\\\\\\\\)|(^|[\\\\/])\\.\\.(?:[\\\\/]|$)"
-    if (any(grepl(pattern, contents))) {
+    if (any(grepl(pattern, contents, perl = TRUE))) {
       stop("Security Error: Backup archive contains absolute paths or path traversal patterns.")
     }
 
@@ -84,7 +84,7 @@ list_backups <- function(backup_dir = "backups") {
       message(sprintf("Backup directory does not exist: %s", backup_dir))
       return(data.frame())
     }
-    files <- list.files(backup_dir, pattern = "\.tar\.gz$", full.names = TRUE)
+    files <- list.files(backup_dir, pattern = "\\.tar\\.gz$", full.names = TRUE)
     if (length(files) == 0) {
       message("No backups found.")
       return(data.frame())
@@ -114,7 +114,7 @@ cleanup_old_backups <- function(backup_dir = "backups", days_to_keep = 30) {
       message(sprintf("Backup directory does not exist: %s", backup_dir))
       return(character(0))
     }
-    files <- list.files(backup_dir, pattern = "\.tar\.gz$", full.names = TRUE)
+    files <- list.files(backup_dir, pattern = "\\.tar\\.gz$", full.names = TRUE)
     if (length(files) == 0) {
       message("No backups to clean up.")
       return(character(0))

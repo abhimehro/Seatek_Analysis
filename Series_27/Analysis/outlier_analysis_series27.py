@@ -124,6 +124,10 @@ def main():
                 logging.warning(f"Could not read sheet '{sheet}': {e}")
                 continue
 
+            if df_raw.empty:
+                logging.info(f"Sheet '{sheet}' is empty, skipping.")
+                continue
+
             # Drop the last column if its name contains 'time' (case-insensitive)
             last_col = df_raw.columns[-1]
             if 'time' in last_col.lower():

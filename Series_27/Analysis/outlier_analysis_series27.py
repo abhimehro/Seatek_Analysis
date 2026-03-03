@@ -90,7 +90,9 @@ def main():
     ).reset_index(drop=True)
     logging.info(f"Detected {len(outliers)} outliers using '{args.method}' method")
 
-    corrections = []
+    # ⚡ Bolt: Group outliers by target sheet to batch Excel I/O and prevent overriding corrections
+    # We extract target year and group by sheet name to read/write each file exactly once.
+    outliers_to_process = []
     for _, row in outliers.iterrows():
         pair = row['Year_Pair']
         sensor = int(row['Sensor'].split()[-1])
@@ -100,32 +102,54 @@ def main():
             continue
         next_year = int(years[0])
         sheet = f"Raw Data {next_year}"
-        try:
-            df_raw = pd.read_excel(args.input, sheet_name=sheet)
-        except Exception as e:
-            logging.warning(f"Could not read sheet '{sheet}': {e}")
-            continue
-        # Drop the last column if its name contains 'time' (case-insensitive)
-        # This is to remove a potential timestamp column before applying corrections to sensor value columns.
-        last_col = df_raw.columns[-1]
-        if 'time' in last_col.lower():
-            df_raw = df_raw.iloc[:, :-1]
-        
-        col = f"V{sensor}" # Sensor columns are named V1, V2, ... in the "Raw Data YYYY" sheets
-        offset = -diff # Apply correction in the opposite direction of the difference
-        df_raw[col] = df_raw[col] + offset # Apply the correction
-        out_file = os.path.join(
-            args.output,
-            f"{os.path.splitext(os.path.basename(args.input))[0]}_{next_year}_corrected.xlsx"
-        )
-        df_raw.to_excel(out_file, sheet_name=sheet, index=False)
-        corrections.append({
+        outliers_to_process.append({
             'Year_Pair': pair,
             'Sensor': sensor,
-            'OrigDiff': diff,
-            'OffsetApplied': offset,
-            'CorrectedFile': out_file
+            'Difference': diff,
+            'next_year': next_year,
+            'sheet': sheet
         })
+
+    outliers_df = pd.DataFrame(outliers_to_process)
+    corrections = []
+
+    if not outliers_df.empty:
+        # Group by sheet to minimize expensive I/O operations
+        grouped = outliers_df.groupby('sheet')
+        for sheet, group in grouped:
+            try:
+                # Read once per sheet
+                df_raw = pd.read_excel(args.input, sheet_name=sheet)
+            except Exception as e:
+                logging.warning(f"Could not read sheet '{sheet}': {e}")
+                continue
+
+            # Drop the last column if its name contains 'time' (case-insensitive)
+            last_col = df_raw.columns[-1]
+            if 'time' in last_col.lower():
+                df_raw = df_raw.iloc[:, :-1]
+
+            next_year = group.iloc[0]['next_year']
+            out_file = os.path.join(
+                args.output,
+                f"{os.path.splitext(os.path.basename(args.input))[0]}_{next_year}_corrected.xlsx"
+            )
+
+            # Apply all corrections for this sheet in memory
+            for _, row in group.iterrows():
+                col = f"V{row['Sensor']}"
+                offset = -row['Difference']
+                df_raw[col] = df_raw[col] + offset
+                corrections.append({
+                    'Year_Pair': row['Year_Pair'],
+                    'Sensor': row['Sensor'],
+                    'OrigDiff': row['Difference'],
+                    'OffsetApplied': offset,
+                    'CorrectedFile': out_file
+                })
+
+            # Write once per sheet
+            df_raw.to_excel(out_file, sheet_name=sheet, index=False)
 
     corr_df = pd.DataFrame(corrections)
     corr_file = os.path.join(args.output, 'corrections_summary.xlsx')
@@ -141,7 +165,7 @@ def main():
         plt.axhline(-args.threshold, linestyle='--', color='red')
     plt.xticks(
         range(len(outliers)),
-        [f"{r['Year_Pair']}/S{int(r['Sensor'])}" for _,r in outliers.iterrows()],
+        [f"{r['Year_Pair']}/S{int(r['Sensor'].split()[-1])}" for _,r in outliers.iterrows()],
         rotation=90
     )
     plt.ylabel('Difference (cm)')

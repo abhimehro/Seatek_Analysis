@@ -136,10 +136,16 @@ def main():
             )
 
             # Apply all corrections for this sheet in memory
+            # First, aggregate total offset per sensor to avoid repeated full-column writes
+            sensor_diffs = group.groupby('Sensor')['Difference'].sum()
+            for sensor, total_diff in sensor_diffs.items():
+                col = f"V{sensor}"
+                # Original per-row offset is -Difference, so total offset is -sum(Difference)
+                df_raw[col] = df_raw[col] - total_diff
+
+            # Record per-row corrections (for reporting) without re-modifying df_raw
             for _, row in group.iterrows():
-                col = f"V{row['Sensor']}"
                 offset = -row['Difference']
-                df_raw[col] = df_raw[col] + offset
                 corrections.append({
                     'Year_Pair': row['Year_Pair'],
                     'Sensor': row['Sensor'],

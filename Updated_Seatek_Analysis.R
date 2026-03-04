@@ -303,7 +303,6 @@ dump_summary_excel <- function(results, output_file, highlight_top_n = 5) {
     i <- i + 1
     setTxtProgressBar(pb, i)
   }
-  close(pb)
 
   # Compute summary statistics
   summary_df <- calculate_summary_stats(results)

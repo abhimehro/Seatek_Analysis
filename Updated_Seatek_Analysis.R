@@ -94,7 +94,8 @@ process_all_data <- function(data_dir) {
     write.xlsx(df, out_raw, overwrite = TRUE)
     message(sprintf("Raw data written to %s", out_raw))
     # Compute summary metrics
-    clean_vals <- function(x) x[!is.na(x) & x > 0]
+    # OPTIMIZATION: which(x > 0) is natively faster at dropping NAs than !is.na() &
+    clean_vals <- function(x) x[which(x > 0)]
     sensor_names <- grep("^Sensor", names(df), value = TRUE)
     first10 <- sapply(df[, ..sensor_names],
                       function(x) mean(clean_vals(head(x, 10))))
@@ -162,19 +163,26 @@ calculate_summary_stats <- function(results) {
                   variable.name = "Metric", value.name = "Value")
 
   # Calculate aggregated statistics
-  agg_dt <- long_dt[, .(
-    mean      = mean(Value, na.rm = TRUE),
-    sd        = sd(Value, na.rm = TRUE),
-    median    = median(Value, na.rm = TRUE),
-    mad       = mad(Value, na.rm = TRUE),
-    min       = if (all(is.na(Value))) NA_real_ else min(Value, na.rm = TRUE),
-    max       = if (all(is.na(Value))) NA_real_ else max(Value, na.rm = TRUE),
-    count     = sum(!is.na(Value)),
-    rollmean3 = {
-      v <- na.omit(Value)
-      if (length(v) < 3) NA_real_ else mean(tail(v, 3))
+  # OPTIMIZATION: Extract na.omit(Value) once per group instead of repeatedly traversing NA checks
+  agg_dt <- long_dt[, {
+    v <- na.omit(Value)
+    n <- length(v)
+    if (n == 0) {
+      list(mean = NA_real_, sd = NA_real_, median = NA_real_, mad = NA_real_,
+           min = NA_real_, max = NA_real_, count = 0L, rollmean3 = NA_real_)
+    } else {
+      list(
+        mean      = mean(v),
+        sd        = sd(v),
+        median    = median(v),
+        mad       = mad(v),
+        min       = min(v),
+        max       = max(v),
+        count     = n,
+        rollmean3 = if (n < 3) NA_real_ else mean(tail(v, 3))
+      )
     }
-  ), by = .(Sensor, Metric)]
+  }, by = .(Sensor, Metric)]
 
   # Reshape to wide format: Sensor ~ Metric_Stat
   # Melt the aggregated stats to stack them

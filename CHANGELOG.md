@@ -16,6 +16,9 @@
 
 **Merged pull requests:**
 
+- ⚡ Bolt: Optimize NA handling and vector aggregations [\#46](https://github.com/abhimehro/Seatek_Analysis/pull/46) ([abhimehro](https://github.com/abhimehro))
+- 🛡️ Sentinel: \[HIGH\] Fix path traversal regex and file matching bugs [\#45](https://github.com/abhimehro/Seatek_Analysis/pull/45) ([abhimehro](https://github.com/abhimehro))
+- ⚡ Bolt: Batch Excel I/O in outlier analysis [\#44](https://github.com/abhimehro/Seatek_Analysis/pull/44) ([abhimehro](https://github.com/abhimehro))
 - 🛡️ Sentinel: \[HIGH\] Fix path traversal vulnerability in backup restoration [\#43](https://github.com/abhimehro/Seatek_Analysis/pull/43) ([abhimehro](https://github.com/abhimehro))
 - 🎨 Palette: Add `txtProgressBar` visual feedback to sensor data processing loop [\#42](https://github.com/abhimehro/Seatek_Analysis/pull/42) ([abhimehro](https://github.com/abhimehro))
 - ⚡ Bolt: replace write.csv with fast fwrite for summary exports [\#41](https://github.com/abhimehro/Seatek_Analysis/pull/41) ([abhimehro](https://github.com/abhimehro))

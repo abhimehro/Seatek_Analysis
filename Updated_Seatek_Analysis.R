@@ -294,9 +294,17 @@ dump_summary_excel <- function(results, output_file, highlight_top_n = 5) {
   wb <- createWorkbook()
   header_style <- createStyle(textDecoration = "bold")
   # Write each year's sheet
+  message("Generating yearly summary sheets...")
+  pb <- txtProgressBar(min = 0, max = length(results), style = 3)
+  on.exit(close(pb), add = TRUE)
+  i <- 0
   for (year in names(results)) {
     write_year_sheet(wb, year, results[[year]], header_style)
+    i <- i + 1
+    setTxtProgressBar(pb, i)
   }
+  close(pb)
+
   # Compute summary statistics
   summary_df <- calculate_summary_stats(results)
   # Write summary sheets and CSVs

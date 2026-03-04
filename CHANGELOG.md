@@ -16,6 +16,7 @@
 
 **Merged pull requests:**
 
+- 🎨 Palette: Add progress indicator to dump\_summary\_excel [\#47](https://github.com/abhimehro/Seatek_Analysis/pull/47) ([abhimehro](https://github.com/abhimehro))
 - ⚡ Bolt: Optimize NA handling and vector aggregations [\#46](https://github.com/abhimehro/Seatek_Analysis/pull/46) ([abhimehro](https://github.com/abhimehro))
 - 🛡️ Sentinel: \[HIGH\] Fix path traversal regex and file matching bugs [\#45](https://github.com/abhimehro/Seatek_Analysis/pull/45) ([abhimehro](https://github.com/abhimehro))
 - ⚡ Bolt: Batch Excel I/O in outlier analysis [\#44](https://github.com/abhimehro/Seatek_Analysis/pull/44) ([abhimehro](https://github.com/abhimehro))

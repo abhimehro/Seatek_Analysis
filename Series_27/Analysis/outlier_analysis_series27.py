@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 import pandas as pd
-import numpy as np
 import argparse
 import re
 import os
@@ -21,7 +20,7 @@ def parse_args():
         help="Summary sheet name containing year-to-year diffs"
     )
     parser.add_argument(
-        '-m', '--method', choices=['abs','zscore','iqr'], default='abs',
+        '-m', '--method', choices=['abs', 'zscore', 'iqr'], default='abs',
         help="Outlier detection method: abs (|Δ|>=thr), zscore, or iqr"
     )
     parser.add_argument(
@@ -58,7 +57,7 @@ def detect_outliers(df, method, abs_thr, z_thr, iqr_fac):
 
     Returns:
         pd.DataFrame: A DataFrame containing only the rows identified as outliers.
-    
+
     Raises:
         ValueError: If an unknown method is specified.
     """
@@ -68,7 +67,7 @@ def detect_outliers(df, method, abs_thr, z_thr, iqr_fac):
     if method == 'zscore':
         return df[(col - col.mean()).abs() >= z_thr * col.std()]
     if method == 'iqr':
-        q1, q3 = col.quantile([0.25,0.75])
+        q1, q3 = col.quantile([0.25, 0.75])
         iqr = q3 - q1
         lower, upper = q1 - iqr_fac * iqr, q3 + iqr_fac * iqr
         return df[(col < lower) | (col > upper)]
@@ -78,7 +77,8 @@ def detect_outliers(df, method, abs_thr, z_thr, iqr_fac):
 def main():
     args = parse_args()
     os.makedirs(args.output, exist_ok=True)
-    logging.basicConfig(level=logging.INFO, format='%(levelname)s: %(message)s')
+    logging.basicConfig(level=logging.INFO,
+                        format='%(levelname)s: %(message)s')
 
     logging.info("Loading year-to-year differences")
     diff_df = pd.read_excel(args.input, sheet_name=args.sheet_summary)
@@ -88,7 +88,8 @@ def main():
     outliers = detect_outliers(
         long_df, args.method, args.threshold, args.zscore, args.iqr_factor
     ).reset_index(drop=True)
-    logging.info(f"Detected {len(outliers)} outliers using '{args.method}' method")
+    logging.info(
+        f"Detected {len(outliers)} outliers using '{args.method}' method")
 
     # ⚡ Bolt: Group outliers by target sheet to batch Excel I/O and prevent overriding corrections
     # We extract target year and group by sheet name to read/write each file exactly once.
@@ -116,50 +117,57 @@ def main():
     if not outliers_df.empty:
         # Group by sheet to minimize expensive I/O operations
         grouped = outliers_df.groupby('sheet')
-        for sheet, group in grouped:
-            try:
-                # Read once per sheet
-                df_raw = pd.read_excel(args.input, sheet_name=sheet)
-            except Exception as e:
-                logging.warning(f"Could not read sheet '{sheet}': {e}")
-                continue
 
-            if df_raw.empty:
-                logging.info(f"Sheet '{sheet}' is empty, skipping.")
-                continue
+        # ⚡ Bolt: Use ExcelFile to parse the file only once, speeding up repeated sheet reads
+        try:
+            with pd.ExcelFile(args.input) as xls:
+                for sheet, group in grouped:
+                    try:
+                        # Read once per sheet using the already parsed ExcelFile object
+                        df_raw = pd.read_excel(xls, sheet_name=sheet)
+                    except Exception as e:
+                        logging.warning(f"Could not read sheet '{sheet}': {e}")
+                        continue
 
-            # Drop the last column if its name contains 'time' (case-insensitive)
-            last_col = df_raw.columns[-1]
-            if 'time' in last_col.lower():
-                df_raw = df_raw.iloc[:, :-1].copy()
+                    if df_raw.empty:
+                        logging.info(f"Sheet '{sheet}' is empty, skipping.")
+                        continue
 
-            next_year = group.iloc[0]['next_year']
-            out_file = os.path.join(
-                args.output,
-                f"{os.path.splitext(os.path.basename(args.input))[0]}_{next_year}_corrected.xlsx"
-            )
+                    # Drop the last column if its name contains 'time' (case-insensitive)
+                    last_col = df_raw.columns[-1]
+                    if 'time' in last_col.lower():
+                        df_raw = df_raw.iloc[:, :-1].copy()
 
-            # Apply all corrections for this sheet in memory
-            # First, aggregate total offset per sensor to avoid repeated full-column writes
-            sensor_diffs = group.groupby('Sensor')['Difference'].sum()
-            for sensor, total_diff in sensor_diffs.items():
-                col = f"V{sensor}"
-                # Original per-row offset is -Difference, so total offset is -sum(Difference)
-                df_raw[col] = df_raw[col] - total_diff
+                    next_year = group.iloc[0]['next_year']
+                    out_file = os.path.join(
+                        args.output,
+                        f"{os.path.splitext(os.path.basename(args.input))[0]}_{next_year}_corrected.xlsx"
+                    )
 
-            # Record per-row corrections (for reporting) without re-modifying df_raw
-            for _, row in group.iterrows():
-                offset = -row['Difference']
-                corrections.append({
-                    'Year_Pair': row['Year_Pair'],
-                    'Sensor': row['Sensor'],
-                    'OrigDiff': row['Difference'],
-                    'OffsetApplied': offset,
-                    'CorrectedFile': out_file
-                })
+                    # Apply all corrections for this sheet in memory
+                    # First, aggregate total offset per sensor to avoid repeated full-column writes
+                    sensor_diffs = group.groupby('Sensor')['Difference'].sum()
+                    for sensor, total_diff in sensor_diffs.items():
+                        col = f"V{sensor}"
+                        # Original per-row offset is -Difference, so total offset is -sum(Difference)
+                        df_raw[col] = df_raw[col] - total_diff
 
-            # Write once per sheet
-            df_raw.to_excel(out_file, sheet_name=sheet, index=False)
+                    # Record per-row corrections (for reporting) without re-modifying df_raw
+                    for _, row in group.iterrows():
+                        offset = -row['Difference']
+                        corrections.append({
+                            'Year_Pair': row['Year_Pair'],
+                            'Sensor': row['Sensor'],
+                            'OrigDiff': row['Difference'],
+                            'OffsetApplied': offset,
+                            'CorrectedFile': out_file
+                        })
+
+                    # Write once per sheet
+                    df_raw.to_excel(out_file, sheet_name=sheet, index=False)
+        except Exception as e:
+            logging.error(f"Could not open file '{args.input}': {e}")
+            return
 
     corr_df = pd.DataFrame(corrections)
     corr_file = os.path.join(args.output, 'corrections_summary.xlsx')
@@ -167,7 +175,7 @@ def main():
     logging.info(f"Saved corrections summary to '{corr_file}'")
 
     # Plotting
-    plt.figure(figsize=(12,6))
+    plt.figure(figsize=(12, 6))
     plt.scatter(range(len(outliers)), outliers['Difference'], s=50)
     plt.axhline(0, color='gray')
     if args.method == 'abs':
@@ -175,7 +183,8 @@ def main():
         plt.axhline(-args.threshold, linestyle='--', color='red')
     plt.xticks(
         range(len(outliers)),
-        [f"{r['Year_Pair']}/S{int(r['Sensor'].split()[-1])}" for _,r in outliers.iterrows()],
+        [f"{r['Year_Pair']}/S{int(r['Sensor'].split()[-1])}" for _,
+         r in outliers.iterrows()],
         rotation=90
     )
     plt.ylabel('Difference (cm)')

@@ -124,7 +124,7 @@ def main():
                 for sheet, group in grouped:
                     try:
                         # Read once per sheet using the already parsed ExcelFile object
-                        df_raw = pd.read_excel(xls, sheet_name=sheet)
+                        df_raw = xls.parse(sheet)
                     except Exception as e:
                         logging.warning(f"Could not read sheet '{sheet}': {e}")
                         continue

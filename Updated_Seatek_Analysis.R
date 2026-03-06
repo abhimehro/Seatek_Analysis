@@ -32,7 +32,10 @@ log_handler <- function(type, msg) {
 
 # Utility: verify and normalize data directory path
 auto_detect_data_dir <- function(data_dir) {
-  if (missing(data_dir) || !dir.exists(data_dir)) {
+  if (missing(data_dir)) {
+    stop("Data directory not provided.")
+  }
+  if (!dir.exists(data_dir)) {
     stop(sprintf("Data directory not found: %s", data_dir))
   }
   return(normalizePath(data_dir))

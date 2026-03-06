@@ -92,7 +92,7 @@ process_all_data <- function(data_dir) {
   on.exit({ close(pb); cat("\n✅ All files processed.\n") }, add = TRUE)
   i <- 0
   for (f in files) {
-    df <- read_sensor_data(f)
+    df <- read_sensor_data(f, verbose = FALSE)
     # Export raw data to Excel
     out_raw <- file.path(data_dir, paste0(
       tools::file_path_sans_ext(basename(f)), ".xlsx"
@@ -222,6 +222,7 @@ write_summary_sheets <- function(wb, summary_df, output_file,
   csv_all <- sub("\\.xlsx$", "_all.csv", output_file)
   data.table::fwrite(summary_df_all, csv_all, row.names = FALSE)
   message(sprintf("Comprehensive summary CSV written to %s", csv_all))
+  cat(sprintf("  📄 Saved: %s\n", basename(csv_all)))
 
   # --- Filtered summary (sufficient data only) ---
   min_count <- 5
@@ -235,6 +236,7 @@ write_summary_sheets <- function(wb, summary_df, output_file,
   csv_sufficient <- sub("\\.xlsx$", "_sufficient.csv", output_file)
   data.table::fwrite(summary_df_sufficient, csv_sufficient, row.names = FALSE)
   message(sprintf("Filtered summary CSV written to %s", csv_sufficient))
+  cat(sprintf("  📄 Saved: %s\n", basename(csv_sufficient)))
 
   # Continue with filtered summary for top sensors and highlighting
   summary_df <- summary_df_sufficient
@@ -253,9 +255,10 @@ write_summary_sheets <- function(wb, summary_df, output_file,
         "full_pct_nonmissing"
       )
     ]
-    data.table::fwrite(top_sensors,
-              sub("\\.xlsx$", "_top_sensors.csv", output_file),
-              row.names = FALSE)
+    csv_top <- sub("\\.xlsx$", "_top_sensors.csv", output_file)
+    data.table::fwrite(top_sensors, csv_top, row.names = FALSE)
+    cat(sprintf("  📄 Saved: %s\n", basename(csv_top)))
+
     addWorksheet(wb, "Summary_Top_Sensors")
     writeData(
       wb,
@@ -285,14 +288,17 @@ write_summary_sheets <- function(wb, summary_df, output_file,
   }
   saveWorkbook(wb, output_file, overwrite = TRUE)
   message(sprintf("Summary written to %s", output_file))
+  cat(sprintf("  📄 Saved: %s\n", basename(output_file)))
   # Also export summary as CSV for preview
   csv_out <- sub("\\.xlsx$", ".csv", output_file)
   data.table::fwrite(summary_df, csv_out, row.names = FALSE)
   message(sprintf("Summary CSV written to %s", csv_out))
+  cat(sprintf("  📄 Saved: %s\n", basename(csv_out)))
   # Export robust stats as CSV
   csv_robust <- sub("\\.xlsx$", "_robust.csv", output_file)
   data.table::fwrite(summary_df, csv_robust, row.names = FALSE)
   message(sprintf("Robust summary CSV written to %s", csv_robust))
+  cat(sprintf("  📄 Saved: %s\n", basename(csv_robust)))
 }
 
 # Write combined summary workbook
@@ -303,19 +309,25 @@ dump_summary_excel <- function(results, output_file, highlight_top_n = 5) {
   cat("\n📊 Generating yearly summary sheets...\n")
   message("Generating yearly summary sheets...")
   pb <- txtProgressBar(min = 0, max = length(results), style = 3)
-  on.exit({ close(pb); cat("\n✅ Summary workbook complete.\n") }, add = TRUE)
   i <- 0
   for (year in names(results)) {
     write_year_sheet(wb, year, results[[year]], header_style)
     i <- i + 1
     setTxtProgressBar(pb, i)
   }
+  close(pb)
+  cat("\n✅ Yearly sheets generated.\n")
 
+  cat("\n📈 Computing summary statistics...\n")
   # Compute summary statistics
   summary_df <- calculate_summary_stats(results)
+
+  cat("\n💾 Saving final workbook and CSV outputs...\n")
   # Write summary sheets and CSVs
   write_summary_sheets(wb, summary_df, output_file,
                        header_style, highlight_top_n)
+
+  cat("\n✅ Summary workbook complete.\n")
 }
 
 # Main execution block

@@ -103,12 +103,12 @@ process_all_data <- function(data_dir) {
     # OPTIMIZATION: which(x > 0) is natively faster at dropping NAs than !is.na() &
     clean_vals <- function(x) x[which(x > 0)]
     sensor_names <- grep("^Sensor", names(df), value = TRUE)
-    first10 <- sapply(df[, ..sensor_names],
-                      function(x) mean(clean_vals(head(x, 10))))
-    last5  <- sapply(df[, ..sensor_names],
-                     function(x) mean(clean_vals(tail(x, 5))))
-    full   <- sapply(df[, ..sensor_names], function(x) mean(clean_vals(x)))
-    diff   <- full - first10
+
+    # ⚡ Bolt: Replace sapply with data.table native lapply(.SD) for O(1) row subsetting
+    first10 <- unlist(df[1:min(10, .N), lapply(.SD, function(x) mean(clean_vals(x))), .SDcols = sensor_names])
+    last5   <- unlist(df[max(1, .N - 4):.N, lapply(.SD, function(x) mean(clean_vals(x))), .SDcols = sensor_names])
+    full    <- unlist(df[, lapply(.SD, function(x) mean(clean_vals(x))), .SDcols = sensor_names])
+    diff    <- full - first10
     # Derive sheet/year name
     year_tag <- sub("^SS_Y([0-9]{2})\\.txt$", "\\1", basename(f))
     # Map Y01=1995, Y02=1996, ..., Y20=2014

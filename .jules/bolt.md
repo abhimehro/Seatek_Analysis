@@ -13,3 +13,7 @@
 ## 2025-05-06 - Prevent Re-parsing Excel Files in Loops
 **Learning:** `pd.read_excel(file_path, sheet_name=sheet)` re-parses the entire zip-like structure of the `.xlsx` file from scratch every single time it's called. When looping over multiple sheets in the same file, this becomes an O(N * M) operation (where N is sheets and M is file size).
 **Action:** When reading multiple sheets from the same Excel file inside a loop, always instantiate a `pd.ExcelFile(file_path)` object outside the loop first, and use `pd.read_excel(xls, sheet_name=sheet)` inside the loop. This reduces the parsing overhead to O(M).
+
+## 2025-05-06 - Avoid Repeated Column Subsetting in data.table
+**Learning:** Using `sapply(df[, cols, with=FALSE], ...)` combined with row-based subsetting functions inside the loop like `head(x, N)` forces the creation of a subset `data.frame` first, then sequentially traverses each column and slices it. For large rows/columns, this is an O(M * N) operation.
+**Action:** Use data.table's native optimized `i` row filters along with `.SDcols` (e.g., `df[1:10, lapply(.SD, function), .SDcols = cols]`). This subsets the rows once in C (O(1) operation), and evaluates the function seamlessly across all targets, drastically reducing memory allocation and iteration cost.

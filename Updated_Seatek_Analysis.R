@@ -39,8 +39,13 @@ auto_detect_data_dir <- function(data_dir) {
 }
 
 # Read a single sensor data file
-read_sensor_data <- function(file_path, sep = " ") {
+read_sensor_data <- function(file_path,
+                             sep = " ",
+                             verbose = getOption("seatek.read.verbose", interactive())) {
   file_path <- normalizePath(file_path)
+  if (isTRUE(verbose)) {
+    cat(sprintf("  📂 Reading: %s\n", basename(file_path)))
+  }
   message(sprintf("Reading sensor file: %s", basename(file_path)))
   if (!file.exists(file_path) || !grepl("\\.txt$", file_path)) {
     stop(sprintf("Invalid file: %s", file_path))
@@ -81,9 +86,10 @@ process_all_data <- function(data_dir) {
   if (length(files) == 0) {
     stop(sprintf("No sensor files found matching %s in %s", pattern, data_dir))
   }
+  cat(sprintf("\n🚀 Found %d sensor files. Starting processing...\n", length(files)))
   results <- list()
   pb <- txtProgressBar(min = 0, max = length(files), style = 3)
-  on.exit(close(pb), add = TRUE)
+  on.exit({ close(pb); cat("\n✅ All files processed.\n") }, add = TRUE)
   i <- 0
   for (f in files) {
     df <- read_sensor_data(f)
@@ -294,9 +300,10 @@ dump_summary_excel <- function(results, output_file, highlight_top_n = 5) {
   wb <- createWorkbook()
   header_style <- createStyle(textDecoration = "bold")
   # Write each year's sheet
+  cat("\n📊 Generating yearly summary sheets...\n")
   message("Generating yearly summary sheets...")
   pb <- txtProgressBar(min = 0, max = length(results), style = 3)
-  on.exit(close(pb), add = TRUE)
+  on.exit({ close(pb); cat("\n✅ Summary workbook complete.\n") }, add = TRUE)
   i <- 0
   for (year in names(results)) {
     write_year_sheet(wb, year, results[[year]], header_style)
@@ -313,6 +320,7 @@ dump_summary_excel <- function(results, output_file, highlight_top_n = 5) {
 
 # Main execution block
 if (sys.nframe() == 0 || interactive()) {
+  cat("\n🌊 Seatek Analysis Pipeline 🌊\n=============================\n")
   withCallingHandlers({
     data_dir <- file.path(getwd(), "Data")
     message(sprintf("Running main(). Data directory: %s", data_dir))
@@ -324,6 +332,7 @@ if (sys.nframe() == 0 || interactive()) {
     summary_out <- file.path(data_dir, "Seatek_Summary.xlsx")
     dump_summary_excel(results, summary_out)
     message("Processing complete.")
+    cat(sprintf("\n🎉 Pipeline finished! Output saved to: %s\n", summary_out))
   },
   warning = function(w) {
     log_handler("WARNING", conditionMessage(w))

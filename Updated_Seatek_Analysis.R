@@ -39,9 +39,13 @@ auto_detect_data_dir <- function(data_dir) {
 }
 
 # Read a single sensor data file
-read_sensor_data <- function(file_path, sep = " ") {
+read_sensor_data <- function(file_path,
+                             sep = " ",
+                             verbose = getOption("seatek.read.verbose", interactive())) {
   file_path <- normalizePath(file_path)
-  cat(sprintf("  📂 Reading: %s\n", basename(file_path)))
+  if (isTRUE(verbose)) {
+    cat(sprintf("  📂 Reading: %s\n", basename(file_path)))
+  }
   message(sprintf("Reading sensor file: %s", basename(file_path)))
   if (!file.exists(file_path) || !grepl("\\.txt$", file_path)) {
     stop(sprintf("Invalid file: %s", file_path))

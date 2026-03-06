@@ -16,6 +16,7 @@
 
 **Merged pull requests:**
 
+- 🎨 Palette: Fix progress bar garbling and improve CLI feedback [\#53](https://github.com/abhimehro/Seatek_Analysis/pull/53) ([abhimehro](https://github.com/abhimehro))
 - ⚡ Bolt: Optimize metric aggregations with data.table native operations [\#52](https://github.com/abhimehro/Seatek_Analysis/pull/52) ([abhimehro](https://github.com/abhimehro))
 - 🛡️ Sentinel: \[HIGH\] Fix GitHub Actions Secret Interpolation [\#51](https://github.com/abhimehro/Seatek_Analysis/pull/51) ([abhimehro](https://github.com/abhimehro))
 - 🎨 Palette: Add friendly CLI visual feedback to analysis pipeline [\#50](https://github.com/abhimehro/Seatek_Analysis/pull/50) ([abhimehro](https://github.com/abhimehro))

@@ -9,3 +9,7 @@
 ## 2025-05-06 - Grouping Redundancy in data.table Aggregations
 **Learning:** Performing multiple statistical aggregations on a column with `na.rm = TRUE` repeatedly traverses the vector to remove NAs, compounding iteration cost per group.
 **Action:** Extract the non-NA values once per group `v <- na.omit(Value)` and apply the statistical functions on `v` directly.
+
+## 2025-05-06 - Prevent Re-parsing Excel Files in Loops
+**Learning:** `pd.read_excel(file_path, sheet_name=sheet)` re-parses the entire zip-like structure of the `.xlsx` file from scratch every single time it's called. When looping over multiple sheets in the same file, this becomes an O(N * M) operation (where N is sheets and M is file size).
+**Action:** When reading multiple sheets from the same Excel file inside a loop, always instantiate a `pd.ExcelFile(file_path)` object outside the loop first, and use `pd.read_excel(xls, sheet_name=sheet)` inside the loop. This reduces the parsing overhead to O(M).

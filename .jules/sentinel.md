@@ -7,3 +7,8 @@
 **Vulnerability:** Untrusted AI-generated output was interpolated directly into a bash command (`gh issue comment $ISSUE_NUMBER --body '${{ steps.inference.outputs.response }}'`) in a GitHub Actions workflow.
 **Learning:** Using `${{ ... }}` interpolation within `run` blocks in GitHub Actions can lead to command injection if the content is malicious, as the string is evaluated before the script executes. This applies to user input, issue bodies, and AI outputs.
 **Prevention:** Always pass untrusted data to shell scripts via environment variables (e.g., `env:` block mapping to `$VARIABLE_NAME`) rather than direct inline string interpolation.
+
+## 2025-08-02 - GitHub Actions Secret Interpolation
+**Vulnerability:** A GitHub secret (`${{ secrets.GITHUB_TOKEN }}`) was interpolated directly into a bash command (`--token "${{ secrets.GITHUB_TOKEN }}"`) in a GitHub Actions workflow (`changelog.yml`).
+**Learning:** While secrets are not necessarily user-controlled, direct interpolation of secrets within `run` blocks is a dangerous pattern. If a secret contains shell metacharacters or quotes, it could cause syntax errors or unintended command execution. Furthermore, it normalizes an insecure pattern that might be copied for untrusted inputs.
+**Prevention:** Always pass secrets to shell scripts securely by mapping them to environment variables (e.g., using an `env:` block `GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}`) and referencing the environment variable (`$GITHUB_TOKEN`) in the script.

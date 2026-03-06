@@ -16,6 +16,7 @@
 
 **Merged pull requests:**
 
+- 🛡️ Sentinel: \[HIGH\] Fix GitHub Actions Secret Interpolation [\#51](https://github.com/abhimehro/Seatek_Analysis/pull/51) ([abhimehro](https://github.com/abhimehro))
 - 🎨 Palette: Add friendly CLI visual feedback to analysis pipeline [\#50](https://github.com/abhimehro/Seatek_Analysis/pull/50) ([abhimehro](https://github.com/abhimehro))
 - ⚡ Bolt: Optimize Excel I/O in outlier\_analysis\_series27.py [\#49](https://github.com/abhimehro/Seatek_Analysis/pull/49) ([abhimehro](https://github.com/abhimehro))
 - 🛡️ Sentinel: \[CRITICAL\] Fix command injection in GitHub Actions workflow [\#48](https://github.com/abhimehro/Seatek_Analysis/pull/48) ([abhimehro](https://github.com/abhimehro))

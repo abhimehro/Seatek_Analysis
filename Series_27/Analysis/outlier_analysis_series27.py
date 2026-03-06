@@ -141,7 +141,7 @@ def main():
                     next_year = group.iloc[0]['next_year']
                     out_file = os.path.join(
                         args.output,
-                        f"{os.path.splitext(os.path.basename(args.input))[0]}_{next_year}_corrected.xlsx"
+                        f"{os.path.splitext(os.path.basename(args.input))[0]}_{next_year}_{sheet}_corrected.xlsx"
                     )
 
                     # Apply all corrections for this sheet in memory

@@ -165,8 +165,17 @@ def main():
 
                     # Write once per sheet
                     df_raw.to_excel(out_file, sheet_name=sheet, index=False)
-        except Exception as e:
-            logging.error(f"Could not open file '{args.input}': {e}")
+        except (FileNotFoundError, PermissionError, OSError) as e:
+            logging.error(
+                f"Could not open file '{args.input}': {e}",
+                exc_info=True,
+            )
+            return
+        except (ValueError, KeyError) as e:
+            logging.error(
+                f"Error reading or processing Excel data from '{args.input}': {e}",
+                exc_info=True,
+            )
             return
 
     corr_df = pd.DataFrame(corrections)

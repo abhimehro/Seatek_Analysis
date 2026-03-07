@@ -93,7 +93,7 @@ def main():
 
     # ⚡ Bolt: Group outliers by target sheet to batch Excel I/O and prevent overriding corrections
     # We extract target year and group by sheet name to read/write each file exactly once.
-    # ⚡ Bolt: Use vectorized string operations instead of iterrows() for O(1) subsetting
+    # ⚡ Bolt: Use vectorized string operations instead of iterrows() to subset rows without Python-level loops
     if not outliers.empty:
         all_years = outliers['Year_Pair'].astype(str).str.findall(r'(\d{4})')
         valid_mask = all_years.str.len() == 2

@@ -20,4 +20,4 @@
 
 ## 2025-05-06 - Avoid .iterrows() in Pandas DataFrame processing
 **Learning:** Iterating over a DataFrame using `.iterrows()` is extremely slow (O(N) operations in Python) and defeats the purpose of pandas, especially when dealing with row-wise string manipulations or conditional extractions (e.g., regex matching).
-**Action:** Replace `iterrows()` with Pandas vectorized `.str` accessor methods (like `.str.findall()`, `.str.len()`, `.str.split()`) and boolean masking. This leverages underlying optimized C code and scales efficiently (O(1) from Python's perspective).
+**Action:** Replace `iterrows()` with Pandas vectorized `.str` accessor methods (like `.str.findall()`, `.str.len()`, `.str.split()`) and boolean masking. This leverages underlying optimized C code so the work remains O(N) in the number of rows but with far less Python-level overhead than per-row iteration.

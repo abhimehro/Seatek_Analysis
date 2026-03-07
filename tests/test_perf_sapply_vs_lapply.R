@@ -4,6 +4,10 @@
 # native `lapply(.SD)` and row-subsetting compared to `sapply` with column
 # slicing. The optimization avoids repeatedly slicing columns inside an M*N loop
 # and creating intermediate subsets.
+#
+# NOTE: This is a manual performance benchmark script and not a unit/integration
+# test. It is intended to be run explicitly (e.g. via Rscript) and should not be
+# included in normal automated test or CI test suites.
 
 # Load required packages
 if (!requireNamespace("data.table", quietly = TRUE)) {

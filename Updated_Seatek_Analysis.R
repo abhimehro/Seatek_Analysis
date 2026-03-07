@@ -143,7 +143,12 @@ process_all_data <- function(data_dir) {
     }
 
     if (requireNamespace("parallel", quietly = TRUE)) {
-      cores <- max(1, parallel::detectCores() - 1)
+      cores_detected <- tryCatch(parallel::detectCores(), error = function(e) NA_real_)
+      if (!is.numeric(cores_detected) || !is.finite(cores_detected) || cores_detected < 1) {
+        cores <- 1L
+      } else {
+        cores <- max(1L, as.integer(cores_detected) - 1L)
+      }
       if (.Platform$OS.type == "unix") {
         out_files <- parallel::mclapply(raw_export_tasks, write_task, mc.cores = cores)
       } else {

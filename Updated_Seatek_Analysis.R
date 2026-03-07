@@ -91,6 +91,7 @@ process_all_data <- function(data_dir) {
   }
   cat(sprintf("\n🚀 Found %d sensor files. Starting processing...\n", length(files)))
   results <- list()
+  raw_export_tasks <- list()
   pb <- txtProgressBar(min = 0, max = length(files), style = 3)
   on.exit({ close(pb); cat("\n✅ All files processed.\n") }, add = TRUE)
   i <- 0
@@ -100,8 +101,7 @@ process_all_data <- function(data_dir) {
     out_raw <- file.path(data_dir, paste0(
       tools::file_path_sans_ext(basename(f)), ".xlsx"
     ))
-    write.xlsx(df, out_raw, overwrite = TRUE)
-    message(sprintf("Raw data written to %s", out_raw))
+    raw_export_tasks[[length(raw_export_tasks) + 1]] <- list(df = df, out_raw = out_raw)
     # Compute summary metrics
     # OPTIMIZATION: which(x > 0) is natively faster at dropping NAs than !is.na() &
     clean_vals <- function(x) x[which(x > 0)]
@@ -133,6 +133,38 @@ process_all_data <- function(data_dir) {
     setTxtProgressBar(pb, i)
   }
   close(pb)
+
+  # ⚡ Bolt: Parallelize raw Excel writes to remove serial I/O bottleneck
+  cat("
+⚡ Writing raw Excel files in parallel...
+")
+  if (length(raw_export_tasks) > 0) {
+    write_task <- function(task) {
+      # Use full namespace just to be safe
+      openxlsx::write.xlsx(task$df, task$out_raw, overwrite = TRUE)
+      return(task$out_raw)
+    }
+
+    if (requireNamespace("parallel", quietly = TRUE)) {
+      cores <- max(1, parallel::detectCores() - 1)
+      if (.Platform$OS.type == "unix") {
+        out_files <- parallel::mclapply(raw_export_tasks, write_task, mc.cores = cores)
+      } else {
+        cl <- parallel::makeCluster(cores)
+        on.exit(parallel::stopCluster(cl), add = TRUE)
+        out_files <- parallel::parLapply(cl, raw_export_tasks, write_task)
+      }
+      for (out_file in out_files) {
+        message(sprintf("Raw data written to %s", out_file))
+      }
+    } else {
+      for (task in raw_export_tasks) {
+        out_file <- write_task(task)
+        message(sprintf("Raw data written to %s", out_file))
+      }
+    }
+  }
+  cat("✅ Raw files written.\n")
   return(results)
 }
 

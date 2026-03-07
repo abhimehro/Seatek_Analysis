@@ -132,7 +132,6 @@ process_all_data <- function(data_dir) {
     i <- i + 1
     setTxtProgressBar(pb, i)
   }
-  close(pb)
 
   # ⚡ Bolt: Parallelize raw Excel writes to remove serial I/O bottleneck
   cat("\n⚡ Writing raw Excel files in parallel...\n")

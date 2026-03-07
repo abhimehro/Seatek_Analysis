@@ -93,25 +93,27 @@ def main():
 
     # ⚡ Bolt: Group outliers by target sheet to batch Excel I/O and prevent overriding corrections
     # We extract target year and group by sheet name to read/write each file exactly once.
-    outliers_to_process = []
-    for _, row in outliers.iterrows():
-        pair = row['Year_Pair']
-        sensor = int(row['Sensor'].split()[-1])
-        diff = row['Difference']
-        years = re.findall(r'(\d{4})', pair)
-        if len(years) != 2:
-            continue
-        next_year = int(years[0])
-        sheet = f"Raw Data {next_year}"
-        outliers_to_process.append({
-            'Year_Pair': pair,
-            'Sensor': sensor,
-            'Difference': diff,
-            'next_year': next_year,
-            'sheet': sheet
-        })
+    # ⚡ Bolt: Use vectorized string operations instead of iterrows() for O(1) subsetting
+    if not outliers.empty:
+        all_years = outliers['Year_Pair'].astype(str).str.findall(r'(\d{4})')
+        valid_mask = all_years.str.len() == 2
 
-    outliers_df = pd.DataFrame(outliers_to_process)
+        valid_outliers = outliers[valid_mask].copy()
+        valid_years = all_years[valid_mask]
+
+        sensors = valid_outliers['Sensor'].astype(str).str.split().str[-1].astype(int)
+        next_years = valid_years.str[0].astype(int)
+
+        outliers_df = pd.DataFrame({
+            'Year_Pair': valid_outliers['Year_Pair'],
+            'Sensor': sensors,
+            'Difference': valid_outliers['Difference'],
+            'next_year': next_years,
+            'sheet': "Raw Data " + next_years.astype(str)
+        })
+    else:
+        outliers_df = pd.DataFrame(columns=['Year_Pair', 'Sensor', 'Difference', 'next_year', 'sheet'])
+
     corrections = []
 
     if not outliers_df.empty:

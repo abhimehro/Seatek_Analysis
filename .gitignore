@@ -2,3 +2,5 @@
 .Rhistory
 .RData
 .Ruserdata
+venv/
+test_out_*.xlsx

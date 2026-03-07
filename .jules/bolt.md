@@ -17,3 +17,7 @@
 ## 2025-05-06 - Avoid Repeated Column Subsetting in data.table
 **Learning:** Using `sapply(df[, cols, with=FALSE], ...)` combined with row-based subsetting functions inside the loop like `head(x, N)` forces the creation of a subset `data.frame` first, then sequentially traverses each column and slices it. For large rows/columns, this is an O(M * N) operation.
 **Action:** Use data.table's native optimized `i` row filters along with `.SDcols` (e.g., `df[1:10, lapply(.SD, function), .SDcols = cols]`). This subsets the rows once in C (O(1) operation), and evaluates the function seamlessly across all targets, drastically reducing memory allocation and iteration cost.
+
+## 2025-05-06 - Avoid .iterrows() in Pandas DataFrame processing
+**Learning:** Iterating over a DataFrame using `.iterrows()` is extremely slow (O(N) operations in Python) and defeats the purpose of pandas, especially when dealing with row-wise string manipulations or conditional extractions (e.g., regex matching).
+**Action:** Replace `iterrows()` with Pandas vectorized `.str` accessor methods (like `.str.findall()`, `.str.len()`, `.str.split()`) and boolean masking. This leverages underlying optimized C code and scales efficiently (O(1) from Python's perspective).

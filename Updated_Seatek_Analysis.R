@@ -135,9 +135,7 @@ process_all_data <- function(data_dir) {
   close(pb)
 
   # ⚡ Bolt: Parallelize raw Excel writes to remove serial I/O bottleneck
-  cat("
-⚡ Writing raw Excel files in parallel...
-")
+  cat("\n⚡ Writing raw Excel files in parallel...\n")
   if (length(raw_export_tasks) > 0) {
     write_task <- function(task) {
       # Use full namespace just to be safe

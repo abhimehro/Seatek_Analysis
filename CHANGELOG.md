@@ -16,6 +16,7 @@
 
 **Merged pull requests:**
 
+- 🧹 \[Code Health\] Refactor verify\_environment\(\) to improve maintainability [\#63](https://github.com/abhimehro/Seatek_Analysis/pull/63) ([abhimehro](https://github.com/abhimehro))
 - 🧹 Extract helper functions to simplify install\_and\_verify [\#62](https://github.com/abhimehro/Seatek_Analysis/pull/62) ([abhimehro](https://github.com/abhimehro))
 - 🧹 Extract `get_language` to reduce complexity in `scan_file` [\#61](https://github.com/abhimehro/Seatek_Analysis/pull/61) ([abhimehro](https://github.com/abhimehro))
 - 🧹 Code Health Improvement: Refactor outlier\_analysis\_series27.py [\#60](https://github.com/abhimehro/Seatek_Analysis/pull/60) ([abhimehro](https://github.com/abhimehro))

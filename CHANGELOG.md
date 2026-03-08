@@ -16,6 +16,7 @@
 
 **Merged pull requests:**
 
+- 🧪 \[testing\] add unit tests for calculate\_summary\_stats [\#66](https://github.com/abhimehro/Seatek_Analysis/pull/66) ([abhimehro](https://github.com/abhimehro))
 - 🧪 Add test for calculate\_summary\_stats rollmean3 edge case [\#65](https://github.com/abhimehro/Seatek_Analysis/pull/65) ([abhimehro](https://github.com/abhimehro))
 - ⚡ Bolt: Remove iterrows to boost pandas performance [\#64](https://github.com/abhimehro/Seatek_Analysis/pull/64) ([abhimehro](https://github.com/abhimehro))
 - 🧹 \[Code Health\] Refactor verify\_environment\(\) to improve maintainability [\#63](https://github.com/abhimehro/Seatek_Analysis/pull/63) ([abhimehro](https://github.com/abhimehro))

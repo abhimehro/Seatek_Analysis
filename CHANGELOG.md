@@ -16,6 +16,7 @@
 
 **Merged pull requests:**
 
+- 🧹 Code Health: Refactor `dump_summary_excel` to be more modular [\#58](https://github.com/abhimehro/Seatek_Analysis/pull/58) ([abhimehro](https://github.com/abhimehro))
 - ⚡ Optimize subsetting efficiency with lapply\(.SD\) over sapply [\#57](https://github.com/abhimehro/Seatek_Analysis/pull/57) ([abhimehro](https://github.com/abhimehro))
 - ⚡ Parallelize raw Excel exports in process\_all\_data [\#56](https://github.com/abhimehro/Seatek_Analysis/pull/56) ([abhimehro](https://github.com/abhimehro))
 - ⚡ Bolt: Optimize outlier extraction by replacing iterrows with vectorized ops [\#55](https://github.com/abhimehro/Seatek_Analysis/pull/55) ([abhimehro](https://github.com/abhimehro))

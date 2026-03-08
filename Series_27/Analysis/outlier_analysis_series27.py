@@ -182,7 +182,10 @@ def main():
     if corrections:
         corr_df = pd.concat(corrections, ignore_index=True)
     else:
-        corr_df = pd.DataFrame(columns=['Year_Pair', 'Sensor', 'OrigDiff', 'OffsetApplied', 'CorrectedFile'])
+        # Preserve previous behavior: when there are no corrections,
+        # create an empty DataFrame with no columns so the Excel sheet
+        # has no headers, matching the old pd.DataFrame(corrections) output.
+        corr_df = pd.DataFrame()
 
     corr_file = os.path.join(args.output, 'corrections_summary.xlsx')
     corr_df.to_excel(corr_file, index=False)

@@ -4,7 +4,7 @@ context("Testing calculate_summary_stats function")
 
 test_that("calculate_summary_stats correctly computes statistics", {
   # Create a mock results list simulating process_all_data output
-  # Two years, 2 sensors
+  # Three years, 2 sensors
   mock_results <- list(
     "1995" = data.frame(
       first10 = c(10, 20),

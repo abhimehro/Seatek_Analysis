@@ -11,3 +11,9 @@ updates:
     directory: "/Series_27/Analysis/"
     schedule:
       interval: "daily"
+
+  # Enable version updates for GitHub Actions
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "daily"

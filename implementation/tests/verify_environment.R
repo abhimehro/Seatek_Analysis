@@ -9,6 +9,90 @@
 # Source the environment setup script
 source("../scripts/01_environment_setup.R")
 
+
+#' Check additional verification requirements
+#'
+#' @return List with manifest_exists and main_script_exists
+check_additional_requirements <- function() {
+  cat("\nStep 4: Additional Verification Checks\n")
+
+  # Check if package manifest exists
+  manifest_path <- PACKAGE_MANIFEST_PATH
+  manifest_exists <- file.exists(manifest_path)
+  cat("  Package manifest exists: ", ifelse(manifest_exists, "✓ YES", "✗ NO"), "\n")
+
+  if (manifest_exists) {
+    tryCatch({
+      manifest <- readRDS(manifest_path)
+      cat("  Manifest timestamp: ", format(manifest$setup_timestamp), "\n")
+      cat("  R version in manifest: ", manifest$r_version, "\n")
+      cat("  Packages in manifest: ", length(manifest$installed_packages), "\n")
+    }, error = function(e) {
+      cat("  ✗ Failed to read manifest: ", e$message, "\n")
+    })
+  }
+
+  # Check key directories exist
+  key_dirs <- KEY_DIRECTORIES
+  dir_check_results <- sapply(key_dirs, dir.exists)
+  cat("  Key directories exist: ", sum(dir_check_results), "/", length(key_dirs), "\n")
+
+  # Check if main analysis script exists
+  main_script_exists <- file.exists("Updated_Seatek_Analysis.R")
+  cat("  Main analysis script exists: ", ifelse(main_script_exists, "✓ YES", "✗ NO"), "\n")
+
+  return(list(
+    manifest_exists = manifest_exists,
+    main_script_exists = main_script_exists
+  ))
+}
+
+
+#' Summarize and save verification results
+#'
+#' @param r_version_ok Boolean indicating R version success
+#' @param all_packages_loaded Boolean indicating all packages loaded
+#' @param successful_loads Number of successful package loads
+#' @param total_packages Total number of packages
+#' @param all_permissions_ok Boolean indicating all permissions OK
+#' @param successful_permissions Number of successful permission checks
+#' @param total_directories Total number of directories
+#' @param key_components_exist Boolean indicating key components exist
+#' @param overall_success Boolean indicating overall success
+#' @param verification_results List of verification results
+#' @return The updated verification results list
+summarize_and_save_verification <- function(r_version_ok, all_packages_loaded, successful_loads,
+                                            total_packages, all_permissions_ok, successful_permissions,
+                                            total_directories, key_components_exist, overall_success,
+                                            verification_results) {
+  # Print final summary
+  cat("\n=== Verification Summary ===\n")
+  cat("R Version Compatibility: ", ifelse(r_version_ok, "✓ PASS", "✗ FAIL"), "\n")
+  cat("Package Loading: ", ifelse(all_packages_loaded, "✓ PASS", "✗ FAIL"), " (", successful_loads, "/", total_packages, ")\n")
+  cat("Write Permissions: ", ifelse(all_permissions_ok, "✓ PASS", "✗ FAIL"), " (", successful_permissions, "/", total_directories, ")\n")
+  cat("Key Components: ", ifelse(key_components_exist, "✓ PASS", "✗ FAIL"), "\n")
+  cat("Overall Status: ", ifelse(overall_success, "✓ PASS", "✗ FAIL"), "\n")
+
+  if (overall_success) {
+    cat("\n🎉 Environment verification completed successfully!\n")
+    cat("The Seatek R repository environment is ready for use.\n")
+  } else {
+    cat("\n⚠ Environment verification completed with issues.\n")
+    cat("Please review the failures above and resolve them.\n")
+  }
+
+  # Save verification results
+  verification_path <- VERIFICATION_RESULTS_PATH
+  tryCatch({
+    saveRDS(verification_results, verification_path)
+    cat("  Verification results saved to: ", verification_path, "\n")
+  }, error = function(e) {
+    cat("  ✗ Failed to save verification results: ", e$message, "\n")
+  })
+
+  return(verification_results)
+}
+
 #' Comprehensive environment verification
 #' 
 #' @return List with verification results
@@ -60,32 +144,9 @@ verify_environment <- function() {
   cat("  Permission check summary: ", successful_permissions, "/", total_directories, " successful\n")
   
   # Step 4: Additional verification checks
-  cat("\nStep 4: Additional Verification Checks\n")
-  
-  # Check if package manifest exists
-  manifest_path <- PACKAGE_MANIFEST_PATH
-  manifest_exists <- file.exists(manifest_path)
-  cat("  Package manifest exists: ", ifelse(manifest_exists, "✓ YES", "✗ NO"), "\n")
-  
-  if (manifest_exists) {
-    tryCatch({
-      manifest <- readRDS(manifest_path)
-      cat("  Manifest timestamp: ", format(manifest$setup_timestamp), "\n")
-      cat("  R version in manifest: ", manifest$r_version, "\n")
-      cat("  Packages in manifest: ", length(manifest$installed_packages), "\n")
-    }, error = function(e) {
-      cat("  ✗ Failed to read manifest: ", e$message, "\n")
-    })
-  }
-  
-  # Check key directories exist
-  key_dirs <- KEY_DIRECTORIES
-  dir_check_results <- sapply(key_dirs, dir.exists)
-  cat("  Key directories exist: ", sum(dir_check_results), "/", length(key_dirs), "\n")
-  
-  # Check if main analysis script exists
-  main_script_exists <- file.exists("Updated_Seatek_Analysis.R")
-  cat("  Main analysis script exists: ", ifelse(main_script_exists, "✓ YES", "✗ NO"), "\n")
+  additional_reqs <- check_additional_requirements()
+  manifest_exists <- additional_reqs$manifest_exists
+  main_script_exists <- additional_reqs$main_script_exists
   
   # Determine overall success
   r_version_ok <- r_version_check$success
@@ -97,30 +158,19 @@ verify_environment <- function() {
   
   verification_results$overall_success <- overall_success
   
-  # Print final summary
-  cat("\n=== Verification Summary ===\n")
-  cat("R Version Compatibility: ", ifelse(r_version_ok, "✓ PASS", "✗ FAIL"), "\n")
-  cat("Package Loading: ", ifelse(all_packages_loaded, "✓ PASS", "✗ FAIL"), " (", successful_loads, "/", total_packages, ")\n")
-  cat("Write Permissions: ", ifelse(all_permissions_ok, "✓ PASS", "✗ FAIL"), " (", successful_permissions, "/", total_directories, ")\n")
-  cat("Key Components: ", ifelse(key_components_exist, "✓ PASS", "✗ FAIL"), "\n")
-  cat("Overall Status: ", ifelse(overall_success, "✓ PASS", "✗ FAIL"), "\n")
-  
-  if (overall_success) {
-    cat("\n🎉 Environment verification completed successfully!\n")
-    cat("The Seatek R repository environment is ready for use.\n")
-  } else {
-    cat("\n⚠ Environment verification completed with issues.\n")
-    cat("Please review the failures above and resolve them.\n")
-  }
-  
-  # Save verification results
-  verification_path <- VERIFICATION_RESULTS_PATH
-  tryCatch({
-    saveRDS(verification_results, verification_path)
-    cat("  Verification results saved to: ", verification_path, "\n")
-  }, error = function(e) {
-    cat("  ✗ Failed to save verification results: ", e$message, "\n")
-  })
+  # Print final summary and save results
+  verification_results <- summarize_and_save_verification(
+    r_version_ok = r_version_ok,
+    all_packages_loaded = all_packages_loaded,
+    successful_loads = successful_loads,
+    total_packages = total_packages,
+    all_permissions_ok = all_permissions_ok,
+    successful_permissions = successful_permissions,
+    total_directories = total_directories,
+    key_components_exist = key_components_exist,
+    overall_success = overall_success,
+    verification_results = verification_results
+  )
   
   return(verification_results)
 }

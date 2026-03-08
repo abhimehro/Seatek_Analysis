@@ -128,12 +128,17 @@ write_year_sheet <- function(wb, year, data, header_style) {
   freezePane(wb, sheet = year, firstRow = TRUE)
   # Optional: highlight largest within_diff in each year
   if ("within_diff" %in% colnames(df)) {
-    max_idx <- which.max(abs(df$within_diff))
-    highlight_style_yearly <- createStyle(bgFill = "#FFD700")
-    addStyle(wb, sheet = year, style = highlight_style_yearly,
-             rows = max_idx + 1,
-             cols = which(colnames(df) == "within_diff") + 1,
-             gridExpand = TRUE, stack = TRUE)
+    wd_vals <- df$within_diff
+    finite_idx <- which(is.finite(wd_vals))
+    if (length(finite_idx) > 0) {
+      max_local_idx <- which.max(abs(wd_vals[finite_idx]))
+      max_idx <- finite_idx[max_local_idx]
+      highlight_style_yearly <- createStyle(bgFill = "#FFD700")
+      addStyle(wb, sheet = year, style = highlight_style_yearly,
+               rows = max_idx + 1,
+               cols = which(colnames(df) == "within_diff") + 1,
+               gridExpand = TRUE, stack = TRUE)
+    }
   }
 }
 

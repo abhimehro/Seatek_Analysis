@@ -5,6 +5,11 @@ updates:
     directory: "/"
     schedule:
       interval: "daily"
+    assignees:
+      - "abhimehro"
+    labels:
+      - "dependencies"
+      - "github_actions"
 
   # Enable version updates for Python/pip
   - package-ecosystem: "pip"

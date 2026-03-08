@@ -16,6 +16,7 @@
 
 **Merged pull requests:**
 
+- 🧹 Code Health Improvement: Refactor outlier\_analysis\_series27.py [\#60](https://github.com/abhimehro/Seatek_Analysis/pull/60) ([abhimehro](https://github.com/abhimehro))
 - 🛡️ Sentinel: \[MEDIUM\] Prevent CLI option injection in GitHub Actions summary workflow [\#59](https://github.com/abhimehro/Seatek_Analysis/pull/59) ([abhimehro](https://github.com/abhimehro))
 - 🧹 Code Health: Refactor `dump_summary_excel` to be more modular [\#58](https://github.com/abhimehro/Seatek_Analysis/pull/58) ([abhimehro](https://github.com/abhimehro))
 - ⚡ Optimize subsetting efficiency with lapply\(.SD\) over sapply [\#57](https://github.com/abhimehro/Seatek_Analysis/pull/57) ([abhimehro](https://github.com/abhimehro))

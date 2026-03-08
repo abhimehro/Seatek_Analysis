@@ -154,16 +154,15 @@ def main():
                         # Original per-row offset is -Difference, so total offset is -sum(Difference)
                         df_raw[col] = df_raw[col] - total_diff
 
-                    # Record per-row corrections (for reporting) without re-modifying df_raw
-                    for _, row in group.iterrows():
-                        offset = -row['Difference']
-                        corrections.append({
-                            'Year_Pair': row['Year_Pair'],
-                            'Sensor': row['Sensor'],
-                            'OrigDiff': row['Difference'],
-                            'OffsetApplied': offset,
-                            'CorrectedFile': out_file
-                        })
+                    # ⚡ Bolt: Vectorize corrections reporting instead of using iterrows()
+                    group_corr = pd.DataFrame({
+                        'Year_Pair': group['Year_Pair'],
+                        'Sensor': group['Sensor'],
+                        'OrigDiff': group['Difference'],
+                        'OffsetApplied': -group['Difference'],
+                        'CorrectedFile': out_file
+                    })
+                    corrections.append(group_corr)
 
                     # Write once per sheet
                     df_raw.to_excel(out_file, sheet_name=sheet, index=False)
@@ -180,7 +179,11 @@ def main():
             )
             return
 
-    corr_df = pd.DataFrame(corrections)
+    if corrections:
+        corr_df = pd.concat(corrections, ignore_index=True)
+    else:
+        corr_df = pd.DataFrame(columns=['Year_Pair', 'Sensor', 'OrigDiff', 'OffsetApplied', 'CorrectedFile'])
+
     corr_file = os.path.join(args.output, 'corrections_summary.xlsx')
     corr_df.to_excel(corr_file, index=False)
     logging.info(f"Saved corrections summary to '{corr_file}'")
@@ -192,10 +195,13 @@ def main():
     if args.method == 'abs':
         plt.axhline(args.threshold, linestyle='--', color='red')
         plt.axhline(-args.threshold, linestyle='--', color='red')
+    # ⚡ Bolt: Vectorize string concatenation for plot ticks instead of iterrows()
+    sensor_nums = outliers['Sensor'].astype(str).str.split().str[-1].astype(int).astype(str)
+    xtick_labels = outliers['Year_Pair'].astype(str) + "/S" + sensor_nums
+
     plt.xticks(
         range(len(outliers)),
-        [f"{r['Year_Pair']}/S{int(r['Sensor'].split()[-1])}" for _,
-         r in outliers.iterrows()],
+        xtick_labels,
         rotation=90
     )
     plt.ylabel('Difference (cm)')

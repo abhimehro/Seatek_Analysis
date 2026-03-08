@@ -74,26 +74,8 @@ def detect_outliers(df, method, abs_thr, z_thr, iqr_fac):
     raise ValueError(f"Unknown method: {method}")
 
 
-def main():
-    args = parse_args()
-    os.makedirs(args.output, exist_ok=True)
-    logging.basicConfig(level=logging.INFO,
-                        format='%(levelname)s: %(message)s')
-
-    logging.info("Loading year-to-year differences")
-    diff_df = pd.read_excel(args.input, sheet_name=args.sheet_summary)
-    long_df = diff_df.melt(
-        id_vars='Year_Pair', var_name='Sensor', value_name='Difference'
-    )
-    outliers = detect_outliers(
-        long_df, args.method, args.threshold, args.zscore, args.iqr_factor
-    ).reset_index(drop=True)
-    logging.info(
-        f"Detected {len(outliers)} outliers using '{args.method}' method")
-
-    # ⚡ Bolt: Group outliers by target sheet to batch Excel I/O and prevent overriding corrections
-    # We extract target year and group by sheet name to read/write each file exactly once.
-    # ⚡ Bolt: Use vectorized string operations instead of iterrows() to subset rows without Python-level loops
+def prepare_outliers_df(outliers):
+    """Group outliers by target sheet to batch Excel I/O and prevent overriding corrections."""
     if not outliers.empty:
         all_years = outliers['Year_Pair'].astype(str).str.findall(r'(\d{4})')
         valid_mask = all_years.str.len() == 2
@@ -114,15 +96,19 @@ def main():
     else:
         outliers_df = pd.DataFrame(columns=['Year_Pair', 'Sensor', 'Difference', 'next_year', 'sheet'])
 
+    return outliers_df
+
+
+def apply_corrections(input_path, output_dir, outliers_df):
+    """Applies offsets to the Excel file and generates a list of corrections."""
     corrections = []
 
     if not outliers_df.empty:
         # Group by sheet to minimize expensive I/O operations
         grouped = outliers_df.groupby('sheet')
 
-        # ⚡ Bolt: Use ExcelFile to parse the file only once, speeding up repeated sheet reads
         try:
-            with pd.ExcelFile(args.input) as xls:
+            with pd.ExcelFile(input_path) as xls:
                 for sheet, group in grouped:
                     try:
                         # Read once per sheet using the already parsed ExcelFile object
@@ -142,8 +128,8 @@ def main():
 
                     next_year = group.iloc[0]['next_year']
                     out_file = os.path.join(
-                        args.output,
-                        f"{os.path.splitext(os.path.basename(args.input))[0]}_{next_year}_{sheet}_corrected.xlsx"
+                        output_dir,
+                        f"{os.path.splitext(os.path.basename(input_path))[0]}_{next_year}_{sheet}_corrected.xlsx"
                     )
 
                     # Apply all corrections for this sheet in memory
@@ -168,16 +154,14 @@ def main():
                     df_raw.to_excel(out_file, sheet_name=sheet, index=False)
         except (FileNotFoundError, PermissionError, OSError) as e:
             logging.error(
-                f"Could not open file '{args.input}': {e}",
+                f"Could not open file '{input_path}': {e}",
                 exc_info=True,
             )
-            return
         except (ValueError, KeyError) as e:
             logging.error(
-                f"Error reading or processing Excel data from '{args.input}': {e}",
+                f"Error reading or processing Excel data from '{input_path}': {e}",
                 exc_info=True,
             )
-            return
 
     if corrections:
         corr_df = pd.concat(corrections, ignore_index=True)
@@ -190,8 +174,11 @@ def main():
     corr_file = os.path.join(args.output, 'corrections_summary.xlsx')
     corr_df.to_excel(corr_file, index=False)
     logging.info(f"Saved corrections summary to '{corr_file}'")
+    return corrections
 
-    # Plotting
+
+def plot_outliers(outliers, method, threshold, output_dir):
+    """Generates and saves the scatter plot for outliers."""
     plt.figure(figsize=(12, 6))
     plt.scatter(range(len(outliers)), outliers['Difference'], s=50)
     plt.axhline(0, color='gray')
@@ -202,6 +189,9 @@ def main():
     sensor_nums = outliers['Sensor'].astype(str).str.split().str[-1].astype(int).astype(str)
     xtick_labels = outliers['Year_Pair'].astype(str) + "/S" + sensor_nums
 
+    if method == 'abs':
+        plt.axhline(threshold, linestyle='--', color='red')
+        plt.axhline(-threshold, linestyle='--', color='red')
     plt.xticks(
         range(len(outliers)),
         xtick_labels,
@@ -210,9 +200,41 @@ def main():
     plt.ylabel('Difference (cm)')
     plt.title('Outlier Differences')
     plt.tight_layout()
-    plot_file = os.path.join(args.output, 'outliers_plot.png')
+    plot_file = os.path.join(output_dir, 'outliers_plot.png')
     plt.savefig(plot_file)
     logging.info(f"Saved plot to '{plot_file}'")
+
+
+def main():
+    args = parse_args()
+    os.makedirs(args.output, exist_ok=True)
+    logging.basicConfig(level=logging.INFO,
+                        format='%(levelname)s: %(message)s')
+
+    logging.info("Loading year-to-year differences")
+    diff_df = pd.read_excel(args.input, sheet_name=args.sheet_summary)
+    long_df = diff_df.melt(
+        id_vars='Year_Pair', var_name='Sensor', value_name='Difference'
+    )
+    outliers = detect_outliers(
+        long_df, args.method, args.threshold, args.zscore, args.iqr_factor
+    ).reset_index(drop=True)
+    logging.info(
+        f"Detected {len(outliers)} outliers using '{args.method}' method")
+
+    # Group outliers by target sheet to batch Excel I/O and prevent overriding corrections
+    outliers_df = prepare_outliers_df(outliers)
+
+    # Apply corrections and write to disk
+    corrections = apply_corrections(args.input, args.output, outliers_df)
+
+    corr_df = pd.DataFrame(corrections)
+    corr_file = os.path.join(args.output, 'corrections_summary.xlsx')
+    corr_df.to_excel(corr_file, index=False)
+    logging.info(f"Saved corrections summary to '{corr_file}'")
+
+    # Plotting
+    plot_outliers(outliers, args.method, args.threshold, args.output)
 
     # Display table
     print(corr_df.to_string(index=False))

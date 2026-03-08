@@ -188,7 +188,7 @@ calculate_summary_stats <- function(results) {
 
 # Write summary sheets and CSVs
 write_summary_sheets <- function(wb, summary_df, output_file,
-                                 header_style, highlight_top_n) {
+                                 header_style, ...) {
   # --- Comprehensive summary (all sensors) ---
   summary_df_all <- summary_df # keep a copy before filtering
   addWorksheet(wb, "Summary_All")

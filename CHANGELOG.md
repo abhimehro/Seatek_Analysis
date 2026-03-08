@@ -16,6 +16,7 @@
 
 **Merged pull requests:**
 
+- 🧹 Extract helper functions to simplify install\_and\_verify [\#62](https://github.com/abhimehro/Seatek_Analysis/pull/62) ([abhimehro](https://github.com/abhimehro))
 - 🧹 Extract `get_language` to reduce complexity in `scan_file` [\#61](https://github.com/abhimehro/Seatek_Analysis/pull/61) ([abhimehro](https://github.com/abhimehro))
 - 🧹 Code Health Improvement: Refactor outlier\_analysis\_series27.py [\#60](https://github.com/abhimehro/Seatek_Analysis/pull/60) ([abhimehro](https://github.com/abhimehro))
 - 🛡️ Sentinel: \[MEDIUM\] Prevent CLI option injection in GitHub Actions summary workflow [\#59](https://github.com/abhimehro/Seatek_Analysis/pull/59) ([abhimehro](https://github.com/abhimehro))

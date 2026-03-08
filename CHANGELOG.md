@@ -16,6 +16,7 @@
 
 **Merged pull requests:**
 
+- ⚡ Bolt: Remove iterrows to boost pandas performance [\#64](https://github.com/abhimehro/Seatek_Analysis/pull/64) ([abhimehro](https://github.com/abhimehro))
 - 🧹 \[Code Health\] Refactor verify\_environment\(\) to improve maintainability [\#63](https://github.com/abhimehro/Seatek_Analysis/pull/63) ([abhimehro](https://github.com/abhimehro))
 - 🧹 Extract helper functions to simplify install\_and\_verify [\#62](https://github.com/abhimehro/Seatek_Analysis/pull/62) ([abhimehro](https://github.com/abhimehro))
 - 🧹 Extract `get_language` to reduce complexity in `scan_file` [\#61](https://github.com/abhimehro/Seatek_Analysis/pull/61) ([abhimehro](https://github.com/abhimehro))

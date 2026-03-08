@@ -1,5 +1,4 @@
 import os
-import sys
 
 def get_repo_info():
     try:

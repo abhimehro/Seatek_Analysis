@@ -70,7 +70,7 @@ test_that("calculate_summary_stats handles missing values correctly", {
 
   summary_df_na <- calculate_summary_stats(mock_results_na)
 
-  # Sensor01 first10 has one NA: (10, 12) -> na.omit(10, 12) -> mean = 11
+  # Sensor01 first10 has no NAs: (10, 12) -> mean = 11
   expect_equal(summary_df_na$first10_mean[summary_df_na$Sensor == "Sensor01"], mean(c(10, 12)))
   expect_equal(summary_df_na$first10_count[summary_df_na$Sensor == "Sensor01"], 2)
 

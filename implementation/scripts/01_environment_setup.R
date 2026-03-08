@@ -33,37 +33,14 @@ KEY_DIRECTORIES <- c(
   "logs"
 )
 
-#' Install and verify required packages
+
+#' Process package installations
 #' 
 #' @param packages Vector of package names to install
 #' @param cran_repo CRAN repository URL
-#' @param manifest_path Path to save the package manifest
-#' @return List with installation status and package manifest
-install_and_verify <- function(packages = REQUIRED_PACKAGES, cran_repo = CRAN_REPO, manifest_path = PACKAGE_MANIFEST_PATH) {
-  
-  cat("=== Seatek R Environment Setup ===\n")
-  cat("Starting package installation and verification...\n\n")
-  
-  # Initialize results tracking
-  results <- list(
-    installed_packages = character(0),
-    failed_packages = character(0),
-    package_versions = list(),
-    r_version = R.version.string,
-    setup_timestamp = Sys.time()
-  )
-  
-  # Check R version compatibility
-  cat("1. Checking R version compatibility...\n")
-  r_version_check <- check_r_version()
-  if (!r_version_check$success) {
-    stop("R version compatibility check failed: ", r_version_check$message)
-  }
-  cat("   ✓ R version compatible (", R.version.string, ")\n\n")
-  
-  # Check and install packages
-  cat("2. Checking and installing required packages...\n")
-  
+#' @param results List containing installation tracking results
+#' @return Updated results list
+process_package_installations <- function(packages, cran_repo, results) {
   for (pkg in packages) {
     cat("   Processing package: ", pkg, "\n")
     
@@ -109,17 +86,14 @@ install_and_verify <- function(packages = REQUIRED_PACKAGES, cran_repo = CRAN_RE
       }
     }
   }
-  
-  cat("\n3. Creating package manifest...\n")
-  
-  # Create package manifest
-  tryCatch({
-    saveRDS(results, manifest_path)
-    cat("   ✓ Package manifest saved to: ", manifest_path, "\n")
-  }, error = function(e) {
-    cat("   ✗ Failed to save package manifest: ", e$message, "\n")
-  })
-  
+  return(results)
+}
+
+#' Print installation summary
+#'
+#' @param results List containing installation tracking results
+#' @return NULL
+print_installation_summary <- function(results) {
   # Print summary
   cat("\n=== Installation Summary ===\n")
   cat("Successfully installed: ", length(results$installed_packages), " packages\n")
@@ -137,8 +111,54 @@ install_and_verify <- function(packages = REQUIRED_PACKAGES, cran_repo = CRAN_RE
     cat("⚠ Some packages failed to install. Check the list above.\n")
   }
   
-  cat("\nR Version: ", R.version.string, "\n")
+  cat("\nR Version: ", results$r_version, "\n")
   cat("Setup completed at: ", format(results$setup_timestamp), "\n")
+}
+
+#' Install and verify required packages
+#'
+#' @param packages Vector of package names to install
+#' @param cran_repo CRAN repository URL
+#' @param manifest_path Path to save the package manifest
+#' @return List with installation status and package manifest
+install_and_verify <- function(packages = REQUIRED_PACKAGES, cran_repo = CRAN_REPO, manifest_path = PACKAGE_MANIFEST_PATH) {
+
+  cat("=== Seatek R Environment Setup ===\n")
+  cat("Starting package installation and verification...\n\n")
+
+  # Initialize results tracking
+  results <- list(
+    installed_packages = character(0),
+    failed_packages = character(0),
+    package_versions = list(),
+    r_version = R.version.string,
+    setup_timestamp = Sys.time()
+  )
+
+  # Check R version compatibility
+  cat("1. Checking R version compatibility...\n")
+  r_version_check <- check_r_version()
+  if (!r_version_check$success) {
+    stop("R version compatibility check failed: ", r_version_check$message)
+  }
+  cat("   ✓ R version compatible (", R.version.string, ")\n\n")
+
+  # Check and install packages
+  cat("2. Checking and installing required packages...\n")
+  results <- process_package_installations(packages, cran_repo, results)
+
+  cat("\n3. Creating package manifest...\n")
+
+  # Create package manifest
+  tryCatch({
+    saveRDS(results, manifest_path)
+    cat("   ✓ Package manifest saved to: ", manifest_path, "\n")
+  }, error = function(e) {
+    cat("   ✗ Failed to save package manifest: ", e$message, "\n")
+  })
+
+  # Print summary
+  print_installation_summary(results)
   
   return(results)
 }

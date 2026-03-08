@@ -12,3 +12,8 @@
 **Vulnerability:** A GitHub secret (`${{ secrets.GITHUB_TOKEN }}`) was interpolated directly into a bash command (`--token "${{ secrets.GITHUB_TOKEN }}"`) in a GitHub Actions workflow (`changelog.yml`).
 **Learning:** While secrets are not necessarily user-controlled, direct interpolation of secrets within `run` blocks is a dangerous pattern. If a secret contains shell metacharacters or quotes, it could cause syntax errors or unintended command execution. Furthermore, it normalizes an insecure pattern that might be copied for untrusted inputs.
 **Prevention:** Always pass secrets to shell scripts securely by mapping them to environment variables (e.g., using an `env:` block `GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}`) and referencing the environment variable (`$GITHUB_TOKEN`) in the script.
+
+## 2025-08-03 - CLI Option Injection via Untrusted Variables
+**Vulnerability:** Even when untrusted data (like AI-generated responses) is passed to a shell script securely via an environment variable and double-quoted (`gh issue comment $ISSUE_NUMBER --body "$RESPONSE"`), it remains vulnerable to option injection if the content begins with a dash (`-`). The CLI tool may interpret the string as a command flag rather than a positional argument or value.
+**Learning:** Double quoting prevents shell execution and globbing, but does not sanitize the content from the perspective of the application receiving it.
+**Prevention:** When passing untrusted multi-line text or potential dashed strings to CLIs, prefer using file-based inputs (e.g., `--body-file response.txt`) generated via `printf "%s\n" "$VAR" > file` over direct variable interpolation as command arguments.

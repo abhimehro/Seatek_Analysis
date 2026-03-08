@@ -16,6 +16,10 @@
 
 **Merged pull requests:**
 
+- 🧹 Extract `get_language` to reduce complexity in `scan_file` [\#61](https://github.com/abhimehro/Seatek_Analysis/pull/61) ([abhimehro](https://github.com/abhimehro))
+- 🧹 Code Health Improvement: Refactor outlier\_analysis\_series27.py [\#60](https://github.com/abhimehro/Seatek_Analysis/pull/60) ([abhimehro](https://github.com/abhimehro))
+- 🛡️ Sentinel: \[MEDIUM\] Prevent CLI option injection in GitHub Actions summary workflow [\#59](https://github.com/abhimehro/Seatek_Analysis/pull/59) ([abhimehro](https://github.com/abhimehro))
+- 🧹 Code Health: Refactor `dump_summary_excel` to be more modular [\#58](https://github.com/abhimehro/Seatek_Analysis/pull/58) ([abhimehro](https://github.com/abhimehro))
 - ⚡ Optimize subsetting efficiency with lapply\(.SD\) over sapply [\#57](https://github.com/abhimehro/Seatek_Analysis/pull/57) ([abhimehro](https://github.com/abhimehro))
 - ⚡ Parallelize raw Excel exports in process\_all\_data [\#56](https://github.com/abhimehro/Seatek_Analysis/pull/56) ([abhimehro](https://github.com/abhimehro))
 - ⚡ Bolt: Optimize outlier extraction by replacing iterrows with vectorized ops [\#55](https://github.com/abhimehro/Seatek_Analysis/pull/55) ([abhimehro](https://github.com/abhimehro))

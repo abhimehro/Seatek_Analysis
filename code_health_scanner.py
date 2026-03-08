@@ -13,7 +13,7 @@ def read_file_safe(filepath):
     try:
         with open(filepath, 'r', encoding='utf-8') as f:
             return f.readlines()
-    except Exception:
+    except (OSError, UnicodeDecodeError):
         return []
 
 def get_language(filepath):

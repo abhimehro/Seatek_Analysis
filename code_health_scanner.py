@@ -20,7 +20,7 @@ def get_language(filepath):
     lang_map = {'.py': 'python', '.r': 'r', '.js': 'javascript', '.ts': 'typescript'}
     return lang_map.get(ext, 'unknown')
 
-def scan_file(filepath, lines, account, project, hash):
+def scan_file(filepath, lines, account, project, commit_hash):
     issues = []
 
     # Determine language

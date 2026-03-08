@@ -35,8 +35,6 @@ test_that("calculate_summary_stats handles strict n < 3 for rollmean3", {
 
 test_that("calculate_summary_stats correctly computes summary metrics and handles rollmean3 edge cases with full data", {
 
-  years <- as.character(2001:2004)
-
   mock_results <- list(
     "2001" = data.frame(
       first10 = c(10, 20, NA, 40),

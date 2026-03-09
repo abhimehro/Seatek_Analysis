@@ -140,15 +140,16 @@ def apply_corrections(input_path, output_dir, outliers_df):
                         # Original per-row offset is -Difference, so total offset is -sum(Difference)
                         df_raw[col] = df_raw[col] - total_diff
 
-                    # ⚡ Bolt: Vectorize corrections reporting instead of using iterrows()
-                    group_corr = pd.DataFrame({
-                        'Year_Pair': group['Year_Pair'],
-                        'Sensor': group['Sensor'],
-                        'OrigDiff': group['Difference'],
-                        'OffsetApplied': -group['Difference'],
-                        'CorrectedFile': out_file
-                    })
-                    corrections.append(group_corr)
+                    # Record per-row corrections (for reporting) without re-modifying df_raw
+                    for _, row in group.iterrows():
+                        offset = -row['Difference']
+                        corrections.append({
+                            'Year_Pair': row['Year_Pair'],
+                            'Sensor': row['Sensor'],
+                            'OrigDiff': row['Difference'],
+                            'OffsetApplied': offset,
+                            'CorrectedFile': out_file
+                        })
 
                     # Write once per sheet
                     df_raw.to_excel(out_file, sheet_name=sheet, index=False)
@@ -163,17 +164,6 @@ def apply_corrections(input_path, output_dir, outliers_df):
                 exc_info=True,
             )
 
-    if corrections:
-        corr_df = pd.concat(corrections, ignore_index=True)
-    else:
-        # Preserve previous behavior: when there are no corrections,
-        # create an empty DataFrame with no columns so the Excel sheet
-        # has no headers, matching the old pd.DataFrame(corrections) output.
-        corr_df = pd.DataFrame()
-
-    corr_file = os.path.join(args.output, 'corrections_summary.xlsx')
-    corr_df.to_excel(corr_file, index=False)
-    logging.info(f"Saved corrections summary to '{corr_file}'")
     return corrections
 
 
@@ -182,19 +172,13 @@ def plot_outliers(outliers, method, threshold, output_dir):
     plt.figure(figsize=(12, 6))
     plt.scatter(range(len(outliers)), outliers['Difference'], s=50)
     plt.axhline(0, color='gray')
-    if args.method == 'abs':
-        plt.axhline(args.threshold, linestyle='--', color='red')
-        plt.axhline(-args.threshold, linestyle='--', color='red')
-    # ⚡ Bolt: Vectorize string concatenation for plot ticks instead of iterrows()
-    sensor_nums = outliers['Sensor'].astype(str).str.split().str[-1].astype(int).astype(str)
-    xtick_labels = outliers['Year_Pair'].astype(str) + "/S" + sensor_nums
-
     if method == 'abs':
         plt.axhline(threshold, linestyle='--', color='red')
         plt.axhline(-threshold, linestyle='--', color='red')
     plt.xticks(
         range(len(outliers)),
-        xtick_labels,
+        [f"{r['Year_Pair']}/S{int(r['Sensor'].split()[-1])}" for _,
+         r in outliers.iterrows()],
         rotation=90
     )
     plt.ylabel('Difference (cm)')

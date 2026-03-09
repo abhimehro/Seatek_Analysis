@@ -1,13 +1,18 @@
 version: 2
 updates:
-  # Enable version updates for R/renv
-  - package-ecosystem: "renv"
-    directory: "/"
-    schedule:
-      interval: "daily"
-
   # Enable version updates for Python/pip
   - package-ecosystem: "pip"
     directory: "/Series_27/Analysis/"
     schedule:
       interval: "daily"
+
+  # Enable version updates for GitHub Actions
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "daily"
+    assignees:
+      - "abhimehro"
+    labels:
+      - "dependencies"
+      - "github_actions"

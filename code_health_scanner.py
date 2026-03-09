@@ -10,6 +10,13 @@ def get_repo_info():
 
 def read_file_safe(filepath):
     try:
+        # SECURITY: Prevent path traversal by ensuring the file is within the current directory.
+        # Uses commonpath to securely prevent directory prefix bypass attacks.
+        cwd = os.path.abspath(os.getcwd())
+        abs_filepath = os.path.abspath(filepath)
+        if os.path.commonpath([cwd, abs_filepath]) != cwd:
+            return []
+
         with open(filepath, 'r', encoding='utf-8') as f:
             return f.readlines()
     except (OSError, UnicodeDecodeError):

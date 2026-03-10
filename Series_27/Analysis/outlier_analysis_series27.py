@@ -127,9 +127,15 @@ def apply_corrections(input_path, output_dir, outliers_df):
                         df_raw = df_raw.iloc[:, :-1].copy()
 
                     next_year = group.iloc[0]['next_year']
+
+                    # SECURITY: Sanitize sheet and next_year to prevent path traversal
+                    # if a maliciously crafted Excel file provides a sheet name like "../../../etc"
+                    safe_sheet = str(sheet).replace('/', '_').replace('\\', '_')
+                    safe_next_year = str(next_year).replace('/', '_').replace('\\', '_')
+
                     out_file = os.path.join(
                         output_dir,
-                        f"{os.path.splitext(os.path.basename(input_path))[0]}_{next_year}_{sheet}_corrected.xlsx"
+                        f"{os.path.splitext(os.path.basename(input_path))[0]}_{safe_next_year}_{safe_sheet}_corrected.xlsx"
                     )
 
                     # Apply all corrections for this sheet in memory

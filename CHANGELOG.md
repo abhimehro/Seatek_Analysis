@@ -16,6 +16,7 @@
 
 **Merged pull requests:**
 
+- 🛡️ Sentinel: \[HIGH\] Fix path traversal in code scanner [\#70](https://github.com/abhimehro/Seatek_Analysis/pull/70) ([abhimehro](https://github.com/abhimehro))
 - Bump actions/checkout from 4 to 6 [\#69](https://github.com/abhimehro/Seatek_Analysis/pull/69) ([dependabot[bot]](https://github.com/apps/dependabot))
 - Bump actions/ai-inference from 1 to 2 [\#68](https://github.com/abhimehro/Seatek_Analysis/pull/68) ([dependabot[bot]](https://github.com/apps/dependabot))
 - 🛡️ Sentinel: \[SECURITY ENHANCEMENT\] Enable dependabot for GitHub Actions [\#67](https://github.com/abhimehro/Seatek_Analysis/pull/67) ([abhimehro](https://github.com/abhimehro))

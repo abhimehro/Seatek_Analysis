@@ -155,7 +155,9 @@ def apply_corrections(input_path, output_dir, outliers_df):
                         'OffsetApplied': -group['Difference'],
                         'CorrectedFile': out_file
                     })
-                    corrections.extend(new_corrections.to_dict('records'))
+                    # ⚡ Bolt: Appending DataFrames instead of converting to dicts to avoid O(N) dict overhead.
+                    # This leverages pd.concat() later for O(1) batching and drastically reduces CPU time for large files.
+                    corrections.append(new_corrections)
 
                     # Write once per sheet
                     df_raw.to_excel(out_file, sheet_name=sheet, index=False)
@@ -170,7 +172,12 @@ def apply_corrections(input_path, output_dir, outliers_df):
                 exc_info=True,
             )
 
-    return corrections
+    if corrections:
+        # ⚡ Bolt: Vectorized concatenation of DataFrames.
+        # Replaces O(N) list-to-DataFrame building overhead.
+        return pd.concat(corrections, ignore_index=True)
+    else:
+        return pd.DataFrame(columns=['Year_Pair', 'Sensor', 'OrigDiff', 'OffsetApplied', 'CorrectedFile'])
 
 
 def plot_outliers(outliers, method, threshold, output_dir):
@@ -219,9 +226,8 @@ def main():
     outliers_df = prepare_outliers_df(outliers)
 
     # Apply corrections and write to disk
-    corrections = apply_corrections(args.input, args.output, outliers_df)
+    corr_df = apply_corrections(args.input, args.output, outliers_df)
 
-    corr_df = pd.DataFrame(corrections)
     corr_file = os.path.join(args.output, 'corrections_summary.xlsx')
     corr_df.to_excel(corr_file, index=False)
     logging.info(f"Saved corrections summary to '{corr_file}'")

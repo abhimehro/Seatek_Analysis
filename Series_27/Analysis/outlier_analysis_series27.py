@@ -140,7 +140,7 @@ def apply_corrections(input_path, output_dir, outliers_df):
                         # Original per-row offset is -Difference, so total offset is -sum(Difference)
                         df_raw[col] = df_raw[col] - total_diff
 
-                    # ⚡ Bolt: Replace .iterrows() with vectorized dictionary assignment for O(1) row processing
+                    # ⚡ Bolt: Replace .iterrows() with vectorized dictionary assignment
                     # Record per-row corrections (for reporting) without re-modifying df_raw
                     new_corrections = pd.DataFrame({
                         'Year_Pair': group['Year_Pair'],

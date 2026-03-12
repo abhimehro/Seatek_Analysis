@@ -146,16 +146,16 @@ def apply_corrections(input_path, output_dir, outliers_df):
                         # Original per-row offset is -Difference, so total offset is -sum(Difference)
                         df_raw[col] = df_raw[col] - total_diff
 
+                    # ⚡ Bolt: Replace .iterrows() with vectorized dictionary assignment
                     # Record per-row corrections (for reporting) without re-modifying df_raw
-                    for _, row in group.iterrows():
-                        offset = -row['Difference']
-                        corrections.append({
-                            'Year_Pair': row['Year_Pair'],
-                            'Sensor': row['Sensor'],
-                            'OrigDiff': row['Difference'],
-                            'OffsetApplied': offset,
-                            'CorrectedFile': out_file
-                        })
+                    new_corrections = pd.DataFrame({
+                        'Year_Pair': group['Year_Pair'],
+                        'Sensor': group['Sensor'],
+                        'OrigDiff': group['Difference'],
+                        'OffsetApplied': -group['Difference'],
+                        'CorrectedFile': out_file
+                    })
+                    corrections.extend(new_corrections.to_dict('records'))
 
                     # Write once per sheet
                     df_raw.to_excel(out_file, sheet_name=sheet, index=False)
@@ -181,10 +181,13 @@ def plot_outliers(outliers, method, threshold, output_dir):
     if method == 'abs':
         plt.axhline(threshold, linestyle='--', color='red')
         plt.axhline(-threshold, linestyle='--', color='red')
+    # ⚡ Bolt: Replace .iterrows() with vectorized string operations for x-tick labels
+    sensor_nums = outliers['Sensor'].astype(str).str.split().str[-1].astype(int).astype(str)
+    x_labels = outliers['Year_Pair'].astype(str) + '/S' + sensor_nums
+
     plt.xticks(
         range(len(outliers)),
-        [f"{r['Year_Pair']}/S{int(r['Sensor'].split()[-1])}" for _,
-         r in outliers.iterrows()],
+        x_labels,
         rotation=90
     )
     plt.ylabel('Difference (cm)')

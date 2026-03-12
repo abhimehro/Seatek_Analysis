@@ -16,6 +16,7 @@
 
 **Merged pull requests:**
 
+- ⚡ Bolt: Optimize Pandas `.iterrows()` bottleneck in Outlier Analysis [\#72](https://github.com/abhimehro/Seatek_Analysis/pull/72) ([abhimehro](https://github.com/abhimehro))
 - 🛡️ Sentinel: \[HIGH\] Fix path traversal in outlier\_analysis\_series27.py [\#71](https://github.com/abhimehro/Seatek_Analysis/pull/71) ([abhimehro](https://github.com/abhimehro))
 - 🛡️ Sentinel: \[HIGH\] Fix path traversal in code scanner [\#70](https://github.com/abhimehro/Seatek_Analysis/pull/70) ([abhimehro](https://github.com/abhimehro))
 - Bump actions/checkout from 4 to 6 [\#69](https://github.com/abhimehro/Seatek_Analysis/pull/69) ([dependabot[bot]](https://github.com/apps/dependabot))

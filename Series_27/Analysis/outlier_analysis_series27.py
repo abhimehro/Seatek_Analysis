@@ -177,7 +177,7 @@ def apply_corrections(input_path, output_dir, outliers_df):
         # Replaces O(N) list-to-DataFrame building overhead.
         return pd.concat(corrections, ignore_index=True)
     else:
-        return pd.DataFrame(columns=['Year_Pair', 'Sensor', 'OrigDiff', 'OffsetApplied', 'CorrectedFile'])
+        return pd.DataFrame(columns=CORRECTIONS_SUMMARY_COLUMNS)
 
 
 def plot_outliers(outliers, method, threshold, output_dir):

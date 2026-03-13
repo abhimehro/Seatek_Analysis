@@ -48,8 +48,8 @@ read_sensor_data <- function(file_path,
   file_path <- normalizePath(file_path)
   if (isTRUE(verbose)) {
     cat(sprintf("  📂 Reading: %s\n", basename(file_path)))
+    message(sprintf("Reading sensor file: %s", basename(file_path)))
   }
-  message(sprintf("Reading sensor file: %s", basename(file_path)))
   if (!file.exists(file_path) || !grepl("\\.txt$", file_path)) {
     stop(sprintf("Invalid file: %s", file_path))
   }

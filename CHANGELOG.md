@@ -16,6 +16,8 @@
 
 **Merged pull requests:**
 
+- 🛡️ Sentinel: \[MEDIUM\] Fix XXE Vulnerability Risk in Excel Parsing [\#77](https://github.com/abhimehro/Seatek_Analysis/pull/77) ([abhimehro](https://github.com/abhimehro))
+- ⚡ Bolt: Replace dict list append with pd.concat for correction summary generation [\#75](https://github.com/abhimehro/Seatek_Analysis/pull/75) ([abhimehro](https://github.com/abhimehro))
 - ⚡ Bolt: Optimize Pandas `.iterrows()` bottleneck in Outlier Analysis [\#72](https://github.com/abhimehro/Seatek_Analysis/pull/72) ([abhimehro](https://github.com/abhimehro))
 - 🛡️ Sentinel: \[HIGH\] Fix path traversal in outlier\_analysis\_series27.py [\#71](https://github.com/abhimehro/Seatek_Analysis/pull/71) ([abhimehro](https://github.com/abhimehro))
 - 🛡️ Sentinel: \[HIGH\] Fix path traversal in code scanner [\#70](https://github.com/abhimehro/Seatek_Analysis/pull/70) ([abhimehro](https://github.com/abhimehro))

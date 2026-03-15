@@ -14,7 +14,7 @@ if (!requireNamespace("data.table", quietly = TRUE)) {
   stop(
     "The 'data.table' package is required to run this benchmark.\n",
     "Please install it before running this script, e.g.:\n",
-    "  install.packages(\"data.table\")",
+    "  install.packages(\"data.table\", repos = \"https://cloud.r-project.org\")",
     call. = FALSE
   )
 }
@@ -22,7 +22,7 @@ if (!requireNamespace("microbenchmark", quietly = TRUE)) {
   stop(
     "The 'microbenchmark' package is required to run this benchmark.\n",
     "Please install it before running this script, e.g.:\n",
-    "  install.packages(\"microbenchmark\")",
+    "  install.packages(\"microbenchmark\", repos = \"https://cloud.r-project.org\")",
     call. = FALSE
   )
 }

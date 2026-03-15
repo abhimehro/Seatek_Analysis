@@ -16,6 +16,7 @@
 
 **Merged pull requests:**
 
+- 🎨 Palette: Improve CLI UX for progress bars [\#81](https://github.com/abhimehro/Seatek_Analysis/pull/81) ([abhimehro](https://github.com/abhimehro))
 - ⚡ Bolt: Pre-allocate R lists to eliminate O\(N^2\) loop growth [\#80](https://github.com/abhimehro/Seatek_Analysis/pull/80) ([abhimehro](https://github.com/abhimehro))
 - 🛡️ Sentinel: \[MEDIUM\] Fix Unsafe R Package Installation [\#79](https://github.com/abhimehro/Seatek_Analysis/pull/79) ([abhimehro](https://github.com/abhimehro))
 - 🎨 Palette: No web UI enhancements possible [\#78](https://github.com/abhimehro/Seatek_Analysis/pull/78) ([abhimehro](https://github.com/abhimehro))

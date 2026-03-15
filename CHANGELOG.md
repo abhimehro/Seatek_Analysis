@@ -17,7 +17,9 @@
 **Merged pull requests:**
 
 - 🛡️ Sentinel: \[MEDIUM\] Fix Unsafe R Package Installation [\#79](https://github.com/abhimehro/Seatek_Analysis/pull/79) ([abhimehro](https://github.com/abhimehro))
+- 🎨 Palette: No web UI enhancements possible [\#78](https://github.com/abhimehro/Seatek_Analysis/pull/78) ([abhimehro](https://github.com/abhimehro))
 - 🛡️ Sentinel: \[MEDIUM\] Fix XXE Vulnerability Risk in Excel Parsing [\#77](https://github.com/abhimehro/Seatek_Analysis/pull/77) ([abhimehro](https://github.com/abhimehro))
+- 🎨 Palette: Fix CLI progress bar UX by respecting verbose flag [\#76](https://github.com/abhimehro/Seatek_Analysis/pull/76) ([abhimehro](https://github.com/abhimehro))
 - ⚡ Bolt: Replace dict list append with pd.concat for correction summary generation [\#75](https://github.com/abhimehro/Seatek_Analysis/pull/75) ([abhimehro](https://github.com/abhimehro))
 - ⚡ Bolt: Optimize Pandas `.iterrows()` bottleneck in Outlier Analysis [\#72](https://github.com/abhimehro/Seatek_Analysis/pull/72) ([abhimehro](https://github.com/abhimehro))
 - 🛡️ Sentinel: \[HIGH\] Fix path traversal in outlier\_analysis\_series27.py [\#71](https://github.com/abhimehro/Seatek_Analysis/pull/71) ([abhimehro](https://github.com/abhimehro))

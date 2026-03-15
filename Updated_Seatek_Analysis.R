@@ -138,7 +138,7 @@ process_all_data <- function(data_dir) {
     setTxtProgressBar(pb, i)
   }
   close(pb)
-  cat("\n✅ All sensor files read and metrics computed.\n")
+  cat("\nℹ Sensor files read and metrics computed; starting raw Excel exports...\n")
 
   # ⚡ Bolt: Parallelize raw Excel writes to remove serial I/O bottleneck
   cat("\n⚡ Writing raw Excel files in parallel...\n")

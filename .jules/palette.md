@@ -5,3 +5,7 @@
 ## 2025-05-06 - CLI Visual Feedback in Muffled Contexts
 **Learning:** In CLI applications (like R scripts) where message conditions are muffled (e.g., `message()` output via `invokeRestart("muffleMessage")`) or standard output is suppressed or redirected, long-running iterations can appear frozen to the user. This creates poor UX and uncertainty.
 **Action:** When designing or refactoring long-running loops (like file processing), always inject visual feedback that bypasses or operates alongside standard streams, such as `txtProgressBar` in R, to ensure the user receives consistent progress updates.
+
+## 2025-05-06 - Explicit Progress Bar Closure
+**Learning:** Depending on standard error cleanup (`on.exit`) to close a progress bar delays the final newline output until the entire function exits. This can cause subsequent CLI output (like status messages or parallel processing logs) to become garbled or appended to the same line as the finished progress bar, significantly degrading the user experience.
+**Action:** Always explicitly call `close()` on the progress bar immediately after its loop finishes to flush the stream and output a clean newline, before proceeding to other tasks in the same function. Retain the `on.exit()` cleanup for error handling, but do not rely on it for normal control flow.

@@ -93,7 +93,7 @@ process_all_data <- function(data_dir) {
   results <- list()
   raw_export_tasks <- list()
   pb <- txtProgressBar(min = 0, max = length(files), style = 3)
-  on.exit({ close(pb); cat("\n✅ All files processed.\n") }, add = TRUE)
+  on.exit({ close(pb) }, add = TRUE)
   i <- 0
   for (f in files) {
     df <- read_sensor_data(f, verbose = FALSE)
@@ -132,6 +132,8 @@ process_all_data <- function(data_dir) {
     i <- i + 1
     setTxtProgressBar(pb, i)
   }
+  close(pb)
+  cat("\n✅ All sensor files read and metrics computed.\n")
 
   # ⚡ Bolt: Parallelize raw Excel writes to remove serial I/O bottleneck
   cat("\n⚡ Writing raw Excel files in parallel...\n")

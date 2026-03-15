@@ -94,7 +94,12 @@ process_all_data <- function(data_dir) {
   # ⚡ Bolt: Pre-allocate list to avoid O(N^2) memory reallocation overhead when appending
   raw_export_tasks <- vector("list", length(files))
   pb <- txtProgressBar(min = 0, max = length(files), style = 3)
-  on.exit({ close(pb); cat("\n✅ All files processed.\n") }, add = TRUE)
+  on.exit({
+    if (!is.null(pb)) {
+      close(pb)
+      pb <- NULL
+    }
+  }, add = TRUE)
   i <- 0
   for (f in files) {
     df <- read_sensor_data(f, verbose = FALSE)
@@ -133,6 +138,8 @@ process_all_data <- function(data_dir) {
     i <- i + 1
     setTxtProgressBar(pb, i)
   }
+  close(pb)
+  cat("\nℹ Sensor files read and metrics computed; starting raw Excel exports...\n")
 
   # ⚡ Bolt: Parallelize raw Excel writes to remove serial I/O bottleneck
   cat("\n⚡ Writing raw Excel files in parallel...\n")

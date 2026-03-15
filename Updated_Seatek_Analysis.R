@@ -91,7 +91,8 @@ process_all_data <- function(data_dir) {
   }
   cat(sprintf("\n🚀 Found %d sensor files. Starting processing...\n", length(files)))
   results <- list()
-  raw_export_tasks <- list()
+  # ⚡ Bolt: Pre-allocate list to avoid O(N^2) memory reallocation overhead when appending
+  raw_export_tasks <- vector("list", length(files))
   pb <- txtProgressBar(min = 0, max = length(files), style = 3)
   on.exit({
     if (!is.null(pb)) {
@@ -106,7 +107,7 @@ process_all_data <- function(data_dir) {
     out_raw <- file.path(data_dir, paste0(
       tools::file_path_sans_ext(basename(f)), ".xlsx"
     ))
-    raw_export_tasks[[length(raw_export_tasks) + 1]] <- list(df = df, out_raw = out_raw)
+    raw_export_tasks[[i + 1]] <- list(df = df, out_raw = out_raw)
     # Compute summary metrics
     # OPTIMIZATION: which(x > 0) is natively faster at dropping NAs than !is.na() &
     clean_vals <- function(x) x[which(x > 0)]

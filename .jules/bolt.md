@@ -21,3 +21,7 @@
 ## 2025-05-06 - Avoid .iterrows() in Pandas DataFrame processing
 **Learning:** Iterating over a DataFrame using `.iterrows()` is extremely slow (O(N) operations in Python) and defeats the purpose of pandas, especially when dealing with row-wise string manipulations or conditional extractions (e.g., regex matching).
 **Action:** Replace `iterrows()` with Pandas vectorized `.str` accessor methods (like `.str.findall()`, `.str.len()`, `.str.split()`) and boolean masking. This leverages underlying optimized C code so the work remains O(N) in the number of rows but with far less Python-level overhead than per-row iteration.
+
+## 2025-05-06 - Pre-allocate Lists in R Loops
+**Learning:** Growing a list inside an R loop using `list[[length(list) + 1]] <- value` forces R to allocate a new block of memory and copy the entire list structure on every single iteration, leading to O(N²) execution time and severe performance degradation for large loop iterations.
+**Action:** Always pre-allocate the list using `vector("list", N)` when the final size is known (e.g., iterating over a fixed set of files), and assign elements directly by index (e.g., `list[[i]] <- value`) to ensure O(1) assignment and eliminate memory reallocation overhead.

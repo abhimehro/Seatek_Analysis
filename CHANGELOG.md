@@ -16,6 +16,7 @@
 
 **Merged pull requests:**
 
+- ⚡ Bolt: Pre-allocate results list to avoid O\(N^2\) memory reallocation [\#82](https://github.com/abhimehro/Seatek_Analysis/pull/82) ([abhimehro](https://github.com/abhimehro))
 - 🎨 Palette: Improve CLI UX for progress bars [\#81](https://github.com/abhimehro/Seatek_Analysis/pull/81) ([abhimehro](https://github.com/abhimehro))
 - ⚡ Bolt: Pre-allocate R lists to eliminate O\(N^2\) loop growth [\#80](https://github.com/abhimehro/Seatek_Analysis/pull/80) ([abhimehro](https://github.com/abhimehro))
 - 🛡️ Sentinel: \[MEDIUM\] Fix Unsafe R Package Installation [\#79](https://github.com/abhimehro/Seatek_Analysis/pull/79) ([abhimehro](https://github.com/abhimehro))

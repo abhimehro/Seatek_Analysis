@@ -9,7 +9,8 @@ import logging
 
 def parse_args():
     parser = argparse.ArgumentParser(
-        description="Series 27 Outlier Analysis and Correction"
+        description="Series 27 Outlier Analysis and Correction",
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter
     )
     parser.add_argument(
         '-i', '--input', required=True,
@@ -232,7 +233,13 @@ def main():
     plot_outliers(outliers, args.method, args.threshold, args.output)
 
     # Display table
-    print(corr_df.to_string(index=False))
+    if corr_df.empty:
+        print("No outliers detected. No corrections applied.")
+    elif len(corr_df) > 20:
+        print(corr_df.head(20).to_string(index=False))
+        print(f"...\n[Output truncated. See '{corr_file}' for full details.]")
+    else:
+        print(corr_df.to_string(index=False))
 
 
 if __name__ == '__main__':

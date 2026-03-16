@@ -90,8 +90,9 @@ process_all_data <- function(data_dir) {
     stop(sprintf("No sensor files found matching %s in %s", pattern, data_dir))
   }
   cat(sprintf("\n🚀 Found %d sensor files. Starting processing...\n", length(files)))
-  results <- list()
-  # ⚡ Bolt: Pre-allocate list to avoid O(N^2) memory reallocation overhead when appending
+  # ⚡ Bolt: Pre-allocate lists to avoid O(N^2) memory reallocation overhead in loops
+  results <- vector("list", length(files))
+  sheet_names <- character(length(files))
   raw_export_tasks <- vector("list", length(files))
   pb <- txtProgressBar(min = 0, max = length(files), style = 3)
   on.exit({
@@ -127,7 +128,7 @@ process_all_data <- function(data_dir) {
     } else {
       basename(f)
     }
-    results[[sheet_name]] <- data.frame(
+    results[[i + 1]] <- data.frame(
       first10 = first10,
       last5 = last5,
       full = full,
@@ -135,10 +136,12 @@ process_all_data <- function(data_dir) {
       row.names = sensor_names,
       check.names = FALSE
     )
+    sheet_names[i + 1] <- sheet_name
     i <- i + 1
     setTxtProgressBar(pb, i)
   }
   close(pb)
+  names(results) <- sheet_names
   cat("\nℹ Sensor files read and metrics computed; starting raw Excel exports...\n")
 
   # ⚡ Bolt: Parallelize raw Excel writes to remove serial I/O bottleneck

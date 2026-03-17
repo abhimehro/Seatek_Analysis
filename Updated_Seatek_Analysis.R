@@ -175,22 +175,15 @@ process_all_data <- function(data_dir) {
       }
     } else if (length(raw_export_tasks) > 0) {
       pb_write <- txtProgressBar(min = 0, max = length(raw_export_tasks), style = 3)
-      on.exit({
-        if (!is.null(pb_write)) {
-          close(pb_write)
-          pb_write <- NULL
+      tryCatch({
+        for (i in seq_along(raw_export_tasks)) {
+          task <- raw_export_tasks[[i]]
+          out_file <- write_task(task)
+          # Suppress message in the loop to prevent garbling the progress bar
+          # message(sprintf("Raw data written to %s", out_file))
+          setTxtProgressBar(pb_write, i)
         }
-      }, add = TRUE)
-      i <- 0
-      for (task in raw_export_tasks) {
-        out_file <- write_task(task)
-        # Suppress message in the loop to prevent garbling the progress bar
-        # message(sprintf("Raw data written to %s", out_file))
-        i <- i + 1
-        setTxtProgressBar(pb_write, i)
-      }
-      close(pb_write)
-      pb_write <- NULL
+      }, finally = close(pb_write))
     }
   }
   cat("✅ Raw files written.\n")

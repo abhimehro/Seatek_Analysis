@@ -16,6 +16,7 @@
 
 **Merged pull requests:**
 
+- 🎨 Palette: Add progress bar to sequential Excel export [\#86](https://github.com/abhimehro/Seatek_Analysis/pull/86) ([abhimehro](https://github.com/abhimehro))
 - ⚡ Bolt: Optimize timestamp parsing with anyNA and shared references [\#85](https://github.com/abhimehro/Seatek_Analysis/pull/85) ([abhimehro](https://github.com/abhimehro))
 - Bump actions/checkout from 4 to 6 [\#84](https://github.com/abhimehro/Seatek_Analysis/pull/84) ([dependabot[bot]](https://github.com/apps/dependabot))
 - 🎨 Palette: Python CLI UX improvements for dataframe output [\#83](https://github.com/abhimehro/Seatek_Analysis/pull/83) ([abhimehro](https://github.com/abhimehro))

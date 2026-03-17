@@ -16,6 +16,7 @@
 
 **Merged pull requests:**
 
+- Bump actions/checkout from 4 to 6 [\#84](https://github.com/abhimehro/Seatek_Analysis/pull/84) ([dependabot[bot]](https://github.com/apps/dependabot))
 - 🎨 Palette: Python CLI UX improvements for dataframe output [\#83](https://github.com/abhimehro/Seatek_Analysis/pull/83) ([abhimehro](https://github.com/abhimehro))
 - ⚡ Bolt: Pre-allocate results list to avoid O\(N^2\) memory reallocation [\#82](https://github.com/abhimehro/Seatek_Analysis/pull/82) ([abhimehro](https://github.com/abhimehro))
 - 🎨 Palette: Improve CLI UX for progress bars [\#81](https://github.com/abhimehro/Seatek_Analysis/pull/81) ([abhimehro](https://github.com/abhimehro))

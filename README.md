@@ -2,6 +2,8 @@
 
 [![renv Reproducibility](https://img.shields.io/badge/reproducible%20environment-renv-blue?logo=R)](https://rstudio.github.io/renv/)
 [![Changelog Status](https://github.com/abhimehro/Seatek_Analysis/actions/workflows/changelog.yml/badge.svg)](https://github.com/abhimehro/Seatek_Analysis/actions/workflows/changelog.yml)
+[![CodeScene general](https://codescene.io/images/analyzed-by-codescene-badge.svg)](https://codescene.io/projects/78057)
+[![CodeScene System Mastery](https://codescene.io/projects/78057/status-badges/system-mastery?component-name=Seatek_analysis)](https://codescene.io/projects/78057/)
 
 ---
 

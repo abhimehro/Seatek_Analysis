@@ -27,5 +27,5 @@
 **Action:** Always pre-allocate the list using `vector("list", N)` when the final size is known (e.g., iterating over a fixed set of files), and assign elements directly by index (e.g., `list[[i]] <- value`) to ensure O(1) assignment and eliminate memory reallocation overhead.
 
 ## 2025-05-06 - Avoid Redundant Memory Allocations in R Data validations
-**Learning:** Using `if (all(!is.na(as.numeric(x))))` on large vectors creates three redundant memory allocations (two casts to numeric, one intermediate logical vector, one negated logical vector) and requires multiple full-column traversals.
+**Learning:** Using `if (all(!is.na(as.numeric(x))))` in combination with a second `as.numeric(x)` call inside the conditional block is inefficient for large vectors. This pattern creates four intermediate vectors (two from the numeric casts, one from `is.na`, and one from `!`) and requires multiple full-column traversals.
 **Action:** Extract the cast to a variable `num_ts <- suppressWarnings(as.numeric(x))` and use `!anyNA(num_ts)` which short-circuits in C without creating intermediate logical vectors, and reuse `num_ts` to avoid a second parse.

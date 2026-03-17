@@ -173,11 +173,24 @@ process_all_data <- function(data_dir) {
       for (out_file in out_files) {
         message(sprintf("Raw data written to %s", out_file))
       }
-    } else {
+    } else if (length(raw_export_tasks) > 0) {
+      pb_write <- txtProgressBar(min = 0, max = length(raw_export_tasks), style = 3)
+      on.exit({
+        if (!is.null(pb_write)) {
+          close(pb_write)
+          pb_write <- NULL
+        }
+      }, add = TRUE)
+      i <- 0
       for (task in raw_export_tasks) {
         out_file <- write_task(task)
-        message(sprintf("Raw data written to %s", out_file))
+        # Suppress message in the loop to prevent garbling the progress bar
+        # message(sprintf("Raw data written to %s", out_file))
+        i <- i + 1
+        setTxtProgressBar(pb_write, i)
       }
+      close(pb_write)
+      pb_write <- NULL
     }
   }
   cat("✅ Raw files written.\n")

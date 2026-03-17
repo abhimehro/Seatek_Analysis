@@ -75,8 +75,11 @@ read_sensor_data <- function(file_path,
   dt <- dt[, c(paste0("Sensor", sprintf("%02d", 1:sensor_cols)),
                "Timestamp"), with = FALSE]
   # Convert timestamp if numeric
-  if (all(!is.na(as.numeric(dt$Timestamp)))) {
-    dt[, Timestamp := as.POSIXct(as.numeric(Timestamp), origin = "1970-01-01")]
+  # ⚡ Bolt: Prevent redundant memory allocations and full traversals by using anyNA
+  # and reusing the parsed numeric timestamp vector instead of calling as.numeric twice
+  num_ts <- suppressWarnings(as.numeric(dt$Timestamp))
+  if (!anyNA(num_ts)) {
+    dt[, Timestamp := as.POSIXct(num_ts, origin = "1970-01-01")]
   }
   return(dt)
 }

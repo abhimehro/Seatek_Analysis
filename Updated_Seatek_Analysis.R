@@ -131,13 +131,14 @@ process_all_data <- function(data_dir) {
     } else {
       basename(f)
     }
-    results[[i + 1]] <- data.frame(
+    # ⚡ Bolt: Store results natively as data.table with explicit Sensor ID
+    # Avoids data.frame/row.names overhead and enables fast rbindlist downstream
+    results[[i + 1]] <- data.table(
+      Sensor = sensor_names,
       first10 = first10,
       last5 = last5,
       full = full,
-      within_diff = diff,
-      row.names = sensor_names,
-      check.names = FALSE
+      within_diff = diff
     )
     sheet_names[i + 1] <- sheet_name
     i <- i + 1
@@ -193,17 +194,18 @@ process_all_data <- function(data_dir) {
 # Write a single year's sheet to the workbook
 write_year_sheet <- function(wb, year, data, header_style) {
   addWorksheet(wb, year)
-  df <- as.data.frame(data)
-  writeData(wb, sheet = year, x = df, rowNames = TRUE,
+  # ⚡ Bolt: No as.data.frame() conversion needed, use data.table natively
+  writeData(wb, sheet = year, x = data, rowNames = FALSE,
             headerStyle = header_style)
   freezePane(wb, sheet = year, firstRow = TRUE)
   # Optional: highlight largest within_diff in each year
-  if ("within_diff" %in% colnames(df)) {
-    max_idx <- which.max(abs(df$within_diff))
+  if ("within_diff" %in% colnames(data)) {
+    max_idx <- which.max(abs(data$within_diff))
     highlight_style_yearly <- createStyle(bgFill = "#FFD700")
+    # ⚡ Bolt: Remove '+ 1' from cols offset since Sensor is a standard column now
     addStyle(wb, sheet = year, style = highlight_style_yearly,
              rows = max_idx + 1,
-             cols = which(colnames(df) == "within_diff") + 1,
+             cols = which(colnames(data) == "within_diff"),
              gridExpand = TRUE, stack = TRUE)
   }
 }
@@ -211,11 +213,8 @@ write_year_sheet <- function(wb, year, data, header_style) {
 # Compute summary statistics across all years
 calculate_summary_stats <- function(results) {
   # Add summary sheet with overall stats
-  # Convert results list to data.table, preserving row names (Sensor) and order (Year)
-  dt_list <- lapply(results, function(x) {
-    as.data.table(x, keep.rownames = "Sensor")
-  })
-  all_stats_dt <- rbindlist(dt_list, idcol = "Year")
+  # ⚡ Bolt: No lapply conversion required. results list natively contains data.tables
+  all_stats_dt <- rbindlist(results, idcol = "Year")
 
   # Identify metric columns (numeric columns excluding ID columns)
   metrics <- setdiff(names(all_stats_dt), c("Sensor", "Year"))

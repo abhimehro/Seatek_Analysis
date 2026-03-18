@@ -29,3 +29,7 @@
 ## 2025-05-06 - Avoid Redundant Memory Allocations in R Data validations
 **Learning:** Using `if (all(!is.na(as.numeric(x))))` in combination with a second `as.numeric(x)` call inside the conditional block is inefficient for large vectors. This pattern creates four intermediate vectors (two from the numeric casts, one from `is.na`, and one from `!`) and requires multiple full-column traversals.
 **Action:** Extract the cast to a variable `num_ts <- suppressWarnings(as.numeric(x))` and use `!anyNA(num_ts)` which short-circuits in C without creating intermediate logical vectors, and reuse `num_ts` to avoid a second parse.
+
+## 2025-05-06 - Native data.table aggregation in R Loops
+**Learning:** Storing list results as `data.frame` objects with `row.names` inside a loop forces subsequent aggregations to convert back using expensive `lapply` loops (e.g. `lapply(results, as.data.table)`).
+**Action:** Store the results natively as `data.table` objects within the loop, including an explicit identifier column (e.g. `Sensor = sensor_names`), to allow for O(1) assignments in `write_year_sheet` (using `rowNames = FALSE`) and immediate concatenation via `rbindlist(results)`.

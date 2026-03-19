@@ -364,14 +364,16 @@ dump_summary_excel <- function(results, output_file, highlight_top_n = 5) {
   # Write each year's sheet
   cat("\n📊 Generating yearly summary sheets...\n")
   message("Generating yearly summary sheets...")
-  pb <- txtProgressBar(min = 0, max = length(results), style = 3)
-  i <- 0
-  for (year in names(results)) {
-    write_year_sheet(wb, year, results[[year]], header_style)
-    i <- i + 1
-    setTxtProgressBar(pb, i)
+  if (length(results) > 0) {
+    pb <- txtProgressBar(min = 0, max = length(results), style = 3)
+    i <- 0
+    for (year in names(results)) {
+      write_year_sheet(wb, year, results[[year]], header_style)
+      i <- i + 1
+      setTxtProgressBar(pb, i)
+    }
+    close(pb)
   }
-  close(pb)
   cat("\n✅ Yearly sheets generated.\n")
 
   cat("\n📈 Computing summary statistics...\n")

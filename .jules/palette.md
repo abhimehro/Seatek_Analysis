@@ -13,3 +13,7 @@
 ## 2025-05-06 - Preventing CLI Dataframe Console Spam
 **Learning:** In CLI tools that process and display dataframes, an unbound `.to_string()` call can result in massive console spam (dumping hundreds of rows) if the output is large. Furthermore, when the dataframe is empty, `.to_string()` prints ugly, unhelpful text (like "Empty DataFrame"). Both scenarios create a poor, cluttered user experience.
 **Action:** Always check `.empty` on dataframes before printing in CLI tools to provide a clear, friendly "No data found" message. Additionally, implement pagination or truncation (e.g., `head(20)`) for large outputs, adding a note that directs the user to an output file for the full details.
+
+## 2025-05-06 - Empty List Crash with `txtProgressBar`
+**Learning:** In R, `txtProgressBar` requires `max > min`. When initializing a progress bar for a list or vector that might be empty, initializing it directly will result in a fatal error (`must have 'max' > 'min'`), crashing the script. This creates a terrible user experience if an unexpected data edge case occurs.
+**Action:** Always wrap progress bar initialization and its corresponding loop in a length check (e.g., `if (length(items) > 0)`) to gracefully handle empty inputs without breaking the CLI.

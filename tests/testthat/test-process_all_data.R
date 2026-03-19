@@ -37,9 +37,9 @@ test_that("process_all_data correctly processes valid data", {
   year_data <- results[["1995"]]
   expect_true(is.data.frame(year_data), info = "Element for '1995' should be a data.frame")
   expect_equal(nrow(year_data), 32, info = "Data.frame should have 32 rows (Sensor01 to Sensor32)")
-  expect_equal(ncol(year_data), 4, info = "Data.frame should have 4 columns")
-  expect_equal(colnames(year_data), c("first10", "last5", "full", "within_diff"), info = "Column names mismatch")
-  expect_equal(rownames(year_data)[1], "Sensor01", info = "First row name should be 'Sensor01'")
+  expect_equal(ncol(year_data), 5, info = "Data.frame should have 5 columns")
+  expect_equal(colnames(year_data), c("Sensor", "first10", "last5", "full", "within_diff"), info = "Column names mismatch")
+  expect_equal(year_data$Sensor[1], "Sensor01", info = "First row name should be 'Sensor01'")
 
   # Values for Sensor01 in SS_Y01_valid.txt are 10.1, 10.2, 10.3
   # The clean_vals function (called by process_sensor_data) filters for > 0, which these are.
@@ -49,10 +49,11 @@ test_that("process_all_data correctly processes valid data", {
   # full: uses all 3 points
   expected_mean_val <- mean(c(10.1, 10.2, 10.3)) # This is 10.2
 
-  expect_equal(year_data["Sensor01", "first10"], expected_mean_val, info = "Mismatch in 'first10' for Sensor01")
-  expect_equal(year_data["Sensor01", "last5"], expected_mean_val, info = "Mismatch in 'last5' for Sensor01")
-  expect_equal(year_data["Sensor01", "full"], expected_mean_val, info = "Mismatch in 'full' for Sensor01")
-  expect_equal(year_data["Sensor01", "within_diff"], expected_mean_val - expected_mean_val, info = "Mismatch in 'within_diff' for Sensor01") # Should be 0
+  s01_row <- year_data[year_data$Sensor == "Sensor01", ]
+  expect_equal(s01_row$first10, expected_mean_val, info = "Mismatch in 'first10' for Sensor01")
+  expect_equal(s01_row$last5, expected_mean_val, info = "Mismatch in 'last5' for Sensor01")
+  expect_equal(s01_row$full, expected_mean_val, info = "Mismatch in 'full' for Sensor01")
+  expect_equal(s01_row$within_diff, expected_mean_val - expected_mean_val, info = "Mismatch in 'within_diff' for Sensor01") # Should be 0
 
   # Check for Excel file creation
   expected_excel_file <- file.path(temp_dir_path, "SS_Y01_valid.xlsx")

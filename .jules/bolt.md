@@ -29,3 +29,7 @@
 ## 2025-05-06 - Avoid Redundant Memory Allocations in R Data validations
 **Learning:** Using `if (all(!is.na(as.numeric(x))))` in combination with a second `as.numeric(x)` call inside the conditional block is inefficient for large vectors. This pattern creates four intermediate vectors (two from the numeric casts, one from `is.na`, and one from `!`) and requires multiple full-column traversals.
 **Action:** Extract the cast to a variable `num_ts <- suppressWarnings(as.numeric(x))` and use `!anyNA(num_ts)` which short-circuits in C without creating intermediate logical vectors, and reuse `num_ts` to avoid a second parse.
+
+## 2025-05-06 - Store aggregated results in R as native data.tables instead of data.frames
+**Learning:** When generating multiple data structures in a loop to eventually bind together, storing them as `data.frame`s with row names forces an expensive `as.data.table(..., keep.rownames=...)` conversion loop later, and creating explicit `data.frame` conversions (e.g., `as.data.frame()`) for `openxlsx::writeData` forces O(N) memory copies.
+**Action:** Since `openxlsx::writeData` and `rbindlist` both natively support `data.table`s, store loop results directly as `data.table`s with an explicit ID column. This enables O(1) `rbindlist` aggregations and avoids redundant casts during Excel serialization.

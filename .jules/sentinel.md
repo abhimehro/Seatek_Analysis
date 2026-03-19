@@ -22,3 +22,8 @@
 **Vulnerability:** Parsing Excel files using `pandas` and `openpyxl` without `defusedxml` installed can leave the application vulnerable to XML External Entity (XXE) and "Billion Laughs" attacks. Excel `.xlsx` files are essentially zipped XML files. If an attacker uploads a maliciously crafted `.xlsx` file, the XML parser could be tricked into disclosing local files, performing SSRF (Server-Side Request Forgery), or causing a Denial of Service via XML bomb expansion.
 **Learning:** `openpyxl` inherently uses standard library XML parsers which are known to be vulnerable to XXE. However, `openpyxl` will opportunistically use the `defusedxml` library if it is available in the environment to mitigate these risks.
 **Prevention:** Always ensure `defusedxml` is explicitly included in the `requirements.txt` alongside `openpyxl` to secure XML parsing in Excel files.
+
+## 2025-08-05 - Git Option Injection in Shell Scripts
+**Vulnerability:** Constructing `git` commands with untrusted branch names (e.g., `git push origin --delete "$branch"`) is vulnerable to option injection. An attacker could name a branch `-f` or `--all`, causing the command to evaluate as `git push origin --delete --all`, which would delete all remote branches.
+**Learning:** Even if the variable is double-quoted, command-line utilities will interpret strings starting with `-` as options.
+**Prevention:** Always use the `--` double-dash operator to separate options from positional arguments (e.g., `git log -1 --format=%ct -- "origin/$branch"`). For `git push`, use explicit refspecs to prevent ambiguous parsing (e.g., `git push origin --delete "refs/heads/$branch"`).

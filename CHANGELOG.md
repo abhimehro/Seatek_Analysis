@@ -17,6 +17,7 @@
 **Merged pull requests:**
 
 - 🎨 Palette: Add empty list check for txtProgressBar [\#92](https://github.com/abhimehro/Seatek_Analysis/pull/92) ([abhimehro](https://github.com/abhimehro))
+- ⚡ Bolt: Optimize R aggregation and Excel I/O via native data.table [\#91](https://github.com/abhimehro/Seatek_Analysis/pull/91) ([abhimehro](https://github.com/abhimehro))
 - 🛡️ Sentinel: \[MEDIUM\] Prevent log file leakage by ignoring renv\_restore.log [\#90](https://github.com/abhimehro/Seatek_Analysis/pull/90) ([abhimehro](https://github.com/abhimehro))
 - ⚡ Bolt: \[Performance\] Aggregate results as data.table to prevent serial I/O overhead [\#88](https://github.com/abhimehro/Seatek_Analysis/pull/88) ([abhimehro](https://github.com/abhimehro))
 - 🛡️ Sentinel: \[MEDIUM\] Remove stack trace from error response [\#87](https://github.com/abhimehro/Seatek_Analysis/pull/87) ([abhimehro](https://github.com/abhimehro))

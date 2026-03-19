@@ -255,14 +255,10 @@ calculate_summary_stats <- function(results) {
   # dcast automatically uses "_" as separator, producing "first10_mean", "full_sd", etc.
   summary_wide <- dcast(agg_long, Sensor ~ Metric + Stat, value.var = "Value", sep = "_")
 
-  # Convert to data.frame to match expected output type
-  summary_df <- as.data.frame(summary_wide)
-
   # Calculate percent non-missing for 'full'
-  summary_df$full_pct_nonmissing <-
-    100 * summary_df$full_count / length(results)
+  summary_wide[, full_pct_nonmissing := 100 * full_count / length(results)]
 
-  summary_df # Implicit return
+  summary_wide # Implicit return
 }
 
 # Write summary sheets and CSVs
@@ -298,19 +294,27 @@ write_summary_sheets <- function(wb, summary_df, output_file,
   summary_df <- summary_df_sufficient
   # Flag high-variability sensors (e.g., full_sd > threshold)
   sd_threshold <- 2 # adjust as needed
-  summary_df$flag_high_variability <- summary_df$full_sd > sd_threshold
+  # Modifying in place if data.table
+  if (is.data.table(summary_df)) {
+    summary_df[, flag_high_variability := full_sd > sd_threshold]
+  } else {
+    summary_df$flag_high_variability <- summary_df$full_sd > sd_threshold
+  }
 
   # Prepare top sensors by absolute within_diff_mean
   if ("within_diff_mean" %in% colnames(summary_df)) {
     abs_diff <- abs(summary_df$within_diff_mean)
     top_n <- 5
-    top_sensors <- summary_df[order(-abs_diff), ][1:top_n,
-      c(
-        "Sensor", "within_diff_mean",
-        "full_mean", "full_sd",
-        "full_pct_nonmissing"
-      )
-    ]
+    cols_to_keep <- c(
+      "Sensor", "within_diff_mean",
+      "full_mean", "full_sd",
+      "full_pct_nonmissing"
+    )
+    if (is.data.table(summary_df)) {
+      top_sensors <- summary_df[order(-abs_diff)][1:top_n, ..cols_to_keep]
+    } else {
+      top_sensors <- summary_df[order(-abs_diff), ][1:top_n, cols_to_keep]
+    }
     csv_top <- sub("\\.xlsx$", "_top_sensors.csv", output_file)
     data.table::fwrite(top_sensors, csv_top, row.names = FALSE)
     cat(sprintf("  📄 Saved: %s\n", basename(csv_top)))
@@ -339,7 +343,7 @@ write_summary_sheets <- function(wb, summary_df, output_file,
     highlight_style_summary <- createStyle(bgFill = "#FF9999")
     addStyle(wb, sheet = "Summary", style = highlight_style_summary,
              rows = top_idx + 1,
-             cols = which(colnames(summary_df) == "within_diff_mean") + 1,
+             cols = which(colnames(summary_df) == "within_diff_mean"),
              gridExpand = TRUE, stack = TRUE)
   }
   saveWorkbook(wb, output_file, overwrite = TRUE)

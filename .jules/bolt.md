@@ -31,5 +31,5 @@
 **Action:** Extract the cast to a variable `num_ts <- suppressWarnings(as.numeric(x))` and use `!anyNA(num_ts)` which short-circuits in C without creating intermediate logical vectors, and reuse `num_ts` to avoid a second parse.
 
 ## 2025-05-06 - Native data.table aggregation in R Loops
-**Learning:** Storing list results as `data.frame` objects with `row.names` inside a loop forces subsequent aggregations to convert back using expensive `lapply` loops (e.g. `lapply(results, as.data.table)`).
-**Action:** Store the results natively as `data.table` objects within the loop, including an explicit identifier column (e.g. `Sensor = sensor_names`), to allow for O(1) assignments in `write_year_sheet` (using `rowNames = FALSE`) and immediate concatenation via `rbindlist(results)`.
+**Learning:** Storing list results as `data.frame` objects with `row.names` inside a loop forces subsequent aggregations to convert back using expensive `lapply` loops (e.g. `lapply(results, as.data.table)`). When generating multiple structures to bind later, `data.frame` row names also force expensive `as.data.table(..., keep.rownames=...)` conversions and redundant `as.data.frame()` casts for `openxlsx::writeData`.
+**Action:** Store loop results natively as `data.table` objects with an explicit identifier column (e.g. `Sensor = sensor_names`). Since `openxlsx::writeData` and `rbindlist` both support `data.table`s, use `rowNames = FALSE` in `write_year_sheet` and concatenate via `rbindlist(results)` without intermediate conversions.

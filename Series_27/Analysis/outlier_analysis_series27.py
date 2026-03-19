@@ -161,14 +161,14 @@ def apply_corrections(input_path, output_dir, outliers_df):
                     # Write once per sheet
                     df_raw.to_excel(out_file, sheet_name=sheet, index=False)
         except (FileNotFoundError, PermissionError, OSError) as e:
+            # SECURITY: Do not leak stack traces in logs to prevent information disclosure
             logging.error(
-                f"Could not open file '{input_path}': {e}",
-                exc_info=True,
+                f"Could not open file '{input_path}': {e}"
             )
         except (ValueError, KeyError) as e:
+            # SECURITY: Do not leak stack traces in logs to prevent information disclosure
             logging.error(
-                f"Error reading or processing Excel data from '{input_path}': {e}",
-                exc_info=True,
+                f"Error reading or processing Excel data from '{input_path}': {e}"
             )
 
     if corrections_dfs:

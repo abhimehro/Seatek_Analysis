@@ -131,6 +131,8 @@ process_all_data <- function(data_dir) {
     } else {
       basename(f)
     }
+    # ⚡ Bolt: Store results natively as data.table with explicit Sensor ID
+    # Avoids data.frame/row.names overhead and enables fast rbindlist downstream
     results[[i + 1]] <- data.table(
       Sensor = sensor_names,
       first10 = first10,
@@ -192,17 +194,18 @@ process_all_data <- function(data_dir) {
 # Write a single year's sheet to the workbook
 write_year_sheet <- function(wb, year, data, header_style) {
   addWorksheet(wb, year)
-  df <- data
-  writeData(wb, sheet = year, x = df, rowNames = FALSE,
+  # ⚡ Bolt: No as.data.frame() conversion needed, use data.table natively
+  writeData(wb, sheet = year, x = data, rowNames = FALSE,
             headerStyle = header_style)
   freezePane(wb, sheet = year, firstRow = TRUE)
   # Optional: highlight largest within_diff in each year
-  if ("within_diff" %in% colnames(df)) {
-    max_idx <- which.max(abs(df$within_diff))
+  if ("within_diff" %in% colnames(data)) {
+    max_idx <- which.max(abs(data$within_diff))
     highlight_style_yearly <- createStyle(bgFill = "#FFD700")
+    # ⚡ Bolt: Remove '+ 1' from cols offset since Sensor is a standard column now
     addStyle(wb, sheet = year, style = highlight_style_yearly,
              rows = max_idx + 1,
-             cols = which(colnames(df) == "within_diff"),
+             cols = which(colnames(data) == "within_diff"),
              gridExpand = TRUE, stack = TRUE)
   }
 }
@@ -210,7 +213,7 @@ write_year_sheet <- function(wb, year, data, header_style) {
 # Compute summary statistics across all years
 calculate_summary_stats <- function(results) {
   # Add summary sheet with overall stats
-  # Results are already a list of data.tables with Sensor column
+  # ⚡ Bolt: No lapply conversion required. results list natively contains data.tables
   all_stats_dt <- rbindlist(results, idcol = "Year")
 
   # Identify metric columns (numeric columns excluding ID columns)
@@ -365,14 +368,16 @@ dump_summary_excel <- function(results, output_file, highlight_top_n = 5) {
   # Write each year's sheet
   cat("\n📊 Generating yearly summary sheets...\n")
   message("Generating yearly summary sheets...")
-  pb <- txtProgressBar(min = 0, max = length(results), style = 3)
-  i <- 0
-  for (year in names(results)) {
-    write_year_sheet(wb, year, results[[year]], header_style)
-    i <- i + 1
-    setTxtProgressBar(pb, i)
+  if (length(results) > 0) {
+    pb <- txtProgressBar(min = 0, max = length(results), style = 3)
+    i <- 0
+    for (year in names(results)) {
+      write_year_sheet(wb, year, results[[year]], header_style)
+      i <- i + 1
+      setTxtProgressBar(pb, i)
+    }
+    close(pb)
   }
-  close(pb)
   cat("\n✅ Yearly sheets generated.\n")
 
   cat("\n📈 Computing summary statistics...\n")

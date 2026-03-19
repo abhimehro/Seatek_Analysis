@@ -16,6 +16,9 @@
 
 **Merged pull requests:**
 
+- 🛡️ Sentinel: \[MEDIUM\] Prevent log file leakage by ignoring renv\_restore.log [\#90](https://github.com/abhimehro/Seatek_Analysis/pull/90) ([abhimehro](https://github.com/abhimehro))
+- ⚡ Bolt: \[Performance\] Aggregate results as data.table to prevent serial I/O overhead [\#88](https://github.com/abhimehro/Seatek_Analysis/pull/88) ([abhimehro](https://github.com/abhimehro))
+- 🛡️ Sentinel: \[MEDIUM\] Remove stack trace from error response [\#87](https://github.com/abhimehro/Seatek_Analysis/pull/87) ([abhimehro](https://github.com/abhimehro))
 - 🎨 Palette: Add progress bar to sequential Excel export [\#86](https://github.com/abhimehro/Seatek_Analysis/pull/86) ([abhimehro](https://github.com/abhimehro))
 - ⚡ Bolt: Optimize timestamp parsing with anyNA and shared references [\#85](https://github.com/abhimehro/Seatek_Analysis/pull/85) ([abhimehro](https://github.com/abhimehro))
 - Bump actions/checkout from 4 to 6 [\#84](https://github.com/abhimehro/Seatek_Analysis/pull/84) ([dependabot[bot]](https://github.com/apps/dependabot))

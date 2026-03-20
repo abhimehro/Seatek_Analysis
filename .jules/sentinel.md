@@ -24,6 +24,6 @@
 **Prevention:** Always ensure `defusedxml` is explicitly included in the `requirements.txt` alongside `openpyxl` to secure XML parsing in Excel files.
 
 ## 2025-08-05 - Git Option Injection in Shell Scripts
-**Vulnerability:** Constructing `git` commands with untrusted branch names (e.g., `git push origin --delete "$branch"`) is vulnerable to option injection. An attacker could name a branch `-f` or `--all`, causing the command to evaluate as `git push origin --delete --all`, which would delete all remote branches.
+**Vulnerability:** Constructing `git` commands with untrusted branch names (e.g., `git push origin --delete "$branch"`) is vulnerable to option injection. An attacker could create a branch with a name starting with a dash (e.g., `-f`). Even when the variable is quoted, some Git commands may interpret this as an option (`--force`) instead of a branch name. This can cause the command to fail or behave in unexpected ways, such as applying the option to other arguments in the command.
 **Learning:** Even if the variable is double-quoted, command-line utilities will interpret strings starting with `-` as options.
 **Prevention:** Always use the `--` double-dash operator to separate options from positional arguments (e.g., `git log -1 --format=%ct -- "origin/$branch"`). For `git push`, use explicit refspecs to prevent ambiguous parsing (e.g., `git push origin --delete "refs/heads/$branch"`).

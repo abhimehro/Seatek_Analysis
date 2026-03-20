@@ -16,6 +16,7 @@
 
 **Merged pull requests:**
 
+- 🛡️ Sentinel: \[CRITICAL\] Fix Git Option Injection in Branch Cleanup [\#93](https://github.com/abhimehro/Seatek_Analysis/pull/93) ([abhimehro](https://github.com/abhimehro))
 - 🎨 Palette: Add empty list check for txtProgressBar [\#92](https://github.com/abhimehro/Seatek_Analysis/pull/92) ([abhimehro](https://github.com/abhimehro))
 - ⚡ Bolt: Optimize R aggregation and Excel I/O via native data.table [\#91](https://github.com/abhimehro/Seatek_Analysis/pull/91) ([abhimehro](https://github.com/abhimehro))
 - 🛡️ Sentinel: \[MEDIUM\] Prevent log file leakage by ignoring renv\_restore.log [\#90](https://github.com/abhimehro/Seatek_Analysis/pull/90) ([abhimehro](https://github.com/abhimehro))

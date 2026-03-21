@@ -16,6 +16,8 @@
 
 **Merged pull requests:**
 
+- 🛡️ Sentinel: \[CRITICAL\] Fix path traversal in Updated\_Seatek\_Analysis.R [\#95](https://github.com/abhimehro/Seatek_Analysis/pull/95) ([abhimehro](https://github.com/abhimehro))
+- 🎨 Palette: Add robust on.exit cleanup to txtProgressBar [\#94](https://github.com/abhimehro/Seatek_Analysis/pull/94) ([abhimehro](https://github.com/abhimehro))
 - 🛡️ Sentinel: \[CRITICAL\] Fix Git Option Injection in Branch Cleanup [\#93](https://github.com/abhimehro/Seatek_Analysis/pull/93) ([abhimehro](https://github.com/abhimehro))
 - 🎨 Palette: Add empty list check for txtProgressBar [\#92](https://github.com/abhimehro/Seatek_Analysis/pull/92) ([abhimehro](https://github.com/abhimehro))
 - ⚡ Bolt: Optimize R aggregation and Excel I/O via native data.table [\#91](https://github.com/abhimehro/Seatek_Analysis/pull/91) ([abhimehro](https://github.com/abhimehro))

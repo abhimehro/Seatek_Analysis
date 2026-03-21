@@ -378,6 +378,13 @@ dump_summary_excel <- function(results, output_file, highlight_top_n = 5) {
   message("Generating yearly summary sheets...")
   if (length(results) > 0) {
     pb <- txtProgressBar(min = 0, max = length(results), style = 3)
+    # 🎨 Palette: Add robust cleanup to prevent garbled console on error
+    on.exit({
+      if (!is.null(pb)) {
+        close(pb)
+        pb <- NULL
+      }
+    }, add = TRUE)
     i <- 0
     for (year in names(results)) {
       write_year_sheet(wb, year, results[[year]], header_style)

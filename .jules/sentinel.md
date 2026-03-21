@@ -27,3 +27,8 @@
 **Vulnerability:** Constructing `git` commands with untrusted branch names (e.g., `git push origin --delete "$branch"`) is vulnerable to option injection. An attacker could create a branch with a name starting with a dash (e.g., `-f`). Even when the variable is quoted, some Git commands may interpret this as an option (`--force`) instead of a branch name. This can cause the command to fail or behave in unexpected ways, such as applying the option to other arguments in the command.
 **Learning:** Even if the variable is double-quoted, command-line utilities will interpret strings starting with `-` as options.
 **Prevention:** Always use the `--` double-dash operator to separate options from positional arguments (e.g., `git log -1 --format=%ct -- "origin/$branch"`). For `git push`, use explicit refspecs to prevent ambiguous parsing (e.g., `git push origin --delete "refs/heads/$branch"`).
+
+## 2025-08-06 - Path Traversal Prevention in R
+**Vulnerability:** A user-supplied directory path (`data_dir`) was normalized and checked for existence, but not constrained to the current working directory, allowing path traversal (e.g., `../../../etc`).
+**Learning:** `normalizePath` resolves `../` segments, but does not inherently enforce a sandbox boundary.
+**Prevention:** Always compare the normalized target directory against the normalized working directory. To prevent directory prefix bypass (e.g., matching `/workspace_secrets` when the root is `/workspace`), ensure a trailing slash is appended to both paths before using `startsWith()`.

@@ -38,6 +38,14 @@ auto_detect_data_dir <- function(data_dir) {
   if (!dir.exists(data_dir)) {
     stop(sprintf("Data directory not found: %s", data_dir))
   }
+
+  # SECURITY: Prevent path traversal by ensuring the data directory is within the workspace
+  cwd <- paste0(normalizePath(getwd(), winslash = "/"), "/")
+  resolved_dir <- paste0(normalizePath(data_dir, winslash = "/"), "/")
+  if (!startsWith(resolved_dir, cwd)) {
+    stop("SECURITY: Path traversal detected. data_dir must be within the current working directory.")
+  }
+
   return(normalizePath(data_dir))
 }
 

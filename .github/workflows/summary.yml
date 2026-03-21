@@ -28,7 +28,7 @@ jobs:
       - name: Comment with AI summary
         run: |
           printf "%s\n" "$RESPONSE" > response.txt
-          gh issue comment "$ISSUE_NUMBER" --body-file response.txt
+          gh issue comment --body-file response.txt -- "$ISSUE_NUMBER"
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           ISSUE_NUMBER: ${{ github.event.issue.number }}

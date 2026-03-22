@@ -84,9 +84,9 @@ def prepare_outliers_df(outliers):
         valid_outliers = outliers[valid_mask].copy()
         valid_years = all_years[valid_mask]
 
-        # ⚡ Bolt: Replace .str.split().str[-1] with .str.replace('Sensor', '')
+        # ⚡ Bolt: Replace .str.split().str[-1] with .str.replace('Sensor ', '')
         # avoid intermediate list creation per-row for faster parsing
-        sensors = valid_outliers['Sensor'].astype(str).str.extract(r'(\d+)$', expand=False).astype(int)
+        sensors = valid_outliers['Sensor'].astype(str).str.replace('Sensor ', '', regex=False).astype(int)
         next_years = valid_years.str[0].astype(int)
 
         outliers_df = pd.DataFrame({
@@ -193,7 +193,7 @@ def plot_outliers(outliers, method, threshold, output_dir):
         plt.axhline(-threshold, linestyle='--', color='red')
     # ⚡ Bolt: Replace .iterrows() with vectorized string operations for x-tick labels
     # Use .str.replace instead of .split() to avoid creating intermediate arrays
-    sensor_nums = outliers['Sensor'].astype(str).str.extract(r'(\d+)$', expand=False).astype(int).astype(str)
+    sensor_nums = outliers['Sensor'].astype(str).str.replace('Sensor ', '', regex=False).astype(int).astype(str)
     x_labels = outliers['Year_Pair'].astype(str) + '/S' + sensor_nums
 
     plt.xticks(

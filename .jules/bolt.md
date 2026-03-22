@@ -33,3 +33,7 @@
 ## 2025-05-06 - Native data.table aggregation in R Loops
 **Learning:** Storing list results as `data.frame` objects with `row.names` inside a loop forces subsequent aggregations to convert back using expensive `lapply` loops (e.g. `lapply(results, as.data.table)`). When generating multiple structures to bind later, `data.frame` row names also force expensive `as.data.table(..., keep.rownames=...)` conversions and redundant `as.data.frame()` casts for `openxlsx::writeData`.
 **Action:** Store loop results natively as `data.table` objects with an explicit identifier column (e.g. `Sensor = sensor_names`). Since `openxlsx::writeData` and `rbindlist` both support `data.table`s, use `rowNames = FALSE` in `write_year_sheet` and concatenate via `rbindlist(results)` without intermediate conversions.
+
+## 2025-05-06 - Avoid .str.split() for extracting substrings in Pandas
+**Learning:** Using `.str.split().str[-1]` to extract the trailing number from a string (e.g., "Sensor 01") forces pandas to allocate a Python list of strings for every single row before indexing it. For large Series, this intermediate array creation introduces significant memory and processing overhead compared to direct string replacement.
+**Action:** For extracting trailing numbers, prefer the more robust and performant `.str.extract(r'(\d+)$', expand=False)`. While `.str.replace()` can work for simple prefix stripping, it can be brittle if the string format is not strictly fixed.

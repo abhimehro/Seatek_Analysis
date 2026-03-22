@@ -86,7 +86,7 @@ def prepare_outliers_df(outliers):
 
         # ⚡ Bolt: Replace .str.split().str[-1] with .str.replace('Sensor', '')
         # avoid intermediate list creation per-row for faster parsing
-        sensors = valid_outliers['Sensor'].astype(str).str.replace('Sensor', '', regex=False).astype(int)
+        sensors = valid_outliers['Sensor'].astype(str).str.extract(r'(\d+)$', expand=False).astype(int)
         next_years = valid_years.str[0].astype(int)
 
         outliers_df = pd.DataFrame({

@@ -8,6 +8,8 @@ def get_repo_info():
         print(f"Error getting repo info: {e}")
         return "account", "project", "hash"
 
+MAX_FILE_SIZE = 10 * 1024 * 1024  # 10 MB
+
 def read_file_safe(filepath):
     try:
         # SECURITY: Prevent path traversal by ensuring the file is within the current directory.
@@ -15,6 +17,10 @@ def read_file_safe(filepath):
         cwd = os.path.realpath(os.getcwd())
         resolved_filepath = os.path.realpath(filepath)
         if os.path.commonpath([cwd, resolved_filepath]) != cwd:
+            return []
+
+        # SECURITY: Prevent Out-Of-Memory (OOM) DoS attacks by limiting file size
+        if os.path.getsize(resolved_filepath) > MAX_FILE_SIZE:
             return []
 
         with open(resolved_filepath, 'r', encoding='utf-8') as f:

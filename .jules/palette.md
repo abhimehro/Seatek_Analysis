@@ -17,3 +17,11 @@
 ## 2025-05-06 - Empty List Crash with `txtProgressBar`
 **Learning:** In R, `txtProgressBar` requires `max > min`. When initializing a progress bar for a list or vector that might be empty, initializing it directly will result in a fatal error (`must have 'max' > 'min'`), crashing the script. This creates a terrible user experience if an unexpected data edge case occurs.
 **Action:** Always wrap progress bar initialization and its corresponding loop in a length check (e.g., `if (length(items) > 0)`) to gracefully handle empty inputs without breaking the CLI.
+
+## 2025-05-06 - Preventing Empty Visual Artifacts
+**Learning:** Generating empty visual artifacts (like a blank `.png` plot) when a condition is unmet (e.g., zero outliers detected) causes user confusion and clutters output directories.
+**Action:** Always verify if the dataset is empty before generating a visual artifact, and provide a clear, helpful console message indicating why the step was skipped.
+
+## 2025-05-06 - CLI Input Validation Error UX
+**Learning:** Allowing standard library exceptions (like FileNotFoundError) to bubble up directly to the user creates a poor CLI experience filled with scary stack traces.
+**Action:** Explicitly validate user-provided file paths early and provide a clean, human-readable error message.

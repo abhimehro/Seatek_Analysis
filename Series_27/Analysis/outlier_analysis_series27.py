@@ -181,6 +181,10 @@ def apply_corrections(input_path, output_dir, outliers_df):
 
 def plot_outliers(outliers, method, threshold, output_dir):
     """Generates and saves the scatter plot for outliers."""
+    if outliers.empty:
+        logging.info("No outliers to plot. Skipping plot generation.")
+        return
+
     plt.figure(figsize=(12, 6))
     plt.scatter(range(len(outliers)), outliers['Difference'], s=50)
     plt.axhline(0, color='gray')
@@ -212,7 +216,11 @@ def main():
                         format='%(levelname)s: %(message)s')
 
     logging.info("Loading year-to-year differences")
-    diff_df = pd.read_excel(args.input, sheet_name=args.sheet_summary)
+    try:
+        diff_df = pd.read_excel(args.input, sheet_name=args.sheet_summary)
+    except FileNotFoundError:
+        logging.error(f"Input file not found: '{args.input}'")
+        return
     long_df = diff_df.melt(
         id_vars='Year_Pair', var_name='Sensor', value_name='Difference'
     )

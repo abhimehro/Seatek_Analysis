@@ -189,7 +189,7 @@ def plot_outliers(outliers, method, threshold, output_dir):
         plt.axhline(-threshold, linestyle='--', color='red')
     # ⚡ Bolt: Replace .iterrows() with vectorized string operations for x-tick labels
     # Use .str.replace instead of .split() to avoid creating intermediate arrays
-    sensor_nums = outliers['Sensor'].astype(str).str.replace('Sensor', '', regex=False).astype(int).astype(str)
+    sensor_nums = outliers['Sensor'].astype(str).str.extract(r'(\d+)$', expand=False).astype(int).astype(str)
     x_labels = outliers['Year_Pair'].astype(str) + '/S' + sensor_nums
 
     plt.xticks(

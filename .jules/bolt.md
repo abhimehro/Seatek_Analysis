@@ -36,4 +36,4 @@
 
 ## 2025-05-06 - Avoid .str.split() for extracting substrings in Pandas
 **Learning:** Using `.str.split().str[-1]` to extract the trailing number from a string (e.g., "Sensor 01") forces pandas to allocate a Python list of strings for every single row before indexing it. For large Series, this intermediate array creation introduces significant memory and processing overhead compared to direct string replacement.
-**Action:** Use `.str.replace('Sensor', '', regex=False)` or `.str.strip()` to strip known prefixes/suffixes before casting. This avoids intermediate list allocations per-row and is over 2x faster.
+**Action:** For extracting trailing numbers, prefer the more robust and performant `.str.extract(r'(\d+)$', expand=False)`. While `.str.replace()` can work for simple prefix stripping, it can be brittle if the string format is not strictly fixed.

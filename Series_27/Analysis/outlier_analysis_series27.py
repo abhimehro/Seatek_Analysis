@@ -212,12 +212,12 @@ def main():
     logging.basicConfig(level=logging.INFO,
                         format='%(levelname)s: %(message)s')
 
-    if not os.path.exists(args.input):
+    logging.info("Loading year-to-year differences")
+    try:
+        diff_df = pd.read_excel(args.input, sheet_name=args.sheet_summary)
+    except FileNotFoundError:
         logging.error(f"Input file not found: '{args.input}'")
         return
-
-    logging.info("Loading year-to-year differences")
-    diff_df = pd.read_excel(args.input, sheet_name=args.sheet_summary)
     long_df = diff_df.melt(
         id_vars='Year_Pair', var_name='Sensor', value_name='Difference'
     )

@@ -16,6 +16,7 @@
 
 **Merged pull requests:**
 
+- ⚡ Bolt: Optimize Sensor ID parsing in pandas by replacing .split\(\) with .replace\(\) [\#96](https://github.com/abhimehro/Seatek_Analysis/pull/96) ([abhimehro](https://github.com/abhimehro))
 - 🛡️ Sentinel: \[CRITICAL\] Fix path traversal in Updated\_Seatek\_Analysis.R [\#95](https://github.com/abhimehro/Seatek_Analysis/pull/95) ([abhimehro](https://github.com/abhimehro))
 - 🎨 Palette: Add robust on.exit cleanup to txtProgressBar [\#94](https://github.com/abhimehro/Seatek_Analysis/pull/94) ([abhimehro](https://github.com/abhimehro))
 - 🛡️ Sentinel: \[CRITICAL\] Fix Git Option Injection in Branch Cleanup [\#93](https://github.com/abhimehro/Seatek_Analysis/pull/93) ([abhimehro](https://github.com/abhimehro))

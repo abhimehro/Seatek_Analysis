@@ -1,0 +1,96 @@
+schema_version: 1
+repository:
+  default_branch: main
+automation:
+  human_review_label: needs-human-review
+  write_safety:
+    # Design sketch only: the current runner still relies on the explicit per-task
+    # publish/create flags below. This block documents the intended future modes.
+    active_mode: safe-writes
+    modes:
+      read-only:
+        description: "Analysis and local reports only. No issue, label, or PR creation."
+      safe-writes:
+        description: "Allows status issues, label creation, and draft PRs for allow-listed workflow or documentation changes."
+      expanded-writes:
+        description: "Allows broader non-protected-path draft PRs after all security gates pass; still no force-pushes, merges, or protected-path edits."
+  protected_paths:
+    - auth/**
+    - migrations/**
+    - database/**
+    - src/auth/**
+  reporting:
+    daily_issue_prefix: "[repo-automation] Daily Status Report"
+    weekly_issue_prefix: "[repo-automation] Weekly Retrospective"
+  workflow_updater:
+    enabled: true
+    create_draft_pr: true
+    branch_prefix: automation/workflow-updates
+    commit_message: "chore(actions): consolidate and refresh workflow dependencies"
+    pr_title: "chore(actions): consolidate workflow automation"
+    allowed_paths:
+      - .github/workflows/*.yml
+      - .github/workflows/*.yaml
+      - .github/actions/**/*.yml
+      - .github/actions/**/*.yaml
+  performance_optimizer:
+    enabled: true
+    commands: []
+    suggestions:
+      - Use the hotspot table to focus on large mail-parsing modules before attempting behavioural performance edits.
+      - Keep ML-dependent performance work manual unless a dry-run or benchmark path exists for the exact change.
+  quality_assurance:
+    enabled: true
+    setup_commands:
+      - name: install ci dependencies
+        run: python3 -m pip install --upgrade pip && python3 -m pip install -r requirements-ci.txt pre-commit bandit
+        optional: false
+        timeout_seconds: 1800
+    commands:
+      - name: pytest suite
+        run: python3 -m pytest
+        optional: false
+        timeout_seconds: 2400
+      - name: pre-commit hygiene
+        run: SKIP=trailing-whitespace,end-of-file-fixer,mixed-line-ending,requirements-txt-fixer pre-commit run --all-files
+        optional: true
+        timeout_seconds: 1800
+      - name: trunk parity check
+        run: if command -v trunk >/dev/null 2>&1; then trunk check --all; else echo "trunk not installed; skipping"; fi
+        optional: true
+        timeout_seconds: 1800
+    security_commands:
+      - name: bandit source scan
+        run: python3 -m bandit -r src -ll -c .bandit
+        optional: true
+        timeout_seconds: 1200
+  backlog_manager:
+    enabled: true
+    stale_days: 14
+    max_issues: 10
+    max_pull_requests: 10
+    include_discussions: false
+    create_tracking_issue: false
+  status_report:
+    enabled: true
+    publish_issue: true
+    labels:
+      - name: automation:daily-status
+        color: "1d76db"
+        description: Human-readable daily repository automation reports
+  weekly_retrospective:
+    enabled: true
+    publish_issue: true
+    labels:
+      - name: automation:weekly-retro
+        color: "5319e7"
+        description: Weekly repository automation retrospectives
+    auto_apply_safe_changes: false
+    branch_prefix: automation/weekly-workflow-tuning
+    commit_message: "chore(actions): apply safe weekly automation tuning"
+    allowed_paths:
+      - .github/workflows/*.yml
+      - .github/workflows/*.yaml
+      - .github/actions/**/*.yml
+      - .github/actions/**/*.yaml
+    safe_adjustment_commands: []

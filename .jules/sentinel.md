@@ -37,3 +37,8 @@
 **Vulnerability:** A file scanning utility (`read_file_safe`) used `f.readlines()` to load the entire contents of a user-supplied file into memory without any size constraints.
 **Learning:** Loading unbounded file contents into memory creates a trivial vector for Denial of Service (DoS) attacks via memory exhaustion (OOM), even if path traversal is prevented. This is especially risky in automation tools like code scanners that blindly iterate over files.
 **Prevention:** Always check `os.path.getsize(filepath)` against a safe maximum threshold (e.g., `MAX_FILE_SIZE = 10 * 1024 * 1024` for 10MB) before opening and reading a file into memory.
+
+## 2025-08-08 - Generic Exception Handling Data Leakage
+**Vulnerability:** Generic exception handlers (`except Exception as e:`) that print or log the raw exception object (`e`) can unintentionally leak sensitive internal application paths, state, or database queries depending on the underlying error.
+**Learning:** While swallowing exceptions completely hinders debugging, logging the full exception string to stdout/stderr or an insecure log sink is an information disclosure risk.
+**Prevention:** Fail securely by logging a generic user-facing message, but include the exception type (e.g., `type(e).__name__`) to preserve debuggability without exposing sensitive string contents.

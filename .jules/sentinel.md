@@ -32,3 +32,8 @@
 **Vulnerability:** A user-supplied directory path (`data_dir`) was normalized and checked for existence, but not constrained to the current working directory, allowing path traversal (e.g., `../../../etc`).
 **Learning:** `normalizePath` resolves `../` segments, but does not inherently enforce a sandbox boundary.
 **Prevention:** Always compare the normalized target directory against the normalized working directory. To prevent directory prefix bypass (e.g., matching `/workspace_secrets` when the root is `/workspace`), ensure a trailing slash is appended to both paths before using `startsWith()`.
+
+## 2025-08-07 - Out-Of-Memory (OOM) / Denial of Service (DoS) Risk with File Reads
+**Vulnerability:** A file scanning utility (`read_file_safe`) used `f.readlines()` to load the entire contents of a user-supplied file into memory without any size constraints.
+**Learning:** Loading unbounded file contents into memory creates a trivial vector for Denial of Service (DoS) attacks via memory exhaustion (OOM), even if path traversal is prevented. This is especially risky in automation tools like code scanners that blindly iterate over files.
+**Prevention:** Always check `os.path.getsize(filepath)` against a safe maximum threshold (e.g., `MAX_FILE_SIZE = 10 * 1024 * 1024` for 10MB) before opening and reading a file into memory.

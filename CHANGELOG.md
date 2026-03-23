@@ -17,6 +17,7 @@
 **Merged pull requests:**
 
 - 🛡️ Sentinel: \[MEDIUM\] Fix OOM DoS vulnerability in file reader [\#101](https://github.com/abhimehro/Seatek_Analysis/pull/101) ([abhimehro](https://github.com/abhimehro))
+- 🎨 Palette: Improve CLI input validation UX and prevent output clutter [\#100](https://github.com/abhimehro/Seatek_Analysis/pull/100) ([abhimehro](https://github.com/abhimehro))
 - 🛡️ Sentinel: \[MEDIUM\] Fix CLI option injection in gh issue comment [\#98](https://github.com/abhimehro/Seatek_Analysis/pull/98) ([abhimehro](https://github.com/abhimehro))
 - 🎨 Palette: Prevent empty plot generation and add clean CLI error messages [\#97](https://github.com/abhimehro/Seatek_Analysis/pull/97) ([abhimehro](https://github.com/abhimehro))
 - ⚡ Bolt: Optimize Sensor ID parsing in pandas by replacing .split\(\) with .replace\(\) [\#96](https://github.com/abhimehro/Seatek_Analysis/pull/96) ([abhimehro](https://github.com/abhimehro))

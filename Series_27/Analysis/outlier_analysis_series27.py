@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 import pandas as pd
 import argparse
-import re
 import os
 import matplotlib.pyplot as plt
 import logging
@@ -211,15 +210,24 @@ def plot_outliers(outliers, method, threshold, output_dir):
 
 def main():
     args = parse_args()
-    os.makedirs(args.output, exist_ok=True)
     logging.basicConfig(level=logging.INFO,
                         format='%(levelname)s: %(message)s')
 
+    # Explicitly validate the input file early to provide a clean CLI error UX
+    if not os.path.isfile(args.input):
+        logging.error(
+            f"Input file not found or is not a file: '{args.input}'. "
+            "Please provide a valid Excel file."
+        )
+        return
+
+    os.makedirs(args.output, exist_ok=True)
     logging.info("Loading year-to-year differences")
     try:
         diff_df = pd.read_excel(args.input, sheet_name=args.sheet_summary)
-    except FileNotFoundError:
-        logging.error(f"Input file not found: '{args.input}'")
+    except Exception as e:
+        # SECURITY: Do not leak stack traces; fail gracefully on parse errors
+        logging.error(f"Failed to read the Excel file: {e}")
         return
     long_df = diff_df.melt(
         id_vars='Year_Pair', var_name='Sensor', value_name='Difference'

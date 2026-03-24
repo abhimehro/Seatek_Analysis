@@ -1,3 +1,4 @@
+import logging
 import os
 
 def get_repo_info():
@@ -5,7 +6,8 @@ def get_repo_info():
         # Dummy code
         return "account", "project", "hash"
     except Exception as e:
-        print(f"Error getting repo info: {e}")
+        # SECURITY: Fail securely, don't expose internal exception details
+        logging.error(f"Error getting repo info: Internal error occurred ({type(e).__name__}).")
         return "account", "project", "hash"
 
 MAX_FILE_SIZE = 10 * 1024 * 1024  # 10 MB

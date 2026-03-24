@@ -16,6 +16,7 @@
 
 **Merged pull requests:**
 
+- Bump actions/checkout from 4 to 6 [\#103](https://github.com/abhimehro/Seatek_Analysis/pull/103) ([dependabot[bot]](https://github.com/apps/dependabot))
 - 🛡️ Sentinel: \[MEDIUM\] Fix OOM DoS vulnerability in file reader [\#101](https://github.com/abhimehro/Seatek_Analysis/pull/101) ([abhimehro](https://github.com/abhimehro))
 - 🎨 Palette: Improve CLI input validation UX and prevent output clutter [\#100](https://github.com/abhimehro/Seatek_Analysis/pull/100) ([abhimehro](https://github.com/abhimehro))
 - ⚡ Bolt: Optimize Sensor string parsing with non-regex replacement [\#99](https://github.com/abhimehro/Seatek_Analysis/pull/99) ([abhimehro](https://github.com/abhimehro))

@@ -117,7 +117,7 @@ def apply_corrections(input_path, output_dir, outliers_df):
                         df_raw = xls.parse(sheet)
                     except Exception as e:
                         # SECURITY: Fail securely, don't expose internal exception details
-                        logging.warning(f"Could not read sheet '{sheet}': Internal error occurred ({type(e).__name__}).")
+                        logging.warning(f"Could not read sheet '{sheet}'. Encountered a {type(e).__name__} error.")
                         continue
 
                     if df_raw.empty:

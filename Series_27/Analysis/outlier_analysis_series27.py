@@ -228,7 +228,7 @@ def main():
         diff_df = pd.read_excel(args.input, sheet_name=args.sheet_summary)
     except Exception as e:
         # SECURITY: Do not leak stack traces; fail gracefully on parse errors
-        logging.error(f"Failed to read the Excel file: Internal error occurred ({type(e).__name__}).")
+        logging.error(f"Failed to read the Excel file. Encountered a {type(e).__name__} error.")
         return
     long_df = diff_df.melt(
         id_vars='Year_Pair', var_name='Sensor', value_name='Difference'

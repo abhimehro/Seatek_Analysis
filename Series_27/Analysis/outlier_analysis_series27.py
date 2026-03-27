@@ -77,16 +77,16 @@ def detect_outliers(df, method, abs_thr, z_thr, iqr_fac):
 def prepare_outliers_df(outliers):
     """Group outliers by target sheet to batch Excel I/O and prevent overriding corrections."""
     if not outliers.empty:
-        all_years = outliers['Year_Pair'].astype(str).str.findall(r'(\d{4})')
-        valid_mask = all_years.str.len() == 2
+        # ⚡ Bolt: Replace .str.findall() with .str.extract() to avoid O(N) intermediate Python list allocations
+        extracted_years = outliers['Year_Pair'].astype(str).str.extract(r'(\d{4})\D+(\d{4})')
+        valid_mask = extracted_years.notna().all(axis=1)
 
         valid_outliers = outliers[valid_mask].copy()
-        valid_years = all_years[valid_mask]
 
         # ⚡ Bolt: Replace .str.split().str[-1] with .str.replace('Sensor ', '')
         # avoid intermediate list creation per-row for faster parsing
         sensors = valid_outliers['Sensor'].astype(str).str.replace('Sensor ', '', regex=False).astype(int)
-        next_years = valid_years.str[0].astype(int)
+        next_years = extracted_years.loc[valid_mask, 0].astype(int)
 
         outliers_df = pd.DataFrame({
             'Year_Pair': valid_outliers['Year_Pair'],
@@ -192,9 +192,8 @@ def plot_outliers(outliers, method, threshold, output_dir):
     if method == 'abs':
         plt.axhline(threshold, linestyle='--', color='red')
         plt.axhline(-threshold, linestyle='--', color='red')
-    # ⚡ Bolt: Replace .iterrows() with vectorized string operations for x-tick labels
-    # Use .str.replace instead of .split() to avoid creating intermediate arrays
-    sensor_nums = outliers['Sensor'].astype(str).str.replace('Sensor ', '', regex=False).astype(int).astype(str)
+    # ⚡ Bolt: Replace .str.replace() with string slicing to avoid regex engine overhead
+    sensor_nums = outliers['Sensor'].astype(str).str[7:].astype(int).astype(str)
     x_labels = outliers['Year_Pair'].astype(str) + '/S' + sensor_nums
 
     plt.xticks(

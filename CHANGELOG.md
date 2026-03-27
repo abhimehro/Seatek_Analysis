@@ -16,6 +16,8 @@
 
 **Merged pull requests:**
 
+- ⚡ Bolt: Vectorize column-wise subtraction in Pandas [\#107](https://github.com/abhimehro/Seatek_Analysis/pull/107) ([abhimehro](https://github.com/abhimehro))
+- 🛡️ Sentinel: \[MEDIUM\] Fix Information Leakage in Exception Handling [\#106](https://github.com/abhimehro/Seatek_Analysis/pull/106) ([abhimehro](https://github.com/abhimehro))
 - 🎨 Palette: No suitable UX enhancements found [\#105](https://github.com/abhimehro/Seatek_Analysis/pull/105) ([abhimehro](https://github.com/abhimehro))
 - 🛡️ Sentinel: \[MEDIUM\] Secure Exception Handling in Health Scanner [\#104](https://github.com/abhimehro/Seatek_Analysis/pull/104) ([abhimehro](https://github.com/abhimehro))
 - Bump actions/checkout from 4 to 6 [\#103](https://github.com/abhimehro/Seatek_Analysis/pull/103) ([dependabot[bot]](https://github.com/apps/dependabot))

@@ -116,7 +116,8 @@ def apply_corrections(input_path, output_dir, outliers_df):
                         # Read once per sheet using the already parsed ExcelFile object
                         df_raw = xls.parse(sheet)
                     except Exception as e:
-                        logging.warning(f"Could not read sheet '{sheet}': {e}")
+                        # SECURITY: Fail securely, don't expose internal exception details
+                        logging.warning(f"Could not read sheet '{sheet}': Internal error occurred ({type(e).__name__}).")
                         continue
 
                     if df_raw.empty:
@@ -227,7 +228,7 @@ def main():
         diff_df = pd.read_excel(args.input, sheet_name=args.sheet_summary)
     except Exception as e:
         # SECURITY: Do not leak stack traces; fail gracefully on parse errors
-        logging.error(f"Failed to read the Excel file: {e}")
+        logging.error(f"Failed to read the Excel file: Internal error occurred ({type(e).__name__}).")
         return
     long_df = diff_df.melt(
         id_vars='Year_Pair', var_name='Sensor', value_name='Difference'

@@ -78,7 +78,7 @@ def prepare_outliers_df(outliers):
     """Group outliers by target sheet to batch Excel I/O and prevent overriding corrections."""
     if not outliers.empty:
         # ⚡ Bolt: Replace .str.findall() with .str.extract() to avoid O(N) intermediate Python list allocations
-        extracted_years = outliers['Year_Pair'].astype(str).str.extract(r'(\d{4})\D+(\d{4})')
+        extracted_years = outliers['Year_Pair'].astype(str).str.extract(r'^\D*(\d{4})\D*(\d{4})\D*$')
         valid_mask = extracted_years.notna().all(axis=1)
 
         valid_outliers = outliers[valid_mask].copy()

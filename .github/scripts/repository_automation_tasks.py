@@ -263,7 +263,7 @@ def run_workflow_updater(config: dict[str, Any]) -> dict[str, Any]:
     except Exception as exc:  # pragma: no cover - runtime integration
         restore_workflow_updates(plans)
         status = "failure"
-        body_parts.extend(["## Draft PR failure", f"- {exc}", ""])
+        body_parts.extend(["## Draft PR failure", f"- {type(exc).__name__}", ""])
     return write_result("workflow-updater", status, summary, "\n".join(body_parts), {"updates": updates, "pull_request_url": pr_url})
 
 
@@ -564,7 +564,7 @@ def run_weekly_retrospective(config: dict[str, Any]) -> dict[str, Any]:
         try:
             safe_changes, safe_pr_url = run_safe_adjustment_commands(section)
         except Exception as exc:  # pragma: no cover - runtime integration
-            safe_changes = [{"name": "safe-adjustment-commands", "exit_code": 1, "stdout": "", "stderr": str(exc)}]
+            safe_changes = [{"name": "safe-adjustment-commands", "exit_code": 1, "stdout": "", "stderr": type(exc).__name__}]
     status, lines = weekly_report_lines(config, runs, markers, safe_changes, safe_pr_url)
     summary = f"Reviewed {len(runs)} daily workflow runs from the last 7 days."
     title = f"{config.get('reporting', {}).get('weekly_issue_prefix', '[repo-automation] Weekly Retrospective')} - {iso_day()}"

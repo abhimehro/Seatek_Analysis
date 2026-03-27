@@ -349,5 +349,5 @@ def append_publication_result(
         body += f"\n## Published issue\n- {issue_url}\n"
         return body, issue_url, None
     except Exception as exc:  # pragma: no cover - runtime integration
-        body += f"\n## Publishing failure\n- {exc}\n"
-        return body, "", str(exc)
+        body += f"\n## Publishing failure\n- {type(exc).__name__}\n"
+        return body, "", type(exc).__name__

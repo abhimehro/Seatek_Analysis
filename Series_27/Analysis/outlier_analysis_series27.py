@@ -1,43 +1,58 @@
 #!/usr/bin/env python3
-import pandas as pd
 import argparse
-import os
-import matplotlib.pyplot as plt
 import logging
+import os
+
+import matplotlib.pyplot as plt
+import pandas as pd
 
 
 def parse_args():
     parser = argparse.ArgumentParser(
         description="Series 27 Outlier Analysis and Correction",
-        formatter_class=argparse.ArgumentDefaultsHelpFormatter
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
     )
     parser.add_argument(
-        '-i', '--input', required=True,
-        help="Path to Seatek Comprehensive Analysis workbook"
+        "-i",
+        "--input",
+        required=True,
+        help="Path to Seatek Comprehensive Analysis workbook",
     )
     parser.add_argument(
-        '-s', '--sheet_summary', default='Year-to-Year Differences',
-        help="Summary sheet name containing year-to-year diffs"
+        "-s",
+        "--sheet_summary",
+        default="Year-to-Year Differences",
+        help="Summary sheet name containing year-to-year diffs",
     )
     parser.add_argument(
-        '-m', '--method', choices=['abs', 'zscore', 'iqr'], default='abs',
-        help="Outlier detection method: abs (|Δ|>=thr), zscore, or iqr"
+        "-m",
+        "--method",
+        choices=["abs", "zscore", "iqr"],
+        default="abs",
+        help="Outlier detection method: abs (|Δ|>=thr), zscore, or iqr",
     )
     parser.add_argument(
-        '-t', '--threshold', type=float, default=0.1,
-        help="Threshold for absolute method (cm)"
+        "-t",
+        "--threshold",
+        type=float,
+        default=0.1,
+        help="Threshold for absolute method (cm)",
     )
     parser.add_argument(
-        '-z', '--zscore', type=float, default=3.0,
-        help="Z-score threshold for zscore method"
+        "-z",
+        "--zscore",
+        type=float,
+        default=3.0,
+        help="Z-score threshold for zscore method",
     )
     parser.add_argument(
-        '-q', '--iqr_factor', type=float, default=1.5,
-        help="IQR factor for iqr method"
+        "-q", "--iqr_factor", type=float, default=1.5, help="IQR factor for iqr method"
     )
     parser.add_argument(
-        '-o', '--output', default='output',
-        help="Directory to save corrected files and summaries"
+        "-o",
+        "--output",
+        default="output",
+        help="Directory to save corrected files and summaries",
     )
     return parser.parse_args()
 
@@ -61,12 +76,12 @@ def detect_outliers(df, method, abs_thr, z_thr, iqr_fac):
     Raises:
         ValueError: If an unknown method is specified.
     """
-    col = df['Difference']
-    if method == 'abs':
+    col = df["Difference"]
+    if method == "abs":
         return df[col.abs() >= abs_thr]
-    if method == 'zscore':
+    if method == "zscore":
         return df[(col - col.mean()).abs() >= z_thr * col.std()]
-    if method == 'iqr':
+    if method == "iqr":
         q1, q3 = col.quantile([0.25, 0.75])
         iqr = q3 - q1
         lower, upper = q1 - iqr_fac * iqr, q3 + iqr_fac * iqr
@@ -78,25 +93,36 @@ def prepare_outliers_df(outliers):
     """Group outliers by target sheet to batch Excel I/O and prevent overriding corrections."""
     if not outliers.empty:
         # ⚡ Bolt: Replace .str.findall() with .str.extract() to avoid O(N) intermediate Python list allocations
-        extracted_years = outliers['Year_Pair'].astype(str).str.extract(r'^\D*(\d{4})\D*(\d{4})\D*$')
+        extracted_years = (
+            outliers["Year_Pair"].astype(str).str.extract(r"(\d{4})\D+(\d{4})")
+        )
         valid_mask = extracted_years.notna().all(axis=1)
 
         valid_outliers = outliers[valid_mask].copy()
 
         # ⚡ Bolt: Replace .str.split().str[-1] with .str.replace('Sensor ', '')
         # avoid intermediate list creation per-row for faster parsing
-        sensors = valid_outliers['Sensor'].astype(str).str.replace('Sensor ', '', regex=False).astype(int)
+        sensors = (
+            valid_outliers["Sensor"]
+            .astype(str)
+            .str.replace("Sensor ", "", regex=False)
+            .astype(int)
+        )
         next_years = extracted_years.loc[valid_mask, 0].astype(int)
 
-        outliers_df = pd.DataFrame({
-            'Year_Pair': valid_outliers['Year_Pair'],
-            'Sensor': sensors,
-            'Difference': valid_outliers['Difference'],
-            'next_year': next_years,
-            'sheet': "Raw Data " + next_years.astype(str)
-        })
+        outliers_df = pd.DataFrame(
+            {
+                "Year_Pair": valid_outliers["Year_Pair"],
+                "Sensor": sensors,
+                "Difference": valid_outliers["Difference"],
+                "next_year": next_years,
+                "sheet": "Raw Data " + next_years.astype(str),
+            }
+        )
     else:
-        outliers_df = pd.DataFrame(columns=['Year_Pair', 'Sensor', 'Difference', 'next_year', 'sheet'])
+        outliers_df = pd.DataFrame(
+            columns=["Year_Pair", "Sensor", "Difference", "next_year", "sheet"]
+        )
 
     return outliers_df
 
@@ -107,7 +133,7 @@ def apply_corrections(input_path, output_dir, outliers_df):
 
     if not outliers_df.empty:
         # Group by sheet to minimize expensive I/O operations
-        grouped = outliers_df.groupby('sheet')
+        grouped = outliers_df.groupby("sheet")
 
         try:
             with pd.ExcelFile(input_path) as xls:
@@ -117,7 +143,9 @@ def apply_corrections(input_path, output_dir, outliers_df):
                         df_raw = xls.parse(sheet)
                     except Exception as e:
                         # SECURITY: Fail securely, don't expose internal exception details
-                        logging.warning(f"Could not read sheet '{sheet}': Internal error occurred ({type(e).__name__}).")
+                        logging.warning(
+                            f"Could not read sheet '{sheet}': Internal error occurred ({type(e).__name__})."
+                        )
                         continue
 
                     if df_raw.empty:
@@ -126,24 +154,24 @@ def apply_corrections(input_path, output_dir, outliers_df):
 
                     # Drop the last column if its name contains 'time' (case-insensitive)
                     last_col = df_raw.columns[-1]
-                    if 'time' in last_col.lower():
+                    if "time" in last_col.lower():
                         df_raw = df_raw.iloc[:, :-1].copy()
 
-                    next_year = group.iloc[0]['next_year']
+                    next_year = group.iloc[0]["next_year"]
 
                     # SECURITY: Sanitize sheet and next_year to prevent path traversal
                     # if a maliciously crafted Excel file provides a sheet name like "../../../etc"
-                    safe_sheet = str(sheet).replace('/', '_').replace('\\', '_')
-                    safe_next_year = str(next_year).replace('/', '_').replace('\\', '_')
+                    safe_sheet = str(sheet).replace("/", "_").replace("\\", "_")
+                    safe_next_year = str(next_year).replace("/", "_").replace("\\", "_")
 
                     out_file = os.path.join(
                         output_dir,
-                        f"{os.path.splitext(os.path.basename(input_path))[0]}_{safe_next_year}_{safe_sheet}_corrected.xlsx"
+                        f"{os.path.splitext(os.path.basename(input_path))[0]}_{safe_next_year}_{safe_sheet}_corrected.xlsx",
                     )
 
                     # Apply all corrections for this sheet in memory
                     # First, aggregate total offset per sensor to avoid repeated full-column writes
-                    sensor_diffs = group.groupby('Sensor')['Difference'].sum()
+                    sensor_diffs = group.groupby("Sensor")["Difference"].sum()
 
                     # ⚡ Bolt: Vectorize column-wise subtraction instead of updating columns individually in a loop
                     update_cols = [f"V{sensor}" for sensor in sensor_diffs.index]
@@ -152,22 +180,22 @@ def apply_corrections(input_path, output_dir, outliers_df):
 
                     # ⚡ Bolt: Replace .iterrows() with vectorized dictionary assignment
                     # Record per-row corrections (for reporting) without re-modifying df_raw
-                    new_corrections = pd.DataFrame({
-                        'Year_Pair': group['Year_Pair'],
-                        'Sensor': group['Sensor'],
-                        'OrigDiff': group['Difference'],
-                        'OffsetApplied': -group['Difference'],
-                        'CorrectedFile': out_file
-                    })
+                    new_corrections = pd.DataFrame(
+                        {
+                            "Year_Pair": group["Year_Pair"],
+                            "Sensor": group["Sensor"],
+                            "OrigDiff": group["Difference"],
+                            "OffsetApplied": -group["Difference"],
+                            "CorrectedFile": out_file,
+                        }
+                    )
                     corrections_dfs.append(new_corrections)
 
                     # Write once per sheet
                     df_raw.to_excel(out_file, sheet_name=sheet, index=False)
         except (FileNotFoundError, PermissionError, OSError) as e:
             # SECURITY: Do not leak stack traces in logs to prevent information disclosure
-            logging.error(
-                f"Could not open file '{input_path}': {e}"
-            )
+            logging.error(f"Could not open file '{input_path}': {e}")
         except (ValueError, KeyError) as e:
             # SECURITY: Do not leak stack traces in logs to prevent information disclosure
             logging.error(
@@ -177,7 +205,15 @@ def apply_corrections(input_path, output_dir, outliers_df):
     if corrections_dfs:
         return pd.concat(corrections_dfs, ignore_index=True)
     else:
-        return pd.DataFrame(columns=['Year_Pair', 'Sensor', 'OrigDiff', 'OffsetApplied', 'CorrectedFile'])
+        return pd.DataFrame(
+            columns=[
+                "Year_Pair",
+                "Sensor",
+                "OrigDiff",
+                "OffsetApplied",
+                "CorrectedFile",
+            ]
+        )
 
 
 def plot_outliers(outliers, method, threshold, output_dir):
@@ -187,32 +223,27 @@ def plot_outliers(outliers, method, threshold, output_dir):
         return
 
     plt.figure(figsize=(12, 6))
-    plt.scatter(range(len(outliers)), outliers['Difference'], s=50)
-    plt.axhline(0, color='gray')
-    if method == 'abs':
-        plt.axhline(threshold, linestyle='--', color='red')
-        plt.axhline(-threshold, linestyle='--', color='red')
+    plt.scatter(range(len(outliers)), outliers["Difference"], s=50)
+    plt.axhline(0, color="gray")
+    if method == "abs":
+        plt.axhline(threshold, linestyle="--", color="red")
+        plt.axhline(-threshold, linestyle="--", color="red")
     # ⚡ Bolt: Replace .str.replace() with string slicing to avoid regex engine overhead
-    sensor_nums = outliers['Sensor'].astype(str).str[7:].astype(int).astype(str)
-    x_labels = outliers['Year_Pair'].astype(str) + '/S' + sensor_nums
+    sensor_nums = outliers["Sensor"].astype(str).str[7:].astype(int).astype(str)
+    x_labels = outliers["Year_Pair"].astype(str) + "/S" + sensor_nums
 
-    plt.xticks(
-        range(len(outliers)),
-        x_labels,
-        rotation=90
-    )
-    plt.ylabel('Difference (cm)')
-    plt.title('Outlier Differences')
+    plt.xticks(range(len(outliers)), x_labels, rotation=90)
+    plt.ylabel("Difference (cm)")
+    plt.title("Outlier Differences")
     plt.tight_layout()
-    plot_file = os.path.join(output_dir, 'outliers_plot.png')
+    plot_file = os.path.join(output_dir, "outliers_plot.png")
     plt.savefig(plot_file)
     logging.info(f"Saved plot to '{plot_file}'")
 
 
 def main():
     args = parse_args()
-    logging.basicConfig(level=logging.INFO,
-                        format='%(levelname)s: %(message)s')
+    logging.basicConfig(level=logging.INFO, format="%(levelname)s: %(message)s")
 
     # Explicitly validate the input file early to provide a clean CLI error UX
     if not os.path.isfile(args.input):
@@ -228,16 +259,17 @@ def main():
         diff_df = pd.read_excel(args.input, sheet_name=args.sheet_summary)
     except Exception as e:
         # SECURITY: Do not leak stack traces; fail gracefully on parse errors
-        logging.error(f"Failed to read the Excel file: Internal error occurred ({type(e).__name__}).")
+        logging.error(
+            f"Failed to read the Excel file: Internal error occurred ({type(e).__name__})."
+        )
         return
     long_df = diff_df.melt(
-        id_vars='Year_Pair', var_name='Sensor', value_name='Difference'
+        id_vars="Year_Pair", var_name="Sensor", value_name="Difference"
     )
     outliers = detect_outliers(
         long_df, args.method, args.threshold, args.zscore, args.iqr_factor
     ).reset_index(drop=True)
-    logging.info(
-        f"Detected {len(outliers)} outliers using '{args.method}' method")
+    logging.info(f"Detected {len(outliers)} outliers using '{args.method}' method")
 
     # Group outliers by target sheet to batch Excel I/O and prevent overriding corrections
     outliers_df = prepare_outliers_df(outliers)
@@ -245,7 +277,7 @@ def main():
     # Apply corrections and write to disk
     corr_df = apply_corrections(args.input, args.output, outliers_df)
 
-    corr_file = os.path.join(args.output, 'corrections_summary.xlsx')
+    corr_file = os.path.join(args.output, "corrections_summary.xlsx")
     corr_df.to_excel(corr_file, index=False)
     logging.info(f"Saved corrections summary to '{corr_file}'")
 
@@ -262,5 +294,5 @@ def main():
         print(corr_df.to_string(index=False))
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

@@ -5,6 +5,7 @@ import os
 import matplotlib.pyplot as plt
 import logging
 
+MAX_FILE_SIZE = 50 * 1024 * 1024  # 50 MB
 
 def parse_args():
     parser = argparse.ArgumentParser(
@@ -218,6 +219,13 @@ def main():
         logging.error(
             f"Input file not found or is not a file: '{args.input}'. "
             "Please provide a valid Excel file."
+        )
+        return
+
+    # SECURITY: Prevent Out-Of-Memory (OOM) DoS attacks by limiting file size
+    if os.path.getsize(args.input) > MAX_FILE_SIZE:
+        logging.error(
+            f"Input file exceeds maximum allowed size of {MAX_FILE_SIZE / (1024 * 1024):.0f}MB."
         )
         return
 

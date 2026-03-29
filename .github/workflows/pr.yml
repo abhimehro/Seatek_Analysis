@@ -1,0 +1,19 @@
+name: PR Checks
+
+on:
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+      - name: Install dependencies
+        run: pip install -r Series_27/Analysis/requirements.txt
+      - name: Syntax check
+        run: python -m py_compile Series_27/Analysis/outlier_analysis_series27.py code_health_scanner.py

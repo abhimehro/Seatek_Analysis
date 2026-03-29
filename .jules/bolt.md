@@ -37,3 +37,7 @@
 ## 2025-05-06 - Avoid .str.split() for extracting substrings in Pandas
 **Learning:** Using `.str.split().str[-1]` to extract the trailing number from a string (e.g., "Sensor 01") forces pandas to allocate a Python list of strings for every single row before indexing it. For large Series, this intermediate array creation introduces significant memory and processing overhead compared to direct string replacement.
 **Action:** For extracting trailing numbers, prefer the more robust and performant `.str.extract(r'(\d+)$', expand=False)`. While `.str.replace()` can work for simple prefix stripping, it can be brittle if the string format is not strictly fixed.
+
+## 2025-05-06 - Vectorize Pandas Column Subtraction
+**Learning:** Iterating through columns in a Python loop (e.g. `for col, val in values.items(): df[col] = df[col] - val`) incurs Python-level interpreter overhead, especially when updating many columns.
+**Action:** Vectorizing column-wise subtraction in Pandas using `df[cols] = df[cols].sub(values_series, axis=1)` is significantly more efficient than updating columns individually within a Python `for` loop, as it leverages optimized C-level operations and broadcasting.

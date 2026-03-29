@@ -42,3 +42,8 @@
 **Vulnerability:** Generic exception handlers (`except Exception as e:`) that print or log the raw exception object (`e`) can unintentionally leak sensitive internal application paths, state, or database queries depending on the underlying error.
 **Learning:** While swallowing exceptions completely hinders debugging, logging the full exception string to stdout/stderr or an insecure log sink is an information disclosure risk.
 **Prevention:** Fail securely by logging a generic user-facing message, but include the exception type (e.g., `type(e).__name__`) to preserve debuggability without exposing sensitive string contents.
+
+## 2025-08-09 - Out-Of-Memory (OOM) Risk with Pandas Excel Parsing
+**Vulnerability:** A data analysis script (`outlier_analysis_series27.py`) used `pd.read_excel()` to load user-supplied Excel files without first checking the file size.
+**Learning:** Loading arbitrarily large Excel files into memory using Pandas can cause severe memory exhaustion, leading to Denial of Service (DoS) attacks or unpredictable application crashes.
+**Prevention:** Always check `os.path.getsize(filepath)` against a safe maximum threshold (e.g., `MAX_FILE_SIZE = 50 * 1024 * 1024` for 50MB) before parsing files with `pandas`.

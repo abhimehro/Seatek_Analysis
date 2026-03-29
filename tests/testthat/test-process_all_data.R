@@ -5,8 +5,6 @@ library(data.table) # process_all_data likely uses data.table indirectly via rea
 # The process_all_data function is expected to be in the global environment
 # as Updated_Seatek_Analysis.R should be sourced by the testthat.R helper.
 
-context("Testing process_all_data function")
-
 test_that("process_all_data correctly processes valid data", {
   temp_dir_name <- "temp_valid_data_for_process"
   # temp_dir_path is relative to tests/testthat
@@ -26,12 +24,13 @@ test_that("process_all_data correctly processes valid data", {
   if (!file.exists(source_data_file)) {
     stop(paste("Test setup error: Source data file not found at", source_data_file))
   }
-  file.copy(source_data_file, file.path(temp_dir_path, "SS_Y01_valid.txt"))
+  # Needs to match pattern ^SS_Y[0-9]{2}\.txt$
+  file.copy(source_data_file, file.path(temp_dir_path, "SS_Y01.txt"))
 
   results <- process_all_data(temp_dir_path)
 
   expect_true(is.list(results), info = "Results should be a list")
-  expect_equal(length(results), 1, info = "Results list should have 1 element for SS_Y01_valid.txt")
+  expect_equal(length(results), 1, info = "Results list should have 1 element for SS_Y01.txt")
   expect_true("1995" %in% names(results), info = "Year '1995' should be a name in the results list")
 
   year_data <- results[["1995"]]
@@ -41,9 +40,9 @@ test_that("process_all_data correctly processes valid data", {
   expect_equal(colnames(year_data), c("Sensor", "first10", "last5", "full", "within_diff"), info = "Column names mismatch")
   expect_equal(year_data$Sensor[1], "Sensor01", info = "First row name should be 'Sensor01'")
 
-  # Values for Sensor01 in SS_Y01_valid.txt are 10.1, 10.2, 10.3
+  # Values for Sensor01 in SS_Y01.txt are 10.1, 10.2, 10.3
   # The clean_vals function (called by process_sensor_data) filters for > 0, which these are.
-  # For SS_Y01_valid.txt (3 data points):
+  # For SS_Y01.txt (3 data points):
   # first10: uses all 3 points as 3 < 10
   # last5: uses all 3 points as 3 < 5
   # full: uses all 3 points
@@ -56,7 +55,7 @@ test_that("process_all_data correctly processes valid data", {
   expect_equal(s01_row$within_diff, expected_mean_val - expected_mean_val, info = "Mismatch in 'within_diff' for Sensor01") # Should be 0
 
   # Check for Excel file creation
-  expected_excel_file <- file.path(temp_dir_path, "SS_Y01_valid.xlsx")
+  expected_excel_file <- file.path(temp_dir_path, "SS_Y01.xlsx")
   expect_true(file.exists(expected_excel_file), info = paste("Excel file not found at:", expected_excel_file))
 
   # Cleanup after test

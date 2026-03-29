@@ -20,7 +20,4 @@ jobs:
 
       - name: Check Python Syntax
         run: |
-          python3 -m py_compile code_health_scanner.py
-          python3 -m py_compile Series_27/Analysis/outlier_analysis_series27.py
-          python3 -m py_compile .github/scripts/repository_automation_common.py
-          python3 -m py_compile .github/scripts/repository_automation_tasks.py
+          find . -name "*.py" -exec python3 -m py_compile {} +

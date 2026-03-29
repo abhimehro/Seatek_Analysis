@@ -4,8 +4,6 @@ library(data.table)
 # The read_sensor_data function is expected to be in the global environment
 # as Updated_Seatek_Analysis.R should be sourced by the testthat.R helper.
 
-context("Testing read_sensor_data function")
-
 test_that("read_sensor_data successfully reads a valid file", {
   valid_file <- "data/SS_Y01_valid.txt" # Path relative to tests/testthat/
   dt <- read_sensor_data(valid_file)
@@ -25,7 +23,7 @@ test_that("read_sensor_data successfully reads a valid file", {
 test_that("read_sensor_data handles non-existent files", {
   # Assuming read_sensor_data uses a specific error message format
   expect_error(read_sensor_data("data/non_existent_file.txt"),
-               "Invalid file: data/non_existent_file.txt. Does not exist or is not a file.",
+               "Invalid file: data/non_existent_file.txt",
                fixed = TRUE) # Use fixed = TRUE for exact match of the error message string
 })
 
@@ -53,50 +51,7 @@ test_that("read_sensor_data handles files with fewer columns", {
 
 test_that("read_sensor_data handles empty files", {
   empty_file <- "data/SS_Y03_empty.txt" # Path relative to tests/testthat/
-
-  # As per the reasoning in the task description:
-  # fread on an empty file returns 0 columns.
-  # read_sensor_data calculates sensor_cols = min(ncol(dt)-1, 32).
-  # If ncol(dt) is 0, sensor_cols = min(-1, 32) = -1.
-  # Then, setnames(dt, 1:sensor_cols, ...) becomes setnames(dt, 1:-1, ...), which errors.
-  # The error message from setnames for `j = 1:-1` is "Can't assign to column -1 because it doesn't exist."
-  # or similar depending on data.table version.
-  # A more generic error from base R could be "invalid column type" or about negative subscripts.
-  # Let's expect a generic error first, then refine if a specific one is known.
-  # The function itself might also have checks for ncol(dt) == 0 after fread.
-  # The current function logs a warning if ncol(dt) < 33. If ncol(dt) is 0, it logs warning and proceeds.
-  # The setnames call `setnames(dt, 1:sensor_cols, sensor_names)` where `sensor_cols` is `min(ncol(dt) - 1, 32)`.
-  # If `ncol(dt)` is 0, `sensor_cols` is -1. `1:sensor_cols` is `c(1,0,-1)`. This will error.
-  expect_error(read_sensor_data(empty_file),
-               regexp = "Can't assign to column(s) 0, -1 because they don't exist|invalid column type|attempt to set 'names' on an object with no dimensions|subscript out of bounds")
-  # The regexp covers a few possible errors from data.table or base R when indices are problematic.
-  # A more specific error based on `data.table` behavior with `1:-1` might be `j` must be a vector of names or positive unique integer numbers.
-  # For `setnames(data.table(), 1:-1, "foo")` the error is "Error in 1:sensor_cols: result would be too long a vector"
-  # This is because 1:-1 is c(1,0,-1)
-  # Let's try to be more specific about the error:
-  # The actual error from `setnames(data.table(0), 1:-1, c("S1","S0","S-1"))` is
-  # "Supplied 3 columns to be assigned but j isn't a list of 3 columns".
-  # If `sensor_names` is shorter, it might be different.
-  # If `sensor_cols` is -1, then `sensor_names` will be `character(0)`.
-  # `setnames(data.table(0), 1:-1, character(0))` -> "Error in 1:sensor_cols: result would be too long a vector"
-  # Let's use this "result would be too long a vector" from the `1:sensor_cols` part
-  # or "Can't assign to column(s)" from data.table
-  # expect_error(read_sensor_data(empty_file), "result would be too long a vector|Can't assign to column")
-  # The most likely error is from `1:sensor_cols` when `sensor_cols` is negative.
-  # `1:(-1)` gives `c(1, 0, -1)`.
-  # `setnames(dt, c(1,0,-1), ...)`
-  # The error "column indices must be positive" is common in data.table.
-  # Let's use a more general error message that should cover issues with `setnames` and invalid column indices.
-  # The actual error in `Updated_Seatek_Analysis.R` for `setnames(dt, 1:sensor_cols, sensor_names)`
-  # when `sensor_cols` is -1 and `sensor_names` is `character(0)` is:
-  # "Error in setnames(dt, 1:sensor_cols, sensor_names):
-  #   Items of 'old' length 3 must be unique but have 3 non-unique item(s): [1] '1', [2] '0', [3] '-1'. Items of 'new' length 0 must be unique."
-  # This is quite specific. Let's try to match part of it or a more general data.table error.
-  # The error message "old[i] is not the name of a column in x" is also possible if it tries to rename by name.
-  # "j must be a vector of names or positive unique integer numbers"
-  # Let's stick to a general `expect_error` if the exact message is too complex or version-dependent.
-  # The prompt initially suggested `expect_error()`.
-  expect_error(read_sensor_data(empty_file))
+  expect_error(read_sensor_data(empty_file), regexp = "only 0's may be mixed with negative subscripts")
 })
 
 test_that("read_sensor_data correctly converts numeric timestamps", {

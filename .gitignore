@@ -5,3 +5,5 @@
 venv/
 test_out_*.xlsx
 renv_restore.log
+__pycache__/
+*.pyc

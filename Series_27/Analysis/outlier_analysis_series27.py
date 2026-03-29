@@ -166,12 +166,12 @@ def apply_corrections(input_path, output_dir, outliers_df):
         except (FileNotFoundError, PermissionError, OSError) as e:
             # SECURITY: Do not leak stack traces in logs to prevent information disclosure
             logging.error(
-                f"Could not open file '{input_path}': {type(e).__name__}"
+                f"Could not open file '{input_path}': {e}"
             )
         except (ValueError, KeyError) as e:
             # SECURITY: Do not leak stack traces in logs to prevent information disclosure
             logging.error(
-                f"Error reading or processing Excel data from '{input_path}': {type(e).__name__}"
+                f"Error reading or processing Excel data from '{input_path}': {e}"
             )
 
     if corrections_dfs:

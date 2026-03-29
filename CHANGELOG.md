@@ -16,6 +16,8 @@
 
 **Merged pull requests:**
 
+- ⚡ Bolt: Vectorize column-wise subtraction in Pandas [\#107](https://github.com/abhimehro/Seatek_Analysis/pull/107) ([abhimehro](https://github.com/abhimehro))
+- 🛡️ Sentinel: \[MEDIUM\] Fix Information Leakage in Exception Handling [\#106](https://github.com/abhimehro/Seatek_Analysis/pull/106) ([abhimehro](https://github.com/abhimehro))
 - 🛡️ Sentinel: \[HIGH\] Prevent OOM DoS vulnerabilities during Excel parsing [\#111](https://github.com/abhimehro/Seatek_Analysis/pull/111) ([abhimehro](https://github.com/abhimehro))
 - ⚡ Bolt: Vectorize column-wise updates in Excel sheet corrections [\#110](https://github.com/abhimehro/Seatek_Analysis/pull/110) ([abhimehro](https://github.com/abhimehro))
 - 🎨 Palette: No suitable UX enhancements found [\#105](https://github.com/abhimehro/Seatek_Analysis/pull/105) ([abhimehro](https://github.com/abhimehro))

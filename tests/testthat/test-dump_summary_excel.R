@@ -11,8 +11,6 @@ library(testthat)
 # The dump_summary_excel function is expected to be in the global environment
 # as Updated_Seatek_Analysis.R should be sourced by the testthat.R helper.
 
-context("Testing dump_summary_excel function")
-
 test_that("dump_summary_excel creates correct Excel and CSV files", {
   temp_dir_name <- "temp_dump_summary_test_output" # Unique name
   # testthat runs tests with the working directory set to the directory containing the test file.
@@ -26,14 +24,14 @@ test_that("dump_summary_excel creates correct Excel and CSV files", {
   dir.create(temp_dir_path, recursive = TRUE, showWarnings = FALSE)
 
   # Mock results data generation
-  # Generates a data.frame for one year with some offset to make data unique per year
+  # Generates a data.table for one year with some offset to make data unique per year
   mock_sensor_data <- function(val_offset) {
-    data.frame(
+    data.table::data.table(
+      Sensor = paste0("Sensor", sprintf("%02d", 1:32)),
       first10 = runif(32, 5, 15) + val_offset,
       last5 = runif(32, 5, 15) + val_offset,
       full = runif(32, 5, 15) + val_offset, 
-      within_diff = runif(32, -2, 2) + val_offset, # within_diff can be negative
-      row.names = paste0("Sensor", sprintf("%02d", 1:32))
+      within_diff = runif(32, -2, 2) + val_offset # within_diff can be negative
     )
   }
   # Create a list of such data.frames, named by year (5 years for Summary_Sufficient test)
@@ -77,27 +75,27 @@ test_that("dump_summary_excel creates correct Excel and CSV files", {
     expect_true(file.exists(csv_file_path), info = paste("Expected CSV file not found:", csv_file_path))
     if (grepl("_sufficient.csv", csv_file_path, fixed = TRUE)) {
         # utils::read.csv is fine
-        df_sufficient_csv <- utils::read.csv(csv_file_path, row.names = 1) # Assuming first col is row names
+        df_sufficient_csv <- utils::read.csv(csv_file_path)
         expect_gt(nrow(df_sufficient_csv), 0, label = "The _sufficient.csv should not be empty.")
         # Given 5 years of mock data and min_count=5 (default), all 32 sensors should be present.
         expect_equal(nrow(df_sufficient_csv), 32, label = "The _sufficient.csv should contain 32 sensor rows.")
+        expect_true("Sensor" %in% colnames(df_sufficient_csv))
     }
   }
 
   # 4. Basic content check for one Excel sheet
-  # rowNames=TRUE is important as our mock data has sensor names as row names
-  data_from_1995_sheet <- openxlsx::read.xlsx(output_excel_file, sheet = "1995", rowNames = TRUE)
+  data_from_1995_sheet <- openxlsx::read.xlsx(output_excel_file, sheet = "1995")
   
   # Compare a specific value
-  original_value <- mock_results[["1995"]]["Sensor01", "first10"]
-  value_from_excel <- data_from_1995_sheet["Sensor01", "first10"]
+  original_value <- mock_results[["1995"]][Sensor == "Sensor01"]$first10
+  value_from_excel <- data_from_1995_sheet[data_from_1995_sheet$Sensor == "Sensor01", "first10"]
   expect_equal(value_from_excel, original_value, tolerance = 1e-6, 
                label = "Data integrity check for Sensor01 first10 in 1995 sheet.")
 
   # Check one more value from a different column and sensor for robustness
-  original_value_s32_full <- mock_results[["1999"]]["Sensor32", "full"]
-  data_from_1999_sheet <- openxlsx::read.xlsx(output_excel_file, sheet = "1999", rowNames = TRUE)
-  value_from_excel_s32_full <- data_from_1999_sheet["Sensor32", "full"]
+  original_value_s32_full <- mock_results[["1999"]][Sensor == "Sensor32"]$full
+  data_from_1999_sheet <- openxlsx::read.xlsx(output_excel_file, sheet = "1999")
+  value_from_excel_s32_full <- data_from_1999_sheet[data_from_1999_sheet$Sensor == "Sensor32", "full"]
   expect_equal(value_from_excel_s32_full, original_value_s32_full, tolerance = 1e-6,
                label = "Data integrity check for Sensor32 full in 1999 sheet.")
 

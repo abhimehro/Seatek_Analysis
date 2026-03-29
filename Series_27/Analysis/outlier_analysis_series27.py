@@ -145,10 +145,12 @@ def apply_corrections(input_path, output_dir, outliers_df):
                     # Apply all corrections for this sheet in memory
                     # First, aggregate total offset per sensor to avoid repeated full-column writes
                     sensor_diffs = group.groupby('Sensor')['Difference'].sum()
-                    for sensor, total_diff in sensor_diffs.items():
-                        col = f"V{sensor}"
-                        # Original per-row offset is -Difference, so total offset is -sum(Difference)
-                        df_raw[col] = df_raw[col] - total_diff
+
+                    # ⚡ Bolt: Vectorize column-wise subtraction using .sub(axis=1) instead of loop
+                    diffs_to_sub = sensor_diffs.copy()
+                    diffs_to_sub.index = 'V' + diffs_to_sub.index.astype(str)
+                    cols = diffs_to_sub.index
+                    df_raw[cols] = df_raw[cols].sub(diffs_to_sub, axis=1)
 
                     # ⚡ Bolt: Replace .iterrows() with vectorized dictionary assignment
                     # Record per-row corrections (for reporting) without re-modifying df_raw

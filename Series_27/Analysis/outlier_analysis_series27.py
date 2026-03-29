@@ -4,6 +4,7 @@ import argparse
 import os
 import matplotlib.pyplot as plt
 import logging
+from io import BytesIO
 
 MAX_FILE_SIZE = 50 * 1024 * 1024  # 50 MB
 
@@ -222,17 +223,25 @@ def main():
         )
         return
 
-    # SECURITY: Prevent Out-Of-Memory (OOM) DoS attacks by limiting file size
-    if os.path.getsize(args.input) > MAX_FILE_SIZE:
+    # SECURITY: Prevent Out-Of-Memory (OOM) DoS attacks by limiting file size and avoiding TOCTOU
+    try:
+        with open(args.input, 'rb') as f:
+            # Read up to MAX_FILE_SIZE + 1 bytes to check the limit without loading the whole file.
+            file_buffer = f.read(MAX_FILE_SIZE + 1)
+    except IOError as e:
+        logging.error(f"Error reading input file {args.input}: {e}")
+        return
+
+    if len(file_buffer) > MAX_FILE_SIZE:
         logging.error(
-            f"Input file exceeds maximum allowed size of {MAX_FILE_SIZE / (1024 * 1024):.0f}MB."
+            f"Input file exceeds maximum allowed size of {MAX_FILE_SIZE // (1024 * 1024)}MB."
         )
         return
 
     os.makedirs(args.output, exist_ok=True)
     logging.info("Loading year-to-year differences")
     try:
-        diff_df = pd.read_excel(args.input, sheet_name=args.sheet_summary)
+        diff_df = pd.read_excel(BytesIO(file_buffer), sheet_name=args.sheet_summary)
     except Exception as e:
         # SECURITY: Do not leak stack traces; fail gracefully on parse errors
         logging.error(f"Failed to read the Excel file: {e}")

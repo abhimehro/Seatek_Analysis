@@ -1,0 +1,49 @@
+name: PR Validation
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Validate Python code syntax
+        run: |
+          python -m py_compile Series_27/Analysis/outlier_analysis_series27.py
+          python -m py_compile code_health_scanner.py
+
+      - name: Set up R
+        uses: r-lib/actions/setup-r@v2
+
+      - name: Install R system dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libcurl4-openssl-dev libssl-dev libxml2-dev
+
+      - name: Install R packages
+        env:
+          RENV_CONFIG_AUTOLOADER_ENABLED: "FALSE"
+        run: |
+          Rscript -e "install.packages(c('renv', 'lintr', 'testthat'), repos='https://cloud.r-project.org')"
+          Rscript -e "renv::restore()"
+
+      - name: Lint R code
+        env:
+          RENV_CONFIG_AUTOLOADER_ENABLED: "FALSE"
+        run: |
+          Rscript -e "library(lintr); lint_dir('.', exclusions = list('renv/', 'backups/', 'Series_27/Analysis/venv/', 'implementation/'))"
+
+      - name: Run R tests
+        env:
+          RENV_CONFIG_AUTOLOADER_ENABLED: "FALSE"
+        run: |
+          Rscript -e "library(testthat); source('Updated_Seatek_Analysis.R'); test_dir('tests/testthat', reporter = 'summary')"

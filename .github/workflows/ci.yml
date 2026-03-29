@@ -1,0 +1,46 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  lint-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+
+      - name: Check Python Syntax
+        run: |
+          python3 -m py_compile code_health_scanner.py
+          python3 -m py_compile Series_27/Analysis/outlier_analysis_series27.py
+          python3 -m py_compile .github/scripts/repository_automation_common.py
+          python3 -m py_compile .github/scripts/repository_automation_tasks.py
+
+      - name: Install R and renv dependencies
+        run: |
+          sudo apt-get update && sudo apt-get install -y r-base r-base-dev libgit2-dev pandoc
+          Rscript -e "if(!'renv' %in% rownames(installed.packages())) install.packages('renv', repos='https://cloud.r-project.org')"
+          Rscript -e "renv::restore()"
+
+      - name: Run R Linting
+        env:
+          RENV_CONFIG_AUTOLOADER_ENABLED: "FALSE"
+        run: |
+          Rscript -e "if(!requireNamespace('lintr', quietly = TRUE)) install.packages('lintr', repos='https://cloud.r-project.org')"
+          Rscript -e "library(lintr); lint_dir('.', exclusions = list('renv/', 'backups/', 'Series_27/Analysis/venv/', 'implementation/'))"
+
+      - name: Run R Tests
+        env:
+          RENV_CONFIG_AUTOLOADER_ENABLED: "FALSE"
+        run: |
+          Rscript -e "if(!requireNamespace('testthat', quietly = TRUE)) install.packages('testthat', repos='https://cloud.r-project.org')"
+          Rscript -e "library(testthat); source('Updated_Seatek_Analysis.R'); test_dir('tests/testthat', reporter = 'summary')"

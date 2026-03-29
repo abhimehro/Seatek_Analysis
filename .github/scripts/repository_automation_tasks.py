@@ -564,7 +564,6 @@ def run_weekly_retrospective(config: dict[str, Any]) -> dict[str, Any]:
         try:
             safe_changes, safe_pr_url = run_safe_adjustment_commands(section)
         except Exception as exc:  # pragma: no cover - runtime integration
-            logging.error("An exception occurred running safe adjustment commands", exc_info=True)
             safe_changes = [{"name": "safe-adjustment-commands", "exit_code": 1, "stdout": "", "stderr": type(exc).__name__}]
     status, lines = weekly_report_lines(config, runs, markers, safe_changes, safe_pr_url)
     summary = f"Reviewed {len(runs)} daily workflow runs from the last 7 days."

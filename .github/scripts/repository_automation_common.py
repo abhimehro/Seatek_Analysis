@@ -232,9 +232,11 @@ def ensure_label_exists(spec: dict[str, str], known_labels: set[str]) -> None:
     name = spec["name"]
     if name in known_labels or not writes_allowed():
         return
-    args = [GH_BIN, "label", "create", name, "--color", spec["color"]]
+    args = [GH_BIN, "label", "create", "--color", spec["color"]]
     if spec["description"]:
         args.extend(["--description", spec["description"]])
+    # SECURITY: Use -- to prevent option injection if name starts with a dash
+    args.extend(["--", name])
     proc = run_process(args)
     if proc.returncode != 0:
         warn_on_default("gh", args[1:], proc)
@@ -284,10 +286,11 @@ def create_pr_for_current_changes(branch_prefix: str, commit_message: str, pr_ti
     branch_name = f"{branch_prefix.replace('/', '-')}-{now_utc().strftime('%Y%m%d')}-{os.environ.get('GITHUB_RUN_ATTEMPT', '1')}"
     run_checked([GIT_BIN, "config", "user.name", "repository-automation[bot]"])
     run_checked([GIT_BIN, "config", "user.email", "repository-automation[bot]@users.noreply.github.com"])
+    # SECURITY: checkout -b safely handles branch_name, but push needs refspec to prevent option injection
     run_checked([GIT_BIN, "checkout", "-b", branch_name])
     run_checked([GIT_BIN, "add", "-A"])
     run_checked([GIT_BIN, "commit", "-m", commit_message])
-    run_checked([GIT_BIN, "push", "--set-upstream", "origin", branch_name])
+    run_checked([GIT_BIN, "push", "--set-upstream", "origin", f"refs/heads/{branch_name}"])
     return gh_with_body(["pr", "create", "--draft", "--title", pr_title, "--body-file", "-"], pr_body)
 
 

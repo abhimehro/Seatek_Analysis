@@ -2,6 +2,7 @@
 import argparse
 import logging
 import os
+from io import BytesIO
 
 import matplotlib.pyplot as plt
 import pandas as pd

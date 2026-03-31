@@ -41,3 +41,7 @@
 ## 2025-05-06 - Vectorize Pandas Column Subtraction
 **Learning:** Iterating through columns in a Python loop (e.g. `for col, val in values.items(): df[col] = df[col] - val`) incurs Python-level interpreter overhead, especially when updating many columns.
 **Action:** Vectorizing column-wise subtraction in Pandas using `df[cols] = df[cols].sub(values_series, axis=1)` is significantly more efficient than updating columns individually within a Python `for` loop, as it leverages optimized C-level operations and broadcasting.
+
+## 2025-05-06 - Avoid Full DataFrame Copies for Single Column Drops
+**Learning:** In Pandas, dropping a single column using `df = df.iloc[:, :-1].copy()` forces a complete allocation and copy of the DataFrame. When processing many sheets or large datasets inside a loop, this O(N*M) operation severely degrades performance and memory efficiency.
+**Action:** When dropping a single column, prefer in-place operations like `del df[col_name]` or `df.drop(columns=[col_name], inplace=True)` to avoid unnecessary full DataFrame memory allocations.

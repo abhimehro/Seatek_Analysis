@@ -38,7 +38,7 @@ jobs:
           github_changelog_generator \
             --user "${GITHUB_REPOSITORY_OWNER}" \
             --project "${GITHUB_REPOSITORY#*/}" \
-            --token "${GITHUB_TOKEN}"
+            --token "$GITHUB_TOKEN"
 
       - name: Commit and Push Changes
         run: |

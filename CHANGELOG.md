@@ -16,6 +16,7 @@
 
 **Merged pull requests:**
 
+- ⚡ Bolt: Optimize column dropping to prevent full DataFrame copies [\#114](https://github.com/abhimehro/Seatek_Analysis/pull/114) ([abhimehro](https://github.com/abhimehro))
 - Potential fix for code scanning alert no. 10: Workflow does not contain permissions [\#113](https://github.com/abhimehro/Seatek_Analysis/pull/113) ([abhimehro](https://github.com/abhimehro))
 - Potential fix for code scanning alert no. 6: Workflow does not contain permissions [\#112](https://github.com/abhimehro/Seatek_Analysis/pull/112) ([abhimehro](https://github.com/abhimehro))
 - 🛡️ Sentinel: \[HIGH\] Prevent OOM DoS vulnerabilities during Excel parsing [\#111](https://github.com/abhimehro/Seatek_Analysis/pull/111) ([abhimehro](https://github.com/abhimehro))

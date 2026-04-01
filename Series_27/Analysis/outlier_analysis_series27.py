@@ -2,6 +2,7 @@
 import argparse
 import logging
 import os
+from io import BytesIO
 
 import matplotlib.pyplot as plt
 import pandas as pd
@@ -156,7 +157,8 @@ def apply_corrections(input_path, output_dir, outliers_df):
                     # Drop the last column if its name contains 'time' (case-insensitive)
                     last_col = df_raw.columns[-1]
                     if "time" in last_col.lower():
-                        df_raw = df_raw.iloc[:, :-1].copy()
+                        # ⚡ Bolt: Use 'del' to avoid an O(N*M) full DataFrame copy when dropping a single column
+                        del df_raw[last_col]
 
                     next_year = group.iloc[0]["next_year"]
 

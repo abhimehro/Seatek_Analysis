@@ -16,6 +16,8 @@
 
 **Merged pull requests:**
 
+- 🛡️ Sentinel: \[MEDIUM\] Fix GitHub Actions command injection vulnerability in changelog workflow [\#119](https://github.com/abhimehro/Seatek_Analysis/pull/119) ([abhimehro](https://github.com/abhimehro))
+- 🛡️ Sentinel: \[HIGH\] Fix CLI option injection in GitHub automation scripts [\#117](https://github.com/abhimehro/Seatek_Analysis/pull/117) ([abhimehro](https://github.com/abhimehro))
 - Bump actions/checkout from 4 to 6 [\#116](https://github.com/abhimehro/Seatek_Analysis/pull/116) ([dependabot[bot]](https://github.com/apps/dependabot))
 - Bump actions/setup-python from 5 to 6 [\#115](https://github.com/abhimehro/Seatek_Analysis/pull/115) ([dependabot[bot]](https://github.com/apps/dependabot))
 - ⚡ Bolt: Optimize column dropping to prevent full DataFrame copies [\#114](https://github.com/abhimehro/Seatek_Analysis/pull/114) ([abhimehro](https://github.com/abhimehro))

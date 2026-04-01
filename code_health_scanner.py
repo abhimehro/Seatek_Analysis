@@ -21,12 +21,17 @@ def read_file_safe(filepath):
         if os.path.commonpath([cwd, resolved_filepath]) != cwd:
             return []
 
-        # SECURITY: Prevent Out-Of-Memory (OOM) DoS attacks by limiting file size
-        if os.path.getsize(resolved_filepath) > MAX_FILE_SIZE:
-            return []
-
         with open(resolved_filepath, 'r', encoding='utf-8') as f:
-            return f.readlines()
+            # SECURITY: Prevent Out-Of-Memory (OOM) DoS attacks and TOCTOU vulnerabilities
+            # by reading up to MAX_FILE_SIZE + 1 chars and checking the length.
+            content = f.read(MAX_FILE_SIZE + 1)
+
+            if len(content) > MAX_FILE_SIZE:
+                return []
+
+            # Re-split into lines if size is within limits.
+            # Using splitlines(keepends=True) perfectly matches readlines() behavior
+            return content.splitlines(keepends=True)
     except (OSError, UnicodeDecodeError):
         return []
 

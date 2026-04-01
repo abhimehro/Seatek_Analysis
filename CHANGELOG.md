@@ -16,6 +16,8 @@
 
 **Merged pull requests:**
 
+- Bump actions/checkout from 4 to 6 [\#116](https://github.com/abhimehro/Seatek_Analysis/pull/116) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump actions/setup-python from 5 to 6 [\#115](https://github.com/abhimehro/Seatek_Analysis/pull/115) ([dependabot[bot]](https://github.com/apps/dependabot))
 - ⚡ Bolt: Optimize column dropping to prevent full DataFrame copies [\#114](https://github.com/abhimehro/Seatek_Analysis/pull/114) ([abhimehro](https://github.com/abhimehro))
 - Potential fix for code scanning alert no. 10: Workflow does not contain permissions [\#113](https://github.com/abhimehro/Seatek_Analysis/pull/113) ([abhimehro](https://github.com/abhimehro))
 - Potential fix for code scanning alert no. 6: Workflow does not contain permissions [\#112](https://github.com/abhimehro/Seatek_Analysis/pull/112) ([abhimehro](https://github.com/abhimehro))

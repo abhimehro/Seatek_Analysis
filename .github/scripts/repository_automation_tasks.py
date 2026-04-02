@@ -127,7 +127,7 @@ def run_command_set(task_name: str, section: dict[str, Any]) -> tuple[str, str, 
 
 def discover_hotspots(limit: int = 5) -> list[tuple[str, int]]:
     candidates = []
-    # ⚡ Bolt: Use os.walk with early directory pruning instead of rglob to avoid O(N) traversal of ignored directories
+    # Use os.walk(topdown=True) so we can prune ignored directories early instead of traversing them
     for current_dir, dirs, files in os.walk(ROOT, topdown=True):
         dirs[:] = [d for d in dirs if d not in IGNORED_DIRS]
         for file in files:

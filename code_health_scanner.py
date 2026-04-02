@@ -29,9 +29,9 @@ def read_file_safe(filepath):
             if len(content) > MAX_FILE_SIZE:
                 return []
 
-            # Re-split into lines if size is within limits.
-            # Using splitlines(keepends=True) perfectly matches readlines() behavior
-            return content.splitlines(keepends=True)
+            # Use io.StringIO to ensure behavior matches readlines() exactly
+            import io
+            return io.StringIO(content).readlines()
     except (OSError, UnicodeDecodeError):
         return []
 

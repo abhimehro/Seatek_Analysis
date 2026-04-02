@@ -3,6 +3,7 @@ from __future__ import annotations
 import datetime as dt
 import json
 import logging
+import os
 import re
 from typing import Any
 
@@ -126,10 +127,13 @@ def run_command_set(task_name: str, section: dict[str, Any]) -> tuple[str, str, 
 
 def discover_hotspots(limit: int = 5) -> list[tuple[str, int]]:
     candidates = []
-    for extension in ("*.py", "*.sh"):
-        for path in ROOT.rglob(extension):
-            if any(part in IGNORED_DIRS for part in path.parts):
+    # ⚡ Bolt: Use os.walk with early directory pruning instead of rglob to avoid O(N) traversal of ignored directories
+    for current_dir, dirs, files in os.walk(ROOT, topdown=True):
+        dirs[:] = [d for d in dirs if d not in IGNORED_DIRS]
+        for file in files:
+            if not (file.endswith(".py") or file.endswith(".sh")):
                 continue
+            path = ROOT / os.path.relpath(os.path.join(current_dir, file), ROOT)
             try:
                 line_count = path.read_text(encoding="utf-8").count("\n") + 1
             except (UnicodeDecodeError, OSError):

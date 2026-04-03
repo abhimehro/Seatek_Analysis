@@ -15,10 +15,10 @@ If you discover a security vulnerability or suspect a potential issue:
 
 ## Supported Versions
 
-| Version  | Supported     |
-|----------|--------------|
-| `main`   | :white_check_mark: |
-| Others   | :x:          |
+| Version | Supported          |
+| ------- | ------------------ |
+| `main`  | :white_check_mark: |
+| Others  | :x:                |
 
 Only the latest version (`main` branch) receives security updates.
 
@@ -32,13 +32,14 @@ Only the latest version (`main` branch) receives security updates.
 
 - **Never commit sensitive info:** Avoid hardcoding API keys, credentials, or personal data. Use [environment variables](https://docs.python.org/3/library/os.html#os.environ) or secret management tools.
 - **Validate data inputs:** Ensure all sensor and environmental data are validated before processing.
-- **Follow language-specific security guidelines:**  
-  - [Python Security Best Practices](https://docs.python.org/3/howto/security.html)  
+- **Follow language-specific security guidelines:**
+  - [Python Security Best Practices](https://docs.python.org/3/howto/security.html)
   - [R Security Best Practices](https://cran.r-project.org/web/views/Security.html)
 
 ## GitHub Security Features
 
 This repository uses:
+
 - [Dependabot](https://docs.github.com/en/code-security/supply-chain-security/keeping-your-dependencies-updated-automatically) for automated dependency updates.
 - [Code scanning](https://docs.github.com/en/code-security/code-scanning) for vulnerability detection.
 

@@ -9,6 +9,7 @@ import pandas as pd
 
 MAX_FILE_SIZE = 50 * 1024 * 1024  # 50 MB
 
+
 def parse_args():
     parser = argparse.ArgumentParser(
         description="Series 27 Outlier Analysis and Correction",
@@ -258,7 +259,7 @@ def main():
 
     # SECURITY: Prevent Out-Of-Memory (OOM) DoS attacks by limiting file size and avoiding TOCTOU
     try:
-        with open(args.input, 'rb') as f:
+        with open(args.input, "rb") as f:
             # Read up to MAX_FILE_SIZE + 1 bytes to check the limit without loading the whole file.
             file_buffer = f.read(MAX_FILE_SIZE + 1)
     except IOError as e:

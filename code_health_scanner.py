@@ -26,18 +26,19 @@ def read_file_safe(filepath):
         if os.path.commonpath([cwd, resolved_filepath]) != cwd:
             return []
 
+        # SECURITY: Prevent Out-Of-Memory (OOM) DoS attacks by limiting file size
+        # To avoid Time-of-Check to Time-of-Use (TOCTOU) vulnerability, we read up to MAX_FILE_SIZE + 1 bytes.
         with open(resolved_filepath, 'r', encoding='utf-8') as f:
-            # SECURITY: Prevent Out-Of-Memory (OOM) DoS attacks and TOCTOU vulnerabilities
-            # by reading up to MAX_FILE_SIZE + 1 characters (using a byte-sized limit as an upper bound)
-            # and checking the resulting content length.
             content = f.read(MAX_FILE_SIZE + 1)
-
             if len(content) > MAX_FILE_SIZE:
                 return []
+            # Note: readlines() logic adapted to work on strings
+            return content.splitlines(True)
+        if os.path.getsize(resolved_filepath) > MAX_FILE_SIZE:
+            return []
 
-            # Re-split into lines if size is within limits.
-            # Using splitlines(keepends=True) closely matches typical readlines() behavior.
-            return content.splitlines(keepends=True)
+        with open(resolved_filepath, "r", encoding="utf-8") as f:
+            return f.readlines()
     except (OSError, UnicodeDecodeError):
         return []
 

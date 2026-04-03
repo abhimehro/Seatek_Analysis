@@ -57,3 +57,8 @@
 **Vulnerability:** A data analysis script (`outlier_analysis_series27.py`) used `pd.read_excel()` to load user-supplied Excel files without first checking the file size.
 **Learning:** Loading arbitrarily large Excel files into memory using Pandas can cause severe memory exhaustion, leading to Denial of Service (DoS) attacks or unpredictable application crashes.
 **Prevention:** Always check `os.path.getsize(filepath)` against a safe maximum threshold (e.g., `MAX_FILE_SIZE = 50 * 1024 * 1024` for 50MB) before parsing files with `pandas`.
+
+## 2025-08-10 - Time-of-Check to Time-of-Use (TOCTOU) Vulnerability in File Reading
+**Vulnerability:** A code scanning script used `os.path.getsize(filepath)` to check if a file was under a maximum size limit before opening and reading it with `open()` and `f.readlines()`.
+**Learning:** Checking a file's size and then opening it creates a race condition known as Time-of-Check to Time-of-Use (TOCTOU). An attacker could swap the file for a much larger one between the size check and the read operation, leading to a Denial of Service via memory exhaustion.
+**Prevention:** Avoid separate check and use steps when dealing with files. Instead, open the file and read up to `MAX_FILE_SIZE + 1` bytes. If the length of the read content exceeds `MAX_FILE_SIZE`, you know the file is too large and can reject it safely without TOCTOU risks.

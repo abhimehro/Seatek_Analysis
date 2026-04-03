@@ -1,3 +1,4 @@
 ## 2025-05-06 - Avoid Repeated Column Subsetting in data.table
-**Learning:** Using `sapply(df[, cols, with=FALSE], ...)` combined with row-based subsetting functions inside the loop like `head(x, N)` forces the creation of a subset `data.frame` first, then sequentially traverses each column and slices it. For large rows/columns, this is an O(M * N) operation.
+
+**Learning:** Using `sapply(df[, cols, with=FALSE], ...)` combined with row-based subsetting functions inside the loop like `head(x, N)` forces the creation of a subset `data.frame` first, then sequentially traverses each column and slices it. For large rows/columns, this is an O(M \* N) operation.
 **Action:** Use data.table's native optimized `i` row filters along with `.SDcols` (e.g., `df[1:10, lapply(.SD, function), .SDcols = cols]`). This subsets the rows once in C and then evaluates the function across the selected columns, avoiding repeated slicing/allocations and extra passes over the data, which drastically reduces memory allocation and iteration cost.

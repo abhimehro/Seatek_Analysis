@@ -30,6 +30,7 @@ To get started with this project and ensure all dependencies are correctly insta
 ```
 
 This script will:
+
 - Install system packages (R, Python, libgit2-dev, pandoc) if missing.
 - Install required R packages using `renv`.
 - Create a Python virtual environment (if it doesn't exist) and install required Python packages.
@@ -123,7 +124,7 @@ flowchart TD
     F --> G[Changelog Status Badge Updated]
 ```
 
-**How it works:**  
+**How it works:**
 
 - Every push to `main` triggers the changelog workflow.
 - The workflow installs dependencies, reads your changelog config, and generates or updates `CHANGELOG.md`.
@@ -137,7 +138,7 @@ flowchart TD
 ## Changelog Automation
 
 This project uses [github_changelog_generator](https://github.com/github-changelog-generator/github-changelog-generator) for automated changelog management.  
-**Configuration:**  
+**Configuration:**
 
 - The changelog generator is configured via the `.github_changelog_generator` file (located in the project root or `.github/` directory).
 - The changelog is automatically updated on each push to `main` via a GitHub Actions workflow.
@@ -145,19 +146,19 @@ This project uses [github_changelog_generator](https://github.com/github-changel
 **Label conventions:**  
 To ensure your contributions are categorized correctly in the changelog, please use the following labels on issues and pull requests:
 
-| Section             | Example Labels                | Description                                  |
-|---------------------|------------------------------|----------------------------------------------|
-| **Enhancements**    | `enhancement`, `type: enhancement` | New features, improvements                   |
-| **Bug Fixes**       | `bug`, `type: bug`           | Fixes for errors or unexpected behavior      |
-| **Breaking Changes**| `breaking`, `backwards incompatible` | Changes that may break existing workflows    |
-| **Deprecated**      | `deprecated`                 | Features scheduled for removal               |
-| **Removed**         | `removed`                    | Features or code that have been removed      |
-| **Security**        | `security`                   | Security-related fixes or updates            |
-| **Data Updates**    | `data update`, `dataset`     | Updates to datasets or data sources          |
-| **Analysis**        | `analysis`, `results`        | New or updated analyses, results, or methods |
-| **Documentation**   | `documentation`              | Improvements to docs, guides, or READMEs     |
+| Section              | Example Labels                       | Description                                  |
+| -------------------- | ------------------------------------ | -------------------------------------------- |
+| **Enhancements**     | `enhancement`, `type: enhancement`   | New features, improvements                   |
+| **Bug Fixes**        | `bug`, `type: bug`                   | Fixes for errors or unexpected behavior      |
+| **Breaking Changes** | `breaking`, `backwards incompatible` | Changes that may break existing workflows    |
+| **Deprecated**       | `deprecated`                         | Features scheduled for removal               |
+| **Removed**          | `removed`                            | Features or code that have been removed      |
+| **Security**         | `security`                           | Security-related fixes or updates            |
+| **Data Updates**     | `data update`, `dataset`             | Updates to datasets or data sources          |
+| **Analysis**         | `analysis`, `results`                | New or updated analyses, results, or methods |
+| **Documentation**    | `documentation`                      | Improvements to docs, guides, or READMEs     |
 
-*Excluded from changelog:* `duplicate`, `question`, `invalid`, `wontfix`, `Meta: Exclude From Changelog`
+_Excluded from changelog:_ `duplicate`, `question`, `invalid`, `wontfix`, `Meta: Exclude From Changelog`
 
 **Tip:**  
 If you're unsure which label to use, see [CONTRIBUTING.md](./CONTRIBUTING.md) for detailed guidance.
@@ -215,10 +216,13 @@ These robust statistics support more reliable sensor diagnostics and anomaly det
 This project uses `lintr` for static code analysis of R scripts. The `lintr` package is managed via `renv`.
 To run the linter locally, ensure `lintr` is installed in your project environment (`renv::install("lintr")` if needed, though it should be picked up from `requirements.R` during `renv::restore()`).
 You can then run the linter using:
+
 ```R
 lintr::lint_dir(".")
 ```
+
 The linter configuration is currently the default provided by `lintr`. Key changes during the recent linter upgrade (February 2025):
+
 - `lintr` was added to `requirements.R` and its version (and dependencies) are now tracked in `renv.lock`.
 - Several style issues (line length, spacing, brace placement, etc.) were autofixed across project R files.
 - Some variable names in `Updated_Seatek_Analysis.R` (`headerStyle`, `highlightStyle`) were refactored to `header_style`, `highlight_style_yearly`, and `highlight_style_summary` for style consistency. These were internal changes to a function and are not expected to be breaking.

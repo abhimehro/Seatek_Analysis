@@ -41,4 +41,10 @@ actions:
     - trunk-check-pre-push
     - trunk-fmt-pre-commit
   enabled:
+    - git-lfs
+    - npm-check
+    - poetry-install
+    - submodule-init-update
+    - trunk-check-pre-commit
+    - trunk-check-pre-push-always
     - trunk-upgrade-available

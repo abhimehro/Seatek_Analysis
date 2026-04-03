@@ -2,7 +2,7 @@
 name: "rp-investigate-cli"
 description: "Deep investigation with rp-cli commands: tools gather evidence, follow-up reasoning synthesizes selected context"
 repoprompt_managed: true
-repoprompt_skills_version: 29
+repoprompt_skills_version: 30
 repoprompt_variant: cli
 ---
 

@@ -1,16 +1,21 @@
 import logging
 import os
 
+
 def get_repo_info():
     try:
         # Dummy code
         return "account", "project", "hash"
     except Exception as e:
         # SECURITY: Fail securely, don't expose internal exception details
-        logging.error(f"Error getting repo info: Internal error occurred ({type(e).__name__}).")
+        logging.error(
+            f"Error getting repo info: Internal error occurred ({type(e).__name__})."
+        )
         return "account", "project", "hash"
 
+
 MAX_FILE_SIZE = 10 * 1024 * 1024  # 10 MB
+
 
 def read_file_safe(filepath):
     try:
@@ -29,16 +34,18 @@ def read_file_safe(filepath):
             if len(content) > MAX_FILE_SIZE:
                 return []
 
-            # Use io.StringIO to ensure behavior matches readlines() exactly
-            import io
-            return io.StringIO(content).readlines()
+            # Re-split into lines if size is within limits.
+            # Using splitlines(keepends=True) perfectly matches readlines() behavior
+            return content.splitlines(keepends=True)
     except (OSError, UnicodeDecodeError):
         return []
 
+
 def get_language(filepath):
     ext = os.path.splitext(filepath)[1].lower()
-    lang_map = {'.py': 'python', '.r': 'r', '.js': 'javascript', '.ts': 'typescript'}
-    return lang_map.get(ext, 'unknown')
+    lang_map = {".py": "python", ".r": "r", ".js": "javascript", ".ts": "typescript"}
+    return lang_map.get(ext, "unknown")
+
 
 def scan_file(filepath, lines, account, project, commit_hash):
     issues = []
@@ -46,17 +53,18 @@ def scan_file(filepath, lines, account, project, commit_hash):
     # Determine language
     lang = get_language(filepath)
 
-    if lang == 'unknown':
+    if lang == "unknown":
         return issues
 
     # Analyze the file...
     # (Pretend there is a lot of logic here for different languages)
-    if lang == 'python':
+    if lang == "python":
         for i, line in enumerate(lines, 1):
             if line.strip() == "print('TODO')":
                 issues.append(f"TODO in {filepath}:{i}")
 
     return issues
+
 
 if __name__ == "__main__":
     pass

@@ -23,7 +23,7 @@ exclude:
 
 # Custom R linting rules
 customFiles:
-  - .lintr  # R specific linting rules
+  - .lintr # R specific linting rules
 
 # Project specific settings
 projectJDK: "11"
@@ -32,4 +32,3 @@ failThreshold: 0
 # Bootstrap
 bootstrap: |
   apt-get update && apt-get install -y r-base r-base-dev
-

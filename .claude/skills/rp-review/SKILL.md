@@ -2,7 +2,7 @@
 name: "rp-review"
 description: "Code review workflow using RepoPrompt MCP tools git tool and context_builder"
 repoprompt_managed: true
-repoprompt_skills_version: 29
+repoprompt_skills_version: 30
 repoprompt_variant: mcp
 ---
 

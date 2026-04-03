@@ -2,7 +2,7 @@ name: Clean Stale Branches
 
 on:
   schedule:
-    - cron: '0 2 * * 0' # Every Sunday at 2 AM
+    - cron: "0 2 * * 0" # Every Sunday at 2 AM
 
 jobs:
   cleanup:
@@ -35,4 +35,3 @@ jobs:
               git push origin --delete "refs/heads/$branch" || true
             fi
           done
-          

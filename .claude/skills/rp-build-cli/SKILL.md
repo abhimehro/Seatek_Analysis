@@ -2,7 +2,7 @@
 name: "rp-build-cli"
 description: "Build with rp-cli context builder plan → implement"
 repoprompt_managed: true
-repoprompt_skills_version: 29
+repoprompt_skills_version: 30
 repoprompt_variant: cli
 ---
 

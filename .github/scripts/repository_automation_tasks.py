@@ -3,6 +3,7 @@ from __future__ import annotations
 import datetime as dt
 import json
 import logging
+import os
 import re
 from typing import Any
 
@@ -145,15 +146,13 @@ def run_command_set(
 
 def discover_hotspots(limit: int = 5) -> list[tuple[str, int]]:
     candidates = []
-    # ⚡ Bolt: Use os.walk(topdown=True) with early directory pruning instead of pathlib.Path.rglob()
-    # This prevents O(N) traversal overhead inside massive ignored directories (like node_modules, .git)
-    for root, dirs, files in os.walk(ROOT):
+    # Use os.walk(topdown=True) so we can prune ignored directories early instead of traversing them
+    for current_dir, dirs, files in os.walk(ROOT, topdown=True):
         dirs[:] = [d for d in dirs if d not in IGNORED_DIRS]
-        for filename in files:
-            # ⚡ Bolt: endswith with a tuple is faster than fnmatch or regex
-            if not filename.endswith((".py", ".sh")):
+        for file in files:
+            if not (file.endswith(".py") or file.endswith(".sh")):
                 continue
-            path = pathlib.Path(root) / filename
+            path = ROOT / os.path.relpath(os.path.join(current_dir, file), ROOT)
             try:
                 line_count = path.read_text(encoding="utf-8").count("\n") + 1
             except (UnicodeDecodeError, OSError):

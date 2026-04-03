@@ -6,6 +6,9 @@ import logging
 import re
 from typing import Any
 
+import os
+import pathlib
+
 from repository_automation_common import (
     DAILY_WORKFLOW_NAME,
     OUTPUT_ROOT,
@@ -142,10 +145,15 @@ def run_command_set(
 
 def discover_hotspots(limit: int = 5) -> list[tuple[str, int]]:
     candidates = []
-    for extension in ("*.py", "*.sh"):
-        for path in ROOT.rglob(extension):
-            if any(part in IGNORED_DIRS for part in path.parts):
+    # ⚡ Bolt: Use os.walk(topdown=True) with early directory pruning instead of pathlib.Path.rglob()
+    # This prevents O(N) traversal overhead inside massive ignored directories (like node_modules, .git)
+    for root, dirs, files in os.walk(ROOT):
+        dirs[:] = [d for d in dirs if d not in IGNORED_DIRS]
+        for filename in files:
+            # ⚡ Bolt: endswith with a tuple is faster than fnmatch or regex
+            if not filename.endswith((".py", ".sh")):
                 continue
+            path = pathlib.Path(root) / filename
             try:
                 line_count = path.read_text(encoding="utf-8").count("\n") + 1
             except (UnicodeDecodeError, OSError):

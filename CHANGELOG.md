@@ -19,6 +19,7 @@
 - ⚡ Bolt: \[performance improvement\] [\#123](https://github.com/abhimehro/Seatek_Analysis/pull/123) ([abhimehro](https://github.com/abhimehro))
 - 🛡️ Sentinel: \[CRITICAL\] Fix TOCTOU vulnerability in file reading [\#122](https://github.com/abhimehro/Seatek_Analysis/pull/122) ([abhimehro](https://github.com/abhimehro))
 - ⚡ Bolt: Optimize hotspot discovery with early directory pruning [\#121](https://github.com/abhimehro/Seatek_Analysis/pull/121) ([abhimehro](https://github.com/abhimehro))
+- 🛡️ Sentinel: \[CRITICAL\] Fix TOCTOU / OOM DoS vulnerability in file reading [\#120](https://github.com/abhimehro/Seatek_Analysis/pull/120) ([abhimehro](https://github.com/abhimehro))
 - 🛡️ Sentinel: \[MEDIUM\] Fix GitHub Actions command injection vulnerability in changelog workflow [\#119](https://github.com/abhimehro/Seatek_Analysis/pull/119) ([abhimehro](https://github.com/abhimehro))
 - 🛡️ Sentinel: \[HIGH\] Fix CLI option injection in GitHub automation scripts [\#117](https://github.com/abhimehro/Seatek_Analysis/pull/117) ([abhimehro](https://github.com/abhimehro))
 - Bump actions/checkout from 4 to 6 [\#116](https://github.com/abhimehro/Seatek_Analysis/pull/116) ([dependabot[bot]](https://github.com/apps/dependabot))

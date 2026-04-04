@@ -150,7 +150,8 @@ def discover_hotspots(limit: int = 5) -> list[tuple[str, int]]:
     for current_dir, dirs, files in os.walk(ROOT, topdown=True):
         dirs[:] = [d for d in dirs if d not in IGNORED_DIRS]
         for file in files:
-            if not (file.endswith(".py") or file.endswith(".sh")):
+            # ⚡ Bolt: Using a tuple with endswith is faster than multiple fnmatch or endswith calls
+            if not file.endswith((".py", ".sh")):
                 continue
             path = ROOT / os.path.relpath(os.path.join(current_dir, file), ROOT)
             try:

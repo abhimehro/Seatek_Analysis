@@ -16,14 +16,18 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v6
 
+      - name: Prepare prompt
+        env:
+          ISSUE_TITLE: ${{ github.event.issue.title }}
+          ISSUE_BODY: ${{ github.event.issue.body }}
+        run: |
+          printf "Summarize the following GitHub issue in one paragraph:\nTitle: %s\nBody: %s\n" "$ISSUE_TITLE" "$ISSUE_BODY" > prompt.txt
+
       - name: Run AI inference
         id: inference
         uses: actions/ai-inference@v2
         with:
-          prompt: |
-            Summarize the following GitHub issue in one paragraph:
-            Title: ${{ github.event.issue.title }}
-            Body: ${{ github.event.issue.body }}
+          prompt-file: prompt.txt
 
       - name: Comment with AI summary
         run: |

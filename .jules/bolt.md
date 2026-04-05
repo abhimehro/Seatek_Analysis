@@ -1,7 +1,7 @@
 ## 2026-04-05 - Optimize string parsing for file extensions
 
-**Learning:** Chaining `.endswith()` calls with `or` in Python (e.g. `file.endswith(".py") or file.endswith(".sh")`) requires multiple method lookups and boolean evaluations in Python space. Using a tuple like `file.endswith((".py", ".sh"))` is evaluated at the C level, making it faster and more memory-efficient. This is a common performance anti-pattern in scripts that do bulk file processing like `repository_automation_tasks.py`.
-**Action:** Always prefer passing a tuple of extensions to `.endswith()` rather than chaining logical `or` statements when filtering files by extension.
+**Learning:** Chaining `.endswith()` or `.startswith()` calls with `or` in Python requires multiple method lookups and boolean evaluations in Python space. Using a tuple (e.g., `.endswith((".py", ".sh"))`) is evaluated at the C level, making it faster and more efficient. This is a common performance anti-pattern in scripts that do bulk string processing.
+**Action:** Always prefer passing a tuple of strings to `.endswith()` or `.startswith()` rather than chaining logical `or` statements.
 
 ## 2025-05-06 - Optimize file discovery with os.walk and early pruning
 

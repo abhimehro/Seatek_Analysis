@@ -16,6 +16,7 @@
 
 **Merged pull requests:**
 
+- ⚡ Bolt: Optimize file extension check using tuple with endswith [\#127](https://github.com/abhimehro/Seatek_Analysis/pull/127) ([abhimehro](https://github.com/abhimehro))
 - 🛡️ Sentinel: \[CRITICAL\] Fix Action Input Injection [\#125](https://github.com/abhimehro/Seatek_Analysis/pull/125) ([abhimehro](https://github.com/abhimehro))
 - ⚡ Bolt: \[performance improvement\] [\#123](https://github.com/abhimehro/Seatek_Analysis/pull/123) ([abhimehro](https://github.com/abhimehro))
 - 🛡️ Sentinel: \[CRITICAL\] Fix TOCTOU vulnerability in file reading [\#122](https://github.com/abhimehro/Seatek_Analysis/pull/122) ([abhimehro](https://github.com/abhimehro))

@@ -144,6 +144,8 @@ def run_command_set(
     )
 
 
+MAX_FILE_SIZE = 10 * 1024 * 1024  # 10 MB
+
 def discover_hotspots(limit: int = 5) -> list[tuple[str, int]]:
     candidates = []
     # Use os.walk(topdown=True) so we can prune ignored directories early instead of traversing them
@@ -155,7 +157,13 @@ def discover_hotspots(limit: int = 5) -> list[tuple[str, int]]:
                 continue
             path = ROOT / os.path.relpath(os.path.join(current_dir, file), ROOT)
             try:
-                line_count = path.read_text(encoding="utf-8").count("\n") + 1
+                # SECURITY: Prevent Out-Of-Memory (OOM) DoS attacks by limiting file size.
+                # Avoid TOCTOU by reading up to MAX_FILE_SIZE + 1 characters directly.
+                with open(path, 'r', encoding='utf-8') as f:
+                    content = f.read(MAX_FILE_SIZE + 1)
+                    if len(content) > MAX_FILE_SIZE:
+                        continue
+                    line_count = content.count("\n") + 1
             except (UnicodeDecodeError, OSError):
                 continue
             candidates.append((str(path.relative_to(ROOT)), line_count))

@@ -158,13 +158,13 @@ def discover_hotspots(limit: int = 5) -> list[tuple[str, int]]:
             path = ROOT / os.path.relpath(os.path.join(current_dir, file), ROOT)
             try:
                 # SECURITY: Prevent Out-Of-Memory (OOM) DoS attacks by limiting file size.
-                # Avoid TOCTOU by reading up to MAX_FILE_SIZE + 1 characters directly.
-                with open(path, 'r', encoding='utf-8') as f:
+                # Read up to MAX_FILE_SIZE + 1 bytes directly so the 10 MB cap is exact.
+                with path.open("rb") as f:
                     content = f.read(MAX_FILE_SIZE + 1)
                     if len(content) > MAX_FILE_SIZE:
                         continue
-                    line_count = content.count("\n") + 1
-            except (UnicodeDecodeError, OSError):
+                    line_count = content.count(b"\n") + 1
+            except OSError:
                 continue
             candidates.append((str(path.relative_to(ROOT)), line_count))
     return sorted(candidates, key=lambda item: item[1], reverse=True)[:limit]

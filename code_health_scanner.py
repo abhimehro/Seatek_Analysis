@@ -43,10 +43,12 @@ def read_file_safe(filepath):
         return []
 
 
+# ⚡ Bolt: Hoist static dictionary out of frequently called function to avoid reallocation overhead
+LANG_MAP = {".py": "python", ".r": "r", ".js": "javascript", ".ts": "typescript"}
+
 def get_language(filepath):
     ext = os.path.splitext(filepath)[1].lower()
-    lang_map = {".py": "python", ".r": "r", ".js": "javascript", ".ts": "typescript"}
-    return lang_map.get(ext, "unknown")
+    return LANG_MAP.get(ext, "unknown")
 
 
 def scan_file(filepath, lines, account, project, commit_hash):

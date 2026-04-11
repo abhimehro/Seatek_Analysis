@@ -16,6 +16,7 @@
 
 **Merged pull requests:**
 
+- ⚡ Bolt: optimize dictionary allocation in get\_language [\#129](https://github.com/abhimehro/Seatek_Analysis/pull/129) ([abhimehro](https://github.com/abhimehro))
 - 🛡️ Sentinel: \[CRITICAL\] Fix Out-Of-Memory \(OOM\) vulnerability in file scanning [\#128](https://github.com/abhimehro/Seatek_Analysis/pull/128) ([abhimehro](https://github.com/abhimehro))
 - ⚡ Bolt: Optimize file extension check using tuple with endswith [\#127](https://github.com/abhimehro/Seatek_Analysis/pull/127) ([abhimehro](https://github.com/abhimehro))
 - 🛡️ Sentinel: \[CRITICAL\] Fix Action Input Injection [\#125](https://github.com/abhimehro/Seatek_Analysis/pull/125) ([abhimehro](https://github.com/abhimehro))

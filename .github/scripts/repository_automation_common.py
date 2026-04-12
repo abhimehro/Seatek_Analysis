@@ -402,6 +402,6 @@ def append_publication_result(
         body += f"\n## Published issue\n- {issue_url}\n"
         return body, issue_url, None
     except Exception as exc:  # pragma: no cover - runtime integration
-        logging.error("Error publishing issue/PR", exc_info=True)
+        logging.error(f"Error publishing issue/PR: {type(exc).__name__}")
         body += f"\n## Publishing failure\n- {type(exc).__name__}\n"
         return body, "", type(exc).__name__

@@ -155,7 +155,10 @@ def discover_hotspots(limit: int = 5) -> list[tuple[str, int]]:
             # ⚡ Bolt: Use tuple with .endswith() for faster C-level evaluation
             if not file.endswith((".py", ".sh")):
                 continue
-            path = ROOT / os.path.relpath(os.path.join(current_dir, file), ROOT)
+            # ⚡ Bolt: Use pathlib.Path(dir, file) rather than redundant combinations of
+            # os.path.join, os.path.relpath, and division operators to avoid unnecessary string manipulations
+            # and reduce CPU overhead during directory traversals
+            path = pathlib.Path(current_dir, file)
             try:
                 # SECURITY: Prevent Out-Of-Memory (OOM) DoS attacks by limiting file size.
                 # Read up to MAX_FILE_SIZE + 1 bytes directly so the 10 MB cap is exact.

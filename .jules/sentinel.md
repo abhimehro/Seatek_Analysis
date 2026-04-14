@@ -62,3 +62,15 @@
 **Vulnerability:** A code scanning script used `os.path.getsize(filepath)` to check if a file was under a maximum size limit before opening and reading it with `open()` and `f.readlines()`.
 **Learning:** Checking a file's size and then opening it creates a race condition known as Time-of-Check to Time-of-Use (TOCTOU). An attacker could swap the file for a much larger one between the size check and the read operation, leading to a Denial of Service via memory exhaustion.
 **Prevention:** Avoid separate check and use steps when dealing with files. Instead, open the file and read up to `MAX_FILE_SIZE + 1` bytes. If the length of the read content exceeds `MAX_FILE_SIZE`, you know the file is too large and can reject it safely without TOCTOU risks.
+
+## 2025-08-11 - CLI Option Injection via printf format strings
+
+**Vulnerability:** When using `printf` to output environment variables that contain untrusted text (like user-supplied GitHub Issue titles or AI-generated output), the content can be mistakenly parsed as an option flag if the string starts with a hyphen (e.g. `printf "%s\n" "$VAR"`).
+**Learning:** `printf` commands that output variable content can be vulnerable to option injection even when properly quoted, which could cause build failures or unintended behavior in shell scripts.
+**Prevention:** Always use the `--` separator with `printf` when formatting variables to ensure everything that follows is treated as the format string or positional arguments, preventing option injection (e.g., `printf -- "%s\n" "$VAR" > output.txt`).
+
+## 2025-08-11 - Information Leakage via exc_info in Generic Exception Handlers
+
+**Vulnerability:** Using `exc_info=True` in generic exception handlers (`except Exception as exc:`) logs the full stack trace and exception details, which can unintentionally leak sensitive internal application paths, state, environment variables, or database queries depending on the underlying error.
+**Learning:** While `exc_info=True` aids debugging, its use in high-level generic exception blocks constitutes an information disclosure risk, particularly when logs are accessible to less privileged users or centralized logging systems.
+**Prevention:** Avoid `exc_info=True` in broad exception handlers. Fail securely by logging a generic user-facing message, and include only the exception type (e.g., `type(exc).__name__`) to preserve debuggability without exposing sensitive string contents or stack traces.

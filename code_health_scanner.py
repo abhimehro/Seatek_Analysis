@@ -34,11 +34,6 @@ def read_file_safe(filepath):
                 return []
             # Note: readlines() logic adapted to work on strings
             return content.splitlines(True)
-        if os.path.getsize(resolved_filepath) > MAX_FILE_SIZE:
-            return []
-
-        with open(resolved_filepath, "r", encoding="utf-8") as f:
-            return f.readlines()
     except (OSError, UnicodeDecodeError):
         return []
 

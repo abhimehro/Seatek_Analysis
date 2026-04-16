@@ -68,10 +68,9 @@ def scan_file(filepath, lines, account, project, commit_hash):
     if lang == "python":
         for i, line in enumerate(lines, 1):
             # ⚡ Bolt: Fast-fail substring check avoids string allocation overhead
-            # from calling .strip() on every line.
-            if "TODO" in line:
-                if line.strip() == "print('TODO')":
-                    issues.append(f"TODO in {filepath}:{i}")
+            # from calling .strip() on every line. Combined to avoid deep nesting.
+            if "TODO" in line and line.strip() == "print('TODO')":
+                issues.append(f"TODO in {filepath}:{i}")
 
     return issues
 

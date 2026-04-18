@@ -10,7 +10,9 @@
 # and generates a combined summary workbook.
 
 # Load required packages (install if missing)
-required_packages <- c("data.table", "openxlsx", "dplyr", "tidyr")
+# ⚡ Bolt: Removed 'dplyr' and 'tidyr' dependencies to reduce memory overhead
+# and load times, as the script exclusively uses 'data.table' and 'openxlsx'.
+required_packages <- c("data.table", "openxlsx")
 for (pkg in required_packages) {
   if (!requireNamespace(pkg, quietly = TRUE)) {
     # Use HTTPS to prevent MITM attacks
@@ -20,8 +22,6 @@ for (pkg in required_packages) {
 
 library(data.table)
 library(openxlsx)
-library(dplyr)
-library(tidyr)
 
 # Log all warnings, errors, and messages to a file for diagnostics
 log_file <- file.path(getwd(), "processing_warnings.log")

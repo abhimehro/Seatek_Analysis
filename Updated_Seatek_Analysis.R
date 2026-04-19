@@ -9,8 +9,11 @@
 # computes summary metrics (first 10, last 5, full, within_diff),
 # and generates a combined summary workbook.
 
+# ⚡ Bolt: Removed unused dependencies dplyr and tidyr to reduce memory overhead and script load time.
+# Performance metric: Removes the need to allocate memory for the large dplyr and tidyr namespaces.
+
 # Load required packages (install if missing)
-required_packages <- c("data.table", "openxlsx", "dplyr", "tidyr")
+required_packages <- c("data.table", "openxlsx")
 for (pkg in required_packages) {
   if (!requireNamespace(pkg, quietly = TRUE)) {
     # Use HTTPS to prevent MITM attacks
@@ -20,8 +23,6 @@ for (pkg in required_packages) {
 
 library(data.table)
 library(openxlsx)
-library(dplyr)
-library(tidyr)
 
 # Log all warnings, errors, and messages to a file for diagnostics
 log_file <- file.path(getwd(), "processing_warnings.log")

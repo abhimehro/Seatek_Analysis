@@ -74,3 +74,8 @@
 **Vulnerability:** Using `exc_info=True` in generic exception handlers (`except Exception as exc:`) logs the full stack trace and exception details, which can unintentionally leak sensitive internal application paths, state, environment variables, or database queries depending on the underlying error.
 **Learning:** While `exc_info=True` aids debugging, its use in high-level generic exception blocks constitutes an information disclosure risk, particularly when logs are accessible to less privileged users or centralized logging systems.
 **Prevention:** Avoid `exc_info=True` in broad exception handlers. Fail securely by logging a generic user-facing message, and include only the exception type (e.g., `type(exc).__name__`) to preserve debuggability without exposing sensitive string contents or stack traces.
+
+## 2026-04-19 - [CRITICAL] Prevent GH_TOKEN Leakage to Third-Party Tools
+**Vulnerability:** The `GH_TOKEN` environment variable was being passed to all shell commands executed via `run_shell_command`, exposing it to potentially compromised third-party tools like `pytest` or `pre-commit`.
+**Learning:** CI/CD runners often have elevated privileges, and tools running in those environments shouldn't have automatic access to tokens unless absolutely necessary.
+**Prevention:** Explicitly strip sensitive environment variables (like `GH_TOKEN`) before invoking third-party CLI commands or running user-configurable shell scripts.

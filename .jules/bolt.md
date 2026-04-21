@@ -6,3 +6,6 @@
 ## 2025-05-06 - Optimize string processing in parsing loops
 **Learning:** Calling object-allocating methods like `.strip()`, `.lstrip()`, or `.lower()` on every line in a large file scanning loop introduces significant memory and CPU overhead.
 **Action:** Use a fast-fail substring check (`if "pattern" in line:`) before executing the more expensive operations. This short-circuits the condition for lines that don't match, often yielding ~10x faster execution for non-matching lines. Remember to combine conditions with `and` on the same line to avoid increasing nested code complexity.
+## 2025-05-06 - Pre-calculate static filesystem context
+**Learning:** Calling `os.getcwd()` and `os.path.realpath()` inside functions that process millions of files introduces heavy CPU and syscall overhead (~13us per call).
+**Action:** Lift static path resolution (like establishing the repository root directory `CWD`) into the module-level scope so it is computed only once upon import instead of on every function invocation.

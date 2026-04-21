@@ -14,6 +14,9 @@ def get_repo_info():
         return "account", "project", "hash"
 
 
+# ⚡ Bolt: Define CWD at module level to prevent os.getcwd() and os.path.realpath() overhead
+# on every read_file_safe call. Saves significant time during repository-wide scans.
+CWD = os.path.realpath(os.getcwd())
 MAX_FILE_SIZE = 10 * 1024 * 1024  # 10 MB
 
 
@@ -21,9 +24,8 @@ def read_file_safe(filepath):
     try:
         # SECURITY: Prevent path traversal by ensuring the file is within the current directory.
         # Uses commonpath and realpath to securely prevent directory prefix bypass and symlink escape attacks.
-        cwd = os.path.realpath(os.getcwd())
         resolved_filepath = os.path.realpath(filepath)
-        if os.path.commonpath([cwd, resolved_filepath]) != cwd:
+        if os.path.commonpath([CWD, resolved_filepath]) != CWD:
             return []
 
         # SECURITY: Prevent Out-Of-Memory (OOM) DoS attacks by limiting file size

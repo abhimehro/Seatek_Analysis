@@ -61,7 +61,10 @@ def run_process(
     input_text: str | None = None,
     timeout: int = 300,
     check: bool = False,
+    env: dict[str, str] | None = None,
 ) -> subprocess.CompletedProcess[str]:
+    if env is None:
+        env = command_env()
     return subprocess.run(
         command,
         cwd=ROOT,
@@ -70,13 +73,16 @@ def run_process(
         text=True,
         input=input_text,
         timeout=timeout,
-        env=command_env(),
+        env=env,
     )
 
 
 def run_shell_command(command: str, timeout: int = 1800) -> dict[str, Any]:
     # Commands originate from repository-controlled configuration, not user input.
-    proc = run_process([BASH_BIN, "-lc", command], timeout=timeout)
+    # SECURITY: Strip GH_TOKEN to enforce least privilege for 3rd-party tool execution
+    safe_env = command_env()
+    safe_env.pop("GH_TOKEN", None)
+    proc = run_process([BASH_BIN, "-lc", command], timeout=timeout, env=safe_env)
     return {
         "command": command,
         "exit_code": proc.returncode,

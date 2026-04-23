@@ -19,6 +19,7 @@
 - 🛡️ Sentinel: \[CRITICAL/HIGH\] Fix subprocess credential exfiltration risk [\#148](https://github.com/abhimehro/Seatek_Analysis/pull/148) ([abhimehro](https://github.com/abhimehro))
 - Update matplotlib requirement from \>=3.3.0 to \>=3.10.8 in /Series\_27/Analysis [\#147](https://github.com/abhimehro/Seatek_Analysis/pull/147) ([dependabot[bot]](https://github.com/apps/dependabot))
 - chore\(deps\): update pandas requirement from \>=1.3.0 to \>=3.0.2 in /Series\_27/Analysis [\#145](https://github.com/abhimehro/Seatek_Analysis/pull/145) ([dependabot[bot]](https://github.com/apps/dependabot))
+- chore\(deps\): update numpy requirement from \>=1.20.0 to \>=2.4.4 in /Series\_27/Analysis [\#144](https://github.com/abhimehro/Seatek_Analysis/pull/144) ([dependabot[bot]](https://github.com/apps/dependabot))
 - ⚡ Bolt: \[performance improvement\] Optimize file scanning loop by short-circuiting `.strip()` [\#136](https://github.com/abhimehro/Seatek_Analysis/pull/136) ([abhimehro](https://github.com/abhimehro))
 - ⚡ Bolt: optimize path construction in directory traversal [\#133](https://github.com/abhimehro/Seatek_Analysis/pull/133) ([abhimehro](https://github.com/abhimehro))
 - 🛡️ Sentinel: \[MEDIUM\] Fix data leakage in generic exception handlers [\#132](https://github.com/abhimehro/Seatek_Analysis/pull/132) ([abhimehro](https://github.com/abhimehro))

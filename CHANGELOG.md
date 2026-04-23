@@ -16,6 +16,8 @@
 
 **Merged pull requests:**
 
+- 🛡️ Sentinel: \[CRITICAL/HIGH\] Fix subprocess credential exfiltration risk [\#148](https://github.com/abhimehro/Seatek_Analysis/pull/148) ([abhimehro](https://github.com/abhimehro))
+- ⚡ Bolt: \[performance improvement\] Optimize file scanning loop by short-circuiting `.strip()` [\#136](https://github.com/abhimehro/Seatek_Analysis/pull/136) ([abhimehro](https://github.com/abhimehro))
 - ⚡ Bolt: optimize path construction in directory traversal [\#133](https://github.com/abhimehro/Seatek_Analysis/pull/133) ([abhimehro](https://github.com/abhimehro))
 - 🛡️ Sentinel: \[MEDIUM\] Fix data leakage in generic exception handlers [\#132](https://github.com/abhimehro/Seatek_Analysis/pull/132) ([abhimehro](https://github.com/abhimehro))
 - ⚡ Bolt: Hoist static dictionary in code health scanner [\#130](https://github.com/abhimehro/Seatek_Analysis/pull/130) ([abhimehro](https://github.com/abhimehro))

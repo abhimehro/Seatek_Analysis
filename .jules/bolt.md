@@ -9,3 +9,7 @@
 ## 2025-05-06 - Remove unused dependencies to reduce memory overhead and load times in R scripts
 **Learning:** Checking for unused heavy dependencies like `dplyr` and `tidyr` is important for reducing memory overhead and load times in R scripts optimized with `data.table` and `openxlsx`.
 **Action:** In memory-constrained or performance-critical environments, review required packages and remove those that are not explicitly utilized, avoiding unnecessary dependency installation and import overhead.
+
+## 2026-04-24 - Optimize result collection with list comprehensions
+**Learning:** Using list comprehensions instead of loops with `.append()` reduces bytecode instruction overhead and makes result collection faster.
+**Action:** Use list comprehensions for faster result collection in Python.

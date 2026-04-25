@@ -1,9 +1,5 @@
-🧹 **Code Health Improvement: Refactor outlier_analysis_series27.py**
-
-🎯 **What:** The `main()` function in `Series_27/Analysis/outlier_analysis_series27.py` was overly long and monolithic, handling parsing, data loading, anomaly processing, formatting, excel I/O patching, and plotting. It has been refactored by extracting three distinct, modular functions: `prepare_outliers_df`, `apply_corrections`, and `plot_outliers`.
-
-💡 **Why:** Breaking down the long function dramatically improves readability and maintainability. The core logic of formatting the outliers DataFrame (`prepare_outliers_df`), patching the Excel sheet and gathering offsets (`apply_corrections`), and data visualization (`plot_outliers`) is cleanly separated, allowing future testability and modular modifications without congesting the main application logic loop.
-
-✅ **Verification:** The modified code successfully compiles via `python -m py_compile`, maintaining syntactical correctness, and passes a `python <file> --help` call confirming that dependencies execute properly.
-
-✨ **Result:** A more modular and easier to understand Python script with distinct separation of concerns while preserving the original functionality.
+🚨 Severity: MEDIUM
+💡 Vulnerability: Using `exc_info=True` in generic exception handlers (`except Exception as exc:`) logs full stack traces and exception details, which can unintentionally leak sensitive internal application paths, state, environment variables, or database queries. This is highlighted in `.jules/sentinel.md` as an information disclosure risk.
+🎯 Impact: Depending on the underlying error, sensitive information could be written to logs that may be accessible to less privileged users or centralized logging systems.
+🔧 Fix: Removed `exc_info=True` from the generic exception handlers in `run_workflow_updater` and `run_weekly_retrospective` within `.github/scripts/repository_automation_tasks.py`. Instead, the exception type (`type(exc).__name__`) is included in a generic error message to preserve debuggability without exposing sensitive details.
+✅ Verification: Confirmed `exc_info` is no longer present in `.github/scripts/repository_automation_tasks.py` and the file compiles correctly without syntax errors.

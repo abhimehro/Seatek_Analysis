@@ -14,8 +14,13 @@
 - I've added a test suite using testthat for your R scripts. [\#2](https://github.com/abhimehro/Seatek_Analysis/pull/2) ([abhimehro](https://github.com/abhimehro))
 - feat: Add Dependabot configuration [\#1](https://github.com/abhimehro/Seatek_Analysis/pull/1) ([abhimehro](https://github.com/abhimehro))
 
+**Closed issues:**
+
+- \[Security\] Prevent GH\_TOKEN leakage to third-party tools in run\_shell\_command [\#141](https://github.com/abhimehro/Seatek_Analysis/issues/141)
+
 **Merged pull requests:**
 
+- ⚡ Bolt: \[performance improvement\] list comprehension [\#155](https://github.com/abhimehro/Seatek_Analysis/pull/155) ([abhimehro](https://github.com/abhimehro))
 - 🛡️ Sentinel: \[CRITICAL/HIGH\] Fix subprocess credential exfiltration risk [\#148](https://github.com/abhimehro/Seatek_Analysis/pull/148) ([abhimehro](https://github.com/abhimehro))
 - Update matplotlib requirement from \>=3.3.0 to \>=3.10.8 in /Series\_27/Analysis [\#147](https://github.com/abhimehro/Seatek_Analysis/pull/147) ([dependabot[bot]](https://github.com/apps/dependabot))
 - chore\(deps\): update pandas requirement from \>=1.3.0 to \>=3.0.2 in /Series\_27/Analysis [\#145](https://github.com/abhimehro/Seatek_Analysis/pull/145) ([dependabot[bot]](https://github.com/apps/dependabot))

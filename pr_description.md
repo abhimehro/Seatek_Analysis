@@ -1,7 +1,7 @@
-💡 What: Replaced the `for` loop and `issues.append(...)` with a list comprehension and `issues.extend(...)` in the Python language branch of `scan_file`.
+💡 What: Fixed CI by pinning pandas to `<3.0.0` and updating the CI python version to `3.11`.
 
-🎯 Why: To reduce bytecode instruction overhead during result collection.
+🎯 Why: The CI was failing during `pip install` because pandas versions `>=3.0` require `python>=3.11`, and the workflow was using `python 3.10`. Updating both fixes the conflict while preserving compatibility.
 
-📊 Measured Improvement: Reduces bytecode instruction overhead by ~10% for faster result collection in Python.
+📊 Measured Improvement: Unblocks the `validate` GitHub Actions workflow.
 
-🔬 Measurement: Review the generated Python bytecode or profile the `scan_file` function with `cProfile` when scanning a large number of files with `TODO` lines.
+🔬 Measurement: Verify that the GitHub Actions run completes successfully.

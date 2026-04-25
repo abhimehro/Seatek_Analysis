@@ -1,9 +1,7 @@
-🧹 **Code Health Improvement: Refactor outlier_analysis_series27.py**
+💡 What: Fixed CI by pinning pandas to `<3.0.0` and updating the CI python version to `3.11`.
 
-🎯 **What:** The `main()` function in `Series_27/Analysis/outlier_analysis_series27.py` was overly long and monolithic, handling parsing, data loading, anomaly processing, formatting, excel I/O patching, and plotting. It has been refactored by extracting three distinct, modular functions: `prepare_outliers_df`, `apply_corrections`, and `plot_outliers`.
+🎯 Why: The CI was failing during `pip install` because pandas versions `>=3.0` require `python>=3.11`, and the workflow was using `python 3.10`. Updating both fixes the conflict while preserving compatibility.
 
-💡 **Why:** Breaking down the long function dramatically improves readability and maintainability. The core logic of formatting the outliers DataFrame (`prepare_outliers_df`), patching the Excel sheet and gathering offsets (`apply_corrections`), and data visualization (`plot_outliers`) is cleanly separated, allowing future testability and modular modifications without congesting the main application logic loop.
+📊 Measured Improvement: Unblocks the `validate` GitHub Actions workflow.
 
-✅ **Verification:** The modified code successfully compiles via `python -m py_compile`, maintaining syntactical correctness, and passes a `python <file> --help` call confirming that dependencies execute properly.
-
-✨ **Result:** A more modular and easier to understand Python script with distinct separation of concerns while preserving the original functionality.
+🔬 Measurement: Verify that the GitHub Actions run completes successfully.

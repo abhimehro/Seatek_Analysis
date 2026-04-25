@@ -74,3 +74,9 @@
 **Vulnerability:** Using `exc_info=True` in generic exception handlers (`except Exception as exc:`) logs the full stack trace and exception details, which can unintentionally leak sensitive internal application paths, state, environment variables, or database queries depending on the underlying error.
 **Learning:** While `exc_info=True` aids debugging, its use in high-level generic exception blocks constitutes an information disclosure risk, particularly when logs are accessible to less privileged users or centralized logging systems.
 **Prevention:** Avoid `exc_info=True` in broad exception handlers. Fail securely by logging a generic user-facing message, and include only the exception type (e.g., `type(exc).__name__`) to preserve debuggability without exposing sensitive string contents or stack traces.
+
+## 2025-08-12 - Dependency Credential Exfiltration Risk in Automated Shell Environments
+
+**Vulnerability:** When executing external or third-party CLI tools (e.g., linters, formatters, test runners) via `subprocess` in automated pipelines, the default behavior of passing the entire current environment `os.environ` can inadvertently expose sensitive credentials, such as `GH_TOKEN`, to potentially compromised third-party dependencies executing in the shell.
+**Learning:** The principle of least privilege should be enforced not only for the application code but also for the environment variables passed to any invoked sub-processes. Third-party tools do not need access to the repository's GitHub token unless explicitly required for their function.
+**Prevention:** Always explicitly strip sensitive environment variables (e.g., `env.pop("GH_TOKEN", None)`) from the environment dictionary before passing it to `subprocess.run` or `subprocess.Popen` when invoking third-party CLI tools.

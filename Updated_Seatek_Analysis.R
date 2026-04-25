@@ -10,7 +10,7 @@
 # and generates a combined summary workbook.
 
 # Load required packages (install if missing)
-required_packages <- c("data.table", "openxlsx", "dplyr", "tidyr")
+required_packages <- c("data.table", "openxlsx")
 for (pkg in required_packages) {
   if (!requireNamespace(pkg, quietly = TRUE)) {
     # Use HTTPS to prevent MITM attacks
@@ -20,8 +20,6 @@ for (pkg in required_packages) {
 
 library(data.table)
 library(openxlsx)
-library(dplyr)
-library(tidyr)
 
 # Log all warnings, errors, and messages to a file for diagnostics
 log_file <- file.path(getwd(), "processing_warnings.log")
@@ -188,8 +186,6 @@ process_all_data <- function(data_dir) {
         for (i in seq_along(raw_export_tasks)) {
           task <- raw_export_tasks[[i]]
           out_file <- write_task(task)
-          # Suppress message in the loop to prevent garbling the progress bar
-          # message(sprintf("Raw data written to %s", out_file))
           setTxtProgressBar(pb_write, i)
         }
       }, finally = close(pb_write))

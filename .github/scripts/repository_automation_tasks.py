@@ -810,7 +810,7 @@ def run_weekly_retrospective(config: dict[str, Any]) -> dict[str, Any]:
             safe_changes, safe_pr_url = run_safe_adjustment_commands(section)
         except Exception as exc:  # pragma: no cover - runtime integration
             # SECURITY: Fail securely, don't expose internal exception details with exc_info=True
-            logging.error(f"Error applying safe adjustment commands: Internal error occurred ({type(exc).__name__}).")
+            logging.error("Error applying safe adjustment commands: Internal error occurred (%s).", type(exc).__name__)
             safe_changes = [
                 {
                     "name": "safe-adjustment-commands",

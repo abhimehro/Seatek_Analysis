@@ -349,7 +349,7 @@ def run_workflow_updater(config: dict[str, Any]) -> dict[str, Any]:
         body_parts.extend(["## Draft PR", f"- {pr_url}", ""])
     except Exception as exc:  # pragma: no cover - runtime integration
         # SECURITY: Fail securely, don't expose internal exception details with exc_info=True
-        logging.error(f"Error updating workflows: Internal error occurred ({type(exc).__name__}).")
+        logging.error("Error updating workflows: Internal error occurred (%s).", type(exc).__name__)
         restore_workflow_updates(plans)
         status = "failure"
         body_parts.extend(["## Draft PR failure", f"- {type(exc).__name__}", ""])

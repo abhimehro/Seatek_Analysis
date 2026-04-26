@@ -21,6 +21,7 @@
 **Merged pull requests:**
 
 - ⚡ Bolt: \[performance improvement\] list comprehension [\#155](https://github.com/abhimehro/Seatek_Analysis/pull/155) ([abhimehro](https://github.com/abhimehro))
+- 🧪 Add unit tests for detect\_outliers in Series 27 analysis [\#154](https://github.com/abhimehro/Seatek_Analysis/pull/154) ([abhimehro](https://github.com/abhimehro))
 - 🛡️ Sentinel: \[CRITICAL/HIGH\] Fix subprocess credential exfiltration risk [\#148](https://github.com/abhimehro/Seatek_Analysis/pull/148) ([abhimehro](https://github.com/abhimehro))
 - Update matplotlib requirement from \>=3.3.0 to \>=3.10.8 in /Series\_27/Analysis [\#147](https://github.com/abhimehro/Seatek_Analysis/pull/147) ([dependabot[bot]](https://github.com/apps/dependabot))
 - chore\(deps\): update pandas requirement from \>=1.3.0 to \>=3.0.2 in /Series\_27/Analysis [\#145](https://github.com/abhimehro/Seatek_Analysis/pull/145) ([dependabot[bot]](https://github.com/apps/dependabot))

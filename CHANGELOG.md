@@ -20,6 +20,7 @@
 
 **Merged pull requests:**
 
+- fix\(security\): redact exc\_info=True info leak in repo automation \(salvages \#156\) [\#157](https://github.com/abhimehro/Seatek_Analysis/pull/157) ([abhimehro](https://github.com/abhimehro))
 - ⚡ Bolt: \[performance improvement\] list comprehension [\#155](https://github.com/abhimehro/Seatek_Analysis/pull/155) ([abhimehro](https://github.com/abhimehro))
 - 🧪 Add unit tests for detect\_outliers in Series 27 analysis [\#154](https://github.com/abhimehro/Seatek_Analysis/pull/154) ([abhimehro](https://github.com/abhimehro))
 - chore\(deps\): update matplotlib requirement from \>=3.10.8 to \>=3.10.9 in /Series\_27/Analysis [\#151](https://github.com/abhimehro/Seatek_Analysis/pull/151) ([dependabot[bot]](https://github.com/apps/dependabot))

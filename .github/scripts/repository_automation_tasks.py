@@ -348,7 +348,8 @@ def run_workflow_updater(config: dict[str, Any]) -> dict[str, Any]:
         )
         body_parts.extend(["## Draft PR", f"- {pr_url}", ""])
     except Exception as exc:  # pragma: no cover - runtime integration
-        logging.error("Error updating workflows", exc_info=True)
+        # SECURITY: Fail securely, don't expose internal exception details with exc_info=True
+        logging.error("Error updating workflows: Internal error occurred (%s).", type(exc).__name__)
         restore_workflow_updates(plans)
         status = "failure"
         body_parts.extend(["## Draft PR failure", f"- {type(exc).__name__}", ""])
@@ -808,7 +809,8 @@ def run_weekly_retrospective(config: dict[str, Any]) -> dict[str, Any]:
         try:
             safe_changes, safe_pr_url = run_safe_adjustment_commands(section)
         except Exception as exc:  # pragma: no cover - runtime integration
-            logging.error("Error applying safe adjustment commands", exc_info=True)
+            # SECURITY: Fail securely, don't expose internal exception details with exc_info=True
+            logging.error("Error applying safe adjustment commands: Internal error occurred (%s).", type(exc).__name__)
             safe_changes = [
                 {
                     "name": "safe-adjustment-commands",

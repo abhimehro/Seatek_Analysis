@@ -541,14 +541,20 @@ def overall_status(results: list[dict[str, Any]]) -> str:
     return "success"
 
 
+# ⚡ Bolt: Define STATUS_ICONS at module level to prevent dictionary allocation overhead
+# on every status_icon call. Saves memory and CPU cycles when processing large numbers
+# of automation task results.
+STATUS_ICONS = {
+    "success": "SUCCESS",
+    "warning": "WARNING",
+    "failure": "FAILURE",
+    "needs_review": "REVIEW",
+    "skipped": "SKIPPED",
+}
+
+
 def status_icon(status: str) -> str:
-    return {
-        "success": "SUCCESS",
-        "warning": "WARNING",
-        "failure": "FAILURE",
-        "needs_review": "REVIEW",
-        "skipped": "SKIPPED",
-    }.get(status, status.upper())
+    return STATUS_ICONS.get(status, status.upper())
 
 
 def daily_report_lines(

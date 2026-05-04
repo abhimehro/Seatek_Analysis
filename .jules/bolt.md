@@ -9,3 +9,6 @@
 ## 2025-05-06 - Remove unused dependencies to reduce memory overhead and load times in R scripts
 **Learning:** Checking for unused heavy dependencies like `dplyr` and `tidyr` is important for reducing memory overhead and load times in R scripts optimized with `data.table` and `openxlsx`.
 **Action:** In memory-constrained or performance-critical environments, review required packages and remove those that are not explicitly utilized, avoiding unnecessary dependency installation and import overhead.
+## 2025-05-06 - Optimize dictionary definition in frequently called functions
+**Learning:** Defining static dictionaries inside functions incurs unnecessary reallocation and setup overhead on every invocation.
+**Action:** Always extract static dictionaries or complex literal structures out of the function scope and assign them to module-level constants.

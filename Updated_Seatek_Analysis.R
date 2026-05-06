@@ -59,6 +59,13 @@ read_sensor_data <- function(file_path,
   if (!file.exists(file_path) || !grepl("\\.txt$", file_path)) {
     stop(sprintf("Invalid file: %s", file_path))
   }
+
+  # SECURITY: Prevent Out-Of-Memory (OOM) DoS by limiting file size to 50MB
+  max_size <- 50 * 1024 * 1024
+  if (file.info(file_path)$size > max_size) {
+    stop(sprintf("SECURITY: File exceeds maximum allowed size (50MB): %s", file_path))
+  }
+
   dt <- tryCatch(
     fread(file_path, header = FALSE, sep = sep, fill = TRUE,
           na.strings = c("NA")),

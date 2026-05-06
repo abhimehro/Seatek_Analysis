@@ -90,6 +90,10 @@ read_sensor_data <- function(file_path,
   return(dt)
 }
 
+# ⚡ Bolt: Hoisted clean_vals helper out of the process_all_data loop
+# to prevent function re-definition overhead on every file iteration
+clean_vals <- function(x) x[which(x > 0)]
+
 # Process all sensor files: export raw, compute metrics
 process_all_data <- function(data_dir) {
   data_dir <- auto_detect_data_dir(data_dir)
@@ -120,7 +124,6 @@ process_all_data <- function(data_dir) {
     raw_export_tasks[[i + 1]] <- list(df = df, out_raw = out_raw)
     # Compute summary metrics
     # OPTIMIZATION: which(x > 0) is natively faster at dropping NAs than !is.na() &
-    clean_vals <- function(x) x[which(x > 0)]
     sensor_names <- grep("^Sensor", names(df), value = TRUE)
 
     # ⚡ Bolt: Replace sapply with data.table native lapply(.SD) for O(1) row subsetting
@@ -196,16 +199,15 @@ process_all_data <- function(data_dir) {
 }
 
 # Write a single year's sheet to the workbook
-write_year_sheet <- function(wb, year, data, header_style) {
+write_year_sheet <- function(wb, year, data, header_style, highlight_style_yearly = NULL) {
   addWorksheet(wb, year)
   # ⚡ Bolt: No as.data.frame() conversion needed, use data.table natively
   writeData(wb, sheet = year, x = data, rowNames = FALSE,
             headerStyle = header_style)
   freezePane(wb, sheet = year, firstRow = TRUE)
   # Optional: highlight largest within_diff in each year
-  if ("within_diff" %in% colnames(data)) {
+  if ("within_diff" %in% colnames(data) && !is.null(highlight_style_yearly)) {
     max_idx <- which.max(abs(data$within_diff))
-    highlight_style_yearly <- createStyle(bgFill = "#FFD700")
     # ⚡ Bolt: Remove '+ 1' from cols offset since Sensor is a standard column now
     addStyle(wb, sheet = year, style = highlight_style_yearly,
              rows = max_idx + 1,
@@ -267,7 +269,7 @@ calculate_summary_stats <- function(results) {
 
 # Write summary sheets and CSVs
 write_summary_sheets <- function(wb, summary_df, output_file,
-                                 header_style, highlight_top_n) {
+                                 header_style, highlight_top_n, highlight_style_summary = NULL) {
   # --- Comprehensive summary (all sensors) ---
   summary_df_all <- summary_df # keep a copy before filtering
   addWorksheet(wb, "Summary_All")
@@ -339,12 +341,11 @@ write_summary_sheets <- function(wb, summary_df, output_file,
   writeData(wb, sheet = "Summary", x = summary_df, headerStyle = header_style)
   freezePane(wb, sheet = "Summary", firstRow = TRUE)
   # Highlight top N sensors with largest absolute within_diff_mean
-  if ("within_diff_mean" %in% colnames(summary_df)) {
+  if ("within_diff_mean" %in% colnames(summary_df) && !is.null(highlight_style_summary)) {
     abs_diff <- abs(summary_df$within_diff_mean)
     top_idx <- order(abs_diff, decreasing = TRUE)[
       seq_len(min(highlight_top_n, length(abs_diff)))
     ]
-    highlight_style_summary <- createStyle(bgFill = "#FF9999")
     addStyle(wb, sheet = "Summary", style = highlight_style_summary,
              rows = top_idx + 1,
              cols = which(colnames(summary_df) == "within_diff_mean"),
@@ -368,7 +369,13 @@ write_summary_sheets <- function(wb, summary_df, output_file,
 # Write combined summary workbook
 dump_summary_excel <- function(results, output_file, highlight_top_n = 5) {
   wb <- createWorkbook()
+
+  # ⚡ Bolt: Hoisted style definitions out of inner functions/loops
+  # to avoid recreating styles redundantly on every sheet generation.
   header_style <- createStyle(textDecoration = "bold")
+  highlight_style_yearly <- createStyle(bgFill = "#FFD700")
+  highlight_style_summary <- createStyle(bgFill = "#FF9999")
+
   # Write each year's sheet
   cat("\n📊 Generating yearly summary sheets...\n")
   message("Generating yearly summary sheets...")
@@ -383,7 +390,7 @@ dump_summary_excel <- function(results, output_file, highlight_top_n = 5) {
     }, add = TRUE)
     i <- 0
     for (year in names(results)) {
-      write_year_sheet(wb, year, results[[year]], header_style)
+      write_year_sheet(wb, year, results[[year]], header_style, highlight_style_yearly)
       i <- i + 1
       setTxtProgressBar(pb, i)
     }
@@ -398,7 +405,7 @@ dump_summary_excel <- function(results, output_file, highlight_top_n = 5) {
   cat("\n💾 Saving final workbook and CSV outputs...\n")
   # Write summary sheets and CSVs
   write_summary_sheets(wb, summary_df, output_file,
-                       header_style, highlight_top_n)
+                       header_style, highlight_top_n, highlight_style_summary)
 
   cat("\n✅ Summary workbook complete.\n")
 }

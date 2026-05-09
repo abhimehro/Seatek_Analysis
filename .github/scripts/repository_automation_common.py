@@ -63,6 +63,13 @@ def run_process(
     check: bool = False,
     env: dict[str, str] | None = None,
 ) -> subprocess.CompletedProcess[str]:
+    proc_env = env if env is not None else command_env()
+    # SECURITY: Strip GH_TOKEN to enforce least privilege and prevent credential
+    # exfiltration by potentially compromised third-party dependencies executed in the shell.
+    if command and command[0] != GH_BIN and "GH_TOKEN" in proc_env:
+        proc_env = proc_env.copy()
+        proc_env.pop("GH_TOKEN", None)
+
     return subprocess.run(
         command,
         cwd=ROOT,
@@ -71,7 +78,7 @@ def run_process(
         text=True,
         input=input_text,
         timeout=timeout,
-        env=env if env is not None else command_env(),
+        env=proc_env,
     )
 
 

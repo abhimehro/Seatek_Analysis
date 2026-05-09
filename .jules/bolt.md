@@ -12,3 +12,6 @@
 ## 2025-05-06 - Optimize dictionary definition in frequently called functions
 **Learning:** Defining static dictionaries inside functions incurs unnecessary reallocation and setup overhead on every invocation.
 **Action:** Always extract static dictionaries or complex literal structures out of the function scope and assign them to module-level constants.
+## 2025-05-06 - Hoist function definitions and objects out of loops
+**Learning:** Defining helper functions (`clean_vals <- function(x) ...`) or instantiating objects (like `createStyle()` in `openxlsx`) inside a loop or inside a function that is called repeatedly in a loop introduces unnecessary parsing, evaluation, and allocation overhead on every iteration.
+**Action:** Always hoist static function definitions to the module/top-level scope, and move redundant object instantiations out of loops, passing them as arguments to inner functions if needed, to reduce CPU and memory overhead.

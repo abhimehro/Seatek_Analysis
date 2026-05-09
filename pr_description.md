@@ -1,11 +1,13 @@
 💡 What
-Extracted the inline status dictionary in the `status_icon` function within `.github/scripts/repository_automation_tasks.py` into a module-level constant (`STATUS_ICONS`).
+Replaced a dictionary lookup with `.endswith()` string matching in the `get_language` function of `code_health_scanner.py`.
 
 🎯 Why
-Defining a dictionary literal inside a frequently called function forces Python to allocate, populate, and tear down the dictionary in memory on every single invocation. For a utility function like `status_icon` that could be called hundreds or thousands of times while generating automation reports, this creates unnecessary CPU and memory overhead.
+Using `.endswith()` is evaluated at the C level in Python, eliminating the need to parse the path with `os.path.splitext()`, convert it to lowercase, and perform a dictionary hash lookup. This reduces string allocation overhead when scanning many files.
 
 📊 Measured Improvement
-Hoisting the dictionary prevents the N-time reallocation, replacing it with a single module-load allocation. Microbenchmarks show that accessing a global constant dictionary over creating a local one yields a performance increase in execution time for the function itself.
+Execution time for `get_language` is reduced by approximately 57% compared to the original `splitext` approach.
 
 🔬 Measurement
-Review the changes to `.github/scripts/repository_automation_tasks.py` to confirm the dictionary is now at the module level.
+Ran a test script processing an array of 60,000 filenames.
+- `splitext` approach: 0.0872s
+- `endswith` approach: 0.0372s

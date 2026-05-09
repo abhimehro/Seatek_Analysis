@@ -42,15 +42,20 @@ def read_file_safe(filepath):
         return []
 
 
-# ⚡ Bolt: Define LANG_MAP at module level to prevent dictionary allocation overhead
-# on every get_language call. Saves ~100ns per invocation, which adds up when scanning
-# millions of files in large repositories.
-LANG_MAP = {".py": "python", ".r": "r", ".js": "javascript", ".ts": "typescript"}
-
-
+# ⚡ Bolt: Removed LANG_MAP since we are now using .endswith() which is faster.
+# Using .endswith() evaluated at the C level in Python is faster than string
+# manipulation and dictionary lookup for file extensions.
 def get_language(filepath):
-    ext = os.path.splitext(filepath)[1].lower()
-    return LANG_MAP.get(ext, "unknown")
+    lower_path = filepath.lower()
+    if lower_path.endswith('.py'):
+        return 'python'
+    elif lower_path.endswith('.r'):
+        return 'r'
+    elif lower_path.endswith('.js'):
+        return 'javascript'
+    elif lower_path.endswith('.ts'):
+        return 'typescript'
+    return 'unknown'
 
 
 def scan_file(filepath, lines, account, project, commit_hash):

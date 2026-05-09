@@ -15,3 +15,6 @@
 ## 2025-05-06 - Hoist function definitions and objects out of loops
 **Learning:** Defining helper functions (`clean_vals <- function(x) ...`) or instantiating objects (like `createStyle()` in `openxlsx`) inside a loop or inside a function that is called repeatedly in a loop introduces unnecessary parsing, evaluation, and allocation overhead on every iteration.
 **Action:** Always hoist static function definitions to the module/top-level scope, and move redundant object instantiations out of loops, passing them as arguments to inner functions if needed, to reduce CPU and memory overhead.
+## 2026-05-09 - Optimize file extension check with endswith()
+**Learning:** Checking file extensions with `.endswith()` directly in a fast if-elif block is faster than using string manipulation `os.path.splitext()` and a dictionary lookup.
+**Action:** Use `.endswith()` to verify file types, which executes in C-level and avoids extra object allocations.

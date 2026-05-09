@@ -20,6 +20,8 @@
 
 **Merged pull requests:**
 
+- 🛡️ Sentinel: \[CRITICAL\] Fix Out-Of-Memory \(OOM\) / DoS Risk with File Reads [\#164](https://github.com/abhimehro/Seatek_Analysis/pull/164) ([abhimehro](https://github.com/abhimehro))
+- ⚡ Bolt: \[performance improvement\] Hoist R functions and styles out of loops [\#161](https://github.com/abhimehro/Seatek_Analysis/pull/161) ([abhimehro](https://github.com/abhimehro))
 - ⚡ Bolt: Extract static dictionary to module level in status\_icon [\#160](https://github.com/abhimehro/Seatek_Analysis/pull/160) ([abhimehro](https://github.com/abhimehro))
 - 🧪 Add unit tests for code\_health\_scanner.py [\#159](https://github.com/abhimehro/Seatek_Analysis/pull/159) ([abhimehro](https://github.com/abhimehro))
 - chore\(deps\): update pandas requirement from \<3.0.0,\>=1.3.0 to \>=3.0.2,\<4.0.0 in /Series\_27/Analysis [\#158](https://github.com/abhimehro/Seatek_Analysis/pull/158) ([dependabot[bot]](https://github.com/apps/dependabot))

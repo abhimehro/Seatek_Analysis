@@ -20,6 +20,7 @@
 
 **Merged pull requests:**
 
+- 🛡️ Sentinel: \[security improvement\] Enforce least privilege in run\_process [\#166](https://github.com/abhimehro/Seatek_Analysis/pull/166) ([abhimehro](https://github.com/abhimehro))
 - ⚡ Bolt: Optimize get\_language file extension checking [\#165](https://github.com/abhimehro/Seatek_Analysis/pull/165) ([abhimehro](https://github.com/abhimehro))
 - 🛡️ Sentinel: \[CRITICAL\] Fix Out-Of-Memory \(OOM\) / DoS Risk with File Reads [\#164](https://github.com/abhimehro/Seatek_Analysis/pull/164) ([abhimehro](https://github.com/abhimehro))
 - ⚡ Bolt: \[performance improvement\] Hoist R functions and styles out of loops [\#161](https://github.com/abhimehro/Seatek_Analysis/pull/161) ([abhimehro](https://github.com/abhimehro))

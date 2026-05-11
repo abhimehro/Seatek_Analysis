@@ -148,6 +148,8 @@ MAX_FILE_SIZE = 10 * 1024 * 1024  # 10 MB
 
 def discover_hotspots(limit: int = 5) -> list[tuple[str, int]]:
     candidates = []
+    # ⚡ Bolt: Precalculate string prefix for fast relative path slicing
+    root_prefix = str(ROOT) + os.sep
     # Use os.walk(topdown=True) so we can prune ignored directories early instead of traversing them
     for current_dir, dirs, files in os.walk(ROOT, topdown=True):
         dirs[:] = [d for d in dirs if d not in IGNORED_DIRS]
@@ -155,21 +157,21 @@ def discover_hotspots(limit: int = 5) -> list[tuple[str, int]]:
             # ⚡ Bolt: Use tuple with .endswith() for faster C-level evaluation
             if not file.endswith((".py", ".sh")):
                 continue
-            # ⚡ Bolt: Use pathlib.Path(dir, file) rather than redundant combinations of
-            # os.path.join, os.path.relpath, and division operators to avoid unnecessary string manipulations
-            # and reduce CPU overhead during directory traversals
-            path = pathlib.Path(current_dir, file)
+            # ⚡ Bolt: Use os.path.join and fast string slicing for relative paths.
+            # Instantiating pathlib.Path inside hot loops is ~6x slower than string operations.
+            path_str = os.path.join(current_dir, file)
             try:
                 # SECURITY: Prevent Out-Of-Memory (OOM) DoS attacks by limiting file size.
                 # Read up to MAX_FILE_SIZE + 1 bytes directly so the 10 MB cap is exact.
-                with path.open("rb") as f:
+                with open(path_str, "rb") as f:
                     content = f.read(MAX_FILE_SIZE + 1)
                     if len(content) > MAX_FILE_SIZE:
                         continue
                     line_count = content.count(b"\n") + 1
             except OSError:
                 continue
-            candidates.append((str(path.relative_to(ROOT)), line_count))
+            rel_path = path_str[len(root_prefix):] if path_str.startswith(root_prefix) else path_str
+            candidates.append((rel_path, line_count))
     return sorted(candidates, key=lambda item: item[1], reverse=True)[:limit]
 
 

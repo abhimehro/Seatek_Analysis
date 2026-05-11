@@ -171,7 +171,7 @@ def discover_hotspots(limit: int = 5) -> list[tuple[str, int]]:
                     line_count = content.count(b"\n") + 1
             except OSError:
                 continue
-            rel_path = path_str[len(root_prefix):] if path_str.startswith(root_prefix) else path_str
+            rel_path = path_str[prefix_len:] if path_str.startswith(root_prefix) else path_str
             candidates.append((rel_path, line_count))
     return sorted(candidates, key=lambda item: item[1], reverse=True)[:limit]
 

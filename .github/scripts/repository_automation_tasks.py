@@ -150,6 +150,7 @@ def discover_hotspots(limit: int = 5) -> list[tuple[str, int]]:
     candidates = []
     # ⚡ Bolt: Precalculate string prefix for fast relative path slicing
     root_prefix = str(ROOT) + os.sep
+    prefix_len = len(root_prefix)
     # Use os.walk(topdown=True) so we can prune ignored directories early instead of traversing them
     for current_dir, dirs, files in os.walk(ROOT, topdown=True):
         dirs[:] = [d for d in dirs if d not in IGNORED_DIRS]

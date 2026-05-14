@@ -80,3 +80,7 @@
 **Vulnerability:** When executing external or third-party CLI tools (e.g., linters, formatters, test runners) via `subprocess` in automated pipelines, the default behavior of passing the entire current environment `os.environ` can inadvertently expose sensitive credentials, such as `GH_TOKEN`, to potentially compromised third-party dependencies executing in the shell.
 **Learning:** The principle of least privilege should be enforced not only for the application code but also for the environment variables passed to any invoked sub-processes. Third-party tools do not need access to the repository's GitHub token unless explicitly required for their function.
 **Prevention:** Always explicitly strip sensitive environment variables (e.g., `env.pop("GH_TOKEN", None)`) from the environment dictionary before passing it to `subprocess.run` or `subprocess.Popen` when invoking third-party CLI tools.
+## 2024-05-14 - Fix Path Traversal in Excel Parser
+**Vulnerability:** Path traversal in `apply_corrections` due to insufficient sanitization of Excel sheet names (`str.replace("/", "_")`).
+**Learning:** Blacklisting path separators (`/`, `\`) is insufficient. Attackers can leverage other characters, encodings, or use `..` relative path tricks depending on how `os.path.join` resolves.
+**Prevention:** Use an aggressive allowlist regex (`[^A-Za-z0-9_ \-\.]`) for filenames, strip leading dots/dashes, and always verify the final resolved path stays within the base directory using `os.path.commonpath([base, target]) == base`.

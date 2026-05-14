@@ -2,6 +2,7 @@
 import argparse
 import logging
 import os
+import re
 from io import BytesIO
 
 import matplotlib.pyplot as plt
@@ -58,6 +59,15 @@ def parse_args():
         help="Directory to save corrected files and summaries",
     )
     return parser.parse_args()
+
+
+def secure_filename(filename: str) -> str:
+    """Sanitize a string to be used as a safe filename."""
+    filename = str(filename)
+    filename = filename.replace("/", "_").replace("\\", "_")
+    filename = re.sub(r"[^\w\.\- ]", "_", filename)
+    filename = filename.strip("._- ")
+    return filename if filename else "unnamed"
 
 
 def detect_outliers(df, method, abs_thr, z_thr, iqr_fac):
@@ -165,13 +175,25 @@ def apply_corrections(input_path, output_dir, outliers_df):
 
                     # SECURITY: Sanitize sheet and next_year to prevent path traversal
                     # if a maliciously crafted Excel file provides a sheet name like "../../../etc"
-                    safe_sheet = str(sheet).replace("/", "_").replace("\\", "_")
-                    safe_next_year = str(next_year).replace("/", "_").replace("\\", "_")
+                    safe_sheet = secure_filename(sheet)
+                    safe_next_year = secure_filename(next_year)
 
                     out_file = os.path.join(
                         output_dir,
                         f"{os.path.splitext(os.path.basename(input_path))[0]}_{safe_next_year}_{safe_sheet}_corrected.xlsx",
                     )
+
+                    # SECURITY: Defense-in-depth, ensure the resolved path stays within output_dir
+                    abs_output_dir = os.path.abspath(output_dir)
+                    abs_out_file = os.path.abspath(out_file)
+                    if (
+                        os.path.commonpath([abs_output_dir, abs_out_file])
+                        != abs_output_dir
+                    ):
+                        logging.error(
+                            f"Path traversal detected: {out_file} escapes {output_dir}"
+                        )
+                        continue
 
                     # Apply all corrections for this sheet in memory
                     # First, aggregate total offset per sensor to avoid repeated full-column writes

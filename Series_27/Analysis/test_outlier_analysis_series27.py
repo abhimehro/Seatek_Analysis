@@ -9,6 +9,7 @@ sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 try:
     import pandas as pd
     import numpy as np
+
     HAS_PANDAS = True
 except ImportError:
     HAS_PANDAS = False
@@ -29,7 +30,10 @@ except ImportError:
 from outlier_analysis_series27 import detect_outliers
 import pytest
 
-@pytest.mark.skipif(not HAS_PANDAS, reason="Pandas not available, using mocks for logic check")
+
+@pytest.mark.skipif(
+    not HAS_PANDAS, reason="Pandas not available, using mocks for logic check"
+)
 def test_detect_outliers_abs_real():
     df = pd.DataFrame({"Difference": [0.05, 0.15, -0.02, -0.2, 0.1]})
     # Method 'abs': Outliers are where abs(Difference) >= abs_thr
@@ -37,10 +41,13 @@ def test_detect_outliers_abs_real():
     assert len(result) == 3
     assert all(result["Difference"].abs() >= 0.1)
 
-@pytest.mark.skipif(not HAS_PANDAS, reason="Pandas not available, using mocks for logic check")
+
+@pytest.mark.skipif(
+    not HAS_PANDAS, reason="Pandas not available, using mocks for logic check"
+)
 def test_detect_outliers_zscore_real():
     # Create a distribution where one value is far out
-    data = [10, 10.1, 10.2, 10, 9.9, 10, 10, 10, 20] # 20 is the outlier
+    data = [10, 10.1, 10.2, 10, 9.9, 10, 10, 10, 20]  # 20 is the outlier
     df = pd.DataFrame({"Difference": data})
     # Mean is ~11.1, Std is ~3.3. (20 - 11.1) / 3.3 = 2.69
     # If we set z_thr = 2.0, 20 should be an outlier.
@@ -48,7 +55,10 @@ def test_detect_outliers_zscore_real():
     assert len(result) == 1
     assert result.iloc[0]["Difference"] == 20
 
-@pytest.mark.skipif(not HAS_PANDAS, reason="Pandas not available, using mocks for logic check")
+
+@pytest.mark.skipif(
+    not HAS_PANDAS, reason="Pandas not available, using mocks for logic check"
+)
 def test_detect_outliers_iqr_real():
     # IQR method
     data = [10, 10.1, 10.2, 10, 9.9, 10, 10, 10, 20]
@@ -58,6 +68,7 @@ def test_detect_outliers_iqr_real():
     assert len(result) == 1
     assert result.iloc[0]["Difference"] == 20
 
+
 def test_detect_outliers_invalid_method():
     df = MagicMock()
     if HAS_PANDAS:
@@ -65,6 +76,7 @@ def test_detect_outliers_invalid_method():
 
     with pytest.raises(ValueError, match="Unknown method: invalid"):
         detect_outliers(df, "invalid", 0.1, 3.0, 1.5)
+
 
 # Mocked tests for when pandas is missing or for pure logic verification
 def test_detect_outliers_abs_mock():
@@ -86,6 +98,7 @@ def test_detect_outliers_abs_mock():
     mock_abs.__ge__.assert_called_once_with(0.1)
     mock_df.__getitem__.assert_any_call("Difference")
     mock_df.__getitem__.assert_any_call(mock_mask)
+
 
 def test_detect_outliers_zscore_mock():
     mock_df = MagicMock()
@@ -112,6 +125,7 @@ def test_detect_outliers_zscore_mock():
     mock_col.__sub__.assert_called_with(mock_mean)
     mock_diff.abs.assert_called_once()
 
+
 def test_detect_outliers_iqr_mock():
     mock_df = MagicMock()
     mock_col = MagicMock()
@@ -123,7 +137,7 @@ def test_detect_outliers_iqr_mock():
     # lower, upper = q1 - iqr_fac * iqr, q3 + iqr_fac * iqr
     # return df[(col < lower) | (col > upper)]
 
-    mock_col.quantile.return_value = [10, 20] # q1, q3
+    mock_col.quantile.return_value = [10, 20]  # q1, q3
 
     mock_lower_mask = MagicMock()
     mock_upper_mask = MagicMock()
@@ -140,3 +154,57 @@ def test_detect_outliers_iqr_mock():
     mock_col.__gt__.assert_called()
     mock_lower_mask.__or__.assert_called_with(mock_upper_mask)
     mock_df.__getitem__.assert_any_call(mock_or_mask)
+
+
+from outlier_analysis_series27 import secure_filename, apply_corrections
+
+
+def test_secure_filename():
+    assert secure_filename("../../../etc/passwd") == "etc_passwd"
+    assert secure_filename("C:\\Windows\\System32") == "C__Windows_System32"
+    assert secure_filename("..") == "unnamed"
+    assert secure_filename(".hidden") == "hidden"
+    assert secure_filename("valid-name_1.2.3") == "valid-name_1.2.3"
+    assert secure_filename("Raw Data 2024") == "Raw Data 2024"
+    assert secure_filename("") == "unnamed"
+
+
+@pytest.mark.skipif(not HAS_PANDAS, reason="Pandas not available")
+def test_apply_corrections_path_traversal():
+
+    # Create dummy outliers df with malicious sheet name
+    outliers_df = pd.DataFrame(
+        {
+            "Year_Pair": ["2023-2024"],
+            "Sensor": [1],
+            "Difference": [0.5],
+            "next_year": ["2024"],
+            "sheet": ["../../../etc/passwd"],
+        }
+    )
+
+    with patch("pandas.ExcelFile") as mock_excel:
+        mock_xls = MagicMock()
+        mock_excel.return_value.__enter__.return_value = mock_xls
+
+        mock_df_raw = MagicMock()
+        mock_df_raw.empty = False
+        mock_df_raw.columns = ["V1"]
+        mock_xls.parse.return_value = mock_df_raw
+
+        with patch("os.path.join") as mock_join:
+            mock_join.return_value = (
+                "/output/dummy_2024__.._.._etc_passwd_corrected.xlsx"
+            )
+            apply_corrections("dummy.xlsx", "/output", outliers_df)
+
+            # The second arg should be our malicious file name stripped of path separators
+            args = mock_join.call_args[0]
+            filename = args[1]
+            assert (
+                "/" not in filename
+            ), f"Path traversal character / found in {filename}"
+            assert (
+                "\\" not in filename
+            ), f"Path traversal character \\ found in {filename}"
+            assert "etc_passwd" in filename

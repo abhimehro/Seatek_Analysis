@@ -54,9 +54,9 @@ test_that("restore_backup() restores a backup correctly", {
   unlink(restore_dir, recursive = TRUE)
   result <- restore_backup(backup_path, restore_dir = restore_dir)
   expect_true(result, info = "Restore should succeed.")
-  expect_true(file.exists(file.path(restore_dir, "file1.txt")),
+  expect_true(file.exists(file.path(restore_dir, test_dir, "file1.txt")),
               info = "Restored file1.txt should exist.")
-  expect_true(file.exists(file.path(restore_dir, "file2.txt")),
+  expect_true(file.exists(file.path(restore_dir, test_dir, "file2.txt")),
               info = "Restored file2.txt should exist.")
   unlink(test_dir, recursive = TRUE)
   unlink("test_backups", recursive = TRUE)

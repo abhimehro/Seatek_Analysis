@@ -124,10 +124,13 @@ cleanup_old_backups <- function(backup_dir = "backups", days_to_keep = 30) {
     age_days <- as.numeric(difftime(now, file_info$mtime, units = "days"))
     to_delete <- files[age_days > days_to_keep]
     deleted <- character(0)
-    for (f in to_delete) {
-      result <- tryCatch({
-        file.remove(f)
-        deleted <- c(deleted, f)
+    if (length(to_delete) > 0) {
+      tryCatch({
+        res <- suppressWarnings(file.remove(to_delete))
+        deleted <- to_delete[res]
+        if (any(!res)) {
+          message("[WARNING] cleanup_old_backups: Some files could not be deleted.")
+        }
       }, error = function(e) {
         message(sprintf("[ERROR] cleanup_old_backups: %s", e$message))
       })

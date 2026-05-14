@@ -444,10 +444,7 @@ def render_pr_rows(prs: list[dict[str, Any]]) -> list[str]:
     return rows
 
 
-def run_backlog_manager(config: dict[str, Any]) -> dict[str, Any]:
-    section = config.get("backlog_manager", {})
-    max_issues = int(section.get("max_issues", 10))
-    max_prs = int(section.get("max_pull_requests", 10))
+def _fetch_backlog_items(max_issues: int, max_prs: int) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
     with concurrent.futures.ThreadPoolExecutor(max_workers=2) as executor:
         issues_future = executor.submit(
             gh_json,
@@ -477,8 +474,13 @@ def run_backlog_manager(config: dict[str, Any]) -> dict[str, Any]:
             ],
             default=[],
         )
-        issues = issues_future.result()
-        prs = prs_future.result()
+        return issues_future.result(), prs_future.result()
+
+def run_backlog_manager(config: dict[str, Any]) -> dict[str, Any]:
+    section = config.get("backlog_manager", {})
+    max_issues = int(section.get("max_issues", 10))
+    max_prs = int(section.get("max_pull_requests", 10))
+    issues, prs = _fetch_backlog_items(max_issues, max_prs)
     issues = sorted(issues, key=lambda item: item.get("updatedAt", ""))
     prs = sorted(prs, key=lambda item: item.get("updatedAt", ""))
     stale_days = int(section.get("stale_days", 14))
@@ -563,9 +565,7 @@ def status_icon(status: str) -> str:
     return STATUS_ICONS.get(status, status.upper())
 
 
-def daily_report_lines(
-    config: dict[str, Any], results: list[dict[str, Any]]
-) -> list[str]:
+def _fetch_daily_items() -> tuple[list[dict[str, Any]], list[dict[str, Any]], list[dict[str, Any]]]:
     with concurrent.futures.ThreadPoolExecutor(max_workers=3) as executor:
         issues_future = executor.submit(
             gh_json,
@@ -582,9 +582,12 @@ def daily_report_lines(
             ["release", "list", "--limit", "5", "--json", "name,publishedAt,tagName"],
             default=[],
         )
-        open_issues = issues_future.result()
-        open_prs = prs_future.result()
-        releases = releases_future.result()
+        return issues_future.result(), prs_future.result(), releases_future.result()
+
+def daily_report_lines(
+    config: dict[str, Any], results: list[dict[str, Any]]
+) -> list[str]:
+    open_issues, open_prs, releases = _fetch_daily_items()
     overall = overall_status(results)
     lines = [
         f"# Daily Repository Automation Report - {iso_day()}",

@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import concurrent.futures
 import datetime as dt
 import json
 import logging
@@ -447,32 +448,37 @@ def run_backlog_manager(config: dict[str, Any]) -> dict[str, Any]:
     section = config.get("backlog_manager", {})
     max_issues = int(section.get("max_issues", 10))
     max_prs = int(section.get("max_pull_requests", 10))
-    issues = gh_json(
-        [
-            "issue",
-            "list",
-            "--state",
-            "open",
-            "--limit",
-            str(max_issues),
-            "--json",
-            "number,title,updatedAt,url,labels",
-        ],
-        default=[],
-    )
-    prs = gh_json(
-        [
-            "pr",
-            "list",
-            "--state",
-            "open",
-            "--limit",
-            str(max_prs),
-            "--json",
-            "number,title,updatedAt,url,isDraft,reviewDecision,mergeStateStatus",
-        ],
-        default=[],
-    )
+    with concurrent.futures.ThreadPoolExecutor(max_workers=2) as executor:
+        issues_future = executor.submit(
+            gh_json,
+            [
+                "issue",
+                "list",
+                "--state",
+                "open",
+                "--limit",
+                str(max_issues),
+                "--json",
+                "number,title,updatedAt,url,labels",
+            ],
+            default=[],
+        )
+        prs_future = executor.submit(
+            gh_json,
+            [
+                "pr",
+                "list",
+                "--state",
+                "open",
+                "--limit",
+                str(max_prs),
+                "--json",
+                "number,title,updatedAt,url,isDraft,reviewDecision,mergeStateStatus",
+            ],
+            default=[],
+        )
+        issues = issues_future.result()
+        prs = prs_future.result()
     issues = sorted(issues, key=lambda item: item.get("updatedAt", ""))
     prs = sorted(prs, key=lambda item: item.get("updatedAt", ""))
     stale_days = int(section.get("stale_days", 14))
@@ -560,18 +566,25 @@ def status_icon(status: str) -> str:
 def daily_report_lines(
     config: dict[str, Any], results: list[dict[str, Any]]
 ) -> list[str]:
-    open_issues = gh_json(
-        ["issue", "list", "--state", "open", "--limit", "200", "--json", "number"],
-        default=[],
-    )
-    open_prs = gh_json(
-        ["pr", "list", "--state", "open", "--limit", "200", "--json", "number"],
-        default=[],
-    )
-    releases = gh_json(
-        ["release", "list", "--limit", "5", "--json", "name,publishedAt,tagName"],
-        default=[],
-    )
+    with concurrent.futures.ThreadPoolExecutor(max_workers=3) as executor:
+        issues_future = executor.submit(
+            gh_json,
+            ["issue", "list", "--state", "open", "--limit", "200", "--json", "number"],
+            default=[],
+        )
+        prs_future = executor.submit(
+            gh_json,
+            ["pr", "list", "--state", "open", "--limit", "200", "--json", "number"],
+            default=[],
+        )
+        releases_future = executor.submit(
+            gh_json,
+            ["release", "list", "--limit", "5", "--json", "name,publishedAt,tagName"],
+            default=[],
+        )
+        open_issues = issues_future.result()
+        open_prs = prs_future.result()
+        releases = releases_future.result()
     overall = overall_status(results)
     lines = [
         f"# Daily Repository Automation Report - {iso_day()}",

@@ -86,3 +86,9 @@
 **Vulnerability:** When executing shell commands on a list of files found via `find`, using command substitution like `python3 -m py_compile $(find . -name "*.py")` is vulnerable to word splitting and command injection if filenames contain spaces or shell metacharacters.
 **Learning:** Shell command substitution processes whitespace as argument separators, leading to syntax errors or execution of arbitrary commands if an attacker can control filenames.
 **Prevention:** Always use the `-exec` flag with `find` (e.g., `find . -name "*.py" -exec python3 -m py_compile {} +`) or a `while IFS= read -r -d '' file` loop with `find ... -print0` to safely process file paths with spaces or special characters.
+
+## 2026-05-14 - Fix Path Traversal in Excel Parser
+
+**Vulnerability:** Path traversal in `apply_corrections` due to insufficient sanitization of Excel sheet names (`str.replace("/", "_")`).
+**Learning:** Blacklisting path separators (`/`, `\`) is insufficient. Attackers can leverage other characters, encodings, or use `..` relative path tricks depending on how `os.path.join` resolves.
+**Prevention:** Use an aggressive allowlist regex (`[^A-Za-z0-9_ \-\.]`) for filenames, strip leading dots/dashes, and always verify the final resolved path stays within the base directory using `os.path.commonpath([base, target]) == base`.

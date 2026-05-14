@@ -22,3 +22,7 @@
 **Optimization:** Replaced sequential blocking `gh_json` subprocess calls with a `ThreadPoolExecutor`.
 **Learning:** Independent subprocesses can be parallelized in Python using `concurrent.futures` to drastically reduce overall execution time from `sum(N_i)` to `max(N_i)`.
 **Prevention:** N/A.
+## 2026-05-14 - CodeScene Large Method mitigation
+**Optimization:** Extracted concurrent API logic into isolated helper methods.
+**Learning:** CodeScene flags functions as "Large Methods" when incorporating verbose ThreadPoolExecutor logic. Extracting them early circumvents CI failures.
+**Prevention:** N/A.

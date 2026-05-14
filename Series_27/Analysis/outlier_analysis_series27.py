@@ -2,6 +2,7 @@
 import argparse
 import logging
 import os
+import re
 from io import BytesIO
 
 import matplotlib.pyplot as plt
@@ -58,6 +59,27 @@ def parse_args():
         help="Directory to save corrected files and summaries",
     )
     return parser.parse_args()
+
+
+_MAX_FILENAME_LEN = 128
+
+
+def secure_filename(filename: str) -> str:
+    """Sanitize a string to be used as a safe filename.
+
+    Applies an ASCII-only allowlist, strips leading dots/dashes to prevent
+    hidden files and option-injection, and caps the length to avoid
+    exceeding filesystem limits when combined with other path components.
+    """
+    filename = str(filename)
+    filename = filename.replace("/", "_").replace("\\", "_")
+    filename = re.sub(r"[^A-Za-z0-9_\.\- ]", "_", filename)
+    filename = filename.strip("._- ")
+    # SECURITY: Cap length to avoid OS filename limits (255 on most filesystems)
+    # when combined with the input basename and other components in the output path.
+    if len(filename) > _MAX_FILENAME_LEN:
+        filename = filename[:_MAX_FILENAME_LEN].rstrip("._- ")
+    return filename if filename else "unnamed"
 
 
 def detect_outliers(df, method, abs_thr, z_thr, iqr_fac):
@@ -130,6 +152,78 @@ def prepare_outliers_df(outliers):
     return outliers_df
 
 
+def _is_safe_path(basedir: str, path: str) -> bool:
+    """Verify that path is inside basedir to prevent path traversal escapes.
+
+    Uses ``os.path.realpath`` to resolve symlinks so that an attacker cannot
+    bypass the containment check via a symlinked component.
+    """
+    abs_base = os.path.realpath(basedir)
+    abs_path = os.path.realpath(path)
+    try:
+        return os.path.commonpath([abs_base, abs_path]) == abs_base
+    except ValueError:
+        # commonpath raises ValueError if paths are on different drives (Windows)
+        return False
+
+
+def _get_safe_output_path(input_path: str, output_dir: str, next_year, sheet):
+    """Generates a safe output path, preventing traversal escapes."""
+    safe_sheet = secure_filename(sheet)
+    safe_next_year = secure_filename(next_year)
+
+    out_file = os.path.join(
+        output_dir,
+        f"{os.path.splitext(os.path.basename(input_path))[0]}_{safe_next_year}_{safe_sheet}_corrected.xlsx",
+    )
+
+    if not _is_safe_path(output_dir, out_file):
+        logging.error(f"Path traversal detected: {out_file} escapes {output_dir}")
+        return None
+    return out_file
+
+
+def _process_single_sheet(xls, sheet, group, input_path, output_dir):
+    try:
+        df_raw = xls.parse(sheet)
+    except Exception as e:
+        logging.warning(
+            f"Could not read sheet '{sheet}': Internal error occurred ({type(e).__name__})."
+        )
+        return None
+
+    if df_raw.empty:
+        logging.info(f"Sheet '{sheet}' is empty, skipping.")
+        return None
+
+    last_col = df_raw.columns[-1]
+    if "time" in last_col.lower():
+        del df_raw[last_col]
+
+    next_year = group.iloc[0]["next_year"]
+    out_file = _get_safe_output_path(input_path, output_dir, next_year, sheet)
+    if out_file is None:
+        return None
+
+    sensor_diffs = group.groupby("Sensor")["Difference"].sum()
+    update_cols = [f"V{sensor}" for sensor in sensor_diffs.index]
+    sensor_diffs.index = update_cols
+    df_raw[update_cols] = df_raw[update_cols].sub(sensor_diffs)
+
+    new_corrections = pd.DataFrame(
+        {
+            "Year_Pair": group["Year_Pair"],
+            "Sensor": group["Sensor"],
+            "OrigDiff": group["Difference"],
+            "OffsetApplied": -group["Difference"],
+            "CorrectedFile": out_file,
+        }
+    )
+
+    df_raw.to_excel(out_file, sheet_name=sheet, index=False)
+    return new_corrections
+
+
 def apply_corrections(input_path, output_dir, outliers_df):
     """Applies offsets to the Excel file and generates a list of corrections."""
     corrections_dfs = []
@@ -141,62 +235,11 @@ def apply_corrections(input_path, output_dir, outliers_df):
         try:
             with pd.ExcelFile(input_path) as xls:
                 for sheet, group in grouped:
-                    try:
-                        # Read once per sheet using the already parsed ExcelFile object
-                        df_raw = xls.parse(sheet)
-                    except Exception as e:
-                        # SECURITY: Fail securely, don't expose internal exception details
-                        logging.warning(
-                            f"Could not read sheet '{sheet}': Internal error occurred ({type(e).__name__})."
-                        )
-                        continue
-
-                    if df_raw.empty:
-                        logging.info(f"Sheet '{sheet}' is empty, skipping.")
-                        continue
-
-                    # Drop the last column if its name contains 'time' (case-insensitive)
-                    last_col = df_raw.columns[-1]
-                    if "time" in last_col.lower():
-                        # ⚡ Bolt: Use 'del' to avoid an O(N*M) full DataFrame copy when dropping a single column
-                        del df_raw[last_col]
-
-                    next_year = group.iloc[0]["next_year"]
-
-                    # SECURITY: Sanitize sheet and next_year to prevent path traversal
-                    # if a maliciously crafted Excel file provides a sheet name like "../../../etc"
-                    safe_sheet = str(sheet).replace("/", "_").replace("\\", "_")
-                    safe_next_year = str(next_year).replace("/", "_").replace("\\", "_")
-
-                    out_file = os.path.join(
-                        output_dir,
-                        f"{os.path.splitext(os.path.basename(input_path))[0]}_{safe_next_year}_{safe_sheet}_corrected.xlsx",
+                    new_corrections = _process_single_sheet(
+                        xls, sheet, group, input_path, output_dir
                     )
-
-                    # Apply all corrections for this sheet in memory
-                    # First, aggregate total offset per sensor to avoid repeated full-column writes
-                    sensor_diffs = group.groupby("Sensor")["Difference"].sum()
-
-                    # ⚡ Bolt: Vectorize column-wise subtraction instead of updating columns individually in a loop
-                    update_cols = [f"V{sensor}" for sensor in sensor_diffs.index]
-                    sensor_diffs.index = update_cols
-                    df_raw[update_cols] = df_raw[update_cols].sub(sensor_diffs)
-
-                    # ⚡ Bolt: Replace .iterrows() with vectorized dictionary assignment
-                    # Record per-row corrections (for reporting) without re-modifying df_raw
-                    new_corrections = pd.DataFrame(
-                        {
-                            "Year_Pair": group["Year_Pair"],
-                            "Sensor": group["Sensor"],
-                            "OrigDiff": group["Difference"],
-                            "OffsetApplied": -group["Difference"],
-                            "CorrectedFile": out_file,
-                        }
-                    )
-                    corrections_dfs.append(new_corrections)
-
-                    # Write once per sheet
-                    df_raw.to_excel(out_file, sheet_name=sheet, index=False)
+                    if new_corrections is not None:
+                        corrections_dfs.append(new_corrections)
         except (FileNotFoundError, PermissionError, OSError) as e:
             # SECURITY: Do not leak stack traces in logs to prevent information disclosure
             logging.error(f"Could not open file '{input_path}': {e}")

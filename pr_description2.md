@@ -18,3 +18,6 @@ If exploited, this could allow an attacker to overwrite arbitrary files on the s
 - Wrote tests in `test_outlier_analysis_series27.py` confirming `secure_filename()` correctly mitigates attacks.
 - Tested `apply_corrections()` with mocked inputs simulating a malicious sheet name.
 - Ran the existing test suite to ensure no regressions in current functionality. All tests pass.
+
+## 🛠 Follow up
+- Refactored `apply_corrections` by extracting path validation into a `_is_safe_path` helper and sheet processing logic into `_process_single_sheet` to significantly reduce method complexity and satisfy the CodeScene CI check.

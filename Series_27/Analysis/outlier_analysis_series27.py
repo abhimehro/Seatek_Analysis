@@ -61,12 +61,24 @@ def parse_args():
     return parser.parse_args()
 
 
+_MAX_FILENAME_LEN = 128
+
+
 def secure_filename(filename: str) -> str:
-    """Sanitize a string to be used as a safe filename."""
+    """Sanitize a string to be used as a safe filename.
+
+    Applies an ASCII-only allowlist, strips leading dots/dashes to prevent
+    hidden files and option-injection, and caps the length to avoid
+    exceeding filesystem limits when combined with other path components.
+    """
     filename = str(filename)
     filename = filename.replace("/", "_").replace("\\", "_")
     filename = re.sub(r"[^A-Za-z0-9_\.\- ]", "_", filename)
     filename = filename.strip("._- ")
+    # SECURITY: Cap length to avoid OS filename limits (255 on most filesystems)
+    # when combined with the input basename and other components in the output path.
+    if len(filename) > _MAX_FILENAME_LEN:
+        filename = filename[:_MAX_FILENAME_LEN].rstrip("._- ")
     return filename if filename else "unnamed"
 
 
@@ -141,10 +153,18 @@ def prepare_outliers_df(outliers):
 
 
 def _is_safe_path(basedir: str, path: str) -> bool:
-    """Verify that path is inside basedir to prevent path traversal escapes."""
-    abs_base = os.path.abspath(basedir)
-    abs_path = os.path.abspath(path)
-    return os.path.commonpath([abs_base, abs_path]) == abs_base
+    """Verify that path is inside basedir to prevent path traversal escapes.
+
+    Uses ``os.path.realpath`` to resolve symlinks so that an attacker cannot
+    bypass the containment check via a symlinked component.
+    """
+    abs_base = os.path.realpath(basedir)
+    abs_path = os.path.realpath(path)
+    try:
+        return os.path.commonpath([abs_base, abs_path]) == abs_base
+    except ValueError:
+        # commonpath raises ValueError if paths are on different drives (Windows)
+        return False
 
 
 def _get_safe_output_path(input_path: str, output_dir: str, next_year, sheet):

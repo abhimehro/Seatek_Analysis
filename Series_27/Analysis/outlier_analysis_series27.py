@@ -122,6 +122,19 @@ def prepare_outliers_df(outliers):
                 "sheet": "Raw Data " + next_years.astype(str),
             }
         )
+
+        # ⚡ Bolt: Vectorize path sanitization to eliminate per-group string manipulation overhead
+        outliers_df["safe_sheet"] = (
+            outliers_df["sheet"]
+            .str.replace("/", "_", regex=False)
+            .str.replace("\\", "_", regex=False)
+        )
+        outliers_df["safe_next_year"] = (
+            outliers_df["next_year"]
+            .astype(str)
+            .str.replace("/", "_", regex=False)
+            .str.replace("\\", "_", regex=False)
+        )
     else:
         outliers_df = pd.DataFrame(
             columns=["Year_Pair", "Sensor", "Difference", "next_year", "sheet"]
@@ -161,12 +174,10 @@ def apply_corrections(input_path, output_dir, outliers_df):
                         # ⚡ Bolt: Use 'del' to avoid an O(N*M) full DataFrame copy when dropping a single column
                         del df_raw[last_col]
 
-                    next_year = group.iloc[0]["next_year"]
-
                     # SECURITY: Sanitize sheet and next_year to prevent path traversal
                     # if a maliciously crafted Excel file provides a sheet name like "../../../etc"
-                    safe_sheet = str(sheet).replace("/", "_").replace("\\", "_")
-                    safe_next_year = str(next_year).replace("/", "_").replace("\\", "_")
+                    safe_sheet = group["safe_sheet"].iloc[0]
+                    safe_next_year = group["safe_next_year"].iloc[0]
 
                     out_file = os.path.join(
                         output_dir,

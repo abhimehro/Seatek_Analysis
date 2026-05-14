@@ -137,7 +137,15 @@ def prepare_outliers_df(outliers):
         )
     else:
         outliers_df = pd.DataFrame(
-            columns=["Year_Pair", "Sensor", "Difference", "next_year", "sheet"]
+            columns=[
+                "Year_Pair",
+                "Sensor",
+                "Difference",
+                "next_year",
+                "sheet",
+                "safe_sheet",
+                "safe_next_year",
+            ]
         )
 
     return outliers_df

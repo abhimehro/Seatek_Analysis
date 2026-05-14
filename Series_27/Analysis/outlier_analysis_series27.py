@@ -65,7 +65,7 @@ def secure_filename(filename: str) -> str:
     """Sanitize a string to be used as a safe filename."""
     filename = str(filename)
     filename = filename.replace("/", "_").replace("\\", "_")
-    filename = re.sub(r"[^\w\.\- ]", "_", filename)
+    filename = re.sub(r"[^A-Za-z0-9_\.\- ]", "_", filename)
     filename = filename.strip("._- ")
     return filename if filename else "unnamed"
 
@@ -181,16 +181,8 @@ def _process_single_sheet(xls, sheet, group, input_path, output_dir):
         del df_raw[last_col]
 
     next_year = group.iloc[0]["next_year"]
-    safe_sheet = secure_filename(sheet)
-    safe_next_year = secure_filename(next_year)
-
-    out_file = os.path.join(
-        output_dir,
-        f"{os.path.splitext(os.path.basename(input_path))[0]}_{safe_next_year}_{safe_sheet}_corrected.xlsx",
-    )
-
-    if not _is_safe_path(output_dir, out_file):
-        logging.error(f"Path traversal detected: {out_file} escapes {output_dir}")
+    out_file = _get_safe_output_path(input_path, output_dir, next_year, sheet)
+    if out_file is None:
         return None
 
     sensor_diffs = group.groupby("Sensor")["Difference"].sum()

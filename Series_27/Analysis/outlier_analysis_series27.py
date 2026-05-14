@@ -184,12 +184,7 @@ def apply_corrections(input_path, output_dir, outliers_df):
                     )
 
                     # SECURITY: Defense-in-depth, ensure the resolved path stays within output_dir
-                    abs_output_dir = os.path.abspath(output_dir)
-                    abs_out_file = os.path.abspath(out_file)
-                    if (
-                        os.path.commonpath([abs_output_dir, abs_out_file])
-                        != abs_output_dir
-                    ):
+                    if not _is_safe_path(output_dir, out_file):
                         logging.error(
                             f"Path traversal detected: {out_file} escapes {output_dir}"
                         )

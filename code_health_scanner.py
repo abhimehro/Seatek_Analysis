@@ -45,16 +45,16 @@ def read_file_safe(filepath):
 # ⚡ Bolt: Removed LANG_MAP since we are now using .endswith() which is faster.
 # Using .endswith() evaluated at the C level in Python is faster than string
 # manipulation and dictionary lookup for file extensions.
-# ⚡ Bolt: Removed `.lower()` call and passed tuples of case permutations directly to
-# `.endswith()` to eliminate string allocation overhead on every path.
+# Normalize case once, then suffix-check (idiomatic and safe for any extension length).
 def get_language(filepath):
-    if filepath.endswith(('.py', '.pY', '.Py', '.PY')):
+    lower = filepath.lower()
+    if lower.endswith('.py'):
         return 'python'
-    elif filepath.endswith(('.r', '.R')):
+    elif lower.endswith('.r'):
         return 'r'
-    elif filepath.endswith(('.js', '.jS', '.Js', '.JS')):
+    elif lower.endswith('.js'):
         return 'javascript'
-    elif filepath.endswith(('.ts', '.tS', '.Ts', '.TS')):
+    elif lower.endswith('.ts'):
         return 'typescript'
     return 'unknown'
 

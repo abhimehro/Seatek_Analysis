@@ -1,12 +1,49 @@
 import os
+import subprocess
+from unittest.mock import patch
 import pytest
 from code_health_scanner import get_repo_info, read_file_safe, get_language, scan_file, MAX_FILE_SIZE
 
-def test_get_repo_info():
-    account, project, commit_hash = get_repo_info()
-    assert account == "account"
-    assert project == "project"
-    assert commit_hash == "hash"
+def test_get_repo_info_https():
+    with patch("subprocess.check_output") as mock_run:
+        mock_run.side_effect = [
+            "https://github.com/account/project.git\n",
+            "hash\n"
+        ]
+        account, project, commit_hash = get_repo_info()
+        assert account == "account"
+        assert project == "project"
+        assert commit_hash == "hash"
+
+def test_get_repo_info_ssh():
+    with patch("subprocess.check_output") as mock_run:
+        mock_run.side_effect = [
+            "git@github.com:account/project.git\n",
+            "hash\n"
+        ]
+        account, project, commit_hash = get_repo_info()
+        assert account == "account"
+        assert project == "project"
+        assert commit_hash == "hash"
+
+def test_get_repo_info_no_dot_git():
+    with patch("subprocess.check_output") as mock_run:
+        mock_run.side_effect = [
+            "https://github.com/account/project\n",
+            "hash\n"
+        ]
+        account, project, commit_hash = get_repo_info()
+        assert account == "account"
+        assert project == "project"
+        assert commit_hash == "hash"
+
+def test_get_repo_info_failure():
+    with patch("subprocess.check_output") as mock_run:
+        mock_run.side_effect = subprocess.CalledProcessError(1, "git")
+        account, project, commit_hash = get_repo_info()
+        assert account == "unknown"
+        assert project == "unknown"
+        assert commit_hash == "unknown"
 
 def test_get_language():
     assert get_language("test.py") == "python"
@@ -29,7 +66,6 @@ def test_read_file_safe_happy_path():
 
 def test_read_file_safe_path_traversal():
     # Attempting to read a file outside CWD should return empty list
-    # We use a path that is guaranteed to be outside CWD
     assert read_file_safe("/etc/passwd") == []
 
 def test_read_file_safe_too_large():

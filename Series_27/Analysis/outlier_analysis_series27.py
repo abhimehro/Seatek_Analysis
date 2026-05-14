@@ -65,9 +65,27 @@ def secure_filename(filename: str) -> str:
     """Sanitize a string to be used as a safe filename."""
     filename = str(filename)
     filename = filename.replace("/", "_").replace("\\", "_")
-    filename = re.sub(r"[^\w\.\- ]", "_", filename)
+    # Use an explicit ASCII allowlist rather than `\w` (which includes Unicode
+    # word characters under default flags) to keep filename sanitization
+    # predictable across locales.
+    filename = re.sub(r"[^A-Za-z0-9_.\- ]", "_", filename)
     filename = filename.strip("._- ")
     return filename if filename else "unnamed"
+
+
+def _is_safe_path(base_dir: str, target_path: str) -> bool:
+    """Verify that target_path resolves to a location inside base_dir.
+
+    Uses os.path.realpath to resolve symlinks and os.path.commonpath to
+    confirm containment, defending against path traversal attacks.
+    """
+    try:
+        base = os.path.realpath(base_dir)
+        target = os.path.realpath(target_path)
+        return os.path.commonpath([base, target]) == base
+    except ValueError:
+        # commonpath raises ValueError if paths are on different drives (Windows)
+        return False
 
 
 def detect_outliers(df, method, abs_thr, z_thr, iqr_fac):

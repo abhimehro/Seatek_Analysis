@@ -80,3 +80,9 @@
 **Vulnerability:** When executing external or third-party CLI tools (e.g., linters, formatters, test runners) via `subprocess` in automated pipelines, the default behavior of passing the entire current environment `os.environ` can inadvertently expose sensitive credentials, such as `GH_TOKEN`, to potentially compromised third-party dependencies executing in the shell.
 **Learning:** The principle of least privilege should be enforced not only for the application code but also for the environment variables passed to any invoked sub-processes. Third-party tools do not need access to the repository's GitHub token unless explicitly required for their function.
 **Prevention:** Always explicitly strip sensitive environment variables (e.g., `env.pop("GH_TOKEN", None)`) from the environment dictionary before passing it to `subprocess.run` or `subprocess.Popen` when invoking third-party CLI tools.
+
+## 2025-08-13 - Command Injection via $(find) in Shell Scripts
+
+**Vulnerability:** When executing shell commands on a list of files found via `find`, using command substitution like `python3 -m py_compile $(find . -name "*.py")` is vulnerable to word splitting and command injection if filenames contain spaces or shell metacharacters.
+**Learning:** Shell command substitution processes whitespace as argument separators, leading to syntax errors or execution of arbitrary commands if an attacker can control filenames.
+**Prevention:** Always use the `-exec` flag with `find` (e.g., `find . -name "*.py" -exec python3 -m py_compile {} +`) or a `while IFS= read -r -d '' file` loop with `find ... -print0` to safely process file paths with spaces or special characters.

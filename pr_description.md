@@ -1,18 +1,18 @@
 💡 What
-Modified `get_language` in `code_health_scanner.py` to replace `filepath.lower()` with `.endswith(('.py', '.PY'))` and similar case-insensitive tuple checks.
+Modified `get_language` in `code_health_scanner.py` to avoid lowercasing the entire filepath. Instead, only the small extension suffix returned by `os.path.splitext()` is lowercased, and the result is looked up in a module-level dictionary. This preserves full case-insensitive matching (including mixed-case extensions like `.Py` or `.jS`) while removing the allocation overhead of lowercasing the whole path.
 
 🎯 Why
-Using `.lower()` on the filepath strings inside the high-volume scanning loop creates an unnecessary string allocation on every single invocation.
+Calling `filepath.lower()` on the full path inside the high-volume scanning loop allocates a new string proportional to the path length on every invocation. Lowercasing only the short extension suffix (typically 2–4 characters) avoids that overhead without sacrificing correctness.
 
 📊 Measured Improvement
-By passing a mixed-case tuple to `.endswith()`, we avoid the `.lower()` string allocation overhead and evaluate the condition entirely in C. Local benchmarking shows the new approach is ~20% faster than the previous `.lower()` manipulation.
+The extension suffix returned by `os.path.splitext()` is short, so `.lower()` on it is effectively free compared to lowercasing the whole path. A module-level `dict` lookup replaces the previous if/elif chain with O(1) dispatch.
 
 🔬 Measurement
-Review `test_perf_lower.py` metrics to see that evaluating tuple `.endswith` is inherently faster and creates zero intermediary path string allocations. Run the existing test suite via `PYTHONPATH=. pytest tests/` to confirm functionality.
+Run the existing test suite via `PYTHONPATH=. pytest tests/` to confirm functionality. The test suite now also covers mixed-case extensions (`.Py`, `.pY`, `.Js`, `.jS`, `.Ts`, `.tS`) to lock in the case-insensitive contract.
 
 ═════ ELIR ═════
-PURPOSE: Optimize file extension checking by removing unnecessary string allocations.
+PURPOSE: Reduce per-call string allocation in `get_language` while preserving full case-insensitive extension matching.
 SECURITY: N/A - internal string comparison update.
-FAILS IF: Mixed casing like `.pY` occurs (which is extremely rare and acceptable in our risk model).
-VERIFY: Ensure standard extensions (.py, .r, .js, .ts) correctly map to languages.
-MAINTAIN: Be aware that `endswith` tuple is case-sensitive, so both standard lowercase and uppercase variants must be explicitly provided.
+FAILS IF: A supported extension is added to `_LANG_BY_EXT` without a lowercase key (lookup is on the lowercased suffix).
+VERIFY: Ensure standard extensions (.py, .r, .js, .ts) and mixed-case variants (.Py, .jS, etc.) correctly map to languages.
+MAINTAIN: Keys in `_LANG_BY_EXT` must always be lowercase, since the suffix is lowercased before lookup.

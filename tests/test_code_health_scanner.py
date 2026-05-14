@@ -15,6 +15,16 @@ def test_get_language():
     assert get_language("test.ts") == "typescript"
     assert get_language("test.txt") == "unknown"
 
+def test_get_language_mixed_case_extensions():
+    # Ensure case-insensitive matching covers mixed-case extensions too.
+    assert get_language("test.Py") == "python"
+    assert get_language("test.pY") == "python"
+    assert get_language("test.PY") == "python"
+    assert get_language("test.Js") == "javascript"
+    assert get_language("test.jS") == "javascript"
+    assert get_language("test.Ts") == "typescript"
+    assert get_language("test.tS") == "typescript"
+
 def test_read_file_safe_happy_path():
     test_file = "test_happy.txt"
     content = "line1\nline2\n"

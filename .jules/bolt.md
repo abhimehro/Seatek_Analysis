@@ -18,6 +18,6 @@
 ## 2026-05-09 - Optimize file extension check with endswith()
 **Learning:** Checking file extensions with `.endswith()` directly in a fast if-elif block is faster than using string manipulation `os.path.splitext()` and a dictionary lookup.
 **Action:** Use `.endswith()` to verify file types, which executes in C-level and avoids extra object allocations.
-## 2026-05-12 - Optimize file extension checks by removing .lower()
-**Learning:** Using `.lower()` on file paths before checking extensions creates an unnecessary string allocation on every invocation. For high-volume file scanning, this is inefficient.
-**Action:** Use `.endswith(('.ext', '.EXT'))` directly on the original string to check extensions case-insensitively. This avoids new string allocations and executes entirely in C, yielding ~20% faster checks.
+## 2026-05-12 - Lowercase only the extension suffix, not the whole path
+**Learning:** Calling `filepath.lower()` on a full path before checking extensions allocates a new string proportional to the path length on every invocation. Using `.endswith(('.ext', '.EXT'))` on the original string is faster but only matches all-lower/all-upper variants — mixed-case extensions like `.Py` or `.jS` are silently dropped, which is a correctness regression.
+**Action:** Extract the extension with `os.path.splitext(filepath)[1]` and call `.lower()` on just the short suffix, then look it up in a module-level `dict` mapping extensions to languages. This preserves full case-insensitive matching, removes the allocation cost of lowercasing the whole path, and replaces the if/elif chain with an O(1) dispatch.

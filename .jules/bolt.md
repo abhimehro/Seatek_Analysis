@@ -18,6 +18,6 @@
 ## 2026-05-09 - Optimize file extension check with endswith()
 **Learning:** Checking file extensions with `.endswith()` directly in a fast if-elif block is faster than using string manipulation `os.path.splitext()` and a dictionary lookup.
 **Action:** Use `.endswith()` to verify file types, which executes in C-level and avoids extra object allocations.
-## 2025-05-10 - File extension checks: prefer maintainable suffix matching
-**Learning:** Enumerating every mixed-case suffix permutation in `endswith((...))` avoids one `.lower()` allocation but grows as 2^n with extension length; a missing permutation silently misclassifies files.
-**Action:** Use a single `filepath.lower()` then `.endswith('.ext')` (or a lowercase tuple of suffixes) unless profiling proves this hot path needs a different approach.
+## 2026-05-10 - Optimize file extension checks with tuple unpacking in .endswith()
+**Learning:** Checking file extensions with `filepath.lower().endswith('.ext')` is inefficient because `.lower()` allocates a completely new string in memory (O(N) operation) just to check the last few characters.
+**Action:** For a short, fixed extension in a hot path (for example, `.py`), prefer `.endswith()` with an explicit mixed-case tuple such as `filepath.endswith(('.py', '.pY', '.Py', '.PY'))` to avoid allocating a lowercased copy. Do not treat enumerating permutations as a general rule for longer or variable extensions; for reusable checks, keep the allowed suffixes in a shared constant or helper so the list stays centralized and maintainable.

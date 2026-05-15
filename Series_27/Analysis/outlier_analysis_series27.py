@@ -61,24 +61,12 @@ def parse_args():
     return parser.parse_args()
 
 
-_MAX_FILENAME_LEN = 128
-
-
 def secure_filename(filename: str) -> str:
-    """Sanitize a string to be used as a safe filename.
-
-    Applies an ASCII-only allowlist, strips leading dots/dashes to prevent
-    hidden files and option-injection, and caps the length to avoid
-    exceeding filesystem limits when combined with other path components.
-    """
+    """Sanitize a string to be used as a safe filename."""
     filename = str(filename)
     filename = filename.replace("/", "_").replace("\\", "_")
-    filename = re.sub(r"[^A-Za-z0-9_\.\- ]", "_", filename)
+    filename = re.sub(r"[^\w\.\- ]", "_", filename)
     filename = filename.strip("._- ")
-    # SECURITY: Cap length to avoid OS filename limits (255 on most filesystems)
-    # when combined with the input basename and other components in the output path.
-    if len(filename) > _MAX_FILENAME_LEN:
-        filename = filename[:_MAX_FILENAME_LEN].rstrip("._- ")
     return filename if filename else "unnamed"
 
 
@@ -153,18 +141,10 @@ def prepare_outliers_df(outliers):
 
 
 def _is_safe_path(basedir: str, path: str) -> bool:
-    """Verify that path is inside basedir to prevent path traversal escapes.
-
-    Uses ``os.path.realpath`` to resolve symlinks so that an attacker cannot
-    bypass the containment check via a symlinked component.
-    """
-    abs_base = os.path.realpath(basedir)
-    abs_path = os.path.realpath(path)
-    try:
-        return os.path.commonpath([abs_base, abs_path]) == abs_base
-    except ValueError:
-        # commonpath raises ValueError if paths are on different drives (Windows)
-        return False
+    """Verify that path is inside basedir to prevent path traversal escapes."""
+    abs_base = os.path.abspath(basedir)
+    abs_path = os.path.abspath(path)
+    return os.path.commonpath([abs_base, abs_path]) == abs_base
 
 
 def _get_safe_output_path(input_path: str, output_dir: str, next_year, sheet):
@@ -201,8 +181,16 @@ def _process_single_sheet(xls, sheet, group, input_path, output_dir):
         del df_raw[last_col]
 
     next_year = group.iloc[0]["next_year"]
-    out_file = _get_safe_output_path(input_path, output_dir, next_year, sheet)
-    if out_file is None:
+    safe_sheet = secure_filename(sheet)
+    safe_next_year = secure_filename(next_year)
+
+    out_file = os.path.join(
+        output_dir,
+        f"{os.path.splitext(os.path.basename(input_path))[0]}_{safe_next_year}_{safe_sheet}_corrected.xlsx",
+    )
+
+    if not _is_safe_path(output_dir, out_file):
+        logging.error(f"Path traversal detected: {out_file} escapes {output_dir}")
         return None
 
     sensor_diffs = group.groupby("Sensor")["Difference"].sum()

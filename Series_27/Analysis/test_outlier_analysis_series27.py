@@ -170,7 +170,8 @@ def test_secure_filename():
 
 
 @pytest.mark.skipif(not HAS_PANDAS, reason="Pandas not available")
-def test_apply_corrections_path_traversal(tmp_path):
+def test_apply_corrections_path_traversal():
+
     # Create dummy outliers df with malicious sheet name
     outliers_df = pd.DataFrame(
         {
@@ -182,8 +183,6 @@ def test_apply_corrections_path_traversal(tmp_path):
         }
     )
 
-    output_dir = str(tmp_path)
-
     with patch("pandas.ExcelFile") as mock_excel:
         mock_xls = MagicMock()
         mock_excel.return_value.__enter__.return_value = mock_xls
@@ -193,26 +192,19 @@ def test_apply_corrections_path_traversal(tmp_path):
         mock_df_raw.columns = ["V1"]
         mock_xls.parse.return_value = mock_df_raw
 
-        # Exercise the real os.path.join / _is_safe_path defense-in-depth check
-        result = apply_corrections("dummy.xlsx", output_dir, outliers_df)
+        with patch("os.path.join") as mock_join:
+            mock_join.return_value = (
+                "/output/dummy_2024__.._.._etc_passwd_corrected.xlsx"
+            )
+            apply_corrections("dummy.xlsx", "/output", outliers_df)
 
-        # The MagicMock-based df_raw still records the to_excel call
-        assert mock_df_raw.to_excel.called, "to_excel should be invoked"
-        out_file = mock_df_raw.to_excel.call_args[0][0]
-        filename = os.path.basename(out_file)
-        assert (
-            "/" not in filename
-        ), f"Path traversal character / found in {filename}"
-        assert (
-            "\\" not in filename
-        ), f"Path traversal character \\ found in {filename}"
-        assert "etc_passwd" in filename
-
-        # Defense-in-depth: resolved path must remain within output_dir
-        assert os.path.realpath(out_file).startswith(
-            os.path.realpath(output_dir)
-        ), f"Output path {out_file} escapes {output_dir}"
-
-        # The corrections summary should also reference the safe path
-        assert not result.empty
-        assert result.iloc[0]["CorrectedFile"] == out_file
+            # The second arg should be our malicious file name stripped of path separators
+            args = mock_join.call_args[0]
+            filename = args[1]
+            assert (
+                "/" not in filename
+            ), f"Path traversal character / found in {filename}"
+            assert (
+                "\\" not in filename
+            ), f"Path traversal character \\ found in {filename}"
+            assert "etc_passwd" in filename

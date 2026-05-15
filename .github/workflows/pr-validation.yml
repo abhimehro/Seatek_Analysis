@@ -40,7 +40,8 @@ jobs:
 
       - name: Compile Python files
         run: |
-          python3 -m py_compile $(find . -name "*.py" -not -path "./venv/*" -not -path "./.venv/*")
+          # SECURITY: Use -exec to securely handle file paths with spaces and prevent word splitting/command injection
+          find . -name "*.py" -not -path "*/venv/*" -not -path "*/.venv/*" -exec python3 -m py_compile {} +
 
       - name: Run tests
         run: |

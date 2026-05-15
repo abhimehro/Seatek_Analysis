@@ -1,13 +1,18 @@
 💡 What
-Replaced a dictionary lookup with `.endswith()` string matching in the `get_language` function of `code_health_scanner.py`.
+Modified `get_language` in `code_health_scanner.py` to avoid lowercasing the entire filepath. Instead, only the small extension suffix returned by `os.path.splitext()` is lowercased, and the result is looked up in a module-level dictionary. This preserves full case-insensitive matching (including mixed-case extensions like `.Py` or `.jS`) while removing the allocation overhead of lowercasing the whole path.
 
 🎯 Why
-Using `.endswith()` is evaluated at the C level in Python, eliminating the need to parse the path with `os.path.splitext()`, convert it to lowercase, and perform a dictionary hash lookup. This reduces string allocation overhead when scanning many files.
+Calling `filepath.lower()` on the full path inside the high-volume scanning loop allocates a new string proportional to the path length on every invocation. Lowercasing only the short extension suffix (typically 2–4 characters) avoids that overhead without sacrificing correctness.
 
 📊 Measured Improvement
-Execution time for `get_language` is reduced by approximately 57% compared to the original `splitext` approach.
+The extension suffix returned by `os.path.splitext()` is short, so `.lower()` on it is effectively free compared to lowercasing the whole path. A module-level `dict` lookup replaces the previous if/elif chain with O(1) dispatch.
 
 🔬 Measurement
-Ran a test script processing an array of 60,000 filenames.
-- `splitext` approach: 0.0872s
-- `endswith` approach: 0.0372s
+Run the existing test suite via `PYTHONPATH=. pytest tests/` to confirm functionality. The test suite now also covers mixed-case extensions (`.Py`, `.pY`, `.Js`, `.jS`, `.Ts`, `.tS`) to lock in the case-insensitive contract.
+
+═════ ELIR ═════
+PURPOSE: Reduce per-call string allocation in `get_language` while preserving full case-insensitive extension matching.
+SECURITY: N/A - internal string comparison update.
+FAILS IF: A supported extension is added to `_LANG_BY_EXT` without a lowercase key (lookup is on the lowercased suffix).
+VERIFY: Ensure standard extensions (.py, .r, .js, .ts) and mixed-case variants (.Py, .jS, etc.) correctly map to languages.
+MAINTAIN: Keys in `_LANG_BY_EXT` must always be lowercase, since the suffix is lowercased before lookup.

@@ -83,5 +83,3 @@ def scan_file(filepath, lines, account, project, commit_hash):
     return issues
 
 
-if __name__ == "__main__":
-    pass

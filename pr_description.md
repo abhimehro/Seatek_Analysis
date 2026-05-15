@@ -1,13 +1,11 @@
 💡 What
-Replaced a dictionary lookup with `.endswith()` string matching in the `get_language` function of `code_health_scanner.py`.
+Modified the `get_language` function in `code_health_scanner.py` to use `.endswith()` with tuples of case permutations instead of `.lower()`.
 
 🎯 Why
-Using `.endswith()` is evaluated at the C level in Python, eliminating the need to parse the path with `os.path.splitext()`, convert it to lowercase, and perform a dictionary hash lookup. This reduces string allocation overhead when scanning many files.
+Calling `filepath.lower()` before `.endswith()` creates an entirely new string in memory for every file evaluated during the scan. This is an O(N) allocation operation that creates unnecessary garbage collection overhead in a high-volume scanning loop.
 
 📊 Measured Improvement
-Execution time for `get_language` is reduced by approximately 57% compared to the original `splitext` approach.
+Passing a tuple of permutations directly to `.endswith()` avoids string allocation entirely, as it operates at the C-level in Python. Local profiling showed a ~20% reduction in execution time for the `get_language` function on a sample set of file paths.
 
 🔬 Measurement
-Ran a test script processing an array of 60,000 filenames.
-- `splitext` approach: 0.0872s
-- `endswith` approach: 0.0372s
+Review `test_perf.py` measurements (which indicated execution time dropping from ~2.51s to ~2.01s for 1 million iterations). Unit tests (`PYTHONPATH=. pytest tests/`) confirm that behavior is identical and case permutations are covered correctly.

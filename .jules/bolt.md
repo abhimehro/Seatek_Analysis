@@ -18,3 +18,11 @@
 ## 2026-05-09 - Optimize file extension check with endswith()
 **Learning:** Checking file extensions with `.endswith()` directly in a fast if-elif block is faster than using string manipulation `os.path.splitext()` and a dictionary lookup.
 **Action:** Use `.endswith()` to verify file types, which executes in C-level and avoids extra object allocations.
+## 2026-05-14 - Concurrency Optimization for GitHub CLI calls
+**Optimization:** Replaced sequential blocking `gh_json` subprocess calls with a `ThreadPoolExecutor`.
+**Learning:** Independent subprocesses can be parallelized in Python using `concurrent.futures` to drastically reduce overall execution time from `sum(N_i)` to `max(N_i)`.
+**Prevention:** N/A.
+## 2026-05-14 - CodeScene Large Method limit reached
+**Optimization:** Extracted multiple asynchronous futures submissions.
+**Learning:** CodeScene has strict method length rules. Using large setup blocks inline for `ThreadPoolExecutor` and `gh_json` increases the length of functions drastically.
+**Prevention:** N/A.

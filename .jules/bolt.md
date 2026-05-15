@@ -2,7 +2,6 @@
 
 **Learning:** Using `pathlib.Path.rglob()` searches the entire tree before allowing filtering. If massive ignored directories (like `node_modules` or `.git`) exist, Python wastes significant CPU and I/O time traversing them.
 **Action:** Use `os.walk(topdown=True)` and prune the `dirs` list in place (`dirs[:] = [d for d in dirs if d not in IGNORED_DIRS]`) to prevent traversing ignored trees entirely. Also, `str.endswith(('.ext1', '.ext2'))` is faster than `fnmatch`.
-## 2025-05-06 - Optimize os.path.relpath with pathlib.Path\n**Learning:** Using `pathlib.Path(dir, file)` is significantly faster and more readable than redundant combinations of `os.path.join()`, `os.path.relpath()`, and division operators when constructing relative paths from `os.walk()`.\n**Action:** Use `pathlib.Path()` direct construction instead of manual standard library path manipulation.
 ## 2025-05-06 - Optimize string processing in parsing loops
 **Learning:** Calling object-allocating methods like `.strip()`, `.lstrip()`, or `.lower()` on every line in a large file scanning loop introduces significant memory and CPU overhead.
 **Action:** Use a fast-fail substring check (`if "pattern" in line:`) before executing the more expensive operations. This short-circuits the condition for lines that don't match, often yielding ~10x faster execution for non-matching lines. Remember to combine conditions with `and` on the same line to avoid increasing nested code complexity.
@@ -18,3 +17,6 @@
 ## 2026-05-09 - Optimize file extension check with endswith()
 **Learning:** Checking file extensions with `.endswith()` directly in a fast if-elif block is faster than using string manipulation `os.path.splitext()` and a dictionary lookup.
 **Action:** Use `.endswith()` to verify file types, which executes in C-level and avoids extra object allocations.
+## 2026-05-11 - Avoid pathlib in hot directory traversal loops
+**Learning:** Instantiating `pathlib.Path` objects and calling methods like `.relative_to()` inside a deep directory traversal loop is significantly slower than string manipulation and `os.path.join`.
+**Action:** Use `os.path.join` and string slicing for path calculations inside hot `os.walk` loops to avoid unnecessary object allocation overhead.

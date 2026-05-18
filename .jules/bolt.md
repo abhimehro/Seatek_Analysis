@@ -18,3 +18,6 @@
 ## 2026-05-09 - Optimize file extension check with endswith()
 **Learning:** Checking file extensions with `.endswith()` directly in a fast if-elif block is faster than using string manipulation `os.path.splitext()` and a dictionary lookup.
 **Action:** Use `.endswith()` to verify file types, which executes in C-level and avoids extra object allocations.
+## 2026-05-09 - Optimize file extension check with endswith()
+**Learning:** Checking file extensions with `.endswith()` directly in a fast if-elif block is faster than using string manipulation `.lower()` on the entire file path, especially avoiding unnecessary string allocations in high-volume scanning.
+**Action:** Pass a tuple of case permutations directly to `.endswith()` (e.g., `filepath.endswith(('.py', '.pY', '.Py', '.PY'))`) to efficiently check file extensions without allocating new lowercase strings.

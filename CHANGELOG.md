@@ -22,6 +22,7 @@
 
 - chore\(deps\): update numpy requirement from \>=2.4.4 to \>=2.4.6 in /Series\_27/Analysis [\#186](https://github.com/abhimehro/Seatek_Analysis/pull/186) ([dependabot[bot]](https://github.com/apps/dependabot))
 - 🛡️ Sentinel: \[HIGH\] Fix command injection vulnerability in GitHub Action [\#183](https://github.com/abhimehro/Seatek_Analysis/pull/183) ([abhimehro](https://github.com/abhimehro))
+- chore\(deps\): update pandas requirement from \<4.0.0,\>=3.0.2 to \>=3.0.3,\<4.0.0 in /Series\_27/Analysis [\#168](https://github.com/abhimehro/Seatek_Analysis/pull/168) ([dependabot[bot]](https://github.com/apps/dependabot))
 - 🛡️ Sentinel: \[security improvement\] Enforce least privilege in run\_process [\#166](https://github.com/abhimehro/Seatek_Analysis/pull/166) ([abhimehro](https://github.com/abhimehro))
 - ⚡ Bolt: Optimize get\_language file extension checking [\#165](https://github.com/abhimehro/Seatek_Analysis/pull/165) ([abhimehro](https://github.com/abhimehro))
 - 🛡️ Sentinel: \[CRITICAL\] Fix Out-Of-Memory \(OOM\) / DoS Risk with File Reads [\#164](https://github.com/abhimehro/Seatek_Analysis/pull/164) ([abhimehro](https://github.com/abhimehro))

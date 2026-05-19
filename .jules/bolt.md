@@ -21,3 +21,7 @@
 ## 2026-05-09 - Optimize file extension check with endswith()
 **Learning:** Checking file extensions with `.endswith()` directly in a fast if-elif block is faster than using string manipulation `.lower()` on the entire file path, especially avoiding unnecessary string allocations in high-volume scanning.
 **Action:** Pass a tuple of case permutations directly to `.endswith()` (e.g., `filepath.endswith(('.py', '.pY', '.Py', '.PY'))`) to efficiently check file extensions without allocating new lowercase strings.
+
+## 2026-05-11 - Avoid pathlib in hot directory traversal loops
+**Learning:** Instantiating `pathlib.Path` objects and calling methods like `.relative_to()` inside a deep directory traversal loop is significantly slower than string manipulation and `os.path.join`.
+**Action:** Use `os.path.join` and string slicing for path calculations inside hot `os.walk` loops to avoid unnecessary object allocation overhead.

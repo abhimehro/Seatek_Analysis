@@ -64,3 +64,9 @@ def test_scan_file_unknown_lang():
     lines = ["print('TODO')\n"]
     issues = scan_file(filepath, lines, "acc", "proj", "hash")
     assert issues == []
+
+def test_get_language_mixed_case():
+    assert get_language("test.pY") == "python"
+    assert get_language("test.Py") == "python"
+    assert get_language("test.jS") == "javascript"
+    assert get_language("test.tS") == "typescript"

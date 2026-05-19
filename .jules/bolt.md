@@ -21,3 +21,8 @@
 ## 2026-05-09 - Optimize file extension check with endswith()
 **Learning:** Checking file extensions with `.endswith()` directly in a fast if-elif block is faster than using string manipulation `.lower()` on the entire file path, especially avoiding unnecessary string allocations in high-volume scanning.
 **Action:** Pass a tuple of case permutations directly to `.endswith()` (e.g., `filepath.endswith(('.py', '.pY', '.Py', '.PY'))`) to efficiently check file extensions without allocating new lowercase strings.
+
+## 2026-05-14 - CodeScene Large Method limit reached
+**Optimization:** Extracted multiple asynchronous futures submissions.
+**Learning:** CodeScene has strict method length rules. Using large setup blocks inline for `ThreadPoolExecutor` and `gh_json` increases the length of functions drastically.
+**Prevention:** N/A.

@@ -418,9 +418,10 @@ dump_summary_excel <- function(results, output_file, highlight_top_n = 5) {
   cat("\n✅ Summary workbook complete.\n")
 }
 
-# Main execution block
-if (sys.nframe() == 0 || interactive()) {
-  cat("\n🌊 Seatek Analysis Pipeline 🌊\n=============================\n")
+#' Run Pipeline
+#'
+#' Executes the main data processing pipeline with error handling.
+run_pipeline <- function() {
   withCallingHandlers({
     data_dir <- file.path(getwd(), "Data")
     message(sprintf("Running main(). Data directory: %s", data_dir))
@@ -453,5 +454,11 @@ if (sys.nframe() == 0 || interactive()) {
     log_handler("MESSAGE", conditionMessage(m))
     invokeRestart("muffleMessage")
   })
+}
+
+# Main execution block
+if (sys.nframe() == 0 || interactive()) {
+  cat("\n🌊 Seatek Analysis Pipeline 🌊\n=============================\n")
+  run_pipeline()
 }
 # End of script

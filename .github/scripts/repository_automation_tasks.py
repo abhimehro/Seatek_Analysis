@@ -6,6 +6,7 @@ import logging
 import os
 import re
 from typing import Any
+import concurrent.futures
 
 import os
 import pathlib
@@ -557,21 +558,34 @@ def status_icon(status: str) -> str:
     return STATUS_ICONS.get(status, status.upper())
 
 
+# ⚡ Bolt: Helper function extracted to avoid "Large Method" rule violations when
+# replacing sequential API calls with concurrent execution via ThreadPoolExecutor.
+def fetch_daily_report_data() -> tuple[list[dict[str, Any]], list[dict[str, Any]], list[dict[str, Any]]]:
+    # ⚡ Bolt: Using ThreadPoolExecutor to run independent GitHub API calls concurrently
+    # significantly reduces blocking I/O time in daily_report_lines.
+    with concurrent.futures.ThreadPoolExecutor(max_workers=3) as executor:
+        f_issues = executor.submit(
+            gh_json,
+            ["issue", "list", "--state", "open", "--limit", "200", "--json", "number"],
+            default=[],
+        )
+        f_prs = executor.submit(
+            gh_json,
+            ["pr", "list", "--state", "open", "--limit", "200", "--json", "number"],
+            default=[],
+        )
+        f_releases = executor.submit(
+            gh_json,
+            ["release", "list", "--limit", "5", "--json", "name,publishedAt,tagName"],
+            default=[],
+        )
+        return f_issues.result(), f_prs.result(), f_releases.result()
+
+
 def daily_report_lines(
     config: dict[str, Any], results: list[dict[str, Any]]
 ) -> list[str]:
-    open_issues = gh_json(
-        ["issue", "list", "--state", "open", "--limit", "200", "--json", "number"],
-        default=[],
-    )
-    open_prs = gh_json(
-        ["pr", "list", "--state", "open", "--limit", "200", "--json", "number"],
-        default=[],
-    )
-    releases = gh_json(
-        ["release", "list", "--limit", "5", "--json", "name,publishedAt,tagName"],
-        default=[],
-    )
+    open_issues, open_prs, releases = fetch_daily_report_data()
     overall = overall_status(results)
     lines = [
         f"# Daily Repository Automation Report - {iso_day()}",

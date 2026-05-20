@@ -21,3 +21,6 @@
 ## 2026-05-09 - Optimize file extension check with endswith()
 **Learning:** Checking file extensions with `.endswith()` directly in a fast if-elif block is faster than using string manipulation `.lower()` on the entire file path, especially avoiding unnecessary string allocations in high-volume scanning.
 **Action:** Pass a tuple of case permutations directly to `.endswith()` (e.g., `filepath.endswith(('.py', '.pY', '.Py', '.PY'))`) to efficiently check file extensions without allocating new lowercase strings.
+## 2025-05-20 - Optimize independent API calls with concurrent execution
+**Learning:** Making multiple independent sequential API or subprocess calls (like `gh_json` requests) introduces blocking I/O bottlenecks.
+**Action:** Use `concurrent.futures.ThreadPoolExecutor` to run independent network or subprocess requests concurrently. Always extract the logic into a separate helper function to avoid triggering "Large Method" static analysis violations.

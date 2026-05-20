@@ -21,6 +21,6 @@
 ## 2026-05-09 - Optimize file extension check with endswith()
 **Learning:** Checking file extensions with `.endswith()` directly in a fast if-elif block is faster than using string manipulation `.lower()` on the entire file path, especially avoiding unnecessary string allocations in high-volume scanning.
 **Action:** Pass a tuple of case permutations directly to `.endswith()` (e.g., `filepath.endswith(('.py', '.pY', '.Py', '.PY'))`) to efficiently check file extensions without allocating new lowercase strings.
-## 2026-05-10 - Concurrent independent API calls
-**Learning:** Making multiple independent sequential `subprocess` or API calls (like `gh_json` GitHub CLI requests) introduces significant blocking I/O bottlenecks. Additionally, adding concurrency directly into an existing long function may trigger CodeScene CI "Large Method" violations.
-**Action:** Wrap independent external calls in a `concurrent.futures.ThreadPoolExecutor` to run them concurrently. Always extract the fetching logic into a separate helper function to maintain method size compliance and modularity.
+## 2025-05-20 - Optimize independent API calls with concurrent execution
+**Learning:** Making multiple independent sequential API or subprocess calls (like `gh_json` requests) introduces blocking I/O bottlenecks.
+**Action:** Use `concurrent.futures.ThreadPoolExecutor` to run independent network or subprocess requests concurrently. Always extract the logic into a separate helper function to avoid triggering "Large Method" static analysis violations.

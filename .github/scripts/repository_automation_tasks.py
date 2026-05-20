@@ -1,12 +1,12 @@
 from __future__ import annotations
 
 import datetime as dt
-import concurrent.futures
 import json
 import logging
 import os
 import re
 from typing import Any
+import concurrent.futures
 
 import os
 import pathlib
@@ -558,9 +558,11 @@ def status_icon(status: str) -> str:
     return STATUS_ICONS.get(status, status.upper())
 
 
-# ⚡ Bolt: Helper function to fetch daily report data concurrently
-# extracted to avoid CodeScene CI "Large Method" violations.
-def _fetch_daily_report_data() -> tuple[list[Any], list[Any], list[Any]]:
+# ⚡ Bolt: Helper function extracted to avoid "Large Method" rule violations when
+# replacing sequential API calls with concurrent execution via ThreadPoolExecutor.
+def fetch_daily_report_data() -> tuple[list[dict[str, Any]], list[dict[str, Any]], list[dict[str, Any]]]:
+    # ⚡ Bolt: Using ThreadPoolExecutor to run independent GitHub API calls concurrently
+    # significantly reduces blocking I/O time in daily_report_lines.
     with concurrent.futures.ThreadPoolExecutor(max_workers=3) as executor:
         f_issues = executor.submit(
             gh_json,
@@ -583,9 +585,7 @@ def _fetch_daily_report_data() -> tuple[list[Any], list[Any], list[Any]]:
 def daily_report_lines(
     config: dict[str, Any], results: list[dict[str, Any]]
 ) -> list[str]:
-    # ⚡ Bolt: Fetch multiple independent GitHub API endpoints concurrently
-    # instead of sequentially to eliminate blocking I/O bottlenecks.
-    open_issues, open_prs, releases = _fetch_daily_report_data()
+    open_issues, open_prs, releases = fetch_daily_report_data()
     overall = overall_status(results)
     lines = [
         f"# Daily Repository Automation Report - {iso_day()}",

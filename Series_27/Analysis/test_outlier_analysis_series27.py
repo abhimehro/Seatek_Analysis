@@ -140,3 +140,65 @@ def test_detect_outliers_iqr_mock():
     mock_col.__gt__.assert_called()
     mock_lower_mask.__or__.assert_called_with(mock_upper_mask)
     mock_df.__getitem__.assert_any_call(mock_or_mask)
+
+
+from outlier_analysis_series27 import apply_corrections, secure_filename
+
+
+def test_secure_filename():
+    assert secure_filename("../../../etc/passwd") == "etc_passwd"
+    assert secure_filename("C:\\Windows\\System32") == "C__Windows_System32"
+    assert secure_filename("..") == "unnamed"
+    assert secure_filename(".hidden") == "hidden"
+    assert secure_filename("valid-name_1.2.3") == "valid-name_1.2.3"
+    assert secure_filename("Raw Data 2024") == "Raw Data 2024"
+    assert secure_filename("") == "unnamed"
+
+
+@pytest.mark.skipif(not HAS_PANDAS, reason="Pandas not available")
+def test_apply_corrections_path_traversal(tmp_path):
+    # Create dummy outliers df with malicious sheet name
+    outliers_df = pd.DataFrame(
+        {
+            "Year_Pair": ["2023-2024"],
+            "Sensor": [1],
+            "Difference": [0.5],
+            "next_year": ["2024"],
+            "sheet": ["../../../etc/passwd"],
+        }
+    )
+
+    output_dir = str(tmp_path)
+
+    with patch("pandas.ExcelFile") as mock_excel:
+        mock_xls = MagicMock()
+        mock_excel.return_value.__enter__.return_value = mock_xls
+
+        mock_df_raw = MagicMock()
+        mock_df_raw.empty = False
+        mock_df_raw.columns = ["V1"]
+        mock_xls.parse.return_value = mock_df_raw
+
+        # Exercise the real os.path.join / _is_safe_path defense-in-depth check
+        result = apply_corrections("dummy.xlsx", output_dir, outliers_df)
+
+        # The MagicMock-based df_raw still records the to_excel call
+        assert mock_df_raw.to_excel.called, "to_excel should be invoked"
+        out_file = mock_df_raw.to_excel.call_args[0][0]
+        filename = os.path.basename(out_file)
+        assert (
+            "/" not in filename
+        ), f"Path traversal character / found in {filename}"
+        assert (
+            "\\" not in filename
+        ), f"Path traversal character \\ found in {filename}"
+        assert "etc_passwd" in filename
+
+        # Defense-in-depth: resolved path must remain within output_dir
+        assert os.path.realpath(out_file).startswith(
+            os.path.realpath(output_dir)
+        ), f"Output path {out_file} escapes {output_dir}"
+
+        # The corrections summary should also reference the safe path
+        assert not result.empty
+        assert result.iloc[0]["CorrectedFile"] == out_file

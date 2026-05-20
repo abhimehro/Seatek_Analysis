@@ -20,6 +20,10 @@
 
 **Merged pull requests:**
 
+- ⚡ Bolt: \[performance improvement\] [\#200](https://github.com/abhimehro/Seatek_Analysis/pull/200) ([abhimehro](https://github.com/abhimehro))
+- Mixed-case extension handling \(salvages \#173\) [\#194](https://github.com/abhimehro/Seatek_Analysis/pull/194) ([abhimehro](https://github.com/abhimehro))
+- ⚡ Bolt: Vectorize file deletion loop in cleanup\_old\_backups \(salvages \#176\) [\#192](https://github.com/abhimehro/Seatek_Analysis/pull/192) ([abhimehro](https://github.com/abhimehro))
+- fix\(security\): Path Traversal Vulnerability in Excel parsing \(salvages \#182\) [\#187](https://github.com/abhimehro/Seatek_Analysis/pull/187) ([abhimehro](https://github.com/abhimehro))
 - chore\(deps\): update numpy requirement from \>=2.4.4 to \>=2.4.6 in /Series\_27/Analysis [\#186](https://github.com/abhimehro/Seatek_Analysis/pull/186) ([dependabot[bot]](https://github.com/apps/dependabot))
 - ⚡ Bolt: Optimize file extension check to eliminate string allocation [\#185](https://github.com/abhimehro/Seatek_Analysis/pull/185) ([abhimehro](https://github.com/abhimehro))
 - 🛡️ Sentinel: \[HIGH\] Fix command injection vulnerability in GitHub Action [\#183](https://github.com/abhimehro/Seatek_Analysis/pull/183) ([abhimehro](https://github.com/abhimehro))

@@ -102,6 +102,38 @@ read_sensor_data <- function(file_path,
 # to prevent function re-definition overhead on every file iteration
 clean_vals <- function(x) x[which(x > 0)]
 
+# Utility: Execute a list of tasks in parallel (or serially as fallback)
+execute_tasks_parallel <- function(tasks, task_func) {
+  if (length(tasks) == 0) return(list())
+
+  if (requireNamespace("parallel", quietly = TRUE)) {
+    cores_detected <- tryCatch(parallel::detectCores(), error = function(e) NA_real_)
+    if (!is.numeric(cores_detected) || !is.finite(cores_detected) || cores_detected < 1) {
+      cores <- 1L
+    } else {
+      cores <- max(1L, as.integer(cores_detected) - 1L)
+    }
+    if (.Platform$OS.type == "unix") {
+      out_files <- parallel::mclapply(tasks, task_func, mc.cores = cores)
+    } else {
+      cl <- parallel::makeCluster(cores)
+      on.exit(parallel::stopCluster(cl), add = TRUE)
+      out_files <- parallel::parLapply(cl, tasks, task_func)
+    }
+    return(out_files)
+  } else {
+    out_files <- vector("list", length(tasks))
+    pb_write <- txtProgressBar(min = 0, max = length(tasks), style = 3)
+    tryCatch({
+      for (i in seq_along(tasks)) {
+        out_files[[i]] <- task_func(tasks[[i]])
+        setTxtProgressBar(pb_write, i)
+      }
+    }, finally = close(pb_write))
+    return(out_files)
+  }
+}
+
 # Process all sensor files: export raw, compute metrics
 process_all_data <- function(data_dir) {
   data_dir <- auto_detect_data_dir(data_dir)
@@ -174,32 +206,9 @@ process_all_data <- function(data_dir) {
       return(task$out_raw)
     }
 
-    if (requireNamespace("parallel", quietly = TRUE)) {
-      cores_detected <- tryCatch(parallel::detectCores(), error = function(e) NA_real_)
-      if (!is.numeric(cores_detected) || !is.finite(cores_detected) || cores_detected < 1) {
-        cores <- 1L
-      } else {
-        cores <- max(1L, as.integer(cores_detected) - 1L)
-      }
-      if (.Platform$OS.type == "unix") {
-        out_files <- parallel::mclapply(raw_export_tasks, write_task, mc.cores = cores)
-      } else {
-        cl <- parallel::makeCluster(cores)
-        on.exit(parallel::stopCluster(cl), add = TRUE)
-        out_files <- parallel::parLapply(cl, raw_export_tasks, write_task)
-      }
-      for (out_file in out_files) {
-        message(sprintf("Raw data written to %s", out_file))
-      }
-    } else if (length(raw_export_tasks) > 0) {
-      pb_write <- txtProgressBar(min = 0, max = length(raw_export_tasks), style = 3)
-      tryCatch({
-        for (i in seq_along(raw_export_tasks)) {
-          task <- raw_export_tasks[[i]]
-          out_file <- write_task(task)
-          setTxtProgressBar(pb_write, i)
-        }
-      }, finally = close(pb_write))
+    out_files <- execute_tasks_parallel(raw_export_tasks, write_task)
+    for (out_file in out_files) {
+      message(sprintf("Raw data written to %s", out_file))
     }
   }
   cat("✅ Raw files written.\n")

@@ -24,3 +24,6 @@
 ## 2025-05-20 - Optimize independent API calls with concurrent execution
 **Learning:** Making multiple independent sequential API or subprocess calls (like `gh_json` requests) introduces blocking I/O bottlenecks.
 **Action:** Use `concurrent.futures.ThreadPoolExecutor` to run independent network or subprocess requests concurrently. Always extract the logic into a separate helper function to avoid triggering "Large Method" static analysis violations.
+## 2025-05-21 - Avoid unmaintainable `.endswith()` case permutation chains
+**Learning:** Using `filepath.endswith(('.py', '.pY', '.Py', '.PY'))` to avoid `.lower()` string allocation overhead creates a combinatorial explosion of case permutations (e.g., a 4-letter extension needs 16 permutations). This is an unreadable anti-pattern that sacrifices maintainability for an imperceptible micro-optimization.
+**Action:** Do not use `.endswith()` with case permutations for case-insensitive file extension checks. Instead, revert to the idiomatic `os.path.splitext(filepath)[1].lower()` pattern, as the marginal string allocation overhead is not a legitimate bottleneck compared to the loss of code readability.

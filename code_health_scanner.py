@@ -1,17 +1,53 @@
 import logging
 import os
+import re
+import subprocess
 
 
 def get_repo_info():
+    """
+    Retrieves the repository account, project name, and current commit hash.
+    Uses git commands to extract information from the local environment.
+    """
     try:
-        # Dummy code
-        return "account", "project", "hash"
+        # SECURITY: Strip GH_TOKEN to prevent exfiltration if subprocess is compromised
+        env = os.environ.copy()
+        env.pop("GH_TOKEN", None)
+
+        # Get origin URL
+        origin_url = subprocess.check_output(
+            ["git", "remote", "get-url", "origin"],
+            stderr=subprocess.DEVNULL,
+            env=env,
+            text=True
+        ).strip()
+
+        # Parse account and project from URL
+        # Matches formats:
+        # https://github.com/account/project.git
+        # git@github.com:account/project.git
+        match = re.search(r"[:/]([^/:]+)/([^/:]+?)(?:\.git)?$", origin_url)
+        if not match:
+            return "unknown", "unknown", "unknown"
+
+        account, project = match.groups()
+
+        # Get current commit hash
+        commit_hash = subprocess.check_output(
+            ["git", "rev-parse", "HEAD"],
+            stderr=subprocess.DEVNULL,
+            env=env,
+            text=True
+        ).strip()
+
+        return account, project, commit_hash
+
     except Exception as e:
         # SECURITY: Fail securely, don't expose internal exception details
         logging.error(
             f"Error getting repo info: Internal error occurred ({type(e).__name__})."
         )
-        return "account", "project", "hash"
+        return "unknown", "unknown", "unknown"
 
 
 MAX_FILE_SIZE = 10 * 1024 * 1024  # 10 MB

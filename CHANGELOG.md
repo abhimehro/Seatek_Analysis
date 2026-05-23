@@ -24,6 +24,7 @@
 **Merged pull requests:**
 
 - chore: stop tracking runtime processing\_warnings.log [\#206](https://github.com/abhimehro/Seatek_Analysis/pull/206) ([cursor[bot]](https://github.com/apps/cursor))
+- perf\(scanner\): optimize extension checks \(salvages \#188\) [\#204](https://github.com/abhimehro/Seatek_Analysis/pull/204) ([abhimehro](https://github.com/abhimehro))
 - ⚡ Bolt: Optimize relative path calculation in hot loop [\#202](https://github.com/abhimehro/Seatek_Analysis/pull/202) ([abhimehro](https://github.com/abhimehro))
 - ⚡ Bolt: \[performance improvement\] [\#200](https://github.com/abhimehro/Seatek_Analysis/pull/200) ([abhimehro](https://github.com/abhimehro))
 - ⚡ Bolt: \[performance improvement\] Fetch daily report github data concurrently [\#199](https://github.com/abhimehro/Seatek_Analysis/pull/199) ([abhimehro](https://github.com/abhimehro))

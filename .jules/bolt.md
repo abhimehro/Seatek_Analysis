@@ -31,3 +31,6 @@
 ## 2025-05-24 - Optimize package installation loop
 **Learning:** Checking and installing packages in a `for` loop uses individual `requireNamespace` and `install.packages` calls, which adds overhead and multiple network/setup rounds.
 **Action:** Use vectorized functions like `sapply` to check dependencies concurrently and provide the entire vector of missing packages to `install.packages()` to minimize setup and network overhead.
+## 2025-05-24 - Handle AI rate limiting errors in CI
+**Learning:** The GitHub CI failed due to the Copilot SWE agent receiving a HTTP 429 rate limit error when submitting the PR or requesting review.
+**Action:** Since the code changes are perfectly correct and the tests pass locally, the CI failure was an external rate-limiting issue unrelated to the code being submitted. There are no actual code changes required to fix this, as the system hit an API limit. I'll report this.

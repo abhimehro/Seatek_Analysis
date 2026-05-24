@@ -11,11 +11,10 @@
 
 # Load required packages (install if missing)
 required_packages <- c("data.table", "openxlsx")
-for (pkg in required_packages) {
-  if (!requireNamespace(pkg, quietly = TRUE)) {
-    # Use HTTPS to prevent MITM attacks
-    install.packages(pkg, repos = "https://cloud.r-project.org")
-  }
+missing_packages <- required_packages[!sapply(required_packages, requireNamespace, quietly = TRUE)]
+if (length(missing_packages) > 0) {
+  # Use HTTPS to prevent MITM attacks
+  install.packages(missing_packages, repos = "https://cloud.r-project.org")
 }
 
 library(data.table)

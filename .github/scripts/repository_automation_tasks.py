@@ -155,9 +155,16 @@ def discover_hotspots(limit: int = 5) -> list[tuple[str, int]]:
     root_str = str(ROOT) + os.sep
     root_len = len(root_str)
 
+    # ⚡ Bolt: Hoist extend method to avoid lookups
+    extend_candidates = candidates.extend
+
     # Use os.walk(topdown=True) so we can prune ignored directories early instead of traversing them
     for current_dir, dirs, files in os.walk(ROOT, topdown=True):
         dirs[:] = [d for d in dirs if d not in IGNORED_DIRS]
+
+        dir_candidates = []
+        add_dir_candidate = dir_candidates.append
+
         for file in files:
             # ⚡ Bolt: Use tuple with .endswith() for faster C-level evaluation
             if not file.endswith((".py", ".sh")):
@@ -181,7 +188,10 @@ def discover_hotspots(limit: int = 5) -> list[tuple[str, int]]:
 
             # Calculate relative path using fast string slicing
             rel_path = path_str[root_len:] if path_str.startswith(root_str) else path_str
-            candidates.append((rel_path, line_count))
+            add_dir_candidate((rel_path, line_count))
+
+        if dir_candidates:
+            extend_candidates(dir_candidates)
 
     return sorted(candidates, key=lambda item: item[1], reverse=True)[:limit]
 

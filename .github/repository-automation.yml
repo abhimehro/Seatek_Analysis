@@ -42,26 +42,63 @@ automation:
   quality_assurance:
     enabled: true
     setup_commands:
+      - name: upgrade pip
+        run:
+          - python3
+          - "-m"
+          - pip
+          - install
+          - "--upgrade"
+          - pip
+        optional: false
+        timeout_seconds: 1800
       - name: install ci dependencies
-        run: python3 -m pip install --upgrade pip && python3 -m pip install -r requirements-ci.txt pre-commit bandit
+        run:
+          - python3
+          - "-m"
+          - pip
+          - install
+          - "-r"
+          - requirements-ci.txt
+          - pre-commit
+          - bandit
         optional: false
         timeout_seconds: 1800
     commands:
       - name: pytest suite
-        run: python3 -m pytest
+        run:
+          - python3
+          - "-m"
+          - pytest
         optional: false
         timeout_seconds: 2400
       - name: pre-commit hygiene
-        run: SKIP=trailing-whitespace,end-of-file-fixer,mixed-line-ending,requirements-txt-fixer pre-commit run --all-files
+        run:
+          - pre-commit
+          - run
+          - "--all-files"
+        env:
+          SKIP: trailing-whitespace,end-of-file-fixer,mixed-line-ending,requirements-txt-fixer
         optional: true
         timeout_seconds: 1800
       - name: trunk parity check
-        run: if command -v trunk >/dev/null 2>&1; then trunk check --all; else echo "trunk not installed; skipping"; fi
+        run:
+          - trunk
+          - check
+          - "--all"
         optional: true
         timeout_seconds: 1800
     security_commands:
       - name: bandit source scan
-        run: python3 -m bandit -r src -ll -c .bandit
+        run:
+          - python3
+          - "-m"
+          - bandit
+          - "-r"
+          - src
+          - "-ll"
+          - "-c"
+          - .bandit
         optional: true
         timeout_seconds: 1200
   backlog_manager:

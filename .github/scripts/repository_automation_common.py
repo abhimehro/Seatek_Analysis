@@ -82,19 +82,40 @@ def run_process(
     )
 
 
-def run_shell_command(command: str, timeout: int = 1800) -> dict[str, Any]:
+def run_shell_command(command: str | list[str], timeout: int = 1800, custom_env: dict[str, str] | None = None) -> dict[str, Any]:
     # SECURITY: Strip GH_TOKEN to enforce least privilege and prevent credential
     # exfiltration by potentially compromised third-party dependencies executed in the shell.
     safe_env = command_env()
+    if custom_env:
+        safe_env.update(custom_env)
     safe_env.pop("GH_TOKEN", None)
 
-    # Commands originate from repository-controlled configuration, not user input.
-    proc = run_process([BASH_BIN, "-lc", command], timeout=timeout, env=safe_env)
+    # Allow backward compatibility for existing command string configurations while we migrate,
+    # but the primary path relies on lists of arguments to avoid shell injection.
+    if isinstance(command, str):
+        # We still need to support strings during migration, so we run them via bash
+        cmd_args = [BASH_BIN, "-lc", command]
+        cmd_str = command
+    else:
+        # Secure execution without shell wrapper
+        cmd_args = command
+        cmd_str = " ".join(command)
+
+    try:
+        proc = run_process(cmd_args, timeout=timeout, env=safe_env)
+        exit_code = proc.returncode
+        stdout = truncate(proc.stdout)
+        stderr = truncate(proc.stderr)
+    except FileNotFoundError as exc:
+        exit_code = 127
+        stdout = ""
+        stderr = f"Command not found: {exc}"
+
     return {
-        "command": command,
-        "exit_code": proc.returncode,
-        "stdout": truncate(proc.stdout),
-        "stderr": truncate(proc.stderr),
+        "command": cmd_str,
+        "exit_code": exit_code,
+        "stdout": stdout,
+        "stderr": stderr,
     }
 
 

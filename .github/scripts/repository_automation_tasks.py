@@ -58,7 +58,11 @@ def execute_configured_commands(
         entry = {
             "bucket": bucket_name,
             "name": item["name"],
-            **run_shell_command(item["run"], int(item.get("timeout_seconds", 1800))),
+            **run_shell_command(
+                item["run"],
+                int(item.get("timeout_seconds", 1800)),
+                custom_env=item.get("env")
+            ),
             "optional": bool(item.get("optional", False)),
         }
         if bucket_name == "setup":
@@ -690,7 +694,11 @@ def run_safe_adjustment_commands(
     command_results = [
         {
             "name": item["name"],
-            **run_shell_command(item["run"], int(item.get("timeout_seconds", 1200))),
+            **run_shell_command(
+                item["run"],
+                int(item.get("timeout_seconds", 1200)),
+                custom_env=item.get("env")
+            ),
         }
         for item in section.get("safe_adjustment_commands", [])
     ]

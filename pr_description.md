@@ -1,4 +1,11 @@
-💡 **What**: Extracted sequential `gh_json` API calls in `daily_report_lines()` into a separate `fetch_daily_report_data()` helper function and used `concurrent.futures.ThreadPoolExecutor` to run them concurrently.
-🎯 **Why**: The `daily_report_lines()` function made three sequential calls to the GitHub CLI (via `gh_json`), introducing blocking I/O bottlenecks. By executing independent network/subprocess requests in parallel, we reduce overall wait time significantly.
-📊 **Impact**: Reduces execution time for `daily_report_lines()` by up to ~66% under normal API conditions, as it now waits for the single longest call rather than the sum of all three.
-🔬 **Measurement**: Benchmarked a mock equivalent showing reduction from 0.30s (sequential) to 0.10s (concurrent).
+💡 What
+Replaced the `filepath.endswith(('.py', '.pY', '.Py', '.PY'))` file extension check with the idiomatic `os.path.splitext(filepath)[1].lower()` in `code_health_scanner.py`.
+
+🎯 Why
+Using `.endswith()` with case permutations creates a combinatorial explosion of cases (e.g., a 4-letter extension requires 16 permutations), which is an unmaintainable anti-pattern that sacrifices code readability for negligible performance gains.
+
+📊 Impact
+Slightly increased object allocation during file path parsing but significantly improved code readability and maintainability.
+
+🔬 Measurement
+Tests pass and the logic correctly handles file extension checks case-insensitively, preventing hard-to-read permutations while maintaining accuracy.

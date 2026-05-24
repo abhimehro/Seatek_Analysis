@@ -84,14 +84,18 @@ def read_file_safe(filepath):
 # ⚡ Bolt: Avoid string allocation overhead by passing a tuple of case permutations
 # directly to `.endswith()` instead of calling `.lower()` on the original string.
 # Performance metric: ~35% faster execution for file extension checks.
+# ⚡ Bolt: Reverted `.endswith()` case permutation chain as it creates a combinatorial
+# explosion of case permutations, sacrificing readability for negligible performance gains.
+# Using the idiomatic `os.path.splitext(filepath)[1].lower()` instead.
 def get_language(filepath):
-    if filepath.endswith(('.py', '.pY', '.Py', '.PY')):
+    ext = os.path.splitext(filepath)[1].lower()
+    if ext == '.py':
         return 'python'
-    elif filepath.endswith(('.r', '.R')):
+    elif ext == '.r':
         return 'r'
-    elif filepath.endswith(('.js', '.jS', '.Js', '.JS')):
+    elif ext == '.js':
         return 'javascript'
-    elif filepath.endswith(('.ts', '.tS', '.Ts', '.TS')):
+    elif ext == '.ts':
         return 'typescript'
     return 'unknown'
 

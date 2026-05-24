@@ -83,3 +83,25 @@ test_that("read_sensor_data correctly converts numeric timestamps", {
 #   expect_true("Timestamp" %in% names(dt))
 #   expect_equal(names(dt)[33], "Timestamp")
 # })
+
+test_that("read_sensor_data enforces the 50MB maximum file size limit", {
+  # Create a sparse file that is slightly larger than 50MB
+  large_file <- tempfile(fileext = ".txt")
+  f <- file(large_file, "wb")
+  # 50 MB + 1 byte
+  seek(f, 50 * 1024 * 1024 + 1)
+  writeBin(as.raw(0), f)
+  close(f)
+
+  # Ensure cleanup happens even if the test fails
+  on.exit({
+    suppressWarnings(file.remove(large_file))
+  }, add = TRUE)
+
+  # Should throw an error about maximum allowed size
+  expect_error(
+    read_sensor_data(large_file),
+    "exceeds maximum allowed size of 50 MB",
+    fixed = TRUE
+  )
+})

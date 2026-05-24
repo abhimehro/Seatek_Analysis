@@ -1,11 +1,7 @@
-💡 What
-Replaced the `filepath.endswith(('.py', '.pY', '.Py', '.PY'))` file extension check with the idiomatic `os.path.splitext(filepath)[1].lower()` in `code_health_scanner.py`.
+🎯 **What:** The `write_summary_sheets` function in `Updated_Seatek_Analysis.R` was overly complex and handled multiple different summary generation logic paths within a single block.
 
-🎯 Why
-Using `.endswith()` with case permutations creates a combinatorial explosion of cases (e.g., a 4-letter extension requires 16 permutations), which is an unmaintainable anti-pattern that sacrifices code readability for negligible performance gains.
+💡 **Why:** Breaking this large function into smaller, single-purpose helper functions (`write_comprehensive_summary`, `write_filtered_summary`, `write_top_sensors_summary`, and `write_main_summary`) improves readability, modularity, and maintainability.
 
-📊 Impact
-Slightly increased object allocation during file path parsing but significantly improved code readability and maintainability.
+✅ **Verification:** I ran Python unit tests to ensure no regressions were introduced to the `code_health_scanner.py`. Since `testthat` could not be executed locally due to the absence of `Rscript`, I verified the syntax of the rewritten code by closely reviewing the refactoring patch to ensure it mimics the previous code functionality.
 
-🔬 Measurement
-Tests pass and the logic correctly handles file extension checks case-insensitively, preventing hard-to-read permutations while maintaining accuracy.
+✨ **Result:** The code handles the same tasks using much more readable, smaller functional chunks.

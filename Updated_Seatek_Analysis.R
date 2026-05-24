@@ -284,22 +284,22 @@ calculate_summary_stats <- function(results) {
   summary_wide # Implicit return
 }
 
-# Write summary sheets and CSVs
-write_summary_sheets <- function(wb, summary_df, output_file,
-                                 header_style, highlight_top_n, highlight_style_summary = NULL) {
-  # --- Comprehensive summary (all sensors) ---
-  summary_df_all <- summary_df # keep a copy before filtering
+# Write comprehensive summary (all sensors)
+write_comprehensive_summary <- function(wb, summary_df_all, output_file, header_style) {
   addWorksheet(wb, "Summary_All")
   writeData(wb, sheet = "Summary_All", x = summary_df_all,
             headerStyle = header_style)
   freezePane(wb, sheet = "Summary_All", firstRow = TRUE)
   # Export comprehensive summary as CSV
-  csv_all <- sub("\\.xlsx$", "_all.csv", output_file)
+  csv_all <- sub("\.xlsx$", "_all.csv", output_file)
   data.table::fwrite(summary_df_all, csv_all, row.names = FALSE)
   message(sprintf("Comprehensive summary CSV written to %s", csv_all))
-  cat(sprintf("  📄 Saved: %s\n", basename(csv_all)))
+  cat(sprintf("  📄 Saved: %s
+", basename(csv_all)))
+}
 
-  # --- Filtered summary (sufficient data only) ---
+# Write filtered summary (sufficient data only)
+write_filtered_summary <- function(wb, summary_df_all, output_file, header_style) {
   min_count <- 5
   summary_df_sufficient <-
     summary_df_all[summary_df_all$full_count >= min_count, ]
@@ -308,23 +308,16 @@ write_summary_sheets <- function(wb, summary_df, output_file,
             headerStyle = header_style)
   freezePane(wb, sheet = "Summary_Sufficient", firstRow = TRUE)
   # Export filtered summary as CSV
-  csv_sufficient <- sub("\\.xlsx$", "_sufficient.csv", output_file)
+  csv_sufficient <- sub("\.xlsx$", "_sufficient.csv", output_file)
   data.table::fwrite(summary_df_sufficient, csv_sufficient, row.names = FALSE)
   message(sprintf("Filtered summary CSV written to %s", csv_sufficient))
-  cat(sprintf("  📄 Saved: %s\n", basename(csv_sufficient)))
+  cat(sprintf("  📄 Saved: %s
+", basename(csv_sufficient)))
+  return(summary_df_sufficient)
+}
 
-  # Continue with filtered summary for top sensors and highlighting
-  summary_df <- summary_df_sufficient
-  # Flag high-variability sensors (e.g., full_sd > threshold)
-  sd_threshold <- 2 # adjust as needed
-  # Modifying in place if data.table
-  if (is.data.table(summary_df)) {
-    summary_df[, flag_high_variability := full_sd > sd_threshold]
-  } else {
-    summary_df$flag_high_variability <- summary_df$full_sd > sd_threshold
-  }
-
-  # Prepare top sensors by absolute within_diff_mean
+# Write top sensors summary
+write_top_sensors_summary <- function(wb, summary_df, output_file, header_style) {
   if ("within_diff_mean" %in% colnames(summary_df)) {
     abs_diff <- abs(summary_df$within_diff_mean)
     top_n <- 5
@@ -338,9 +331,10 @@ write_summary_sheets <- function(wb, summary_df, output_file,
     } else {
       top_sensors <- summary_df[order(-abs_diff), ][1:top_n, cols_to_keep]
     }
-    csv_top <- sub("\\.xlsx$", "_top_sensors.csv", output_file)
+    csv_top <- sub("\.xlsx$", "_top_sensors.csv", output_file)
     data.table::fwrite(top_sensors, csv_top, row.names = FALSE)
-    cat(sprintf("  📄 Saved: %s\n", basename(csv_top)))
+    cat(sprintf("  📄 Saved: %s
+", basename(csv_top)))
 
     addWorksheet(wb, "Summary_Top_Sensors")
     writeData(
@@ -353,7 +347,10 @@ write_summary_sheets <- function(wb, summary_df, output_file,
     setColWidths(wb, sheet = "Summary_Top_Sensors", cols = 1:ncol(top_sensors),
                  widths = "auto")
   }
+}
 
+# Write main summary
+write_main_summary <- function(wb, summary_df, output_file, header_style, highlight_top_n, highlight_style_summary) {
   addWorksheet(wb, "Summary")
   writeData(wb, sheet = "Summary", x = summary_df, headerStyle = header_style)
   freezePane(wb, sheet = "Summary", firstRow = TRUE)
@@ -370,17 +367,46 @@ write_summary_sheets <- function(wb, summary_df, output_file,
   }
   saveWorkbook(wb, output_file, overwrite = TRUE)
   message(sprintf("Summary written to %s", output_file))
-  cat(sprintf("  📄 Saved: %s\n", basename(output_file)))
+  cat(sprintf("  📄 Saved: %s
+", basename(output_file)))
   # Also export summary as CSV for preview
-  csv_out <- sub("\\.xlsx$", ".csv", output_file)
+  csv_out <- sub("\.xlsx$", ".csv", output_file)
   data.table::fwrite(summary_df, csv_out, row.names = FALSE)
   message(sprintf("Summary CSV written to %s", csv_out))
-  cat(sprintf("  📄 Saved: %s\n", basename(csv_out)))
+  cat(sprintf("  📄 Saved: %s
+", basename(csv_out)))
   # Export robust stats as CSV
-  csv_robust <- sub("\\.xlsx$", "_robust.csv", output_file)
+  csv_robust <- sub("\.xlsx$", "_robust.csv", output_file)
   data.table::fwrite(summary_df, csv_robust, row.names = FALSE)
   message(sprintf("Robust summary CSV written to %s", csv_robust))
-  cat(sprintf("  📄 Saved: %s\n", basename(csv_robust)))
+  cat(sprintf("  📄 Saved: %s
+", basename(csv_robust)))
+}
+
+# Write summary sheets and CSVs
+write_summary_sheets <- function(wb, summary_df, output_file,
+                                 header_style, highlight_top_n, highlight_style_summary = NULL) {
+  # --- Comprehensive summary (all sensors) ---
+  summary_df_all <- summary_df # keep a copy before filtering
+  write_comprehensive_summary(wb, summary_df_all, output_file, header_style)
+
+  # --- Filtered summary (sufficient data only) ---
+  summary_df <- write_filtered_summary(wb, summary_df_all, output_file, header_style)
+
+  # Flag high-variability sensors (e.g., full_sd > threshold)
+  sd_threshold <- 2 # adjust as needed
+  # Modifying in place if data.table
+  if (is.data.table(summary_df)) {
+    summary_df[, flag_high_variability := full_sd > sd_threshold]
+  } else {
+    summary_df$flag_high_variability <- summary_df$full_sd > sd_threshold
+  }
+
+  # Prepare top sensors by absolute within_diff_mean
+  write_top_sensors_summary(wb, summary_df, output_file, header_style)
+
+  # Main summary
+  write_main_summary(wb, summary_df, output_file, header_style, highlight_top_n, highlight_style_summary)
 }
 
 # Write combined summary workbook

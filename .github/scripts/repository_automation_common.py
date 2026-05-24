@@ -404,17 +404,18 @@ def append_publication_result(
     labels: list[Any],
     noun: str,
 ) -> tuple[str, str, str | None]:
+    parts = [body]
     if not writes_allowed():
-        body += f"\n## Write gate\n- {noun} publication skipped because this run is in report-only mode.\n"
-        return body, "", None
+        parts.append(f"\n## Write gate\n- {noun} publication skipped because this run is in report-only mode.\n")
+        return "".join(parts), "", None
     if not ensure_gh_token():
-        body += f"\n## Publishing failure\n- GH_TOKEN is missing, so the {noun} could not be created.\n"
-        return body, "", "missing GH_TOKEN"
+        parts.append(f"\n## Publishing failure\n- GH_TOKEN is missing, so the {noun} could not be created.\n")
+        return "".join(parts), "", "missing GH_TOKEN"
     try:
         issue_url = create_or_update_issue(title, body, labels)
-        body += f"\n## Published issue\n- {issue_url}\n"
-        return body, issue_url, None
+        parts.append(f"\n## Published issue\n- {issue_url}\n")
+        return "".join(parts), issue_url, None
     except Exception as exc:  # pragma: no cover - runtime integration
         logging.error(f"Error publishing issue/PR: {type(exc).__name__}")
-        body += f"\n## Publishing failure\n- {type(exc).__name__}\n"
-        return body, "", type(exc).__name__
+        parts.append(f"\n## Publishing failure\n- {type(exc).__name__}\n")
+        return "".join(parts), "", type(exc).__name__

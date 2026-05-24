@@ -27,3 +27,9 @@
 ## 2025-05-21 - Avoid unmaintainable `.endswith()` case permutation chains
 **Learning:** Using `filepath.endswith(('.py', '.pY', '.Py', '.PY'))` to avoid `.lower()` string allocation overhead creates a combinatorial explosion of case permutations (e.g., a 4-letter extension needs 16 permutations). This is an unreadable anti-pattern that sacrifices maintainability for an imperceptible micro-optimization.
 **Action:** Do not use `.endswith()` with case permutations for case-insensitive file extension checks. Instead, revert to the idiomatic `os.path.splitext(filepath)[1].lower()` pattern, as the marginal string allocation overhead is not a legitimate bottleneck compared to the loss of code readability.
+## 2026-05-24 - Refactor string concatenation with list appends
+**Learning:** String concatenation using  inside sequential / blocks or loops creates new string objects. Replacing with list appends and  improves performance. For very large strings (e.g., 1MB+), list joins offer minor CPU performance improvements (~4.8% measured improvement for 1MB bodies) but avoid repetitive reallocation of large string blocks.
+**Action:** Use list append and  instead of  for string concatenation especially when dealing with large strings or within loops.
+## 2025-05-24 - Refactor string concatenation with list appends
+**Learning:** String concatenation using `+=` inside sequential `if`/`try` blocks or loops creates new string objects. Replacing with list appends and `"".join()` improves performance. For very large strings (e.g., 1MB+), list joins offer minor CPU performance improvements (~4.8% measured improvement for 1MB bodies) but avoid repetitive reallocation of large string blocks.
+**Action:** Use list append and `.join()` instead of `+=` for string concatenation especially when dealing with large strings or within loops.

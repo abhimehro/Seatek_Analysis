@@ -27,3 +27,6 @@
 ## 2025-05-21 - Avoid unmaintainable `.endswith()` case permutation chains
 **Learning:** Using `filepath.endswith(('.py', '.pY', '.Py', '.PY'))` to avoid `.lower()` string allocation overhead creates a combinatorial explosion of case permutations (e.g., a 4-letter extension needs 16 permutations). This is an unreadable anti-pattern that sacrifices maintainability for an imperceptible micro-optimization.
 **Action:** Do not use `.endswith()` with case permutations for case-insensitive file extension checks. Instead, revert to the idiomatic `os.path.splitext(filepath)[1].lower()` pattern, as the marginal string allocation overhead is not a legitimate bottleneck compared to the loss of code readability.
+## 2025-05-24 - Hoist loop invariant function calls
+**Learning:** Evaluating the same function with the same parameters (like `basename(f)`) multiple times within a loop generates redundant function call and string parsing overhead in R.
+**Action:** Hoist these calls to a local variable at the top of the loop to minimize redundant evaluation.

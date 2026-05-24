@@ -156,10 +156,11 @@ process_all_data <- function(data_dir) {
   }, add = TRUE)
   i <- 0
   for (f in files) {
+    f_base <- basename(f)
     df <- read_sensor_data(f, verbose = FALSE)
     # Export raw data to Excel
     out_raw <- file.path(data_dir, paste0(
-      tools::file_path_sans_ext(basename(f)), ".xlsx"
+      tools::file_path_sans_ext(f_base), ".xlsx"
     ))
     raw_export_tasks[[i + 1]] <- list(df = df, out_raw = out_raw)
     # Compute summary metrics
@@ -172,13 +173,13 @@ process_all_data <- function(data_dir) {
     full    <- unlist(df[, lapply(.SD, function(x) mean(clean_vals(x))), .SDcols = sensor_names])
     diff    <- full - first10
     # Derive sheet/year name
-    year_tag <- sub("^SS_Y([0-9]{2})\\.txt$", "\\1", basename(f))
+    year_tag <- sub("^SS_Y([0-9]{2})\\.txt$", "\\1", f_base)
     # Map Y01=1995, Y02=1996, ..., Y20=2014
     year_num <- as.integer(year_tag)
     sheet_name <- if (!is.na(year_num) && year_num >= 1 && year_num <= 20) {
       as.character(1994 + year_num)
     } else {
-      basename(f)
+      f_base
     }
     # ⚡ Bolt: Store results natively as data.table with explicit Sensor ID
     # Avoids data.frame/row.names overhead and enables fast rbindlist downstream

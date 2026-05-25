@@ -56,14 +56,15 @@ MAX_FILE_SIZE = 10 * 1024 * 1024  # 10 MB
 # This prevents executing redundant `os.getcwd()` and `os.path.realpath()` system calls
 # on every `read_file_safe` invocation, reducing CPU overhead by ~33%.
 CWD_REALPATH = os.path.realpath(os.getcwd())
+CWD_REALPATH_PLUS_SEP = os.path.join(CWD_REALPATH, '')
 
 
 def read_file_safe(filepath):
     try:
         # SECURITY: Prevent path traversal by ensuring the file is within the current directory.
-        # Uses commonpath and realpath to securely prevent directory prefix bypass and symlink escape attacks.
+        # Uses startswith and realpath to securely prevent directory prefix bypass and symlink escape attacks.
         resolved_filepath = os.path.realpath(filepath)
-        if os.path.commonpath([CWD_REALPATH, resolved_filepath]) != CWD_REALPATH:
+        if not resolved_filepath.startswith(CWD_REALPATH_PLUS_SEP) and resolved_filepath != CWD_REALPATH:
             return []
 
         # SECURITY: Prevent Out-Of-Memory (OOM) DoS attacks by limiting file size

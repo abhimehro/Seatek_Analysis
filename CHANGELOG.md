@@ -24,6 +24,11 @@
 
 **Merged pull requests:**
 
+- 🧪 \[testing improvement\] Add unit tests for calculate\_summary\_stats [\#220](https://github.com/abhimehro/Seatek_Analysis/pull/220) ([abhimehro](https://github.com/abhimehro))
+- 🧪 Testing Improvement: Unit tests for log\_handler [\#217](https://github.com/abhimehro/Seatek_Analysis/pull/217) ([abhimehro](https://github.com/abhimehro))
+- 🧪 Add tests for auto\_detect\_data\_dir path traversal logic [\#216](https://github.com/abhimehro/Seatek_Analysis/pull/216) ([abhimehro](https://github.com/abhimehro))
+- 🧪 Test error handling in get\_repo\_info [\#215](https://github.com/abhimehro/Seatek_Analysis/pull/215) ([abhimehro](https://github.com/abhimehro))
+- 🔒 Sentinel: \[HIGH\] Fix Subprocess Shell Injection Vulnerability [\#212](https://github.com/abhimehro/Seatek_Analysis/pull/212) ([abhimehro](https://github.com/abhimehro))
 - ⚡ Bolt: optimize case-insensitive file extension check [\#208](https://github.com/abhimehro/Seatek_Analysis/pull/208) ([abhimehro](https://github.com/abhimehro))
 - chore: stop tracking runtime processing\_warnings.log [\#206](https://github.com/abhimehro/Seatek_Analysis/pull/206) ([cursor[bot]](https://github.com/apps/cursor))
 - perf\(scanner\): optimize extension checks \(salvages \#188\) [\#204](https://github.com/abhimehro/Seatek_Analysis/pull/204) ([abhimehro](https://github.com/abhimehro))

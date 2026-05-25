@@ -27,9 +27,3 @@
 ## 2025-05-21 - Avoid unmaintainable `.endswith()` case permutation chains
 **Learning:** Using `filepath.endswith(('.py', '.pY', '.Py', '.PY'))` to avoid `.lower()` string allocation overhead creates a combinatorial explosion of case permutations (e.g., a 4-letter extension needs 16 permutations). This is an unreadable anti-pattern that sacrifices maintainability for an imperceptible micro-optimization.
 **Action:** Do not use `.endswith()` with case permutations for case-insensitive file extension checks. Instead, revert to the idiomatic `os.path.splitext(filepath)[1].lower()` pattern, as the marginal string allocation overhead is not a legitimate bottleneck compared to the loss of code readability.
-## 2025-05-24 - Improve test robustness with warning suppression
-**Learning:** Functions like `calculate_summary_stats` that rely on `data.table::melt` may generate expected coercion warnings during test execution.
-**Action:** Use `suppressWarnings` in test cases when valid data type coercions intentionally occur, such as `data.table::melt` coercion warnings, to maintain clean and reliable test execution logs.
-## 2025-05-24 - Optimize path traversal checks with string operations
-**Learning:** Using `os.path.commonpath([base_path, resolved_path]) != base_path` is significantly slower (~37x) than C-level string operations because it iterates over path components in Python.
-**Action:** Use `not resolved_path.startswith(base_path_plus_sep) and resolved_path != base_path` (where `base_path_plus_sep = os.path.join(base_path, '')`) to achieve the exact same path traversal protection without the performance overhead.

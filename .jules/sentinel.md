@@ -92,3 +92,7 @@
 **Vulnerability:** Path traversal in `apply_corrections` due to insufficient sanitization of Excel sheet names (`str.replace("/", "_")`).
 **Learning:** Blacklisting path separators (`/`, `\`) is insufficient. Attackers can leverage other characters, encodings, or use `..` relative path tricks depending on how `os.path.join` resolves.
 **Prevention:** Use an aggressive allowlist regex (`[^A-Za-z0-9_ \-\.]`) for filenames, strip leading dots/dashes, and always verify the final resolved path stays within the base directory using `os.path.commonpath([base, target]) == base`.
+## 2025-02-28 - Subprocess Shell Injection Risk in Automation Tasks
+**Vulnerability:** `run_shell_command` executed configuration-driven strings via `bash -lc <command>`, which is vulnerable to shell injection if an attacker can manipulate the configuration file or the path inputs to the commands.
+**Learning:** Migrating configuration values from single strings to argument lists (`["python3", "-m", "pytest"]`) enables direct execution without a shell wrapper (`shell=False` or avoiding bash), eliminating the risk of shell injection while preserving functionality.
+**Prevention:** Always use lists of arguments for `subprocess.run` instead of executing raw shell strings, particularly in automation pipelines that parse configuration files. Ensure fallback logic gracefully handles expected shell-like errors (like `FileNotFoundError` mapping to exit code 127).

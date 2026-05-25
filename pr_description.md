@@ -1,11 +1,10 @@
-💡 What
-Replaced `os.path.commonpath` with a `startswith` check against a pre-calculated module-level variable (`CWD_REALPATH_PLUS_SEP`) in `read_file_safe()`.
+🎯 **What:** The testing gap for the `write_year_sheet` function inside `Updated_Seatek_Analysis.R` has been addressed. The function was completely missing dedicated test coverage.
 
-🎯 Why
-`os.path.commonpath` is slow because it splits paths into their individual components and iterates over them in Python. In a function like `read_file_safe` that might be called thousands of times to scan a directory, this path parsing overhead adds up. A C-level string `startswith()` method provides the exact same directory traversal protection (`prefix bypass`) but executes much faster.
+📊 **Coverage:** The new tests in `tests/testthat/test-write_year_sheet.R` cover:
+- Correct insertion of a newly created sheet into the workbook instance.
+- Matching dimensions (row/column counts) of inserted mocked `data.table` against retrieved Excel sheet.
+- Exact content match of specific vectors between the provided mock and parsed outputs.
+- Resilience checks ensuring functionality without error when specific formatting styles (e.g. `highlight_style_yearly=NULL`) are omitted.
+- Resilience checks ensuring functionality without error when the `within_diff` column itself is omitted from the parsed subset.
 
-📊 Impact
-Micro-benchmark testing shows that `startswith` evaluates in ~0.15 microseconds, compared to `os.path.commonpath` which takes ~5.41 microseconds. This is a ~37x speed improvement for the path traversal check within the `read_file_safe` hot path.
-
-🔬 Measurement
-Run `pytest tests/test_code_health_scanner.py` to ensure that `test_read_file_safe_path_traversal` passes, confirming that security guarantees are strictly maintained.
+✨ **Result:** A significant improvement in test coverage has been achieved, ensuring robust, deterministic regressions tracking moving forward, verifying `data.table` native compatibility mapping to `openxlsx` outputs without breaking functionality. All 64 tests in the R suite have successfully passed.

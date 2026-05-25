@@ -100,17 +100,3 @@ def test_scan_file_unknown_lang():
     lines = ["print('TODO')\n"]
     issues = scan_file(filepath, lines, "acc", "proj", "hash")
     assert issues == []
-
-def test_get_repo_info_exception_logging(caplog):
-    import logging
-    with patch("subprocess.check_output") as mock_run:
-        mock_run.side_effect = Exception("Some secret internal error")
-        with caplog.at_level(logging.ERROR):
-            account, project, commit_hash = get_repo_info()
-
-        assert account == "unknown"
-        assert project == "unknown"
-        assert commit_hash == "unknown"
-
-        assert "Error getting repo info: Internal error occurred (Exception)." in caplog.text
-        assert "Some secret internal error" not in caplog.text

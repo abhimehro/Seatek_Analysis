@@ -33,3 +33,6 @@
 ## 2025-05-24 - Optimize path traversal checks with string operations
 **Learning:** Using `os.path.commonpath([base_path, resolved_path]) != base_path` is significantly slower (~37x) than C-level string operations because it iterates over path components in Python.
 **Action:** Use `not resolved_path.startswith(base_path_plus_sep) and resolved_path != base_path` (where `base_path_plus_sep = os.path.join(base_path, '')`) to achieve the exact same path traversal protection without the performance overhead.
+## 2025-05-26 - Optimize Pandas string replacement with slicing
+**Learning:** Using `.str.replace()` on a Pandas Series for a known fixed prefix (like "Sensor ") introduces string scanning overhead.
+**Action:** Replace `.str.replace()` with direct string slicing (e.g., `.str[7:]`) when the prefix length is guaranteed, as it avoids the replacement engine entirely and provides a measurable speedup.

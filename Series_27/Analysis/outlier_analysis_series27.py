@@ -125,12 +125,12 @@ def prepare_outliers_df(outliers):
 
         valid_outliers = outliers[valid_mask].copy()
 
-        # ⚡ Bolt: Replace .str.replace() with string slicing to avoid regex engine overhead
-        # and avoid intermediate string replacements for faster parsing
+        # ⚡ Bolt: Replace .str.split().str[-1] with .str.replace('Sensor ', '')
+        # avoid intermediate list creation per-row for faster parsing
         sensors = (
             valid_outliers["Sensor"]
             .astype(str)
-            .str[7:]
+            .str.replace("Sensor ", "", regex=False)
             .astype(int)
         )
         next_years = extracted_years.loc[valid_mask, 0].astype(int)
@@ -160,15 +160,10 @@ def _is_safe_path(basedir: str, path: str) -> bool:
     """
     abs_base = os.path.realpath(basedir)
     abs_path = os.path.realpath(path)
-    # ⚡ Bolt: Using string startswith instead of os.path.commonpath avoids iterating
-    # over path components in Python, yielding a ~4x performance improvement
-    # for path traversal protection checks in hot paths.
     try:
-        base_path_plus_sep = os.path.join(abs_base, '')
-        return abs_path.startswith(base_path_plus_sep) or abs_path == abs_base
+        return os.path.commonpath([abs_base, abs_path]) == abs_base
     except ValueError:
-        # For compatibility with potential ValueError from commonpath replacement logic
-        # if path drives differ on Windows, but startswith won't raise it.
+        # commonpath raises ValueError if paths are on different drives (Windows)
         return False
 
 
@@ -229,29 +224,35 @@ def _process_single_sheet(xls, sheet, group, input_path, output_dir):
     return new_corrections
 
 
+def _process_excel_sheets(input_path, output_dir, grouped):
+    """Process grouped sheets to apply corrections and return dataframe list."""
+    corrections_dfs = []
+    try:
+        with pd.ExcelFile(input_path) as xls:
+            for sheet, group in grouped:
+                new_corrections = _process_single_sheet(
+                    xls, sheet, group, input_path, output_dir
+                )
+                if new_corrections is not None:
+                    corrections_dfs.append(new_corrections)
+    except (FileNotFoundError, PermissionError, OSError) as e:
+        # SECURITY: Do not leak stack traces in logs to prevent information disclosure
+        logging.error(f"Could not open file '{input_path}': {e}")
+    except (ValueError, KeyError) as e:
+        # SECURITY: Do not leak stack traces in logs to prevent information disclosure
+        logging.error(
+            f"Error reading or processing Excel data from '{input_path}': {e}"
+        )
+    return corrections_dfs
+
+
 def apply_corrections(input_path, output_dir, outliers_df):
     """Applies offsets to the Excel file and generates a list of corrections."""
     corrections_dfs = []
 
     if not outliers_df.empty:
         grouped = outliers_df.groupby("sheet")
-
-        try:
-            with pd.ExcelFile(input_path) as xls:
-                for sheet, group in grouped:
-                    new_corrections = _process_single_sheet(
-                        xls, sheet, group, input_path, output_dir
-                    )
-                    if new_corrections is not None:
-                        corrections_dfs.append(new_corrections)
-        except (FileNotFoundError, PermissionError, OSError) as e:
-            # SECURITY: Do not leak stack traces in logs to prevent information disclosure
-            logging.error(f"Could not open file '{input_path}': {e}")
-        except (ValueError, KeyError) as e:
-            # SECURITY: Do not leak stack traces in logs to prevent information disclosure
-            logging.error(
-                f"Error reading or processing Excel data from '{input_path}': {e}"
-            )
+        corrections_dfs = _process_excel_sheets(input_path, output_dir, grouped)
 
     if corrections_dfs:
         return pd.concat(corrections_dfs, ignore_index=True)
@@ -292,43 +293,54 @@ def plot_outliers(outliers, method, threshold, output_dir):
     logging.info(f"Saved plot to '{plot_file}'")
 
 
-def main():
-    args = parse_args()
-    logging.basicConfig(level=logging.INFO, format="%(levelname)s: %(message)s")
-
-    # Explicitly validate the input file early to provide a clean CLI error UX
-    if not os.path.isfile(args.input):
+def _load_and_validate_file(input_file):
+    if not os.path.isfile(input_file):
         logging.error(
-            f"Input file not found or is not a file: '{args.input}'. "
+            f"Input file not found or is not a file: '{input_file}'. "
             "Please provide a valid Excel file."
         )
-        return
+        return None
 
-    # SECURITY: Prevent Out-Of-Memory (OOM) DoS attacks by limiting file size and avoiding TOCTOU
     try:
-        with open(args.input, "rb") as f:
-            # Read up to MAX_FILE_SIZE + 1 bytes to check the limit without loading the whole file.
+        with open(input_file, "rb") as f:
             file_buffer = f.read(MAX_FILE_SIZE + 1)
     except IOError as e:
-        logging.error(f"Error reading input file {args.input}: {e}")
-        return
+        logging.error(f"Error reading input file {input_file}: {e}")
+        return None
 
     if len(file_buffer) > MAX_FILE_SIZE:
         logging.error(
             f"Input file exceeds maximum allowed size of {MAX_FILE_SIZE // (1024 * 1024)}MB."
         )
+        return None
+    return file_buffer
+
+
+def _read_excel_summary(file_buffer, sheet_summary):
+    try:
+        return pd.read_excel(BytesIO(file_buffer), sheet_name=sheet_summary)
+    except Exception as e:
+        logging.error(
+            f"Failed to read the Excel file: Internal error occurred ({type(e).__name__})."
+        )
+        return None
+
+
+def main():
+    args = parse_args()
+    logging.basicConfig(level=logging.INFO, format="%(levelname)s: %(message)s")
+
+    file_buffer = _load_and_validate_file(args.input)
+    if not file_buffer:
         return
 
     os.makedirs(args.output, exist_ok=True)
     logging.info("Loading year-to-year differences")
-    try:
-        diff_df = pd.read_excel(BytesIO(file_buffer), sheet_name=args.sheet_summary)
-    except Exception as e:
-        # SECURITY: Do not leak stack traces; fail gracefully on parse errors
-        logging.error(
-            f"Failed to read the Excel file: Internal error occurred ({type(e).__name__})."
-        )
+
+    diff_df = _read_excel_summary(file_buffer, args.sheet_summary)
+    if diff_df is None:
         return
+
     long_df = diff_df.melt(
         id_vars="Year_Pair", var_name="Sensor", value_name="Difference"
     )

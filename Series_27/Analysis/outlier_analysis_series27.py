@@ -125,12 +125,12 @@ def prepare_outliers_df(outliers):
 
         valid_outliers = outliers[valid_mask].copy()
 
-        # ⚡ Bolt: Replace .str.split().str[-1] with .str.replace('Sensor ', '')
-        # avoid intermediate list creation per-row for faster parsing
+        # ⚡ Bolt: Replace .str.replace() with string slicing to avoid regex engine overhead
+        # Slicing bypasses the string replacement and regex engines entirely for faster parsing
         sensors = (
             valid_outliers["Sensor"]
             .astype(str)
-            .str.replace("Sensor ", "", regex=False)
+            .str[7:]
             .astype(int)
         )
         next_years = extracted_years.loc[valid_mask, 0].astype(int)

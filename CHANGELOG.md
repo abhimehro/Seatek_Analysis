@@ -16,6 +16,7 @@
 
 **Closed issues:**
 
+- Daily QA & Agentic Review — 2026-05-28 [\#230](https://github.com/abhimehro/Seatek_Analysis/issues/230)
 - Daily QA & Agentic Review — 2026-05-27 [\#228](https://github.com/abhimehro/Seatek_Analysis/issues/228)
 - Daily QA Check - Seatek\_Analysis - 2026-05-26 [\#225](https://github.com/abhimehro/Seatek_Analysis/issues/225)
 - Daily QA Check - Seatek\_Analysis - 2026-05-25 [\#221](https://github.com/abhimehro/Seatek_Analysis/issues/221)
@@ -27,6 +28,7 @@
 
 **Merged pull requests:**
 
+- ⚡ Bolt: \[performance improvement\] Concurrent backlog fetching [\#231](https://github.com/abhimehro/Seatek_Analysis/pull/231) ([abhimehro](https://github.com/abhimehro))
 - ⚡ Bolt: optimize pandas string replacement with slicing [\#229](https://github.com/abhimehro/Seatek_Analysis/pull/229) ([abhimehro](https://github.com/abhimehro))
 - test: write\_year\_sheet + read\_sensor\_data limits \(salvages \#218, \#219, v3\) [\#227](https://github.com/abhimehro/Seatek_Analysis/pull/227) ([abhimehro](https://github.com/abhimehro))
 - ⚡ Bolt: \[performance improvement\] Optimize Sensor ID parsing in outlier analysis [\#226](https://github.com/abhimehro/Seatek_Analysis/pull/226) ([abhimehro](https://github.com/abhimehro))

@@ -33,3 +33,6 @@
 ## 2025-05-24 - Optimize path traversal checks with string operations
 **Learning:** Using `os.path.commonpath([base_path, resolved_path]) != base_path` is significantly slower (~37x) than C-level string operations because it iterates over path components in Python.
 **Action:** Use `not resolved_path.startswith(base_path_plus_sep) and resolved_path != base_path` (where `base_path_plus_sep = os.path.join(base_path, '')`) to achieve the exact same path traversal protection without the performance overhead.
+## 2025-05-24 - Ensure imports for concurrency
+**Learning:** Using `concurrent.futures.ThreadPoolExecutor` for concurrency optimizations requires explicitly verifying that `import concurrent.futures` exists in the file, even if it passes local tests (due to mocking or environment pollution). Missing imports will cause `NameError` at runtime.
+**Action:** Always verify `import concurrent.futures` is present when adding multithreading optimizations.

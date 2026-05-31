@@ -180,7 +180,7 @@ def test_apply_corrections_path_traversal(tmp_path):
         mock_xls.parse.return_value = mock_df_raw
 
         # Exercise the real os.path.join / _is_safe_path defense-in-depth check
-        result = apply_corrections("dummy.xlsx", output_dir, outliers_df)
+        result = apply_corrections(b"dummy", "dummy.xlsx", output_dir, outliers_df)
 
         # The MagicMock-based df_raw still records the to_excel call
         assert mock_df_raw.to_excel.called, "to_excel should be invoked"

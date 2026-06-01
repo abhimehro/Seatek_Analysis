@@ -36,3 +36,7 @@
 ## 2025-05-24 - Ensure imports for concurrency
 **Learning:** Using `concurrent.futures.ThreadPoolExecutor` for concurrency optimizations requires explicitly verifying that `import concurrent.futures` exists in the file, even if it passes local tests (due to mocking or environment pollution). Missing imports will cause `NameError` at runtime.
 **Action:** Always verify `import concurrent.futures` is present when adding multithreading optimizations.
+
+## 2023-10-27 - Concurrent network calls with ThreadPoolExecutor
+**Learning:** Using `concurrent.futures.ThreadPoolExecutor` significantly reduces execution time when making multiple independent network or slow subprocess calls (e.g., GitHub API requests), particularly when the primary script runs sequentially and blockingly on IO operations. Always verify that `import concurrent.futures` exists when applying this optimization to avoid `NameError`s in production.
+**Action:** When identifying sequentially executed network-bound API fetches (e.g., in `.github/scripts`), replace them with thread pool tasks if they don't depend on each other. Wrap the logic in a small helper function to comply with "Large Method" style rules if needed. Verify imports explicitly.

@@ -224,11 +224,11 @@ def _process_single_sheet(xls, sheet, group, input_path, output_dir):
     return new_corrections
 
 
-def _process_excel_sheets(input_path, output_dir, grouped):
+def _process_excel_sheets(file_buffer, input_path, output_dir, grouped):
     """Process grouped sheets to apply corrections and return dataframe list."""
     corrections_dfs = []
     try:
-        with pd.ExcelFile(input_path) as xls:
+        with pd.ExcelFile(BytesIO(file_buffer)) as xls:
             for sheet, group in grouped:
                 new_corrections = _process_single_sheet(
                     xls, sheet, group, input_path, output_dir
@@ -246,13 +246,13 @@ def _process_excel_sheets(input_path, output_dir, grouped):
     return corrections_dfs
 
 
-def apply_corrections(input_path, output_dir, outliers_df):
+def apply_corrections(file_buffer, input_path, output_dir, outliers_df):
     """Applies offsets to the Excel file and generates a list of corrections."""
     corrections_dfs = []
 
     if not outliers_df.empty:
         grouped = outliers_df.groupby("sheet")
-        corrections_dfs = _process_excel_sheets(input_path, output_dir, grouped)
+        corrections_dfs = _process_excel_sheets(file_buffer, input_path, output_dir, grouped)
 
     if corrections_dfs:
         return pd.concat(corrections_dfs, ignore_index=True)
@@ -353,7 +353,7 @@ def main():
     outliers_df = prepare_outliers_df(outliers)
 
     # Apply corrections and write to disk
-    corr_df = apply_corrections(args.input, args.output, outliers_df)
+    corr_df = apply_corrections(file_buffer, args.input, args.output, outliers_df)
 
     corr_file = os.path.join(args.output, "corrections_summary.xlsx")
     corr_df.to_excel(corr_file, index=False)

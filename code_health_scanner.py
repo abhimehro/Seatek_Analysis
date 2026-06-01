@@ -120,7 +120,7 @@ def scan_file(filepath, lines, account, project, commit_hash):
         # result collection in Python, reducing bytecode instruction overhead by ~10%.
         issues.extend(
             [f"TODO in {filepath}:{i}" for i, line in enumerate(lines, 1)
-             if "TODO" in line and line.strip() == "print('TODO')"]
+             if "print('TODO')" in line and line.strip() == "print('TODO')"]
         )
 
     return issues

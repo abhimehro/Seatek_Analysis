@@ -35,7 +35,26 @@ test_that("write_year_sheet works correctly", {
   # 1. Check if sheet was added
   expect_true(year %in% names(wb), label = "Sheet should be added to the workbook.")
 
-  # 2. Read data back and verify
+  # 2. Check if freeze pane is applied correctly
+  ws <- wb$worksheets[[1]]
+  expect_false(is.null(ws$freezePane), label = "Freeze pane should be applied to the worksheet.")
+  expect_match(ws$freezePane, "state=\"frozen\"", label = "Freeze pane state should be frozen.")
+  expect_match(ws$freezePane, "ySplit=\"1\"", label = "Freeze pane should split at the first row.")
+
+  # 3. Check if highlight style is applied to the correct cell
+  highlight_col <- which(colnames(mock_data) == "within_diff")
+  highlight_row <- which.max(abs(mock_data$within_diff)) + 1
+
+  styles <- wb$styleObjects
+  has_highlight <- FALSE
+  for (s in styles) {
+    if (s$sheet == year && length(s$rows) == 1 && s$rows == highlight_row && s$cols == highlight_col) {
+      has_highlight <- TRUE
+    }
+  }
+  expect_true(has_highlight, label = "Highlight style should be applied to the maximum absolute within_diff value.")
+
+  # 4. Read data back and verify
   temp_file <- tempfile(fileext = ".xlsx")
   saveWorkbook(wb, temp_file, overwrite = TRUE)
 
@@ -49,12 +68,12 @@ test_that("write_year_sheet works correctly", {
   expect_equal(read_data$Sensor, mock_data$Sensor, label = "Sensor column should match.")
   expect_equal(read_data$within_diff, mock_data$within_diff, label = "within_diff column should match.")
 
-  # 3. Test without highlight style (should not fail)
+  # 5. Test without highlight style (should not fail)
   wb2 <- createWorkbook()
   write_year_sheet(wb2, "2024", mock_data, header_style, NULL)
   expect_true("2024" %in% names(wb2), label = "Sheet should be added even without highlight style.")
 
-  # 4. Test without 'within_diff' column (should not fail and shouldn't try to highlight)
+  # 6. Test without 'within_diff' column (should not fail and shouldn't try to highlight)
   wb3 <- createWorkbook()
   mock_data_no_diff <- mock_data[, -c("within_diff")]
   write_year_sheet(wb3, "2025", mock_data_no_diff, header_style, highlight_style_yearly)

@@ -16,6 +16,11 @@
 
 **Closed issues:**
 
+- Daily QA Check - Seatek\_Analysis - 2026-06-02 [\#240](https://github.com/abhimehro/Seatek_Analysis/issues/240)
+- Daily QA & Agentic Review — 2026-06-01 [\#236](https://github.com/abhimehro/Seatek_Analysis/issues/236)
+- Daily QA & Agentic Review — 2026-05-31 [\#234](https://github.com/abhimehro/Seatek_Analysis/issues/234)
+- Daily QA & Agentic Review — 2026-05-30 [\#233](https://github.com/abhimehro/Seatek_Analysis/issues/233)
+- Daily QA & Agentic Review — 2026-05-29 [\#232](https://github.com/abhimehro/Seatek_Analysis/issues/232)
 - Daily QA & Agentic Review — 2026-05-28 [\#230](https://github.com/abhimehro/Seatek_Analysis/issues/230)
 - Daily QA & Agentic Review — 2026-05-27 [\#228](https://github.com/abhimehro/Seatek_Analysis/issues/228)
 - Daily QA Check - Seatek\_Analysis - 2026-05-26 [\#225](https://github.com/abhimehro/Seatek_Analysis/issues/225)
@@ -28,6 +33,9 @@
 
 **Merged pull requests:**
 
+- ⚡ Bolt: Optimize substring check in code\_health\_scanner.py [\#241](https://github.com/abhimehro/Seatek_Analysis/pull/241) ([abhimehro](https://github.com/abhimehro))
+- ⚡ Bolt: Optimize weekly retrospective network requests [\#238](https://github.com/abhimehro/Seatek_Analysis/pull/238) ([abhimehro](https://github.com/abhimehro))
+- 🛡️ Sentinel: \[CRITICAL\] Fix TOCTOU vulnerability in Excel parsing [\#235](https://github.com/abhimehro/Seatek_Analysis/pull/235) ([abhimehro](https://github.com/abhimehro))
 - ⚡ Bolt: \[performance improvement\] Concurrent backlog fetching [\#231](https://github.com/abhimehro/Seatek_Analysis/pull/231) ([abhimehro](https://github.com/abhimehro))
 - ⚡ Bolt: optimize pandas string replacement with slicing [\#229](https://github.com/abhimehro/Seatek_Analysis/pull/229) ([abhimehro](https://github.com/abhimehro))
 - test: write\_year\_sheet + read\_sensor\_data limits \(salvages \#218, \#219, v3\) [\#227](https://github.com/abhimehro/Seatek_Analysis/pull/227) ([abhimehro](https://github.com/abhimehro))

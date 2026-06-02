@@ -4,10 +4,10 @@
 [![renv Reproducibility](https://img.shields.io/badge/reproducible%20environment-renv-blue?logo=R)](https://rstudio.github.io/renv/)
 [![Changelog Status](https://github.com/abhimehro/Seatek_Analysis/actions/workflows/changelog.yml/badge.svg)](https://github.com/abhimehro/Seatek_Analysis/actions/workflows/changelog.yml)
 
-[![CodeScene Average Code Health](https://codescene.io/projects/78056/status-badges/average-code-health?component-name=Seatek_analysis)](https://codescene.io/projects/78056/architecture/biomarkers?component=Seatek_analysis)
-[![CodeScene Hotspot Code Health](https://codescene.io/projects/78056/status-badges/hotspot-code-health)](https://codescene.io/projects/78056)
-[![CodeScene Missed Goals](https://codescene.io/projects/78056/status-badges/missed-goals)](https://codescene.io/projects/78056)
-[![CodeScene System Mastery](https://codescene.io/projects/78056/status-badges/system-mastery?component-name=Seatek_analysis)](https://codescene.io/projects/78056/)
+[![CodeScene Average Code Health](https://codescene.io/projects/80826/status-badges/average-code-health)](https://codescene.io/projects/80826)
+[![CodeScene Hotspot Code Health](https://codescene.io/projects/80826/status-badges/hotspot-code-health)](https://codescene.io/projects/80826)
+[![CodeScene System Mastery](https://codescene.io/projects/80826/status-badges/system-mastery)](https://codescene.io/projects/80826)
+[![CodeScene Missed Goals](https://codescene.io/projects/80826/status-badges/missed-goals)](https://codescene.io/projects/80826)
 
 ---
 

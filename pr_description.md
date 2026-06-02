@@ -1,11 +1,22 @@
-💡 What
-Implemented concurrent execution for GitHub API calls in the `run_backlog_manager` function. Extracted the fetching logic into a `fetch_backlog_data` helper and wrapped the `gh_json` subprocess calls with `concurrent.futures.ThreadPoolExecutor(max_workers=2)`. Also ensured `import concurrent.futures` is present.
+## 🎯 What
 
-🎯 Why
-The script was previously executing two independent, network-bound GitHub CLI commands sequentially. This created an unnecessary blocking I/O bottleneck that slowed down the entire repository automation run.
+The `execute_tasks_parallel` function lacked test coverage. This pull request adds comprehensive unit tests using `mockery` to ensure the function behaves as expected across both its serial fallback and parallel execution paths, including proper error handling when core detection fails.
 
-📊 Impact
-Reduces the I/O blocking time of the backlog manager script by approximately 50%, as the issue and PR queries now execute in parallel rather than sequentially.
+## 📊 Coverage
 
-🔬 Measurement
-Verify the improvement by running `.github/scripts/repository_automation.py backlog-manager` and measuring the execution time before and after the change. Local benchmarks showed a 50% decrease in total time waiting for API results.
+The following scenarios are now tested:
+- **Empty input handling:** Returns an empty list immediately when given an empty list.
+- **Serial fallback:** Verifies the function falls back to serial execution when the `parallel` package is unavailable.
+- **Parallel logic (Unix & Windows):** Mocks package loading, platform detection, and the respective parallel execution engines (`mclapply` for Unix, `parLapply` for Windows) to ensure successful evaluation.
+- **Core detection failure:** Asserts the function gracefully recovers when `detectCores()` fails by defaulting back to 1 core.
+
+## ✨ Result
+
+The `execute_tasks_parallel` function is now fully covered by unit tests, increasing the test suite's overall reliability and giving us more confidence when making any future refactoring or improvements to this utility function.
+
+═════ ELIR ═════
+PURPOSE: Add unit tests for the `execute_tasks_parallel` function to verify both serial and parallel execution paths.
+SECURITY: Testing improves reliability of the parallelization engine; no new security risks introduced.
+FAILS IF: The underlying implementation relies on differing system behaviors that tests don't correctly mock.
+VERIFY: Tests pass in both local and CI environments without the actual parallel package disrupting other tests.
+MAINTAIN: When adding new OS-specific branches, update the corresponding platform-specific mocks in these tests.

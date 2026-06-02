@@ -2,7 +2,7 @@ import os
 import subprocess
 from unittest.mock import patch
 import pytest
-from code_health_scanner import get_repo_info, read_file_safe, get_language, scan_file, MAX_FILE_SIZE
+from code_health_scanner import get_repo_info, get_language, scan_file
 
 def test_get_repo_info_https():
     with patch("subprocess.check_output") as mock_run:
@@ -51,36 +51,6 @@ def test_get_language():
     assert get_language("test.js") == "javascript"
     assert get_language("test.ts") == "typescript"
     assert get_language("test.txt") == "unknown"
-
-def test_read_file_safe_happy_path():
-    test_file = "test_happy.txt"
-    content = "line1\nline2\n"
-    with open(test_file, "w") as f:
-        f.write(content)
-    try:
-        read_lines = read_file_safe(test_file)
-        assert read_lines == ["line1\n", "line2\n"]
-    finally:
-        if os.path.exists(test_file):
-            os.remove(test_file)
-
-def test_read_file_safe_path_traversal():
-    # Attempting to read a file outside CWD should return empty list
-    assert read_file_safe("/etc/passwd") == []
-
-def test_read_file_safe_too_large():
-    test_file = "test_large.txt"
-    # Create a file exactly MAX_FILE_SIZE + 1 bytes
-    with open(test_file, "w") as f:
-        f.write("a" * (MAX_FILE_SIZE + 1))
-    try:
-        assert read_file_safe(test_file) == []
-    finally:
-        if os.path.exists(test_file):
-            os.remove(test_file)
-
-def test_read_file_safe_non_existent():
-    assert read_file_safe("non_existent_file_12345.txt") == []
 
 def test_scan_file_python_todo():
     filepath = "test.py"

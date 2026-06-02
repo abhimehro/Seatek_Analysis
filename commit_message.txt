@@ -1,3 +1,5 @@
+🧹 code health: remove unused read_file_safe function
+
 🎯 **What:** Removed the unused `read_file_safe` function, its associated tests, and dependent constants (`MAX_FILE_SIZE`, `CWD_REALPATH`, `CWD_REALPATH_PLUS_SEP`) from `code_health_scanner.py`.
 
 💡 **Why:** The function was defined but no longer referenced or called by any active code within the module or the broader codebase. Removing dead code improves maintainability, reduces cognitive load, and keeps the codebase clean.
@@ -9,10 +11,3 @@
 - Ensured the primary logic within `scan_file` remains unaffected.
 
 ✨ **Result:** A cleaner codebase with reduced tech debt, preserving exact functional parity without unnecessary dead code.
-
-═════ ELIR ═════
-PURPOSE: Removed unused, dead file reading logic to improve code health.
-SECURITY: Safely eliminates code that is no longer invoked, reducing overall surface area.
-FAILS IF: A module secretly depended on the exported variables (verified none do).
-VERIFY: Tests pass without the unused function.
-MAINTAIN: Avoid committing utility functions until they are actively used by a caller.

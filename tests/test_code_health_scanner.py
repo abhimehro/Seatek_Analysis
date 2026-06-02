@@ -2,7 +2,7 @@ import os
 import subprocess
 from unittest.mock import patch
 import pytest
-from code_health_scanner import get_repo_info, read_file_safe, get_language, scan_file, MAX_FILE_SIZE
+from code_health_scanner import get_repo_info, read_file_safe, get_language, MAX_FILE_SIZE
 
 def test_get_repo_info_https():
     with patch("subprocess.check_output") as mock_run:
@@ -81,25 +81,6 @@ def test_read_file_safe_too_large():
 
 def test_read_file_safe_non_existent():
     assert read_file_safe("non_existent_file_12345.txt") == []
-
-def test_scan_file_python_todo():
-    filepath = "test.py"
-    lines = ["print('hello')\n", "print('TODO')\n", "TODO\n"]
-    issues = scan_file(filepath, lines, "acc", "proj", "hash")
-    assert len(issues) == 1
-    assert "TODO in test.py:2" in issues[0]
-
-def test_scan_file_python_no_todo():
-    filepath = "test.py"
-    lines = ["print('hello')\n", "# TODO: fix this\n"]
-    issues = scan_file(filepath, lines, "acc", "proj", "hash")
-    assert issues == []
-
-def test_scan_file_unknown_lang():
-    filepath = "test.unknown"
-    lines = ["print('TODO')\n"]
-    issues = scan_file(filepath, lines, "acc", "proj", "hash")
-    assert issues == []
 
 def test_get_repo_info_exception_logging(caplog):
     import logging

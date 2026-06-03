@@ -103,30 +103,6 @@ def get_language(filepath):
     return 'unknown'
 
 
-def scan_file(filepath, lines, account, project, commit_hash):
-    issues = []
-
-    # Determine language
-    lang = get_language(filepath)
-
-    if lang == "unknown":
-        return issues
-
-    # Analyze the file...
-    # (Pretend there is a lot of logic here for different languages)
-    if lang == "python":
-        # ⚡ Bolt: Added fast-fail strict substring check ("print('TODO')" in line)
-        # to short-circuit condition and avoid unnecessary `.strip()` string
-        # allocations on partial matches.
-        # Performance metric: ~10x faster execution on lines without 'TODO'.
-        # ⚡ Bolt: Use list comprehensions instead of loops with `append()` for faster
-        # result collection in Python, reducing bytecode instruction overhead by ~10%.
-        issues.extend(
-            [f"TODO in {filepath}:{i}" for i, line in enumerate(lines, 1)
-             if "print('TODO')" in line and line.strip() == "print('TODO')"]
-        )
-
-    return issues
 
 
 if __name__ == "__main__":

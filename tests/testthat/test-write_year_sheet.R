@@ -4,11 +4,14 @@ library(data.table)
 
 # Use the global variables if needed, assuming the testthat.R setup has loaded them.
 # The `Updated_Seatek_Analysis.R` contains the `write_year_sheet` function.
-# To make it available here reliably, let's also source it.
+env <- globalenv()
+
 if (file.exists("../../Updated_Seatek_Analysis.R")) {
-  source("../../Updated_Seatek_Analysis.R")
+  source("../../Updated_Seatek_Analysis.R", local=env)
 } else if (file.exists("Updated_Seatek_Analysis.R")) {
-  source("Updated_Seatek_Analysis.R")
+  source("Updated_Seatek_Analysis.R", local=env)
+} else {
+  stop("Main analysis script not found.")
 }
 
 test_that("write_year_sheet works correctly", {
@@ -48,6 +51,25 @@ test_that("write_year_sheet works correctly", {
   # Verify specific values
   expect_equal(read_data$Sensor, mock_data$Sensor, label = "Sensor column should match.")
   expect_equal(read_data$within_diff, mock_data$within_diff, label = "within_diff column should match.")
+
+  # Check that the highlight style was applied correctly
+  # Find the style object for the highlight
+  # We know the first style object is the header (cols 1:5, row 1)
+  # The second style object should be the highlight
+  style_objs <- wb$styleObjects
+  expect_gt(length(style_objs), 0, label = "Style objects should exist.")
+
+  # Check if any style matches our expected row/col for highlight
+  # max_idx is 2 (Sensor02 with -0.8), row offset is +1 for header, so row 3
+  # col for within_diff is 5
+  found_highlight <- FALSE
+  for (obj in style_objs) {
+    if (obj$sheet == year && 3 %in% obj$rows && 5 %in% obj$cols) {
+       found_highlight <- TRUE
+       break
+    }
+  }
+  expect_true(found_highlight, label = "Highlight style should be applied to correct cell (row 3, col 5).")
 
   # 3. Test without highlight style (should not fail)
   wb2 <- createWorkbook()

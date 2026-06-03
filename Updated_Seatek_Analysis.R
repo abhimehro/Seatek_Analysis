@@ -134,6 +134,55 @@ execute_tasks_parallel <- function(tasks, task_func) {
   }
 }
 
+# Helper to compute metrics for a single sensor dataframe
+compute_sensor_metrics <- function(df, filename) {
+  # OPTIMIZATION: which(x > 0) is natively faster at dropping NAs than !is.na() &
+  sensor_names <- grep("^Sensor", names(df), value = TRUE)
+
+  # ⚡ Bolt: Replace sapply with data.table native lapply(.SD) for O(1) row subsetting
+  first10 <- unlist(df[1:min(10, .N), lapply(.SD, function(x) mean(clean_vals(x))), .SDcols = sensor_names])
+  last5   <- unlist(df[max(1, .N - 4):.N, lapply(.SD, function(x) mean(clean_vals(x))), .SDcols = sensor_names])
+  full    <- unlist(df[, lapply(.SD, function(x) mean(clean_vals(x))), .SDcols = sensor_names])
+  diff    <- full - first10
+  # Derive sheet/year name
+  year_tag <- sub("^SS_Y([0-9]{2})\\.txt$", "\\1", basename(filename))
+  # Map Y01=1995, Y02=1996, ..., Y20=2014
+  year_num <- as.integer(year_tag)
+  sheet_name <- if (!is.na(year_num) && year_num >= 1 && year_num <= 20) {
+    as.character(1994 + year_num)
+  } else {
+    basename(filename)
+  }
+
+  # ⚡ Bolt: Store results natively as data.table with explicit Sensor ID
+  # Avoids data.frame/row.names overhead and enables fast rbindlist downstream
+  dt <- data.table(
+    Sensor = sensor_names,
+    first10 = first10,
+    last5 = last5,
+    full = full,
+    within_diff = diff
+  )
+
+  list(dt = dt, sheet_name = sheet_name)
+}
+
+# Helper for parallel export
+export_raw_data_parallel <- function(raw_export_tasks) {
+  if (length(raw_export_tasks) > 0) {
+    write_task <- function(task) {
+      # Use full namespace just to be safe
+      openxlsx::write.xlsx(task$df, task$out_raw, overwrite = TRUE)
+      return(task$out_raw)
+    }
+
+    out_files <- execute_tasks_parallel(raw_export_tasks, write_task)
+    for (out_file in out_files) {
+      message(sprintf("Raw data written to %s", out_file))
+    }
+  }
+}
+
 # Process all sensor files: export raw, compute metrics
 process_all_data <- function(data_dir) {
   data_dir <- auto_detect_data_dir(data_dir)
@@ -162,34 +211,12 @@ process_all_data <- function(data_dir) {
       tools::file_path_sans_ext(basename(f)), ".xlsx"
     ))
     raw_export_tasks[[i + 1]] <- list(df = df, out_raw = out_raw)
-    # Compute summary metrics
-    # OPTIMIZATION: which(x > 0) is natively faster at dropping NAs than !is.na() &
-    sensor_names <- grep("^Sensor", names(df), value = TRUE)
 
-    # ⚡ Bolt: Replace sapply with data.table native lapply(.SD) for O(1) row subsetting
-    first10 <- unlist(df[1:min(10, .N), lapply(.SD, function(x) mean(clean_vals(x))), .SDcols = sensor_names])
-    last5   <- unlist(df[max(1, .N - 4):.N, lapply(.SD, function(x) mean(clean_vals(x))), .SDcols = sensor_names])
-    full    <- unlist(df[, lapply(.SD, function(x) mean(clean_vals(x))), .SDcols = sensor_names])
-    diff    <- full - first10
-    # Derive sheet/year name
-    year_tag <- sub("^SS_Y([0-9]{2})\\.txt$", "\\1", basename(f))
-    # Map Y01=1995, Y02=1996, ..., Y20=2014
-    year_num <- as.integer(year_tag)
-    sheet_name <- if (!is.na(year_num) && year_num >= 1 && year_num <= 20) {
-      as.character(1994 + year_num)
-    } else {
-      basename(f)
-    }
-    # ⚡ Bolt: Store results natively as data.table with explicit Sensor ID
-    # Avoids data.frame/row.names overhead and enables fast rbindlist downstream
-    results[[i + 1]] <- data.table(
-      Sensor = sensor_names,
-      first10 = first10,
-      last5 = last5,
-      full = full,
-      within_diff = diff
-    )
-    sheet_names[i + 1] <- sheet_name
+    # Compute summary metrics
+    metrics_res <- compute_sensor_metrics(df, f)
+
+    results[[i + 1]] <- metrics_res$dt
+    sheet_names[i + 1] <- metrics_res$sheet_name
     i <- i + 1
     setTxtProgressBar(pb, i)
   }
@@ -199,18 +226,7 @@ process_all_data <- function(data_dir) {
 
   # ⚡ Bolt: Parallelize raw Excel writes to remove serial I/O bottleneck
   cat("\n⚡ Writing raw Excel files in parallel...\n")
-  if (length(raw_export_tasks) > 0) {
-    write_task <- function(task) {
-      # Use full namespace just to be safe
-      openxlsx::write.xlsx(task$df, task$out_raw, overwrite = TRUE)
-      return(task$out_raw)
-    }
-
-    out_files <- execute_tasks_parallel(raw_export_tasks, write_task)
-    for (out_file in out_files) {
-      message(sprintf("Raw data written to %s", out_file))
-    }
-  }
+  export_raw_data_parallel(raw_export_tasks)
   cat("✅ Raw files written.\n")
   return(results)
 }

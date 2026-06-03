@@ -38,6 +38,7 @@
 - chore\(deps\): bump actions/setup-python from 5.6.0 to 6.2.0 [\#257](https://github.com/abhimehro/Seatek_Analysis/pull/257) ([dependabot[bot]](https://github.com/apps/dependabot))
 - 🛡️ Sentinel: \[HIGH\] Secure subprocess environment in get\_repo\_info [\#256](https://github.com/abhimehro/Seatek_Analysis/pull/256) ([abhimehro](https://github.com/abhimehro))
 - 🧪 Add tests for execute\_tasks\_parallel [\#255](https://github.com/abhimehro/Seatek_Analysis/pull/255) ([abhimehro](https://github.com/abhimehro))
+- 🧪 \[testing\] Add unit test for write\_summary\_sheets [\#254](https://github.com/abhimehro/Seatek_Analysis/pull/254) ([abhimehro](https://github.com/abhimehro))
 - 🧪 Add tests for write\_year\_sheet function [\#253](https://github.com/abhimehro/Seatek_Analysis/pull/253) ([abhimehro](https://github.com/abhimehro))
 - 🧹 Refactor process\_all\_data into smaller helper functions [\#251](https://github.com/abhimehro/Seatek_Analysis/pull/251) ([abhimehro](https://github.com/abhimehro))
 - 🧹 \[code health\] Extract helper functions from write\_summary\_sheets [\#250](https://github.com/abhimehro/Seatek_Analysis/pull/250) ([abhimehro](https://github.com/abhimehro))

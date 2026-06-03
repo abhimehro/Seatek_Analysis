@@ -10,9 +10,11 @@ def get_repo_info():
     Uses git commands to extract information from the local environment.
     """
     try:
-        # SECURITY: Strip GH_TOKEN to prevent exfiltration if subprocess is compromised
-        env = os.environ.copy()
-        env.pop("GH_TOKEN", None)
+        # SECURITY: Use explicit minimal environment to prevent credential exfiltration
+        # if subprocess is compromised. Allowlist > denylist.
+        env = {}
+        if "PATH" in os.environ:
+            env["PATH"] = os.environ["PATH"]
 
         # Get origin URL
         origin_url = subprocess.check_output(

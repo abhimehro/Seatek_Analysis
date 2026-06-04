@@ -64,11 +64,13 @@ def run_process(
     env: dict[str, str] | None = None,
 ) -> subprocess.CompletedProcess[str]:
     proc_env = env if env is not None else command_env()
-    # SECURITY: Strip GH_TOKEN to enforce least privilege and prevent credential
-    # exfiltration by potentially compromised third-party dependencies executed in the shell.
-    if command[0] != GH_BIN and "GH_TOKEN" in proc_env:
+    # SECURITY: Strip sensitive tokens to enforce least privilege and prevent credential
+    # exfiltration by potentially compromised third-party dependencies.
+    # While a strict allowlist is ideal, it breaks CI functionality (e.g. stripping HOME, GITHUB_WORKSPACE).
+    if command[0] != GH_BIN:
         proc_env = proc_env.copy()
-        proc_env.pop("GH_TOKEN", None)
+        for token in ["GH_TOKEN", "GITHUB_TOKEN"]:
+            proc_env.pop(token, None)
 
     return subprocess.run(
         command,
@@ -83,12 +85,15 @@ def run_process(
 
 
 def run_shell_command(command: str | list[str], timeout: int = 1800, custom_env: dict[str, str] | None = None) -> dict[str, Any]:
-    # SECURITY: Strip GH_TOKEN to enforce least privilege and prevent credential
-    # exfiltration by potentially compromised third-party dependencies executed in the shell.
     safe_env = command_env()
     if custom_env:
         safe_env.update(custom_env)
-    safe_env.pop("GH_TOKEN", None)
+
+    # SECURITY: Strip sensitive tokens to enforce least privilege and prevent credential
+    # exfiltration by potentially compromised third-party dependencies executed in the shell.
+    # While a strict allowlist is ideal, it breaks CI functionality (e.g. stripping HOME, GITHUB_WORKSPACE).
+    for token in ["GH_TOKEN", "GITHUB_TOKEN"]:
+        safe_env.pop(token, None)
 
     # Allow backward compatibility for existing command string configurations while we migrate,
     # but the primary path relies on lists of arguments to avoid shell injection.

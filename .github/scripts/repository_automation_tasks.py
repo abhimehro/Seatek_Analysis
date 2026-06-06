@@ -205,11 +205,9 @@ def fetch_latest_tags(repo_ids: set[str]) -> dict[str, str]:
     return tags
 
 
-def workflow_file_plans() -> list[dict[str, Any]]:
+def _parse_workflow_files() -> tuple[set[str], list[dict[str, Any]]]:
     repo_ids_to_fetch = set()
     file_data = []
-
-    # First pass: identify all unique repo_ids
     for file_path in sorted((ROOT / ".github" / "workflows").glob("*.y*ml")):
         text = file_path.read_text()
         matches = []
@@ -224,12 +222,10 @@ def workflow_file_plans() -> list[dict[str, Any]]:
             repo_ids_to_fetch.add(repo_id)
             matches.append(match)
         file_data.append({"path": file_path, "text": text, "matches": matches})
+    return repo_ids_to_fetch, file_data
 
-    # Fetch tags concurrently
-    latest_cache = fetch_latest_tags(repo_ids_to_fetch) if repo_ids_to_fetch else {}
-
+def _compute_workflow_replacements(file_data: list[dict[str, Any]], latest_cache: dict[str, str]) -> list[dict[str, Any]]:
     plans = []
-    # Second pass: compute replacements
     for data in file_data:
         text = data["text"]
         replacements = []
@@ -258,6 +254,11 @@ def workflow_file_plans() -> list[dict[str, Any]]:
                 {"path": data["path"], "text": text, "replacements": replacements}
             )
     return plans
+
+def workflow_file_plans() -> list[dict[str, Any]]:
+    repo_ids_to_fetch, file_data = _parse_workflow_files()
+    latest_cache = fetch_latest_tags(repo_ids_to_fetch) if repo_ids_to_fetch else {}
+    return _compute_workflow_replacements(file_data, latest_cache)
 
 
 def flattened_updates(plans: list[dict[str, Any]]) -> list[dict[str, str]]:

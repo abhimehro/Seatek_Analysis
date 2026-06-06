@@ -40,3 +40,6 @@
 ## 2023-10-27 - Concurrent network calls with ThreadPoolExecutor
 **Learning:** Using `concurrent.futures.ThreadPoolExecutor` significantly reduces execution time when making multiple independent network or slow subprocess calls (e.g., GitHub API requests), particularly when the primary script runs sequentially and blockingly on IO operations. Always verify that `import concurrent.futures` exists when applying this optimization to avoid `NameError`s in production.
 **Action:** When identifying sequentially executed network-bound API fetches (e.g., in `.github/scripts`), replace them with thread pool tasks if they don't depend on each other. Wrap the logic in a small helper function to comply with "Large Method" style rules if needed. Verify imports explicitly.
+## 2025-12-15 - Concurrent GitHub Action Tag Fetching
+**Learning:** Sequential network calls inside loops, like fetching GitHub Action tags for workflow updates, introduce significant blocking I/O bottlenecks.
+**Action:** Extract the network fetching logic into a separate helper function (to avoid "Large Method" static analysis violations) and use `concurrent.futures.ThreadPoolExecutor` to run the independent requests concurrently. This reduces execution time substantially (e.g., from ~2.6s to ~1s). Always ensure `import concurrent.futures` is present.

@@ -16,6 +16,8 @@
 
 **Closed issues:**
 
+- Daily QA Check - Seatek\_Analysis - 2026-06-06 [\#265](https://github.com/abhimehro/Seatek_Analysis/issues/265)
+- Daily QA Check - Seatek\_Analysis - 2026-06-05 [\#264](https://github.com/abhimehro/Seatek_Analysis/issues/264)
 - Daily QA Check - Seatek\_Analysis - 2026-06-03 [\#259](https://github.com/abhimehro/Seatek_Analysis/issues/259)
 - Daily QA Check - Seatek\_Analysis - 2026-06-02 [\#240](https://github.com/abhimehro/Seatek_Analysis/issues/240)
 - Daily QA & Agentic Review — 2026-06-01 [\#236](https://github.com/abhimehro/Seatek_Analysis/issues/236)
@@ -34,6 +36,9 @@
 
 **Merged pull requests:**
 
+- ⚡ Bolt: \[performance improvement\] Concurrent tag fetching for workflow updates [\#266](https://github.com/abhimehro/Seatek_Analysis/pull/266) ([abhimehro](https://github.com/abhimehro))
+- 🛡️ Sentinel: \[HIGH\] Fix environment denylist vulnerability in subprocess wrappers [\#263](https://github.com/abhimehro/Seatek_Analysis/pull/263) ([abhimehro](https://github.com/abhimehro))
+- test: clean\_vals unit tests \(salvages \#249\) [\#260](https://github.com/abhimehro/Seatek_Analysis/pull/260) ([abhimehro](https://github.com/abhimehro))
 - chore\(deps\): bump actions/checkout from 4.3.1 to 6.0.3 [\#258](https://github.com/abhimehro/Seatek_Analysis/pull/258) ([dependabot[bot]](https://github.com/apps/dependabot))
 - chore\(deps\): bump actions/setup-python from 5.6.0 to 6.2.0 [\#257](https://github.com/abhimehro/Seatek_Analysis/pull/257) ([dependabot[bot]](https://github.com/apps/dependabot))
 - 🛡️ Sentinel: \[HIGH\] Secure subprocess environment in get\_repo\_info [\#256](https://github.com/abhimehro/Seatek_Analysis/pull/256) ([abhimehro](https://github.com/abhimehro))

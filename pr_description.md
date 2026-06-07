@@ -1,15 +1,7 @@
-🧪 [testing improvement description]
-
-🎯 **What:** The testing gap addressed
-The `write_year_sheet` function in `Updated_Seatek_Analysis.R` was previously untested. This function is responsible for writing a single year's data to a specific sheet in an `openxlsx` workbook, applying header styles, freezing panes, and conditionally highlighting the row with the largest `within_diff` value. The lack of tests meant that regressions in formatting or data writing could go unnoticed.
-
-📊 **Coverage:** What scenarios are now tested
-Added a comprehensive test suite in `tests/testthat/test-write_year_sheet.R` covering:
-- Correct creation of a new sheet in the workbook with the specified year name.
-- Accurate writing of all data rows and columns, verified by reading the data back from a temporary Excel file.
-- The correct application of the conditional highlight style for the row with the maximum absolute `within_diff` value by inspecting the `wb$styleObjects`.
-- Edge cases where the highlight style is provided as `NULL`.
-- Edge cases where the `within_diff` column is absent from the dataset (ensuring no errors occur).
-
-✨ **Result:** The improvement in test coverage
-The test coverage has significantly improved by formally validating the behavior of the `write_year_sheet` function. This ensures that the generated Excel reports remain correctly formatted and that the data is accurately transferred, allowing for more confident refactoring in the future.
+**🚨 Severity:** HIGH
+**💡 Vulnerability:** The subprocess execution wrappers (`run_process` and `run_shell_command`) in `.github/scripts/repository_automation_common.py` used an incomplete denylist (`env.pop("GH_TOKEN")`) to sanitize the environment before executing external commands. This left other sensitive tokens commonly used in CI (such as `GITHUB_TOKEN`) vulnerable to exfiltration by compromised third-party dependencies executed in the shell.
+**🎯 Impact:** A compromised external script or dependency executed via these wrappers could access and exfiltrate the `GITHUB_TOKEN`, potentially leading to unauthorized access, code modification, or further lateral movement within the repository and organization.
+**🔧 Fix:** Expanded the denylist in both `run_process` and `run_shell_command` to explicitly strip out `GITHUB_TOKEN` in addition to `GH_TOKEN`. While a strict allowlist is conceptually safer, it was verified to break essential tools that rely on standard CI/OS environment variables (like `PATH`, `HOME`, and `GITHUB_WORKSPACE`). Therefore, a comprehensive denylist approach was maintained and augmented. Also added a journal entry in `.jules/sentinel.md` documenting this finding and the trade-offs.
+**✅ Verification:**
+1. Execute tests: `PYTHONPATH=. pytest tests/`
+2. Verified that locally constructed dummy tokens for `GH_TOKEN` and `GITHUB_TOKEN` are stripped from subprocess outputs when executing commands like `env`.

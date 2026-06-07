@@ -190,33 +190,60 @@ def discover_hotspots(limit: int = 5) -> list[tuple[str, int]]:
     return sorted(candidates, key=lambda item: item[1], reverse=True)[:limit]
 
 
-def workflow_file_plans() -> list[dict[str, Any]]:
-    latest_cache: dict[str, str] = {}
-    plans = []
+# ⚡ Bolt: Fetch tags concurrently to avoid sequential blocking I/O bottleneck
+def fetch_latest_tags(repo_ids: set[str]) -> dict[str, str]:
+    tags = {}
+    with concurrent.futures.ThreadPoolExecutor(max_workers=5) as executor:
+        future_to_repo = {executor.submit(latest_tag_for_action, repo_id): repo_id for repo_id in repo_ids}
+        for future in concurrent.futures.as_completed(future_to_repo):
+            repo_id = future_to_repo[future]
+            try:
+                tags[repo_id] = future.result()
+            except Exception as e:
+                logging.error(f"Error fetching tag for {repo_id}: {e}")
+                tags[repo_id] = ""
+    return tags
+
+
+def _parse_workflow_files() -> tuple[set[str], list[dict[str, Any]]]:
+    repo_ids_to_fetch = set()
+    file_data = []
     for file_path in sorted((ROOT / ".github" / "workflows").glob("*.y*ml")):
         text = file_path.read_text()
-        replacements = []
+        matches = []
         for match in WORKFLOW_PATTERN.finditer(text):
             action_ref = match.group(2)
-            current = match.group(3)
             if action_ref.startswith("./") or action_ref.startswith("docker://"):
                 continue
             parts = action_ref.split("/")
             if len(parts) < 2:
                 continue
             repo_id = "/".join(parts[:2])
-            latest = latest_cache.get(repo_id)
-            if latest is None:
-                latest = latest_tag_for_action(repo_id)
-                latest_cache[repo_id] = latest
-            proposed = target_ref(current, latest)
+            repo_ids_to_fetch.add(repo_id)
+            matches.append(match)
+        file_data.append({"path": file_path, "text": text, "matches": matches})
+    return repo_ids_to_fetch, file_data
+
+def _compute_workflow_replacements(file_data: list[dict[str, Any]], latest_cache: dict[str, str]) -> list[dict[str, Any]]:
+    plans = []
+    for data in file_data:
+        text = data["text"]
+        replacements = []
+        for match in data["matches"]:
+            action_ref = match.group(2)
+            current = match.group(3)
+            parts = action_ref.split("/")
+            repo_id = "/".join(parts[:2])
+            latest = latest_cache.get(repo_id, "")
+
+            proposed = target_ref(current, latest) if latest else None
             if not proposed or proposed == current:
                 continue
             replacements.append(
                 {
                     "old": match.group(0),
                     "new": f"{match.group(1)}{action_ref}@{proposed}",
-                    "file": str(file_path.relative_to(ROOT)),
+                    "file": str(data["path"].relative_to(ROOT)),
                     "action": action_ref,
                     "current": current,
                     "target": proposed,
@@ -224,9 +251,14 @@ def workflow_file_plans() -> list[dict[str, Any]]:
             )
         if replacements:
             plans.append(
-                {"path": file_path, "text": text, "replacements": replacements}
+                {"path": data["path"], "text": text, "replacements": replacements}
             )
     return plans
+
+def workflow_file_plans() -> list[dict[str, Any]]:
+    repo_ids_to_fetch, file_data = _parse_workflow_files()
+    latest_cache = fetch_latest_tags(repo_ids_to_fetch) if repo_ids_to_fetch else {}
+    return _compute_workflow_replacements(file_data, latest_cache)
 
 
 def flattened_updates(plans: list[dict[str, Any]]) -> list[dict[str, str]]:

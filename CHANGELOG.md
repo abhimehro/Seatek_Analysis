@@ -16,6 +16,8 @@
 
 **Closed issues:**
 
+- Daily QA Check - Seatek\_Analysis - 2026-06-08 [\#268](https://github.com/abhimehro/Seatek_Analysis/issues/268)
+- Daily QA Check - Seatek\_Analysis - 2026-06-07 [\#267](https://github.com/abhimehro/Seatek_Analysis/issues/267)
 - Daily QA Check - Seatek\_Analysis - 2026-06-06 [\#265](https://github.com/abhimehro/Seatek_Analysis/issues/265)
 - Daily QA Check - Seatek\_Analysis - 2026-06-05 [\#264](https://github.com/abhimehro/Seatek_Analysis/issues/264)
 - Daily QA Check - Seatek\_Analysis - 2026-06-03 [\#259](https://github.com/abhimehro/Seatek_Analysis/issues/259)

@@ -43,5 +43,5 @@ jobs:
         with:
           pr_number: ${{ github.event.issue.number }}
           command: ${{ steps.prepare-command.outputs.command }}
-          model: 'gemini/gemini-3.5-flash'
+          model: 'models/gemini-3.5-flash'
           codescene_token: ${{ secrets.CODESCENE_ACCESS_TOKEN }}

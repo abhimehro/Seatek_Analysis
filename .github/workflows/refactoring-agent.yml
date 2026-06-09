@@ -20,6 +20,9 @@ jobs:
         run: |
           echo "::group::Raw comment inspection"
           printf 'RAW_COMMENT (literal): [%s]\n' "$RAW_COMMENT"
+          printf 'First 20 chars: [%s]\n' "${RAW_COMMENT:0:20}"
+          echo "Byte-level view (cat -A):"
+          printf '%s' "$RAW_COMMENT" | cat -A | head -5
           echo "::endgroup::"
 
       - name: Prepare command
@@ -28,25 +31,19 @@ jobs:
           RAW_COMMENT: ${{ github.event.comment.body }}
         run: |
           COMMAND="$RAW_COMMENT"
+          # Add skill: prefix if missing
           if [[ "$COMMAND" == "/cs-agent "* && "$COMMAND" != "/cs-agent skill:"* ]]; then
             COMMAND="/cs-agent skill:${COMMAND#/cs-agent }"
           fi
           echo "Final command: $COMMAND"
           echo "command=$COMMAND" >> $GITHUB_OUTPUT
 
-      - name: Run CodeScene Refactoring Agent
-        uses: codescene-oss/pr-refactoring-agent@bc0d8b91c0a1a88154fb1dfb82124f8f43733d65
+      - uses: codescene-oss/pr-refactoring-agent@bc0d8b91c0a1a88154fb1dfb82124f8f43733d65
         env:
-          # This specific format penetrates the underlying tool's schema parser
-          GOOGLE_AI_STUDIO__GEMINI_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
-          # Keep this as a secondary fallback for general tool execution scope
           GOOGLE_GENERATIVE_AI_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
         with:
-          # Use the strict namespace string required by the AI Studio orchestration routing
-          model: 'google_ai_studio/gemini-2.0-flash'
-          
-          # Maintain action-level input validation parameters
-          google_api_key: ${{ secrets.GOOGLE_API_KEY }}
           pr_number: ${{ github.event.issue.number }}
           command: ${{ steps.prepare-command.outputs.command }}
+          model: 'gemini-flash-latest'
           codescene_token: ${{ secrets.CODESCENE_ACCESS_TOKEN }}
+          google_api_key: ${{ secrets.GOOGLE_API_KEY }}

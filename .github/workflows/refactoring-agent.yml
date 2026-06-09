@@ -6,6 +6,8 @@ on:
 
 jobs:
   refactor:
+    env:
+      GOOGLE_GENERATIVE_AI_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
     if: github.event.issue.pull_request != null && contains(github.event.comment.body, '/cs-agent')
     runs-on: ubuntu-latest
     permissions:

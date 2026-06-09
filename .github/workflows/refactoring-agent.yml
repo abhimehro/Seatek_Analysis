@@ -13,6 +13,18 @@ jobs:
       pull-requests: write
       issues: write
     steps:
+      - name: Debug raw comment
+        shell: bash
+        env:
+          RAW_COMMENT: ${{ github.event.comment.body }}
+        run: |
+          echo "::group::Raw comment inspection"
+          printf 'RAW_COMMENT (literal): [%s]\n' "$RAW_COMMENT"
+          printf 'First 20 chars: [%s]\n' "${RAW_COMMENT:0:20}"
+          echo "Byte-level view (cat -A):"
+          printf '%s' "$RAW_COMMENT" | cat -A | head -5
+          echo "::endgroup::"
+
       - name: Prepare command
         id: prepare-command
         env:

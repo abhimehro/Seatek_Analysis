@@ -15,8 +15,10 @@ jobs:
     steps:
       - name: Prepare command
         id: prepare-command
+        env:
+          COMMENT_BODY: ${{ github.event.comment.body }}
         run: |
-          COMMAND="${{ github.event.comment.body }}"
+          COMMAND="$COMMENT_BODY"
           # Remove 'skill:' prefix if present after /cs-agent
           if [[ "$COMMAND" == "/cs-agent skill:"* ]]; then
             COMMAND="/cs-agent ${COMMAND#/cs-agent skill:}"

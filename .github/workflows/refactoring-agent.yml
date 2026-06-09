@@ -6,6 +6,8 @@ on:
 
 jobs:
   refactor:
+    env:
+      GOOGLE_GENERATIVE_AI_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
     if: github.event.issue.pull_request != null && contains(github.event.comment.body, '/cs-agent')
     runs-on: ubuntu-latest
     permissions:
@@ -31,7 +33,6 @@ jobs:
           RAW_COMMENT: ${{ github.event.comment.body }}
         run: |
           COMMAND="$RAW_COMMENT"
-          # Add skill: prefix if missing
           if [[ "$COMMAND" == "/cs-agent "* && "$COMMAND" != "/cs-agent skill:"* ]]; then
             COMMAND="/cs-agent skill:${COMMAND#/cs-agent }"
           fi
@@ -39,11 +40,8 @@ jobs:
           echo "command=$COMMAND" >> $GITHUB_OUTPUT
 
       - uses: codescene-oss/pr-refactoring-agent@bc0d8b91c0a1a88154fb1dfb82124f8f43733d65
-        env:
-          GOOGLE_GENERATIVE_AI_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
         with:
           pr_number: ${{ github.event.issue.number }}
           command: ${{ steps.prepare-command.outputs.command }}
-          model: 'gemini-flash-latest'
+          model: 'google/gemini-3.5-flash'
           codescene_token: ${{ secrets.CODESCENE_ACCESS_TOKEN }}
-          google_api_key: ${{ secrets.GOOGLE_API_KEY }}

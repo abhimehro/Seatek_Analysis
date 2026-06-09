@@ -44,6 +44,6 @@ jobs:
         with:
           pr_number: ${{ github.event.issue.number }}
           command: ${{ steps.prepare-command.outputs.command }}
-          model: 'google/gemini-3.5-flash'
+          model: 'gemini-3.5-flash'
           codescene_token: ${{ secrets.CODESCENE_ACCESS_TOKEN }}
           google_api_key: ${{ secrets.GOOGLE_API_KEY }}

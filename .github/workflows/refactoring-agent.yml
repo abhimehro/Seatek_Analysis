@@ -43,13 +43,10 @@ jobs:
 
       - name: Run CodeScene Refactoring Agent
         uses: codescene-oss/pr-refactoring-agent@bc0d8b91c0a1a88154fb1dfb82124f8f43733d65
-        # Provide it step-locally as a secondary anchor
-        env:
-          GOOGLE_GENERATIVE_AI_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
         with:
-          # Satisfies outer action metadata schema
+          # Use the target provider alias expected by the parameter mapping
+          model: 'gemini/gemini-3.5-flash'
           google_api_key: ${{ secrets.GOOGLE_API_KEY }}
           pr_number: ${{ github.event.issue.number }}
           command: ${{ steps.prepare-command.outputs.command }}
-          model: 'google/gemini-3.5-flash'
           codescene_token: ${{ secrets.CODESCENE_ACCESS_TOKEN }}

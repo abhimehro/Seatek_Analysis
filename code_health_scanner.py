@@ -76,7 +76,7 @@ def get_language(filepath):
         return 'typescript'
     return 'unknown'
 
-def scan_file(filepath, lines, account, project, commit_hash):
+def scan_file(filepath, lines, *args, **kwargs):
     issues = []
 
     # Determine language

@@ -3,6 +3,14 @@ import os
 import re
 import subprocess
 
+
+# Pre-compile the regex pattern for parsing git origin URLs.
+# This prevents redundant pattern compilation overhead on every get_repo_info() call.
+# Matches formats:
+# https://github.com/account/project.git
+# git@github.com:account/project.git
+REPO_URL_PATTERN = re.compile(r"[:/]([^/:]+)/([^/:]+?)(?:\.git)?$")
+
 def get_repo_info():
     """
     Retrieves the repository account, project name, and current commit hash.
@@ -24,10 +32,7 @@ def get_repo_info():
         ).strip()
 
         # Parse account and project from URL
-        # Matches formats:
-        # https://github.com/account/project.git
-        # git@github.com:account/project.git
-        match = re.search(r"[:/]([^/:]+)/([^/:]+?)(?:\.git)?$", origin_url)
+        match = REPO_URL_PATTERN.search(origin_url)
         if not match:
             return "unknown", "unknown", "unknown"
 

@@ -13,15 +13,29 @@ jobs:
       pull-requests: write
       issues: write
     steps:
+      - name: Debug raw comment
+        shell: bash
+        env:
+          RAW_COMMENT: ${{ github.event.comment.body }}
+        run: |
+          echo "::group::Raw comment inspection"
+          printf 'RAW_COMMENT (literal): [%s]\n' "$RAW_COMMENT"
+          printf 'First 20 chars: [%s]\n' "${RAW_COMMENT:0:20}"
+          echo "Byte-level view (cat -A):"
+          printf '%s' "$RAW_COMMENT" | cat -A | head -5
+          echo "::endgroup::"
+
       - name: Prepare command
         id: prepare-command
         env:
           RAW_COMMENT: ${{ github.event.comment.body }}
         run: |
           COMMAND="$RAW_COMMENT"
-          if [[ "$COMMAND" == "/cs-agent skill:"* ]]; then
-            COMMAND="/cs-agent ${COMMAND#/cs-agent skill:}"
+          # Add skill: prefix if missing
+          if [[ "$COMMAND" == "/cs-agent "* && "$COMMAND" != "/cs-agent skill:"* ]]; then
+            COMMAND="/cs-agent skill:${COMMAND#/cs-agent }"
           fi
+          echo "Final command: $COMMAND"
           echo "command=$COMMAND" >> $GITHUB_OUTPUT
 
       - uses: codescene-oss/pr-refactoring-agent@bc0d8b91c0a1a88154fb1dfb82124f8f43733d65

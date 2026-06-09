@@ -40,10 +40,12 @@ jobs:
 
       - uses: codescene-oss/pr-refactoring-agent@bc0d8b91c0a1a88154fb1dfb82124f8f43733d65
         env:
+          # Satisfies the deep CLI runtime tool requirement
           GOOGLE_GENERATIVE_AI_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
         with:
+          # Satisfies the strict GitHub Action input validation
+          google_api_key: ${{ secrets.GOOGLE_API_KEY }}
           pr_number: ${{ github.event.issue.number }}
           command: ${{ steps.prepare-command.outputs.command }}
           model: 'google/gemini-3.5-flash'
           codescene_token: ${{ secrets.CODESCENE_ACCESS_TOKEN }}
-          google_api_key: ${{ secrets.GOOGLE_API_KEY }}

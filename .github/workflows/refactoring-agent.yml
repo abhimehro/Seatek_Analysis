@@ -15,10 +15,12 @@ jobs:
     steps:
       - name: Prepare command
         id: prepare-command
+        env:
+          RAW_COMMENT: ${{ github.event.comment.body }}
         run: |
-          COMMAND="${{ github.event.comment.body }}"
+          COMMAND="$RAW_COMMENT"
           if [[ "$COMMAND" == "/cs-agent skill:"* ]]; then
-            COMMAND="/cs-agent ${{ COMMAND#/cs-agent skill:}}"
+            COMMAND="/cs-agent ${COMMAND#/cs-agent skill:}"
           fi
           echo "command=$COMMAND" >> $GITHUB_OUTPUT
 

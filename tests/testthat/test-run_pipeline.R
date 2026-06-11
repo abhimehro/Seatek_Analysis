@@ -12,6 +12,7 @@ test_that("run_pipeline handles missing data directory correctly", {
 
   mock_log_handler <- function(level, message) {
     log_env$logs[[length(log_env$logs) + 1]] <- list(level = level, message = message)
+    return(invisible(NULL))
   }
 
   # Inject the mock
@@ -61,6 +62,7 @@ test_that("run_pipeline captures warnings and dependency errors", {
 
   mock_log_handler <- function(level, message) {
     log_env$logs[[length(log_env$logs) + 1]] <- list(level = level, message = message)
+    return(invisible(NULL))
   }
 
   assign("log_handler", mock_log_handler, envir = environment(run_pipeline))
@@ -100,6 +102,7 @@ test_that("run_pipeline executes successfully with valid data", {
 
   mock_log_handler <- function(level, message) {
     log_env$logs[[length(log_env$logs) + 1]] <- list(level = level, message = message)
+    return(invisible(NULL))
   }
   assign("log_handler", mock_log_handler, envir = environment(run_pipeline))
 

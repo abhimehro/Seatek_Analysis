@@ -183,14 +183,7 @@ def _get_safe_output_path(input_path: str, output_dir: str, next_year, sheet):
     return out_file
 
 
-def _process_single_sheet(xls, sheet, group, input_path, output_dir):
-    try:
-        df_raw = xls.parse(sheet)
-    except Exception as e:
-        logging.warning(
-            f"Could not read sheet '{sheet}': Internal error occurred ({type(e).__name__})."
-        )
-        return None
+def _process_single_sheet(df_raw, sheet, group, input_path, output_dir):
 
     if df_raw.empty:
         logging.info(f"Sheet '{sheet}' is empty, skipping.")
@@ -227,14 +220,33 @@ def _process_single_sheet(xls, sheet, group, input_path, output_dir):
 def _process_excel_sheets(file_buffer, input_path, output_dir, grouped):
     """Process grouped sheets to apply corrections and return dataframe list."""
     corrections_dfs = []
+    grouped_list = list(grouped)
     try:
         with pd.ExcelFile(BytesIO(file_buffer)) as xls:
-            for sheet, group in grouped:
-                new_corrections = _process_single_sheet(
-                    xls, sheet, group, input_path, output_dir
-                )
-                if new_corrections is not None:
-                    corrections_dfs.append(new_corrections)
+            available_sheets = set(xls.sheet_names)
+            target_sheets = [sheet for sheet, _ in grouped_list if sheet in available_sheets]
+
+            parsed_sheets = {}
+            if target_sheets:
+                parsed_sheets = pd.read_excel(xls, sheet_name=target_sheets)
+
+            for sheet, group in grouped_list:
+                if sheet not in available_sheets:
+                    logging.warning(f"Could not read sheet '{sheet}': Sheet not found.")
+                    continue
+
+                try:
+                    df_raw = parsed_sheets[sheet] if isinstance(parsed_sheets, dict) else parsed_sheets
+                    new_corrections = _process_single_sheet(
+                        df_raw.copy(), sheet, group, input_path, output_dir
+                    )
+                    if new_corrections is not None:
+                        corrections_dfs.append(new_corrections)
+                except Exception as e:
+                    logging.warning(
+                        f"Could not read sheet '{sheet}': Internal error occurred ({type(e).__name__})."
+                    )
+                    continue
     except (FileNotFoundError, PermissionError, OSError) as e:
         # SECURITY: Do not leak stack traces in logs to prevent information disclosure
         logging.error(f"Could not open file '{input_path}': {e}")

@@ -1,7 +1,12 @@
-**🚨 Severity:** HIGH
-**💡 Vulnerability:** The subprocess execution wrappers (`run_process` and `run_shell_command`) in `.github/scripts/repository_automation_common.py` used an incomplete denylist (`env.pop("GH_TOKEN")`) to sanitize the environment before executing external commands. This left other sensitive tokens commonly used in CI (such as `GITHUB_TOKEN`) vulnerable to exfiltration by compromised third-party dependencies executed in the shell.
-**🎯 Impact:** A compromised external script or dependency executed via these wrappers could access and exfiltrate the `GITHUB_TOKEN`, potentially leading to unauthorized access, code modification, or further lateral movement within the repository and organization.
-**🔧 Fix:** Expanded the denylist in both `run_process` and `run_shell_command` to explicitly strip out `GITHUB_TOKEN` in addition to `GH_TOKEN`. While a strict allowlist is conceptually safer, it was verified to break essential tools that rely on standard CI/OS environment variables (like `PATH`, `HOME`, and `GITHUB_WORKSPACE`). Therefore, a comprehensive denylist approach was maintained and augmented. Also added a journal entry in `.jules/sentinel.md` documenting this finding and the trade-offs.
-**✅ Verification:**
-1. Execute tests: `PYTHONPATH=. pytest tests/`
-2. Verified that locally constructed dummy tokens for `GH_TOKEN` and `GITHUB_TOKEN` are stripped from subprocess outputs when executing commands like `env`.
+🎯 **What:** Explicitly added `shell=False` to `subprocess.check_output` calls in `code_health_scanner.py`.
+
+⚠️ **Risk:** While `shell=False` is the default behavior for list-based command arguments in `subprocess.check_output`, explicitly defining it prevents accidental misconfigurations during future modifications. Without this explicit definition, future code changes that inadvertently flip this flag to `True` could expose the system to shell injection vulnerabilities, potentially allowing an attacker to execute arbitrary shell commands if environment variables or input parameters become tainted.
+
+🛡️ **Solution:** Added `shell=False` parameter explicitly to both `subprocess.check_output` calls in the `get_repo_info` function to ensure safe execution of git commands, improving the explicit security posture of the application without altering existing behavior.
+
+═════ ELIR ═════
+PURPOSE: Explicitly enforce safe subprocess execution by defining `shell=False`.
+SECURITY: Mitigates risk of accidental future shell injection vulnerabilities.
+FAILS IF: Future code inadvertently enables `shell=True` and passes unsanitized input.
+VERIFY: Confirm `shell=False` is present in both `subprocess.check_output` calls in `get_repo_info`.
+MAINTAIN: Always explicitly pass `shell=False` when adding new `subprocess` calls, especially when handling dynamic input.

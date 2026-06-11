@@ -65,7 +65,7 @@ test_that("export_top_sensors_summary works correctly", {
 
   # 4. Check behavior when 'within_diff_mean' is missing
   wb2 <- createWorkbook()
-  mock_summary_no_diff <- mock_summary_df[, -"within_diff_mean", with = FALSE]
+  mock_summary_no_diff <- mock_summary_df[, -c("within_diff_mean")]
   output_file2 <- file.path(temp_dir, "test_summary2.xlsx")
   csv_file2 <- file.path(temp_dir, "test_summary2_top_sensors.csv")
 

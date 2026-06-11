@@ -42,8 +42,15 @@
 **Merged pull requests:**
 
 - 🔒 fix\(automation\): remove insecure login shell execution [\#293](https://github.com/abhimehro/Seatek_Analysis/pull/293) ([abhimehro](https://github.com/abhimehro))
+- 🧪 \[Testing\] Add unit tests for export\_top\_sensors\_summary [\#292](https://github.com/abhimehro/Seatek_Analysis/pull/292) ([abhimehro](https://github.com/abhimehro))
 - 🔒 Fix insecure package installation in run\_tests.sh [\#290](https://github.com/abhimehro/Seatek_Analysis/pull/290) ([abhimehro](https://github.com/abhimehro))
+- feat: parse workspace roots from copilot payload [\#289](https://github.com/abhimehro/Seatek_Analysis/pull/289) ([abhimehro](https://github.com/abhimehro))
+- ⚡ Bolt: \[performance improvement\] Excel bulk load [\#288](https://github.com/abhimehro/Seatek_Analysis/pull/288) ([abhimehro](https://github.com/abhimehro))
+- 🧹 Code Health Improvement: Remove Dead Code in code\_health\_scanner.py [\#287](https://github.com/abhimehro/Seatek_Analysis/pull/287) ([abhimehro](https://github.com/abhimehro))
 - docs: add libuv1-dev + fast R package setup notes to AGENTS.md [\#285](https://github.com/abhimehro/Seatek_Analysis/pull/285) ([abhimehro](https://github.com/abhimehro))
+- 🧹 Code Health: Refactor summary exports to reduce duplication [\#281](https://github.com/abhimehro/Seatek_Analysis/pull/281) ([abhimehro](https://github.com/abhimehro))
+- 🧪 \[testing improvement\] Add unit tests for export\_comprehensive\_summary [\#280](https://github.com/abhimehro/Seatek_Analysis/pull/280) ([abhimehro](https://github.com/abhimehro))
+- 🧪 Add tests for export\_raw\_data\_parallel [\#279](https://github.com/abhimehro/Seatek_Analysis/pull/279) ([abhimehro](https://github.com/abhimehro))
 - ⚡ Bolt: Optimize regex compilation in code health scanner [\#270](https://github.com/abhimehro/Seatek_Analysis/pull/270) ([abhimehro](https://github.com/abhimehro))
 - ⚡ Bolt: \[performance improvement\] Concurrent tag fetching for workflow updates [\#266](https://github.com/abhimehro/Seatek_Analysis/pull/266) ([abhimehro](https://github.com/abhimehro))
 - 🛡️ Sentinel: \[HIGH\] Fix environment denylist vulnerability in subprocess wrappers [\#263](https://github.com/abhimehro/Seatek_Analysis/pull/263) ([abhimehro](https://github.com/abhimehro))

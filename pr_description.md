@@ -1,7 +1,11 @@
-**🚨 Severity:** HIGH
-**💡 Vulnerability:** The subprocess execution wrappers (`run_process` and `run_shell_command`) in `.github/scripts/repository_automation_common.py` used an incomplete denylist (`env.pop("GH_TOKEN")`) to sanitize the environment before executing external commands. This left other sensitive tokens commonly used in CI (such as `GITHUB_TOKEN`) vulnerable to exfiltration by compromised third-party dependencies executed in the shell.
-**🎯 Impact:** A compromised external script or dependency executed via these wrappers could access and exfiltrate the `GITHUB_TOKEN`, potentially leading to unauthorized access, code modification, or further lateral movement within the repository and organization.
-**🔧 Fix:** Expanded the denylist in both `run_process` and `run_shell_command` to explicitly strip out `GITHUB_TOKEN` in addition to `GH_TOKEN`. While a strict allowlist is conceptually safer, it was verified to break essential tools that rely on standard CI/OS environment variables (like `PATH`, `HOME`, and `GITHUB_WORKSPACE`). Therefore, a comprehensive denylist approach was maintained and augmented. Also added a journal entry in `.jules/sentinel.md` documenting this finding and the trade-offs.
-**✅ Verification:**
-1. Execute tests: `PYTHONPATH=. pytest tests/`
-2. Verified that locally constructed dummy tokens for `GH_TOKEN` and `GITHUB_TOKEN` are stripped from subprocess outputs when executing commands like `env`.
+🎯 **What:**
+Added missing edge case tests for the `execute_tasks_parallel` function. The function is designed to handle lists of tasks and perform a serial fallback mechanism if parallel namespaces are unavailable. Previously, this fallback lacked test coverage to verify that the progress bar was reliably closed via `finally` if `task_func` failed inside the `tryCatch` loop. We also lacked a test ensuring that an empty list returns immediately.
+
+📊 **Coverage:**
+The test suite now explicitly covers:
+1.  **Empty List:** Passing an empty list `list()` returns `list()` successfully and immediately, avoiding out-of-bounds `txtProgressBar` initialization errors.
+2.  **Serial Fallback Error Bubbling:** Errors triggered during task processing inside the serial fallback correctly bubble up past the wrapper boundary.
+3.  **Graceful Progress Bar Closing:** In the event of an error within the serial fallback `tryCatch` loop, the `finally` block successfully executes, and `close()` is formally invoked on the active progress bar object.
+
+✨ **Result:**
+By filling these testing gaps, the unit test coverage of `execute_tasks_parallel.R` is now significantly more robust. Refactoring and improvements in future work can be applied with confidence knowing edge cases relating to stateful resources (such as `txtProgressBar`) under failure conditions are cleanly asserted.

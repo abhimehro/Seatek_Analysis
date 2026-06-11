@@ -16,6 +16,8 @@
 
 **Closed issues:**
 
+- Daily QA & Agentic Review — 2026-06-11 [\#275](https://github.com/abhimehro/Seatek_Analysis/issues/275)
+- Daily QA Check - Seatek\_Analysis - 2026-06-10 [\#272](https://github.com/abhimehro/Seatek_Analysis/issues/272)
 - Daily QA Check - Seatek\_Analysis - 2026-06-09 [\#269](https://github.com/abhimehro/Seatek_Analysis/issues/269)
 - Daily QA Check - Seatek\_Analysis - 2026-06-08 [\#268](https://github.com/abhimehro/Seatek_Analysis/issues/268)
 - Daily QA Check - Seatek\_Analysis - 2026-06-07 [\#267](https://github.com/abhimehro/Seatek_Analysis/issues/267)
@@ -39,6 +41,9 @@
 
 **Merged pull requests:**
 
+- 🔒 fix\(automation\): remove insecure login shell execution [\#293](https://github.com/abhimehro/Seatek_Analysis/pull/293) ([abhimehro](https://github.com/abhimehro))
+- 🔒 Fix insecure package installation in run\_tests.sh [\#290](https://github.com/abhimehro/Seatek_Analysis/pull/290) ([abhimehro](https://github.com/abhimehro))
+- docs: add libuv1-dev + fast R package setup notes to AGENTS.md [\#285](https://github.com/abhimehro/Seatek_Analysis/pull/285) ([abhimehro](https://github.com/abhimehro))
 - ⚡ Bolt: Optimize regex compilation in code health scanner [\#270](https://github.com/abhimehro/Seatek_Analysis/pull/270) ([abhimehro](https://github.com/abhimehro))
 - ⚡ Bolt: \[performance improvement\] Concurrent tag fetching for workflow updates [\#266](https://github.com/abhimehro/Seatek_Analysis/pull/266) ([abhimehro](https://github.com/abhimehro))
 - 🛡️ Sentinel: \[HIGH\] Fix environment denylist vulnerability in subprocess wrappers [\#263](https://github.com/abhimehro/Seatek_Analysis/pull/263) ([abhimehro](https://github.com/abhimehro))

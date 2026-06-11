@@ -108,8 +108,3 @@ def get_language(filepath):
         return 'typescript'
     return 'unknown'
 
-
-
-
-if __name__ == "__main__":
-    pass

@@ -68,15 +68,19 @@ read_sensor_data <- function(file_path,
   }
 
   dt <- tryCatch(
-    fread(file_path, header = FALSE, sep = sep, fill = TRUE,
-          na.strings = c("NA")),
+    fread(file_path,
+      header = FALSE, sep = sep, fill = TRUE,
+      na.strings = c("NA")
+    ),
     error = function(e) {
       stop(sprintf("Error reading %s: %s", basename(file_path), e$message))
     }
   )
   if (ncol(dt) < 33) {
-    warning(sprintf("File %s has only %d columns; expected >=33.",
-                    basename(file_path), ncol(dt)))
+    warning(sprintf(
+      "File %s has only %d columns; expected >=33.",
+      basename(file_path), ncol(dt)
+    ))
   }
   total_cols <- ncol(dt)
   sensor_cols <- min(total_cols - 1, 32)
@@ -86,8 +90,10 @@ read_sensor_data <- function(file_path,
     setnames(dt, sensor_cols + 1, "Timestamp")
   }
   # Keep only sensor columns + Timestamp
-  dt <- dt[, c(paste0("Sensor", sprintf("%02d", 1:sensor_cols)),
-               "Timestamp"), with = FALSE]
+  dt <- dt[, c(
+    paste0("Sensor", sprintf("%02d", 1:sensor_cols)),
+    "Timestamp"
+  ), with = FALSE]
   # Convert timestamp if numeric
   # ⚡ Bolt: Prevent redundant memory allocations and full traversals by using anyNA
   # and reusing the parsed numeric timestamp vector instead of calling as.numeric twice
@@ -104,7 +110,9 @@ clean_vals <- function(x) x[which(x > 0)]
 
 # Utility: Execute a list of tasks in parallel (or serially as fallback)
 execute_tasks_parallel <- function(tasks, task_func) {
-  if (length(tasks) == 0) return(list())
+  if (length(tasks) == 0) {
+    return(list())
+  }
 
   if (requireNamespace("parallel", quietly = TRUE)) {
     cores_detected <- tryCatch(parallel::detectCores(), error = function(e) NA_real_)
@@ -124,12 +132,15 @@ execute_tasks_parallel <- function(tasks, task_func) {
   } else {
     out_files <- vector("list", length(tasks))
     pb_write <- txtProgressBar(min = 0, max = length(tasks), style = 3)
-    tryCatch({
-      for (i in seq_along(tasks)) {
-        out_files[[i]] <- task_func(tasks[[i]])
-        setTxtProgressBar(pb_write, i)
-      }
-    }, finally = close(pb_write))
+    tryCatch(
+      {
+        for (i in seq_along(tasks)) {
+          out_files[[i]] <- task_func(tasks[[i]])
+          setTxtProgressBar(pb_write, i)
+        }
+      },
+      finally = close(pb_write)
+    )
     return(out_files)
   }
 }
@@ -141,9 +152,9 @@ compute_sensor_metrics <- function(df, filename) {
 
   # ⚡ Bolt: Replace sapply with data.table native lapply(.SD) for O(1) row subsetting
   first10 <- unlist(df[1:min(10, .N), lapply(.SD, function(x) mean(clean_vals(x))), .SDcols = sensor_names])
-  last5   <- unlist(df[max(1, .N - 4):.N, lapply(.SD, function(x) mean(clean_vals(x))), .SDcols = sensor_names])
-  full    <- unlist(df[, lapply(.SD, function(x) mean(clean_vals(x))), .SDcols = sensor_names])
-  diff    <- full - first10
+  last5 <- unlist(df[max(1, .N - 4):.N, lapply(.SD, function(x) mean(clean_vals(x))), .SDcols = sensor_names])
+  full <- unlist(df[, lapply(.SD, function(x) mean(clean_vals(x))), .SDcols = sensor_names])
+  diff <- full - first10
   # Derive sheet/year name
   year_tag <- sub("^SS_Y([0-9]{2})\\.txt$", "\\1", basename(filename))
   # Map Y01=1995, Y02=1996, ..., Y20=2014
@@ -186,7 +197,7 @@ export_raw_data_parallel <- function(raw_export_tasks) {
 # Process all sensor files: export raw, compute metrics
 process_all_data <- function(data_dir) {
   data_dir <- auto_detect_data_dir(data_dir)
-  pattern <- "^SS_Y[0-9]{2}\\.txt$"  # Updated pattern to match your files
+  pattern <- "^SS_Y[0-9]{2}\\.txt$" # Updated pattern to match your files
   files <- list.files(data_dir, pattern = pattern, full.names = TRUE)
   if (length(files) == 0) {
     stop(sprintf("No sensor files found matching %s in %s", pattern, data_dir))
@@ -197,12 +208,15 @@ process_all_data <- function(data_dir) {
   sheet_names <- character(length(files))
   raw_export_tasks <- vector("list", length(files))
   pb <- txtProgressBar(min = 0, max = length(files), style = 3)
-  on.exit({
-    if (!is.null(pb)) {
-      close(pb)
-      pb <- NULL
-    }
-  }, add = TRUE)
+  on.exit(
+    {
+      if (!is.null(pb)) {
+        close(pb)
+        pb <- NULL
+      }
+    },
+    add = TRUE
+  )
   i <- 0
   for (f in files) {
     df <- read_sensor_data(f, verbose = FALSE)
@@ -235,17 +249,21 @@ process_all_data <- function(data_dir) {
 write_year_sheet <- function(wb, year, data, header_style, highlight_style_yearly = NULL) {
   addWorksheet(wb, year)
   # ⚡ Bolt: No as.data.frame() conversion needed, use data.table natively
-  writeData(wb, sheet = year, x = data, rowNames = FALSE,
-            headerStyle = header_style)
+  writeData(wb,
+    sheet = year, x = data, rowNames = FALSE,
+    headerStyle = header_style
+  )
   freezePane(wb, sheet = year, firstRow = TRUE)
   # Optional: highlight largest within_diff in each year
   if ("within_diff" %in% colnames(data) && !is.null(highlight_style_yearly)) {
     max_idx <- which.max(abs(data$within_diff))
     # ⚡ Bolt: Remove '+ 1' from cols offset since Sensor is a standard column now
-    addStyle(wb, sheet = year, style = highlight_style_yearly,
-             rows = max_idx + 1,
-             cols = which(colnames(data) == "within_diff"),
-             gridExpand = TRUE, stack = TRUE)
+    addStyle(wb,
+      sheet = year, style = highlight_style_yearly,
+      rows = max_idx + 1,
+      cols = which(colnames(data) == "within_diff"),
+      gridExpand = TRUE, stack = TRUE
+    )
   }
 }
 
@@ -259,36 +277,45 @@ calculate_summary_stats <- function(results) {
   metrics <- setdiff(names(all_stats_dt), c("Sensor", "Year"))
 
   # Melt to long format: Sensor, Year, Metric, Value
-  long_dt <- melt(all_stats_dt, id.vars = c("Sensor", "Year"),
-                  measure.vars = metrics,
-                  variable.name = "Metric", value.name = "Value")
+  long_dt <- melt(all_stats_dt,
+    id.vars = c("Sensor", "Year"),
+    measure.vars = metrics,
+    variable.name = "Metric", value.name = "Value"
+  )
 
   # Calculate aggregated statistics
   # OPTIMIZATION: Extract na.omit(Value) once per group instead of repeatedly traversing NA checks
-  agg_dt <- long_dt[, {
-    v <- na.omit(Value)
-    n <- length(v)
-    if (n == 0) {
-      list(mean = NA_real_, sd = NA_real_, median = NA_real_, mad = NA_real_,
-           min = NA_real_, max = NA_real_, count = 0L, rollmean3 = NA_real_)
-    } else {
-      list(
-        mean      = mean(v),
-        sd        = sd(v),
-        median    = median(v),
-        mad       = mad(v),
-        min       = min(v),
-        max       = max(v),
-        count     = n,
-        rollmean3 = if (n < 3) NA_real_ else mean(tail(v, 3))
-      )
-    }
-  }, by = .(Sensor, Metric)]
+  agg_dt <- long_dt[,
+    {
+      v <- na.omit(Value)
+      n <- length(v)
+      if (n == 0) {
+        list(
+          mean = NA_real_, sd = NA_real_, median = NA_real_, mad = NA_real_,
+          min = NA_real_, max = NA_real_, count = 0L, rollmean3 = NA_real_
+        )
+      } else {
+        list(
+          mean      = mean(v),
+          sd        = sd(v),
+          median    = median(v),
+          mad       = mad(v),
+          min       = min(v),
+          max       = max(v),
+          count     = n,
+          rollmean3 = if (n < 3) NA_real_ else mean(tail(v, 3))
+        )
+      }
+    },
+    by = .(Sensor, Metric)
+  ]
 
   # Reshape to wide format: Sensor ~ Metric_Stat
   # Melt the aggregated stats to stack them
-  agg_long <- melt(agg_dt, id.vars = c("Sensor", "Metric"),
-                   variable.name = "Stat", value.name = "Value")
+  agg_long <- melt(agg_dt,
+    id.vars = c("Sensor", "Metric"),
+    variable.name = "Stat", value.name = "Value"
+  )
 
   # Cast to final wide format with combined column names (Metric_Stat)
   # dcast automatically uses "_" as separator, producing "first10_mean", "full_sd", etc.
@@ -300,38 +327,26 @@ calculate_summary_stats <- function(results) {
   summary_wide # Implicit return
 }
 
-# Write comprehensive summary (all sensors)
-export_comprehensive_summary <- function(wb, summary_df_all, output_file,
-                                         header_style) {
-  addWorksheet(wb, "Summary_All")
-  writeData(wb, sheet = "Summary_All", x = summary_df_all,
-            headerStyle = header_style)
-  freezePane(wb, sheet = "Summary_All", firstRow = TRUE)
+# Helper function to export summary sheet and CSV
+export_summary_sheet_and_csv <- function(wb, df, output_file, header_style,
+                                         sheet_name, suffix, msg_prefix) {
+  addWorksheet(wb, sheet_name)
+  writeData(wb, sheet = sheet_name, x = df, headerStyle = header_style)
+  freezePane(wb, sheet = sheet_name, firstRow = TRUE)
 
-  csv_all <- sub("\\.xlsx$", "_all.csv", output_file)
-  data.table::fwrite(summary_df_all, csv_all, row.names = FALSE)
-  message(sprintf("Comprehensive summary CSV written to %s", csv_all))
-  cat(sprintf("  📄 Saved: %s\n", basename(csv_all)))
-}
-
-# Write filtered summary (sufficient data only)
-export_sufficient_summary <- function(wb, summary_df_sufficient, output_file,
-                                      header_style) {
-  addWorksheet(wb, "Summary_Sufficient")
-  writeData(wb, sheet = "Summary_Sufficient", x = summary_df_sufficient,
-            headerStyle = header_style)
-  freezePane(wb, sheet = "Summary_Sufficient", firstRow = TRUE)
-
-  csv_sufficient <- sub("\\.xlsx$", "_sufficient.csv", output_file)
-  data.table::fwrite(summary_df_sufficient, csv_sufficient, row.names = FALSE)
-  message(sprintf("Filtered summary CSV written to %s", csv_sufficient))
-  cat(sprintf("  📄 Saved: %s\n", basename(csv_sufficient)))
+  csv_file <- sub("\\.xlsx$", suffix, output_file)
+  data.table::fwrite(df, csv_file, row.names = FALSE)
+  message(sprintf("%s CSV written to %s", msg_prefix, csv_file))
+  cat(sprintf("  📄 Saved: %s\n", basename(csv_file)))
+  return(invisible(NULL))
 }
 
 # Write top sensors summary
 export_top_sensors_summary <- function(wb, summary_df, output_file,
                                        header_style) {
-  if (!"within_diff_mean" %in% colnames(summary_df)) return()
+  if (!"within_diff_mean" %in% colnames(summary_df)) {
+    return()
+  }
 
   abs_diff <- abs(summary_df$within_diff_mean)
   top_n <- 5
@@ -358,8 +373,10 @@ export_top_sensors_summary <- function(wb, summary_df, output_file,
     headerStyle = header_style
   )
   freezePane(wb, sheet = "Summary_Top_Sensors", firstRow = TRUE)
-  setColWidths(wb, sheet = "Summary_Top_Sensors", cols = 1:ncol(top_sensors),
-               widths = "auto")
+  setColWidths(wb,
+    sheet = "Summary_Top_Sensors", cols = 1:ncol(top_sensors),
+    widths = "auto"
+  )
 }
 
 # Write main summary sheet and CSVs
@@ -372,15 +389,17 @@ export_main_summary <- function(wb, summary_df, output_file,
 
   # Highlight top N sensors with largest absolute within_diff_mean
   if ("within_diff_mean" %in% colnames(summary_df) &&
-        !is.null(highlight_style_summary)) {
+    !is.null(highlight_style_summary)) {
     abs_diff <- abs(summary_df$within_diff_mean)
     top_idx <- order(abs_diff, decreasing = TRUE)[
       seq_len(min(highlight_top_n, length(abs_diff)))
     ]
-    addStyle(wb, sheet = "Summary", style = highlight_style_summary,
-             rows = top_idx + 1,
-             cols = which(colnames(summary_df) == "within_diff_mean"),
-             gridExpand = TRUE, stack = TRUE)
+    addStyle(wb,
+      sheet = "Summary", style = highlight_style_summary,
+      rows = top_idx + 1,
+      cols = which(colnames(summary_df) == "within_diff_mean"),
+      gridExpand = TRUE, stack = TRUE
+    )
   }
   saveWorkbook(wb, output_file, overwrite = TRUE)
   message(sprintf("Summary written to %s", output_file))
@@ -405,15 +424,22 @@ write_summary_sheets <- function(wb, summary_df, output_file,
                                  highlight_style_summary = NULL) {
   # --- Comprehensive summary (all sensors) ---
   summary_df_all <- summary_df # keep a copy before filtering
-  export_comprehensive_summary(wb, summary_df_all, output_file, header_style)
+  export_summary_sheet_and_csv(
+    wb, summary_df_all, output_file, header_style,
+    "Summary_All", "_all.csv",
+    "Comprehensive summary"
+  )
 
   # --- Filtered summary (sufficient data only) ---
   min_count <- 5
   summary_df_sufficient <- summary_df_all[
     summary_df_all$full_count >= min_count,
   ]
-  export_sufficient_summary(wb, summary_df_sufficient, output_file,
-                            header_style)
+  export_summary_sheet_and_csv(
+    wb, summary_df_sufficient, output_file,
+    header_style, "Summary_Sufficient",
+    "_sufficient.csv", "Filtered summary"
+  )
 
   # Continue with filtered summary for top sensors and highlighting
   summary_df <- summary_df_sufficient
@@ -429,8 +455,10 @@ write_summary_sheets <- function(wb, summary_df, output_file,
 
   export_top_sensors_summary(wb, summary_df, output_file, header_style)
 
-  export_main_summary(wb, summary_df, output_file, header_style,
-                      highlight_top_n, highlight_style_summary)
+  export_main_summary(
+    wb, summary_df, output_file, header_style,
+    highlight_top_n, highlight_style_summary
+  )
 }
 
 # Write combined summary workbook
@@ -449,12 +477,15 @@ dump_summary_excel <- function(results, output_file, highlight_top_n = 5) {
   if (length(results) > 0) {
     pb <- txtProgressBar(min = 0, max = length(results), style = 3)
     # 🎨 Palette: Add robust cleanup to prevent garbled console on error
-    on.exit({
-      if (!is.null(pb)) {
-        close(pb)
-        pb <- NULL
-      }
-    }, add = TRUE)
+    on.exit(
+      {
+        if (!is.null(pb)) {
+          close(pb)
+          pb <- NULL
+        }
+      },
+      add = TRUE
+    )
     i <- 0
     for (year in names(results)) {
       write_year_sheet(wb, year, results[[year]], header_style, highlight_style_yearly)
@@ -471,8 +502,10 @@ dump_summary_excel <- function(results, output_file, highlight_top_n = 5) {
 
   cat("\n💾 Saving final workbook and CSV outputs...\n")
   # Write summary sheets and CSVs
-  write_summary_sheets(wb, summary_df, output_file,
-                       header_style, highlight_top_n, highlight_style_summary)
+  write_summary_sheets(
+    wb, summary_df, output_file,
+    header_style, highlight_top_n, highlight_style_summary
+  )
 
   cat("\n✅ Summary workbook complete.\n")
 }
@@ -481,38 +514,40 @@ dump_summary_excel <- function(results, output_file, highlight_top_n = 5) {
 #'
 #' Executes the main data processing pipeline with error handling.
 run_pipeline <- function() {
-  withCallingHandlers({
-    data_dir <- file.path(getwd(), "Data")
-    message(sprintf("Running main(). Data directory: %s", data_dir))
-    if (!dir.exists(data_dir)) {
-      stop(sprintf("Data directory does not exist: %s", data_dir))
+  withCallingHandlers(
+    {
+      data_dir <- file.path(getwd(), "Data")
+      message(sprintf("Running main(). Data directory: %s", data_dir))
+      if (!dir.exists(data_dir)) {
+        stop(sprintf("Data directory does not exist: %s", data_dir))
+      }
+      data_dir <- normalizePath(data_dir)
+      results <- process_all_data(data_dir)
+      summary_out <- file.path(data_dir, "Seatek_Summary.xlsx")
+      dump_summary_excel(results, summary_out)
+      message("Processing complete.")
+      cat(sprintf("\n🎉 Pipeline finished! Output saved to: %s\n", summary_out))
+    },
+    warning = function(w) {
+      log_handler("WARNING", conditionMessage(w))
+      invokeRestart("muffleWarning")
+    },
+    error = function(e) {
+      error_message <- conditionMessage(e)
+      if (grepl("could not find function|Error in library|there is no package called", error_message, ignore.case = TRUE)) {
+        log_handler("DEPENDENCY_ERROR", error_message)
+      } else {
+        log_handler("PROCESSING_ERROR", error_message)
+      }
+      if (interactive()) {
+        message(sprintf("An error occurred: %s. Check 'processing_warnings.log' for details.", error_message))
+      }
+    },
+    message = function(m) {
+      log_handler("MESSAGE", conditionMessage(m))
+      invokeRestart("muffleMessage")
     }
-    data_dir <- normalizePath(data_dir)
-    results <- process_all_data(data_dir)
-    summary_out <- file.path(data_dir, "Seatek_Summary.xlsx")
-    dump_summary_excel(results, summary_out)
-    message("Processing complete.")
-    cat(sprintf("\n🎉 Pipeline finished! Output saved to: %s\n", summary_out))
-  },
-  warning = function(w) {
-    log_handler("WARNING", conditionMessage(w))
-    invokeRestart("muffleWarning")
-  },
-  error   = function(e) {
-    error_message <- conditionMessage(e)
-    if (grepl("could not find function|Error in library|there is no package called", error_message, ignore.case = TRUE)) {
-      log_handler("DEPENDENCY_ERROR", error_message)
-    } else {
-      log_handler("PROCESSING_ERROR", error_message)
-    }
-    if (interactive()) {
-      message(sprintf("An error occurred: %s. Check 'processing_warnings.log' for details.", error_message))
-    }
-  },
-  message = function(m) {
-    log_handler("MESSAGE", conditionMessage(m))
-    invokeRestart("muffleMessage")
-  })
+  )
 }
 
 # Main execution block

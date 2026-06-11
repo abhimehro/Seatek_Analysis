@@ -227,16 +227,24 @@ def _process_excel_sheets(file_buffer, input_path, output_dir, grouped):
             target_sheets = [sheet for sheet, _ in grouped_list if sheet in available_sheets]
 
             parsed_sheets = {}
-            if target_sheets:
-                parsed_sheets = pd.read_excel(xls, sheet_name=target_sheets)
+            for sheet in target_sheets:
+                try:
+                    parsed_sheets[sheet] = pd.read_excel(xls, sheet_name=sheet)
+                except Exception as e:
+                    logging.warning(
+                        f"Could not read sheet '{sheet}': Internal error occurred ({type(e).__name__})."
+                    )
 
             for sheet, group in grouped_list:
                 if sheet not in available_sheets:
                     logging.warning(f"Could not read sheet '{sheet}': Sheet not found.")
                     continue
 
+                if sheet not in parsed_sheets:
+                    continue
+
                 try:
-                    df_raw = parsed_sheets[sheet] if isinstance(parsed_sheets, dict) else parsed_sheets
+                    df_raw = parsed_sheets[sheet]
                     new_corrections = _process_single_sheet(
                         df_raw.copy(), sheet, group, input_path, output_dir
                     )

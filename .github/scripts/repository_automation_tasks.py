@@ -1,4 +1,5 @@
 from __future__ import annotations
+from pathlib import Path
 
 import datetime as dt
 import json
@@ -8,7 +9,6 @@ import re
 from typing import Any
 import concurrent.futures
 
-import os
 import pathlib
 
 from repository_automation_common import (
@@ -205,23 +205,70 @@ def fetch_latest_tags(repo_ids: set[str]) -> dict[str, str]:
     return tags
 
 
+def _process_single_workflow(file_path: Path) -> tuple[Path, str, list[re.Match], set[str]]:
+    text = file_path.read_text()
+    matches = []
+    local_repo_ids = set()
+    for match in WORKFLOW_PATTERN.finditer(text):
+        action_ref = match.group(2)
+        if action_ref.startswith("./") or action_ref.startswith("docker://"):
+            continue
+        parts = action_ref.split("/")
+        if len(parts) < 2:
+            continue
+        repo_id = "/".join(parts[:2])
+        local_repo_ids.add(repo_id)
+        matches.append(match)
+    return file_path, text, matches, local_repo_ids
+
+
+def _process_single_workflow(file_path) -> tuple[Any, str, list[re.Match], set[str]]:
+    text = file_path.read_text()
+    matches = []
+    local_repo_ids = set()
+    for match in WORKFLOW_PATTERN.finditer(text):
+        action_ref = match.group(2)
+        if action_ref.startswith("./") or action_ref.startswith("docker://"):
+            continue
+        parts = action_ref.split("/")
+        if len(parts) < 2:
+            continue
+        repo_id = "/".join(parts[:2])
+        local_repo_ids.add(repo_id)
+        matches.append(match)
+    return file_path, text, matches, local_repo_ids
+
+
+def _process_single_workflow(file_path) -> tuple[Any, str, list[re.Match], set[str]]:
+    text = file_path.read_text()
+    matches = []
+    local_repo_ids = set()
+    for match in WORKFLOW_PATTERN.finditer(text):
+        action_ref = match.group(2)
+        if action_ref.startswith("./") or action_ref.startswith("docker://"):
+            continue
+        parts = action_ref.split("/")
+        if len(parts) < 2:
+            continue
+        repo_id = "/".join(parts[:2])
+        local_repo_ids.add(repo_id)
+        matches.append(match)
+    return file_path, text, matches, local_repo_ids
+
+
 def _parse_workflow_files() -> tuple[set[str], list[dict[str, Any]]]:
     repo_ids_to_fetch = set()
     file_data = []
-    for file_path in sorted((ROOT / ".github" / "workflows").glob("*.y*ml")):
-        text = file_path.read_text()
-        matches = []
-        for match in WORKFLOW_PATTERN.finditer(text):
-            action_ref = match.group(2)
-            if action_ref.startswith("./") or action_ref.startswith("docker://"):
-                continue
-            parts = action_ref.split("/")
-            if len(parts) < 2:
-                continue
-            repo_id = "/".join(parts[:2])
-            repo_ids_to_fetch.add(repo_id)
-            matches.append(match)
-        file_data.append({"path": file_path, "text": text, "matches": matches})
+
+    file_paths = sorted((ROOT / ".github" / "workflows").glob("*.y*ml"))
+
+    with concurrent.futures.ThreadPoolExecutor() as executor:
+        results = list(executor.map(_process_single_workflow, file_paths))
+
+    for path, text, matches, local_repo_ids in results:
+        repo_ids_to_fetch.update(local_repo_ids)
+        file_data.append({"path": path, "text": text, "matches": matches})
+
     return repo_ids_to_fetch, file_data
 
 def _compute_workflow_replacements(file_data: list[dict[str, Any]], latest_cache: dict[str, str]) -> list[dict[str, Any]]:

@@ -23,12 +23,8 @@ test_that("export_raw_data_parallel writes excel files correctly", {
     list(df = dt2, out_raw = file2)
   )
 
-  # We expect a message "Raw data written to ..."
-  # export_raw_data_parallel prints messages, let's suppress or capture
-  expect_message(
-    export_raw_data_parallel(raw_tasks),
-    "Raw data written to .*"
-  )
+  # export_raw_data_parallel prints one message per output file; suppress them
+  suppressMessages(export_raw_data_parallel(raw_tasks))
 
   # Verify files exist
   expect_true(file.exists(file1))

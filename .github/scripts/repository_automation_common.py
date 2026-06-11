@@ -99,7 +99,7 @@ def run_shell_command(command: str | list[str], timeout: int = 1800, custom_env:
     # but the primary path relies on lists of arguments to avoid shell injection.
     if isinstance(command, str):
         # We still need to support strings during migration, so we run them via bash
-        cmd_args = [BASH_BIN, "-lc", command]
+        cmd_args = [BASH_BIN, "-c", command]
         cmd_str = command
     else:
         # Secure execution without shell wrapper

@@ -1,7 +1,11 @@
-**🚨 Severity:** HIGH
-**💡 Vulnerability:** The subprocess execution wrappers (`run_process` and `run_shell_command`) in `.github/scripts/repository_automation_common.py` used an incomplete denylist (`env.pop("GH_TOKEN")`) to sanitize the environment before executing external commands. This left other sensitive tokens commonly used in CI (such as `GITHUB_TOKEN`) vulnerable to exfiltration by compromised third-party dependencies executed in the shell.
-**🎯 Impact:** A compromised external script or dependency executed via these wrappers could access and exfiltrate the `GITHUB_TOKEN`, potentially leading to unauthorized access, code modification, or further lateral movement within the repository and organization.
-**🔧 Fix:** Expanded the denylist in both `run_process` and `run_shell_command` to explicitly strip out `GITHUB_TOKEN` in addition to `GH_TOKEN`. While a strict allowlist is conceptually safer, it was verified to break essential tools that rely on standard CI/OS environment variables (like `PATH`, `HOME`, and `GITHUB_WORKSPACE`). Therefore, a comprehensive denylist approach was maintained and augmented. Also added a journal entry in `.jules/sentinel.md` documenting this finding and the trade-offs.
-**✅ Verification:**
-1. Execute tests: `PYTHONPATH=. pytest tests/`
-2. Verified that locally constructed dummy tokens for `GH_TOKEN` and `GITHUB_TOKEN` are stripped from subprocess outputs when executing commands like `env`.
+🎯 **What:**
+Added unit tests for the main `run_pipeline` function. Previously, this function lacked direct test coverage, leading to a gap in ensuring the top-level execution and error handling flow functions as expected.
+
+📊 **Coverage:**
+The new test file (`tests/testthat/test-run_pipeline.R`) covers the following scenarios:
+1. `run_pipeline handles missing data directory correctly`: Verifies that the pipeline correctly halts and logs an error when the `Data` directory is missing.
+2. `run_pipeline captures warnings and dependency errors`: Mocks `process_all_data` to generate warnings and dependency errors to confirm they are captured by `withCallingHandlers` and logged correctly via `log_handler`.
+3. `run_pipeline executes successfully with valid data`: Mocks downstream functions and ensures the pipeline runs successfully to completion without errors when the environment is properly configured.
+
+✨ **Result:**
+Enhanced the robustness of the testing suite by explicitly testing the primary execution path and its logging integration. Test coverage is increased and ensures future refactors do not break top-level execution flows.

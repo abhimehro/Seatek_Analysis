@@ -104,7 +104,7 @@ clean_vals <- function(x) x[which(x > 0)]
 
 # Utility: Execute a list of tasks in parallel (or serially as fallback)
 execute_tasks_parallel <- function(tasks, task_func) {
-  if (length(tasks) == 0) return(list())
+  if (length(tasks) == 0) list()
 
   if (requireNamespace("parallel", quietly = TRUE)) {
     cores_detected <- tryCatch(parallel::detectCores(), error = function(e) NA_real_)

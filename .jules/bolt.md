@@ -43,3 +43,7 @@
 ## 2025-12-15 - Concurrent GitHub Action Tag Fetching
 **Learning:** Sequential network calls inside loops, like fetching GitHub Action tags for workflow updates, introduce significant blocking I/O bottlenecks.
 **Action:** Extract the network fetching logic into a separate helper function (to avoid "Large Method" static analysis violations) and use `concurrent.futures.ThreadPoolExecutor` to run the independent requests concurrently. This reduces execution time substantially (e.g., from ~2.6s to ~1s). Always ensure `import concurrent.futures` is present.
+
+## 2024-06-11 - Vectorize openxlsx sheet generation
+**Learning:** Sequential `addWorksheet` and `writeData` inside a loop in `openxlsx` incurs substantial memory allocation overhead and blocks the CPU. Utilizing `buildWorkbook` with a list of data frames allows `openxlsx` to leverage optimized internal processing to generate all sheets simultaneously, which is significantly faster.
+**Action:** When writing multiple sheets in `openxlsx`, pre-aggregate the data into a named list of data frames and initialize them at once using `buildWorkbook(list_data)`, rather than looping sequentially.

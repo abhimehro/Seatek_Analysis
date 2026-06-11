@@ -101,7 +101,7 @@ test_that("read_sensor_data enforces the 50MB maximum file size limit", {
   # Should throw an error about maximum allowed size
   expect_error(
     read_sensor_data(large_file),
-    "exceeds maximum allowed size of 50 MB",
+    "exceeds max size of 50 MB",
     fixed = TRUE
   )
 })

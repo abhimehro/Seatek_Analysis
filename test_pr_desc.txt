@@ -1,4 +1,0 @@
-🎯 **What:** The duplicated logic for creating, styling, freezing panes, and exporting CSVs in `export_comprehensive_summary` and `export_sufficient_summary` was combined into a single, generic helper function `export_summary_sheet_and_csv`.
-💡 **Why:** This reduces code duplication and improves maintainability, so any future changes to worksheet generation or CSV exporting only need to be applied in one place.
-✅ **Verification:** Verified the fix by successfully running the full `testthat` suite, ensuring syntax and style validity with `lintr` and `styler`.
-✨ **Result:** A cleaner, more abstracted codebase with no behavioral changes.

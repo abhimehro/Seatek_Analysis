@@ -338,6 +338,7 @@ export_summary_sheet_and_csv <- function(wb, df, output_file, header_style,
   data.table::fwrite(df, csv_file, row.names = FALSE)
   message(sprintf("%s CSV written to %s", msg_prefix, csv_file))
   cat(sprintf("  📄 Saved: %s\n", basename(csv_file)))
+  return(invisible(NULL))
 }
 
 # Write top sensors summary

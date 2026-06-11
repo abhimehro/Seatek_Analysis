@@ -44,6 +44,9 @@
 **Learning:** Sequential network calls inside loops, like fetching GitHub Action tags for workflow updates, introduce significant blocking I/O bottlenecks.
 **Action:** Extract the network fetching logic into a separate helper function (to avoid "Large Method" static analysis violations) and use `concurrent.futures.ThreadPoolExecutor` to run the independent requests concurrently. This reduces execution time substantially (e.g., from ~2.6s to ~1s). Always ensure `import concurrent.futures` is present.
 
-## 2026-06-11 - Optimize pandas Excel sheet loading
+## $(date +%Y-%m-%d) - Optimize pandas Excel sheet loading
 **Learning:** Parsing multiple sheets sequentially via `xls.parse(sheet)` within a loop over a `pd.ExcelFile` introduces repeated overhead that significantly slows down script execution. Using `pd.read_excel(xls, sheet_name=target_sheets)` to bulk-read necessary sheets provides an immediate 20-25% speedup without altering functionality.
 **Action:** When extracting data from multiple sheets in Pandas, prefer bulk loading with a pre-validated `sheet_name` list instead of parsing sequentially within a loop. Ensure any generator inputs (like `DataFrameGroupBy` objects) are explicitly converted to a list to prevent accidental iterator exhaustion before bulk loading.
+## $(date +%Y-%m-%d) - Simplify complex methods in parsing loops
+**Learning:** Adding complex logic (like generating lists of target sheets and iterating over dictionaries of dataframes) directly inside `try...except` file handlers or context managers can quickly balloon the cyclomatic complexity of a function and trigger CodeScene "Complex Method" or "Bumpy Road Ahead" alerts.
+**Action:** When introducing optimization logic (like bulk-loading and subsequent application of that data), proactively extract the loading logic (`_bulk_read_excel_sheets`) and the application logic (`_apply_corrections_to_sheets`) into their own dedicated helper functions. This keeps the primary handler function clean and focused purely on managing the file context and high-level orchestrating.

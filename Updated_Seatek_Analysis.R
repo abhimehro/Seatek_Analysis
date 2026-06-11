@@ -44,7 +44,7 @@ auto_detect_data_dir <- function(data_dir) {
     stop("SECURITY: Path traversal detected. data_dir must be within the current working directory.")
   }
 
-  return(normalizePath(data_dir))
+  normalizePath(data_dir)
 }
 
 # Read a single sensor data file
@@ -64,7 +64,7 @@ read_sensor_data <- function(file_path,
   MAX_FILE_SIZE <- 50 * 1024 * 1024 # 50 MB
   file_size <- file.info(file_path)$size
   if (is.na(file_size) || file_size > MAX_FILE_SIZE) {
-    stop(sprintf("File %s exceeds maximum allowed size of %d MB.", basename(file_path), MAX_FILE_SIZE / (1024 * 1024)))
+    stop(sprintf("File %s exceeds max size of %d MB.", basename(file_path), MAX_FILE_SIZE / (1048576)))
   }
 
   dt <- tryCatch(
@@ -95,7 +95,7 @@ read_sensor_data <- function(file_path,
   if (!anyNA(num_ts)) {
     dt[, Timestamp := as.POSIXct(num_ts, origin = "1970-01-01")]
   }
-  return(dt)
+  dt
 }
 
 # ⚡ Bolt: Hoisted clean_vals helper out of the process_all_data loop
@@ -104,7 +104,7 @@ clean_vals <- function(x) x[which(x > 0)]
 
 # Utility: Execute a list of tasks in parallel (or serially as fallback)
 execute_tasks_parallel <- function(tasks, task_func) {
-  if (length(tasks) == 0) return(list())
+  if (length(tasks) == 0) list()
 
   if (requireNamespace("parallel", quietly = TRUE)) {
     cores_detected <- tryCatch(parallel::detectCores(), error = function(e) NA_real_)
@@ -120,7 +120,7 @@ execute_tasks_parallel <- function(tasks, task_func) {
       on.exit(parallel::stopCluster(cl), add = TRUE)
       out_files <- parallel::parLapply(cl, tasks, task_func)
     }
-    return(out_files)
+    out_files
   } else {
     out_files <- vector("list", length(tasks))
     pb_write <- txtProgressBar(min = 0, max = length(tasks), style = 3)
@@ -130,7 +130,7 @@ execute_tasks_parallel <- function(tasks, task_func) {
         setTxtProgressBar(pb_write, i)
       }
     }, finally = close(pb_write))
-    return(out_files)
+    out_files
   }
 }
 
@@ -173,7 +173,7 @@ export_raw_data_parallel <- function(raw_export_tasks) {
     write_task <- function(task) {
       # Use full namespace just to be safe
       openxlsx::write.xlsx(task$df, task$out_raw, overwrite = TRUE)
-      return(task$out_raw)
+      task$out_raw
     }
 
     out_files <- execute_tasks_parallel(raw_export_tasks, write_task)
@@ -228,25 +228,7 @@ process_all_data <- function(data_dir) {
   cat("\n⚡ Writing raw Excel files in parallel...\n")
   export_raw_data_parallel(raw_export_tasks)
   cat("✅ Raw files written.\n")
-  return(results)
-}
-
-# Write a single year's sheet to the workbook
-write_year_sheet <- function(wb, year, data, header_style, highlight_style_yearly = NULL) {
-  addWorksheet(wb, year)
-  # ⚡ Bolt: No as.data.frame() conversion needed, use data.table natively
-  writeData(wb, sheet = year, x = data, rowNames = FALSE,
-            headerStyle = header_style)
-  freezePane(wb, sheet = year, firstRow = TRUE)
-  # Optional: highlight largest within_diff in each year
-  if ("within_diff" %in% colnames(data) && !is.null(highlight_style_yearly)) {
-    max_idx <- which.max(abs(data$within_diff))
-    # ⚡ Bolt: Remove '+ 1' from cols offset since Sensor is a standard column now
-    addStyle(wb, sheet = year, style = highlight_style_yearly,
-             rows = max_idx + 1,
-             cols = which(colnames(data) == "within_diff"),
-             gridExpand = TRUE, stack = TRUE)
-  }
+  results
 }
 
 # Compute summary statistics across all years
@@ -358,7 +340,7 @@ export_top_sensors_summary <- function(wb, summary_df, output_file,
     headerStyle = header_style
   )
   freezePane(wb, sheet = "Summary_Top_Sensors", firstRow = TRUE)
-  setColWidths(wb, sheet = "Summary_Top_Sensors", cols = 1:ncol(top_sensors),
+  setColWidths(wb, sheet = "Summary_Top_Sensors", cols = seq_len(ncol(top_sensors)),
                widths = "auto")
 }
 
@@ -435,8 +417,6 @@ write_summary_sheets <- function(wb, summary_df, output_file,
 
 # Write combined summary workbook
 dump_summary_excel <- function(results, output_file, highlight_top_n = 5) {
-  wb <- createWorkbook()
-
   # ⚡ Bolt: Hoisted style definitions out of inner functions/loops
   # to avoid recreating styles redundantly on every sheet generation.
   header_style <- createStyle(textDecoration = "bold")
@@ -447,6 +427,7 @@ dump_summary_excel <- function(results, output_file, highlight_top_n = 5) {
   cat("\n📊 Generating yearly summary sheets...\n")
   message("Generating yearly summary sheets...")
   if (length(results) > 0) {
+    wb <- buildWorkbook(results, rowNames = FALSE, headerStyle = header_style)
     pb <- txtProgressBar(min = 0, max = length(results), style = 3)
     # 🎨 Palette: Add robust cleanup to prevent garbled console on error
     on.exit({
@@ -457,11 +438,21 @@ dump_summary_excel <- function(results, output_file, highlight_top_n = 5) {
     }, add = TRUE)
     i <- 0
     for (year in names(results)) {
-      write_year_sheet(wb, year, results[[year]], header_style, highlight_style_yearly)
+      freezePane(wb, sheet = year, firstRow = TRUE)
+      if ("within_diff" %in% colnames(results[[year]]) &&
+            !is.null(highlight_style_yearly)) {
+        max_idx <- which.max(abs(results[[year]]$within_diff))
+        addStyle(wb, sheet = year, style = highlight_style_yearly,
+                 rows = max_idx + 1,
+                 cols = which(colnames(results[[year]]) == "within_diff"),
+                 gridExpand = TRUE, stack = TRUE)
+      }
       i <- i + 1
       setTxtProgressBar(pb, i)
     }
     close(pb)
+  } else {
+    wb <- createWorkbook()
   }
   cat("\n✅ Yearly sheets generated.\n")
 

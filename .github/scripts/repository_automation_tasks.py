@@ -222,40 +222,6 @@ def _process_single_workflow(file_path: Path) -> tuple[Path, str, list[re.Match]
     return file_path, text, matches, local_repo_ids
 
 
-def _process_single_workflow(file_path) -> tuple[Any, str, list[re.Match], set[str]]:
-    text = file_path.read_text()
-    matches = []
-    local_repo_ids = set()
-    for match in WORKFLOW_PATTERN.finditer(text):
-        action_ref = match.group(2)
-        if action_ref.startswith("./") or action_ref.startswith("docker://"):
-            continue
-        parts = action_ref.split("/")
-        if len(parts) < 2:
-            continue
-        repo_id = "/".join(parts[:2])
-        local_repo_ids.add(repo_id)
-        matches.append(match)
-    return file_path, text, matches, local_repo_ids
-
-
-def _process_single_workflow(file_path) -> tuple[Any, str, list[re.Match], set[str]]:
-    text = file_path.read_text()
-    matches = []
-    local_repo_ids = set()
-    for match in WORKFLOW_PATTERN.finditer(text):
-        action_ref = match.group(2)
-        if action_ref.startswith("./") or action_ref.startswith("docker://"):
-            continue
-        parts = action_ref.split("/")
-        if len(parts) < 2:
-            continue
-        repo_id = "/".join(parts[:2])
-        local_repo_ids.add(repo_id)
-        matches.append(match)
-    return file_path, text, matches, local_repo_ids
-
-
 def _parse_workflow_files() -> tuple[set[str], list[dict[str, Any]]]:
     repo_ids_to_fetch = set()
     file_data = []

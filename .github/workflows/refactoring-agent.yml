@@ -31,6 +31,7 @@ jobs:
           RAW_COMMENT: ${{ github.event.comment.body }}
         run: |
           COMMAND="$RAW_COMMENT"
+          # Add skill: prefix if missing
           if [[ "$COMMAND" == "/cs-agent "* && "$COMMAND" != "/cs-agent skill:"* ]]; then
             COMMAND="/cs-agent skill:${COMMAND#/cs-agent }"
           fi

@@ -44,6 +44,7 @@
 
 **Merged pull requests:**
 
+- Set up Cursor Cloud development environment for Seatek Analysis [\#300](https://github.com/abhimehro/Seatek_Analysis/pull/300) ([abhimehro](https://github.com/abhimehro))
 - ⚡ Bolt: Optimize NA filtering inside data.table grouped operations [\#297](https://github.com/abhimehro/Seatek_Analysis/pull/297) ([abhimehro](https://github.com/abhimehro))
 - autofix: Fix export comprehensive summary test failure [\#296](https://github.com/abhimehro/Seatek_Analysis/pull/296) ([abhimehro](https://github.com/abhimehro))
 - 🔒 fix\(automation\): remove insecure login shell execution [\#293](https://github.com/abhimehro/Seatek_Analysis/pull/293) ([abhimehro](https://github.com/abhimehro))

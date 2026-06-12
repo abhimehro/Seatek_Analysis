@@ -579,13 +579,22 @@ def run_backlog_manager(config: dict[str, Any]) -> dict[str, Any]:
     )
 
 
+def _read_result(path: pathlib.Path) -> dict[str, Any] | None:
+    try:
+        return json.loads(path.read_text())
+    except json.JSONDecodeError:
+        return None
+
+
 def load_task_results() -> list[dict[str, Any]]:
     results = []
-    for path in sorted(OUTPUT_ROOT.glob("*/result.json")):
-        try:
-            results.append(json.loads(path.read_text()))
-        except json.JSONDecodeError:
-            continue
+    paths = sorted(OUTPUT_ROOT.glob("*/result.json"))
+    # ⚡ Bolt: Using ThreadPoolExecutor to run independent JSON disk reads
+    # and parses concurrently significantly reduces blocking I/O time.
+    with concurrent.futures.ThreadPoolExecutor() as executor:
+        for result in executor.map(_read_result, paths):
+            if result is not None:
+                results.append(result)
     return results
 
 

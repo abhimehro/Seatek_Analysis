@@ -284,10 +284,10 @@ calculate_summary_stats <- function(results) {
   )
 
   # Calculate aggregated statistics
-  # OPTIMIZATION: Extract na.omit(Value) once per group instead of repeatedly traversing NA checks
+  # OPTIMIZATION: Extract Value[!is.na(Value)] once per group instead of repeatedly traversing NA checks
   agg_dt <- long_dt[,
     {
-      v <- na.omit(Value)
+      v <- Value[!is.na(Value)]
       n <- length(v)
       if (n == 0) {
         list(

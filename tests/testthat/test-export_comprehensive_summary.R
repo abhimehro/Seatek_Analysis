@@ -39,11 +39,14 @@ test_that("export_comprehensive_summary creates sheet and writes CSV", {
 
   # Call the function, suppressing messages
   suppressMessages({
-    export_comprehensive_summary(
+    export_summary_sheet_and_csv(
       wb = wb,
-      summary_df_all = mock_summary_df,
+      df = mock_summary_df,
       output_file = output_file,
-      header_style = header_style
+      header_style = header_style,
+      sheet_name = "Summary_All",
+      suffix = "_all.csv",
+      msg_prefix = "Comprehensive summary"
     )
   })
 

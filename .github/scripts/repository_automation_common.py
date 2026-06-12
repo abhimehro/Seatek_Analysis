@@ -403,7 +403,13 @@ def latest_tag_for_action(repo_id: str) -> str:
     return gh_text(["api", f"repos/{repo_id}/tags?per_page=1", "--jq", ".[0].name"])
 
 
+def is_commit_sha(ref: str) -> bool:
+    return bool(re.fullmatch(r"[0-9a-fA-F]{40}", ref))
+
+
 def numeric_version(text: str) -> tuple[int, int, int] | None:
+    if is_commit_sha(text):
+        return None
     match = re.search(r"v?(\d+)(?:\.(\d+))?(?:\.(\d+))?", text)
     if not match:
         return None
@@ -411,6 +417,8 @@ def numeric_version(text: str) -> tuple[int, int, int] | None:
 
 
 def target_ref(current: str, latest: str) -> str | None:
+    if is_commit_sha(current):
+        return None
     current_v = numeric_version(current)
     latest_v = numeric_version(latest)
     if not current_v or not latest_v:

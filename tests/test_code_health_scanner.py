@@ -1,7 +1,6 @@
 import os
 import subprocess
 from unittest.mock import patch
-import pytest
 from code_health_scanner import get_repo_info, read_file_safe, get_language, MAX_FILE_SIZE
 
 def test_get_repo_info_https():

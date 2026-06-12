@@ -101,7 +101,7 @@ read_sensor_data <- function(file_path,
   if (!anyNA(num_ts)) {
     dt[, Timestamp := as.POSIXct(num_ts, origin = "1970-01-01")]
   }
-  return(dt)
+  dt
 }
 
 # ⚡ Bolt: Hoisted clean_vals helper out of the process_all_data loop
@@ -128,7 +128,7 @@ execute_tasks_parallel <- function(tasks, task_func) {
       on.exit(parallel::stopCluster(cl), add = TRUE)
       out_files <- parallel::parLapply(cl, tasks, task_func)
     }
-    return(out_files)
+    out_files
   } else {
     out_files <- vector("list", length(tasks))
     pb_write <- txtProgressBar(min = 0, max = length(tasks), style = 3)
@@ -141,7 +141,7 @@ execute_tasks_parallel <- function(tasks, task_func) {
       },
       finally = close(pb_write)
     )
-    return(out_files)
+    out_files
   }
 }
 
@@ -184,7 +184,7 @@ export_raw_data_parallel <- function(raw_export_tasks) {
     write_task <- function(task) {
       # Use full namespace just to be safe
       openxlsx::write.xlsx(task$df, task$out_raw, overwrite = TRUE)
-      return(task$out_raw)
+      task$out_raw
     }
 
     out_files <- execute_tasks_parallel(raw_export_tasks, write_task)
@@ -242,7 +242,7 @@ process_all_data <- function(data_dir) {
   cat("\n⚡ Writing raw Excel files in parallel...\n")
   export_raw_data_parallel(raw_export_tasks)
   cat("✅ Raw files written.\n")
-  return(results)
+  results
 }
 
 # Write a single year's sheet to the workbook
@@ -338,7 +338,7 @@ export_summary_sheet_and_csv <- function(wb, df, output_file, header_style,
   data.table::fwrite(df, csv_file, row.names = FALSE)
   message(sprintf("%s CSV written to %s", msg_prefix, csv_file))
   cat(sprintf("  📄 Saved: %s\n", basename(csv_file)))
-  return(invisible(NULL))
+  invisible(NULL)
 }
 
 # Write top sensors summary

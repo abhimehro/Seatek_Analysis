@@ -46,8 +46,11 @@
 
 **Merged pull requests:**
 
+- ⚡ Bolt: Pre-compile regular expressions in repository automation [\#308](https://github.com/abhimehro/Seatek_Analysis/pull/308) ([abhimehro](https://github.com/abhimehro))
 - 🛡️ Sentinel: \[security improvement\] Explicitly pass shell=False to subprocess calls [\#307](https://github.com/abhimehro/Seatek_Analysis/pull/307) ([abhimehro](https://github.com/abhimehro))
 - chore\(deps\): update matplotlib requirement from \>=3.10.9 to \>=3.11.0 in /Series\_27/Analysis [\#304](https://github.com/abhimehro/Seatek_Analysis/pull/304) ([dependabot[bot]](https://github.com/apps/dependabot))
+- chore\(test\): remove unused pytest import \(salvages \#276\) [\#303](https://github.com/abhimehro/Seatek_Analysis/pull/303) ([abhimehro](https://github.com/abhimehro))
+- test\(parallel\): serial fallback error and progress-bar close \(salvages \#291\) [\#302](https://github.com/abhimehro/Seatek_Analysis/pull/302) ([abhimehro](https://github.com/abhimehro))
 - Cursor agent/refactoring agent version a35c [\#301](https://github.com/abhimehro/Seatek_Analysis/pull/301) ([abhimehro](https://github.com/abhimehro))
 - Set up Cursor Cloud development environment for Seatek Analysis [\#300](https://github.com/abhimehro/Seatek_Analysis/pull/300) ([abhimehro](https://github.com/abhimehro))
 - ⚡ Bolt: Optimize NA filtering inside data.table grouped operations [\#297](https://github.com/abhimehro/Seatek_Analysis/pull/297) ([abhimehro](https://github.com/abhimehro))

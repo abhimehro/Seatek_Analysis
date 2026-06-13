@@ -404,14 +404,21 @@ def latest_tag_for_action(repo_id: str) -> str:
     return gh_text(["api", f"repos/{repo_id}/tags?per_page=1", "--jq", ".[0].name"])
 
 
+# ⚡ Bolt: Hoist inline regular expressions to pre-compiled module-level constants.
+# This prevents redundant pattern compilation overhead on every invocation, particularly in loops.
+COMMIT_SHA_PATTERN = re.compile(r"[0-9a-fA-F]{40}")
+NUMERIC_VERSION_PATTERN = re.compile(r"v?(\d+)(?:\.(\d+))?(?:\.(\d+))?")
+SIMPLE_VERSION_PATTERN = re.compile(r"v?\d+")
+
+
 def is_commit_sha(ref: str) -> bool:
-    return bool(re.fullmatch(r"[0-9a-fA-F]{40}", ref))
+    return bool(COMMIT_SHA_PATTERN.fullmatch(ref))
 
 
 def numeric_version(text: str) -> tuple[int, int, int] | None:
     if is_commit_sha(text):
         return None
-    match = re.search(r"v?(\d+)(?:\.(\d+))?(?:\.(\d+))?", text)
+    match = NUMERIC_VERSION_PATTERN.search(text)
     if not match:
         return None
     return tuple(int(group or 0) for group in match.groups())
@@ -426,7 +433,7 @@ def target_ref(current: str, latest: str) -> str | None:
         return None
     if latest_v <= current_v:
         return None
-    if re.fullmatch(r"v?\d+", current):
+    if SIMPLE_VERSION_PATTERN.fullmatch(current):
         prefix = "v" if current.startswith("v") or latest.startswith("v") else ""
         return f"{prefix}{latest_v[0]}"
     return latest

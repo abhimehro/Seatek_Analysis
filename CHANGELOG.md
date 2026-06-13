@@ -46,6 +46,7 @@
 
 **Merged pull requests:**
 
+- 🛡️ Sentinel: \[security improvement\] Explicitly pass shell=False to subprocess calls [\#307](https://github.com/abhimehro/Seatek_Analysis/pull/307) ([abhimehro](https://github.com/abhimehro))
 - chore\(deps\): update matplotlib requirement from \>=3.10.9 to \>=3.11.0 in /Series\_27/Analysis [\#304](https://github.com/abhimehro/Seatek_Analysis/pull/304) ([dependabot[bot]](https://github.com/apps/dependabot))
 - Cursor agent/refactoring agent version a35c [\#301](https://github.com/abhimehro/Seatek_Analysis/pull/301) ([abhimehro](https://github.com/abhimehro))
 - Set up Cursor Cloud development environment for Seatek Analysis [\#300](https://github.com/abhimehro/Seatek_Analysis/pull/300) ([abhimehro](https://github.com/abhimehro))

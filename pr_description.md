@@ -1,0 +1,7 @@
+**🚨 Severity:** HIGH
+**💡 Vulnerability:** The subprocess execution wrappers (`run_process` and `run_shell_command`) in `.github/scripts/repository_automation_common.py` used an incomplete denylist (`env.pop("GH_TOKEN")`) to sanitize the environment before executing external commands. This left other sensitive tokens commonly used in CI (such as `GITHUB_TOKEN`) vulnerable to exfiltration by compromised third-party dependencies executed in the shell.
+**🎯 Impact:** A compromised external script or dependency executed via these wrappers could access and exfiltrate the `GITHUB_TOKEN`, potentially leading to unauthorized access, code modification, or further lateral movement within the repository and organization.
+**🔧 Fix:** Expanded the denylist in both `run_process` and `run_shell_command` to explicitly strip out `GITHUB_TOKEN` in addition to `GH_TOKEN`. While a strict allowlist is conceptually safer, it was verified to break essential tools that rely on standard CI/OS environment variables (like `PATH`, `HOME`, and `GITHUB_WORKSPACE`). Therefore, a comprehensive denylist approach was maintained and augmented. Also added a journal entry in `.jules/sentinel.md` documenting this finding and the trade-offs.
+**✅ Verification:**
+1. Execute tests: `PYTHONPATH=. pytest tests/`
+2. Verified that locally constructed dummy tokens for `GH_TOKEN` and `GITHUB_TOKEN` are stripped from subprocess outputs when executing commands like `env`.

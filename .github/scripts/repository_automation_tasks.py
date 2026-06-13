@@ -9,7 +9,6 @@ import re
 from typing import Any
 import concurrent.futures
 
-import pathlib
 
 from repository_automation_common import (
     DAILY_WORKFLOW_NAME,

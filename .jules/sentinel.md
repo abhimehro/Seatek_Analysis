@@ -2,3 +2,8 @@
 **Vulnerability:** The automation script executed legacy string commands via `bash -lc`. The `-l` flag creates a login shell, which automatically sources profile scripts (e.g., `/etc/profile`, `~/.bash_profile`). If an attacker could compromise these files, they could achieve arbitrary code execution whenever the automation script ran.
 **Learning:** Using login shells (`-l`) in CI/CD environments is rarely necessary and significantly expands the attack surface by executing untrusted or unintended environment scripts.
 **Prevention:** Always use `-c` without `-l` when shell execution is strictly required for legacy compatibility, but prefer executing commands directly as argument lists (e.g., `["echo", "hello"]`) whenever possible to bypass the shell entirely and eliminate injection risks.
+
+## 2025-07-11 - Enforce shell=False explicitly in subprocess calls
+**Vulnerability:** Subprocess calls omitted the `shell=False` parameter. While this is the default behavior in Python, implicitly relying on the default leaves the code vulnerable to accidental modifications (e.g., a developer explicitly setting `shell=True` to run a complex command without realizing the security implications) and fails static analysis checks.
+**Learning:** Python's default `shell=False` is not sufficient for defense in depth. Explicitly declaring it acts as living documentation, satisfies SAST tools like Bandit, and forces developers to consciously consider the security implications if they ever attempt to change it.
+**Prevention:** Always explicitly define `shell=False` when using `subprocess.run`, `subprocess.check_output`, or `subprocess.Popen` with a list of arguments. If `shell=True` is absolutely required, the inputs must be rigorously sanitized using `shlex.quote`.

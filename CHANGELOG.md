@@ -16,7 +16,12 @@
 
 **Closed issues:**
 
+- Daily QA & Agentic Review — 2026-06-12 [\#305](https://github.com/abhimehro/Seatek_Analysis/issues/305)
+- \[repo-automation\] Daily Status Report - 2026-06-12 [\#299](https://github.com/abhimehro/Seatek_Analysis/issues/299)
+- Daily QA Check - Seatek\_Analysis - 2026-06-11 [\#295](https://github.com/abhimehro/Seatek_Analysis/issues/295)
+- \[repo-automation\] Daily Status Report - 2026-06-11 [\#294](https://github.com/abhimehro/Seatek_Analysis/issues/294)
 - Daily QA & Agentic Review — 2026-06-11 [\#275](https://github.com/abhimehro/Seatek_Analysis/issues/275)
+- \[repo-automation\] Daily Status Report - 2026-06-10 [\#274](https://github.com/abhimehro/Seatek_Analysis/issues/274)
 - Daily QA Check - Seatek\_Analysis - 2026-06-10 [\#272](https://github.com/abhimehro/Seatek_Analysis/issues/272)
 - Daily QA Check - Seatek\_Analysis - 2026-06-09 [\#269](https://github.com/abhimehro/Seatek_Analysis/issues/269)
 - Daily QA Check - Seatek\_Analysis - 2026-06-08 [\#268](https://github.com/abhimehro/Seatek_Analysis/issues/268)
@@ -41,9 +46,28 @@
 
 **Merged pull requests:**
 
+- ⚡ Bolt: Pre-compile regular expressions in repository automation [\#308](https://github.com/abhimehro/Seatek_Analysis/pull/308) ([abhimehro](https://github.com/abhimehro))
+- 🛡️ Sentinel: \[security improvement\] Explicitly pass shell=False to subprocess calls [\#307](https://github.com/abhimehro/Seatek_Analysis/pull/307) ([abhimehro](https://github.com/abhimehro))
+- chore\(deps\): update matplotlib requirement from \>=3.10.9 to \>=3.11.0 in /Series\_27/Analysis [\#304](https://github.com/abhimehro/Seatek_Analysis/pull/304) ([dependabot[bot]](https://github.com/apps/dependabot))
+- chore\(test\): remove unused pytest import \(salvages \#276\) [\#303](https://github.com/abhimehro/Seatek_Analysis/pull/303) ([abhimehro](https://github.com/abhimehro))
+- test\(parallel\): serial fallback error and progress-bar close \(salvages \#291\) [\#302](https://github.com/abhimehro/Seatek_Analysis/pull/302) ([abhimehro](https://github.com/abhimehro))
+- Cursor agent/refactoring agent version a35c [\#301](https://github.com/abhimehro/Seatek_Analysis/pull/301) ([abhimehro](https://github.com/abhimehro))
+- Set up Cursor Cloud development environment for Seatek Analysis [\#300](https://github.com/abhimehro/Seatek_Analysis/pull/300) ([abhimehro](https://github.com/abhimehro))
+- ⚡ Bolt: Optimize NA filtering inside data.table grouped operations [\#297](https://github.com/abhimehro/Seatek_Analysis/pull/297) ([abhimehro](https://github.com/abhimehro))
+- autofix: Fix export comprehensive summary test failure [\#296](https://github.com/abhimehro/Seatek_Analysis/pull/296) ([abhimehro](https://github.com/abhimehro))
 - 🔒 fix\(automation\): remove insecure login shell execution [\#293](https://github.com/abhimehro/Seatek_Analysis/pull/293) ([abhimehro](https://github.com/abhimehro))
+- 🧪 \[Testing\] Add unit tests for export\_top\_sensors\_summary [\#292](https://github.com/abhimehro/Seatek_Analysis/pull/292) ([abhimehro](https://github.com/abhimehro))
 - 🔒 Fix insecure package installation in run\_tests.sh [\#290](https://github.com/abhimehro/Seatek_Analysis/pull/290) ([abhimehro](https://github.com/abhimehro))
+- feat: parse workspace roots from copilot payload [\#289](https://github.com/abhimehro/Seatek_Analysis/pull/289) ([abhimehro](https://github.com/abhimehro))
+- ⚡ Bolt: \[performance improvement\] Excel bulk load [\#288](https://github.com/abhimehro/Seatek_Analysis/pull/288) ([abhimehro](https://github.com/abhimehro))
+- 🧹 Code Health Improvement: Remove Dead Code in code\_health\_scanner.py [\#287](https://github.com/abhimehro/Seatek_Analysis/pull/287) ([abhimehro](https://github.com/abhimehro))
+- 🧪 Added tests for compute\_sensor\_metrics [\#286](https://github.com/abhimehro/Seatek_Analysis/pull/286) ([abhimehro](https://github.com/abhimehro))
 - docs: add libuv1-dev + fast R package setup notes to AGENTS.md [\#285](https://github.com/abhimehro/Seatek_Analysis/pull/285) ([abhimehro](https://github.com/abhimehro))
+- 🧪 Add tests for run\_pipeline [\#284](https://github.com/abhimehro/Seatek_Analysis/pull/284) ([abhimehro](https://github.com/abhimehro))
+- 🧹 Code Health: Refactor summary exports to reduce duplication [\#281](https://github.com/abhimehro/Seatek_Analysis/pull/281) ([abhimehro](https://github.com/abhimehro))
+- 🧪 \[testing improvement\] Add unit tests for export\_comprehensive\_summary [\#280](https://github.com/abhimehro/Seatek_Analysis/pull/280) ([abhimehro](https://github.com/abhimehro))
+- 🧪 Add tests for export\_raw\_data\_parallel [\#279](https://github.com/abhimehro/Seatek_Analysis/pull/279) ([abhimehro](https://github.com/abhimehro))
+- ⚡ Bolt: \[performance improvement\] concurrent JSON reading [\#277](https://github.com/abhimehro/Seatek_Analysis/pull/277) ([abhimehro](https://github.com/abhimehro))
 - ⚡ Bolt: Optimize regex compilation in code health scanner [\#270](https://github.com/abhimehro/Seatek_Analysis/pull/270) ([abhimehro](https://github.com/abhimehro))
 - ⚡ Bolt: \[performance improvement\] Concurrent tag fetching for workflow updates [\#266](https://github.com/abhimehro/Seatek_Analysis/pull/266) ([abhimehro](https://github.com/abhimehro))
 - 🛡️ Sentinel: \[HIGH\] Fix environment denylist vulnerability in subprocess wrappers [\#263](https://github.com/abhimehro/Seatek_Analysis/pull/263) ([abhimehro](https://github.com/abhimehro))

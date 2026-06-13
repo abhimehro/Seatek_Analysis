@@ -1,0 +1,15 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/suzuki-shunsuke/pinact/refs/heads/main/json-schema/pinact.json
+# pinact - https://github.com/suzuki-shunsuke/pinact
+version: 3
+files:
+  - pattern: .github/workflows/*.yml
+  - pattern: .github/workflows/*.yaml
+  - pattern: .github/actions/*/action.yml
+  - pattern: .github/actions/*/action.yaml
+
+# Intentional commit pin: tagged v1.0.0/v1.0.1 releases lack the skill prepend fix.
+rules:
+  - ignore: true
+    conditions:
+      - expr: |
+          ActionName == "codescene-oss/pr-refactoring-agent" && ActionVersion == "bc0d8b91c0a1a88154fb1dfb82124f8f43733d65"

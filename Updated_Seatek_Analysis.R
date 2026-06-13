@@ -374,7 +374,7 @@ export_top_sensors_summary <- function(wb, summary_df, output_file,
   )
   freezePane(wb, sheet = "Summary_Top_Sensors", firstRow = TRUE)
   setColWidths(wb,
-    sheet = "Summary_Top_Sensors", cols = 1:ncol(top_sensors),
+    sheet = "Summary_Top_Sensors", cols = seq_len(ncol(top_sensors)),
     widths = "auto"
   )
 }

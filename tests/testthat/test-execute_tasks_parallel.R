@@ -73,3 +73,97 @@ test_that("execute_tasks_parallel executes gracefully on non-unix platforms", {
     res <- local_env$execute_tasks_parallel_mocked(tasks, function(x) x * 5)
     expect_equal(res, list(5, 10))
 })
+
+test_that("execute_tasks_parallel serial fallback bubbles errors from task_func", {
+    local_env <- new.env(parent = globalenv())
+    local_env$execute_tasks_parallel <- execute_tasks_parallel
+
+    local_env$requireNamespace <- function(package, ...) {
+        if (package == "parallel") return(FALSE)
+        base::requireNamespace(package, ...)
+    }
+
+    environment(local_env$execute_tasks_parallel) <- local_env
+
+    tasks <- list(1, 2, 3)
+
+    failing_task <- function(x) {
+        if (x == 2) stop("Task failed")
+        return(x)
+    }
+
+    suppressMessages(
+        capture.output({
+            expect_error(
+                local_env$execute_tasks_parallel(tasks, failing_task),
+                "Task failed"
+            )
+        })
+    )
+})
+
+test_that("execute_tasks_parallel progress bar is closed on error", {
+    local_env <- new.env(parent = globalenv())
+    local_env$execute_tasks_parallel <- execute_tasks_parallel
+
+    local_env$requireNamespace <- function(package, ...) {
+        if (package == "parallel") return(FALSE)
+        base::requireNamespace(package, ...)
+    }
+
+    environment(local_env$execute_tasks_parallel) <- local_env
+
+    # We need to capture the fact that close() was called on the progress bar.
+    # A simple way to do this is to mock close() or txtProgressBar in the local env.
+
+    pb_created <- FALSE
+    pb_closed <- FALSE
+
+    local_env$txtProgressBar <- function(min, max, style, ...) {
+        pb_created <<- TRUE
+        structure(list(min=min, max=max), class="txtProgressBarMock")
+    }
+
+    local_env$setTxtProgressBar <- function(pb, value) {
+        # do nothing
+    }
+
+    local_env$close <- function(con, ...) {
+        if (inherits(con, "txtProgressBarMock")) {
+            pb_closed <<- TRUE
+        } else {
+            base::close(con, ...)
+        }
+    }
+
+    tasks <- list(1, 2)
+    failing_task <- function(x) {
+        if (x == 2) stop("Task 2 failed")
+        return(x)
+    }
+
+    expect_error(
+        local_env$execute_tasks_parallel(tasks, failing_task),
+        "Task 2 failed"
+    )
+
+    expect_true(pb_created)
+    expect_true(pb_closed)
+})
+
+test_that("execute_tasks_parallel serial fallback handles empty list gracefully", {
+    local_env <- new.env(parent = globalenv())
+    local_env$execute_tasks_parallel <- execute_tasks_parallel
+
+    local_env$requireNamespace <- function(package, ...) {
+        if (package == "parallel") return(FALSE)
+        base::requireNamespace(package, ...)
+    }
+
+    environment(local_env$execute_tasks_parallel) <- local_env
+
+    # An empty list should be returned immediately before the txtProgressBar throws an error
+    # since max (length of tasks) would be 0, violating max > min in txtProgressBar.
+    res <- local_env$execute_tasks_parallel(list(), function(x) x)
+    expect_equal(res, list())
+})

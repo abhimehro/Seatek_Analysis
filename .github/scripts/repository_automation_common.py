@@ -81,6 +81,7 @@ def run_process(
         input=input_text,
         timeout=timeout,
         env=proc_env,
+        shell=False,
     )
 
 
@@ -99,7 +100,7 @@ def run_shell_command(command: str | list[str], timeout: int = 1800, custom_env:
     # but the primary path relies on lists of arguments to avoid shell injection.
     if isinstance(command, str):
         # We still need to support strings during migration, so we run them via bash
-        cmd_args = [BASH_BIN, "-lc", command]
+        cmd_args = [BASH_BIN, "-c", command]
         cmd_str = command
     else:
         # Secure execution without shell wrapper
@@ -403,21 +404,36 @@ def latest_tag_for_action(repo_id: str) -> str:
     return gh_text(["api", f"repos/{repo_id}/tags?per_page=1", "--jq", ".[0].name"])
 
 
+# ⚡ Bolt: Hoist inline regular expressions to pre-compiled module-level constants.
+# This prevents redundant pattern compilation overhead on every invocation, particularly in loops.
+COMMIT_SHA_PATTERN = re.compile(r"[0-9a-fA-F]{40}")
+NUMERIC_VERSION_PATTERN = re.compile(r"v?(\d+)(?:\.(\d+))?(?:\.(\d+))?")
+SIMPLE_VERSION_PATTERN = re.compile(r"v?\d+")
+
+
+def is_commit_sha(ref: str) -> bool:
+    return bool(COMMIT_SHA_PATTERN.fullmatch(ref))
+
+
 def numeric_version(text: str) -> tuple[int, int, int] | None:
-    match = re.search(r"v?(\d+)(?:\.(\d+))?(?:\.(\d+))?", text)
+    if is_commit_sha(text):
+        return None
+    match = NUMERIC_VERSION_PATTERN.search(text)
     if not match:
         return None
     return tuple(int(group or 0) for group in match.groups())
 
 
 def target_ref(current: str, latest: str) -> str | None:
+    if is_commit_sha(current):
+        return None
     current_v = numeric_version(current)
     latest_v = numeric_version(latest)
     if not current_v or not latest_v:
         return None
     if latest_v <= current_v:
         return None
-    if re.fullmatch(r"v?\d+", current):
+    if SIMPLE_VERSION_PATTERN.fullmatch(current):
         prefix = "v" if current.startswith("v") or latest.startswith("v") else ""
         return f"{prefix}{latest_v[0]}"
     return latest

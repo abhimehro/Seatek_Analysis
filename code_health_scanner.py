@@ -28,7 +28,8 @@ def get_repo_info():
             ["git", "remote", "get-url", "origin"],
             stderr=subprocess.DEVNULL,
             env=env,
-            text=True
+            text=True,
+            shell=False
         ).strip()
 
         # Parse account and project from URL
@@ -43,7 +44,8 @@ def get_repo_info():
             ["git", "rev-parse", "HEAD"],
             stderr=subprocess.DEVNULL,
             env=env,
-            text=True
+            text=True,
+            shell=False
         ).strip()
 
         return account, project, commit_hash

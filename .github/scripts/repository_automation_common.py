@@ -81,6 +81,7 @@ def run_process(
         input=input_text,
         timeout=timeout,
         env=proc_env,
+        shell=False,
     )
 
 

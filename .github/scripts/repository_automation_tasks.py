@@ -723,10 +723,15 @@ def run_daily_status_report(config: dict[str, Any]) -> dict[str, Any]:
     )
 
 
+# ⚡ Bolt: Pre-compile regular expressions to prevent redundant pattern compilation
+# overhead on every invocation, particularly in loops over issues.
+STATUS_MARKER_PATTERN = re.compile(
+    r"<!-- repository-automation:task-status\n(.*?)\n-->", re.S
+)
+
+
 def extract_status_markers(issue_body: str) -> dict[str, str]:
-    match = re.search(
-        r"<!-- repository-automation:task-status\n(.*?)\n-->", issue_body, re.S
-    )
+    match = STATUS_MARKER_PATTERN.search(issue_body)
     if not match:
         return {}
     markers = {}

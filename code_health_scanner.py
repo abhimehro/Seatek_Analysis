@@ -1,3 +1,7 @@
+"""
+Scanner module for codebase health checks.
+"""
+
 import logging
 import os
 import re
@@ -50,10 +54,10 @@ def get_repo_info():
 
         return account, project, commit_hash
 
-    except Exception as e:
+    except Exception as e: # pylint: disable=broad-exception-caught
         # SECURITY: Fail securely, don't expose internal exception details
         logging.error(
-            f"Error getting repo info: Internal error occurred ({type(e).__name__})."
+            "Error getting repo info: Internal error occurred (%s).", type(e).__name__
         )
         return "unknown", "unknown", "unknown"
 
@@ -68,15 +72,17 @@ CWD_REALPATH_PLUS_SEP = os.path.join(CWD_REALPATH, '')
 
 
 def read_file_safe(filepath):
+    """Safely reads a file, preventing path traversal and OOM issues."""
     try:
-        # SECURITY: Prevent path traversal by ensuring the file is within the current directory.
-        # Uses startswith and realpath to securely prevent directory prefix bypass and symlink escape attacks.
+        # SECURITY: Prevent path traversal by ensuring file is within current directory.
+        # Uses startswith and realpath to securely prevent bypass and escape attacks.
         resolved_filepath = os.path.realpath(filepath)
-        if not resolved_filepath.startswith(CWD_REALPATH_PLUS_SEP) and resolved_filepath != CWD_REALPATH:
+        if not resolved_filepath.startswith(CWD_REALPATH_PLUS_SEP) and \
+           resolved_filepath != CWD_REALPATH:
             return []
 
         # SECURITY: Prevent Out-Of-Memory (OOM) DoS attacks by limiting file size
-        # To avoid Time-of-Check to Time-of-Use (TOCTOU) vulnerability, we read up to MAX_FILE_SIZE + 1 bytes.
+        # To avoid TOCTOU vulnerability, we read up to MAX_FILE_SIZE + 1 bytes.
         with open(resolved_filepath, 'r', encoding='utf-8') as f:
             content = f.read(MAX_FILE_SIZE + 1)
             if len(content) > MAX_FILE_SIZE:
@@ -97,14 +103,14 @@ def read_file_safe(filepath):
 # explosion of case permutations, sacrificing readability for negligible performance gains.
 # Using the idiomatic `os.path.splitext(filepath)[1].lower()` instead.
 def get_language(filepath):
+    """Determines language based on file extension."""
     ext = os.path.splitext(filepath)[1].lower()
     if ext == '.py':
         return 'python'
-    elif ext == '.r':
+    if ext == '.r':
         return 'r'
-    elif ext == '.js':
+    if ext == '.js':
         return 'javascript'
-    elif ext == '.ts':
+    if ext == '.ts':
         return 'typescript'
     return 'unknown'
-

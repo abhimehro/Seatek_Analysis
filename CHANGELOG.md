@@ -16,7 +16,10 @@
 
 **Closed issues:**
 
+- Daily QA & Agentic Review — 2026-06-14 [\#314](https://github.com/abhimehro/Seatek_Analysis/issues/314)
+- \[repo-automation\] Daily Status Report - 2026-06-14 [\#313](https://github.com/abhimehro/Seatek_Analysis/issues/313)
 - Daily QA & Agentic Review — 2026-06-13 [\#310](https://github.com/abhimehro/Seatek_Analysis/issues/310)
+- \[repo-automation\] Daily Status Report - 2026-06-13 [\#309](https://github.com/abhimehro/Seatek_Analysis/issues/309)
 - Daily QA & Agentic Review — 2026-06-12 [\#305](https://github.com/abhimehro/Seatek_Analysis/issues/305)
 - \[repo-automation\] Daily Status Report - 2026-06-12 [\#299](https://github.com/abhimehro/Seatek_Analysis/issues/299)
 - Daily QA Check - Seatek\_Analysis - 2026-06-11 [\#295](https://github.com/abhimehro/Seatek_Analysis/issues/295)
@@ -47,6 +50,7 @@
 
 **Merged pull requests:**
 
+- Autofix linting issues in code\_health\_scanner.py [\#315](https://github.com/abhimehro/Seatek_Analysis/pull/315) ([abhimehro](https://github.com/abhimehro))
 - ⚡ Bolt: Optimize regex compilation in repository automation tasks [\#312](https://github.com/abhimehro/Seatek_Analysis/pull/312) ([abhimehro](https://github.com/abhimehro))
 - autofix: address seq\_linter warning in Updated\_Seatek\_Analysis.R [\#311](https://github.com/abhimehro/Seatek_Analysis/pull/311) ([abhimehro](https://github.com/abhimehro))
 - ⚡ Bolt: Pre-compile regular expressions in repository automation [\#308](https://github.com/abhimehro/Seatek_Analysis/pull/308) ([abhimehro](https://github.com/abhimehro))

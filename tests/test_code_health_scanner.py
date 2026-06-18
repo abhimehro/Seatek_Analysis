@@ -94,3 +94,8 @@ def test_get_repo_info_exception_logging(caplog):
 
         assert "Error getting repo info: Internal error occurred (Exception)." in caplog.text
         assert "Some secret internal error" not in caplog.text
+
+def test_read_file_safe_null_byte():
+    # Attempting to read a file with an embedded null character should return empty list
+    # and not raise a ValueError (ValueError: lstat: embedded null character in path)
+    assert read_file_safe("test\0.txt") == []

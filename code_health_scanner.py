@@ -89,7 +89,7 @@ def read_file_safe(filepath):
                 return []
             # Note: readlines() logic adapted to work on strings
             return content.splitlines(True)
-    except (OSError, UnicodeDecodeError):
+    except (OSError, UnicodeDecodeError, ValueError):
         return []
 
 

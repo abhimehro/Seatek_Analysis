@@ -74,6 +74,11 @@ CWD_REALPATH_PLUS_SEP = os.path.join(CWD_REALPATH, '')
 def read_file_safe(filepath):
     """Safely reads a file, preventing path traversal and OOM issues."""
     try:
+        # SECURITY: Handle null bytes in path which cause ValueError in Python 3.12+
+        # preventing unhandled exception DoS attacks.
+        if '\0' in filepath:
+            return []
+
         # SECURITY: Prevent path traversal by ensuring file is within current directory.
         # Uses startswith and realpath to securely prevent bypass and escape attacks.
         resolved_filepath = os.path.realpath(filepath)

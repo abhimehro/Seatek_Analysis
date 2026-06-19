@@ -63,6 +63,9 @@ def parse_args():
 
 _MAX_FILENAME_LEN = 128
 
+# ⚡ Bolt: Pre-compile regex for secure_filename to avoid compilation overhead on every call
+SECURE_FILENAME_PATTERN = re.compile(r"[^A-Za-z0-9_\.\- ]")
+
 
 def secure_filename(filename: str) -> str:
     """Sanitize a string to be used as a safe filename.
@@ -73,7 +76,7 @@ def secure_filename(filename: str) -> str:
     """
     filename = str(filename)
     filename = filename.replace("/", "_").replace("\\", "_")
-    filename = re.sub(r"[^A-Za-z0-9_\.\- ]", "_", filename)
+    filename = SECURE_FILENAME_PATTERN.sub("_", filename)
     filename = filename.strip("._- ")
     # SECURITY: Cap length to avoid OS filename limits (255 on most filesystems)
     # when combined with the input basename and other components in the output path.

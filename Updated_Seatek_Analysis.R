@@ -99,7 +99,7 @@ read_sensor_data <- function(file_path,
   # and reusing the parsed numeric timestamp vector instead of calling as.numeric twice
   num_ts <- suppressWarnings(as.numeric(dt$Timestamp))
   if (!anyNA(num_ts)) {
-    dt[, Timestamp := as.POSIXct(num_ts, origin = "1970-01-01")]
+    dt[, "Timestamp" := as.POSIXct(num_ts, origin = "1970-01-01")]
   }
   dt
 }
@@ -124,7 +124,7 @@ execute_tasks_parallel <- function(tasks, task_func) {
     if (.Platform$OS.type == "unix") {
       out_files <- parallel::mclapply(tasks, task_func, mc.cores = cores)
     } else {
-      cl <- parallel::makeCluster(cores)
+      cl <- parallel::makeCluster(cores) # nolint: object_usage_linter
       on.exit(parallel::stopCluster(cl), add = TRUE)
       out_files <- parallel::parLapply(cl, tasks, task_func)
     }
@@ -287,8 +287,8 @@ calculate_summary_stats <- function(results) {
   # OPTIMIZATION: Extract Value[!is.na(Value)] once per group instead of repeatedly traversing NA checks
   agg_dt <- long_dt[,
     {
-      v <- Value[!is.na(Value)]
-      n <- length(v)
+      v_val <- get("Value")[!is.na(get("Value"))]
+      n <- length(v_val)
       if (n == 0) {
         list(
           mean = NA_real_, sd = NA_real_, median = NA_real_, mad = NA_real_,
@@ -296,18 +296,18 @@ calculate_summary_stats <- function(results) {
         )
       } else {
         list(
-          mean      = mean(v),
-          sd        = sd(v),
-          median    = median(v),
-          mad       = mad(v),
-          min       = min(v),
-          max       = max(v),
+          mean      = mean(v_val),
+          sd        = sd(v_val),
+          median    = median(v_val),
+          mad       = mad(v_val),
+          min       = min(v_val),
+          max       = max(v_val),
           count     = n,
-          rollmean3 = if (n < 3) NA_real_ else mean(tail(v, 3))
+          rollmean3 = if (n < 3) NA_real_ else mean(tail(v_val, 3))
         )
       }
     },
-    by = .(Sensor, Metric)
+    by = c("Sensor", "Metric")
   ]
 
   # Reshape to wide format: Sensor ~ Metric_Stat
@@ -322,7 +322,11 @@ calculate_summary_stats <- function(results) {
   summary_wide <- dcast(agg_long, Sensor ~ Metric + Stat, value.var = "Value", sep = "_")
 
   # Calculate percent non-missing for 'full'
-  summary_wide[, full_pct_nonmissing := 100 * full_count / length(results)]
+  if (is.data.table(summary_wide)) {
+    summary_wide[, "full_pct_nonmissing" := 100 * get("full_count") / length(results)]
+  } else {
+    summary_wide$full_pct_nonmissing <- 100 * summary_wide$full_count / length(results)
+  }
 
   summary_wide # Implicit return
 }
@@ -356,7 +360,8 @@ export_top_sensors_summary <- function(wb, summary_df, output_file,
     "full_pct_nonmissing"
   )
   if (is.data.table(summary_df)) {
-    top_sensors <- summary_df[order(-abs_diff)][1:top_n, ..cols_to_keep]
+    # use get or with=FALSE to avoid no visible binding warning for ..cols_to_keep
+    top_sensors <- summary_df[order(-abs_diff)][1:top_n, cols_to_keep, with = FALSE]
   } else {
     top_sensors <- summary_df[order(-abs_diff), ][1:top_n, cols_to_keep]
   }
@@ -448,7 +453,7 @@ write_summary_sheets <- function(wb, summary_df, output_file,
   sd_threshold <- 2 # adjust as needed
   # Modifying in place if data.table
   if (is.data.table(summary_df)) {
-    summary_df[, flag_high_variability := full_sd > sd_threshold]
+    summary_df[, "flag_high_variability" := get("full_sd") > sd_threshold]
   } else {
     summary_df$flag_high_variability <- summary_df$full_sd > sd_threshold
   }

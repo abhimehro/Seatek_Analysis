@@ -1,8 +1,8 @@
 # Changelog
 
-## [Unreleased](https://github.com/abhimehro/Seatek_Analysis/tree/HEAD)
+## [v0.1.0](https://github.com/abhimehro/Seatek_Analysis/tree/v0.1.0) (2026-06-20)
 
-[Full Changelog](https://github.com/abhimehro/Seatek_Analysis/compare/1a1b13df64135ab9e6e08ef052f5fdbf33164ffb...HEAD)
+[Full Changelog](https://github.com/abhimehro/Seatek_Analysis/compare/1a1b13df64135ab9e6e08ef052f5fdbf33164ffb...v0.1.0)
 
 **Implemented enhancements:**
 

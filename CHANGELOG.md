@@ -1,5 +1,13 @@
 # Changelog
 
+## [Unreleased](https://github.com/abhimehro/Seatek_Analysis/tree/HEAD)
+
+[Full Changelog](https://github.com/abhimehro/Seatek_Analysis/compare/v0.1.0...HEAD)
+
+**Merged pull requests:**
+
+- 🛡️ Sentinel: \[style improvement\] Fix lintr warnings [\#339](https://github.com/abhimehro/Seatek_Analysis/pull/339) ([abhimehro](https://github.com/abhimehro))
+
 ## [v0.1.0](https://github.com/abhimehro/Seatek_Analysis/tree/v0.1.0) (2026-06-20)
 
 [Full Changelog](https://github.com/abhimehro/Seatek_Analysis/compare/1a1b13df64135ab9e6e08ef052f5fdbf33164ffb...v0.1.0)

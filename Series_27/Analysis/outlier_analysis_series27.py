@@ -161,12 +161,16 @@ def _is_safe_path(basedir: str, path: str) -> bool:
     Uses ``os.path.realpath`` to resolve symlinks so that an attacker cannot
     bypass the containment check via a symlinked component.
     """
-    abs_base = os.path.realpath(basedir)
-    abs_path = os.path.realpath(path)
+    if '\0' in basedir or '\0' in path:
+        return False
+
     try:
+        abs_base = os.path.realpath(basedir)
+        abs_path = os.path.realpath(path)
         return os.path.commonpath([abs_base, abs_path]) == abs_base
     except ValueError:
         # commonpath raises ValueError if paths are on different drives (Windows)
+        # realpath raises ValueError in Python 3.12+ if path contains a null byte
         return False
 
 

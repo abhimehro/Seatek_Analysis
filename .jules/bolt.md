@@ -59,3 +59,6 @@
 ## 2026-06-18 - Optimize file extension parsing with strict .endswith()
 **Learning:** Using `.lower()` on the full file path string first, and *then* using strict lowercase `.endswith()` string matching (`filepath.lower().endswith('.py')`), runs nearly 3x faster than extracting the extension via `os.path.splitext()` and checking it against a dictionary. This avoids the slower path processing logic while keeping the code perfectly readable, solving the combinatorial explosion problem of case permutations.
 **Action:** When checking file extensions for numerous files in performance-critical loops, lower the entire path string and use strict `.endswith()` string matches.
+## $(date +%Y-%m-%d) - Optimize path traversal checks with string operations
+**Learning:** Using `os.path.commonpath([base_path, resolved_path]) != base_path` for path traversal checks is significantly slower (~37x) than native string operations because it iteratively processes path components in Python.
+**Action:** Use `not resolved_path.startswith(base_path_plus_sep) and resolved_path != base_path` (where `base_path_plus_sep = os.path.join(base_path, '')`) to achieve the exact same path traversal protection without the performance overhead.

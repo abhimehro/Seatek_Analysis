@@ -6,11 +6,14 @@
 
 **Closed issues:**
 
+- Daily QA & Agentic Review — 2026-06-21 [\#345](https://github.com/abhimehro/Seatek_Analysis/issues/345)
+- \[repo-automation\] Daily Status Report - 2026-06-21 [\#344](https://github.com/abhimehro/Seatek_Analysis/issues/344)
 - Daily QA & Agentic Review — 2026-06-20 [\#341](https://github.com/abhimehro/Seatek_Analysis/issues/341)
 - \[repo-automation\] Daily Status Report - 2026-06-20 [\#340](https://github.com/abhimehro/Seatek_Analysis/issues/340)
 
 **Merged pull requests:**
 
+- 🛡️ Sentinel: Daily QA & Agentic Review Summary [\#346](https://github.com/abhimehro/Seatek_Analysis/pull/346) ([abhimehro](https://github.com/abhimehro))
 - 🛡️ Sentinel: \[HIGH\] Fix Null Byte DoS in path traversal validation [\#343](https://github.com/abhimehro/Seatek_Analysis/pull/343) ([abhimehro](https://github.com/abhimehro))
 - 🛡️ Sentinel: \[style improvement\] Fix lintr warnings [\#339](https://github.com/abhimehro/Seatek_Analysis/pull/339) ([abhimehro](https://github.com/abhimehro))
 

@@ -21,3 +21,8 @@
 **Vulnerability:** The `_is_safe_path()` function in `outlier_analysis_series27.py` called `os.path.realpath()` outside of its `try...except ValueError` block and lacked null byte checks. In Python 3.12+, `os.path.realpath()` raises a `ValueError` if the provided filepath contains a null byte (`\0`). An attacker supplying a crafted path with a null byte could cause an unhandled exception and crash the application (Denial of Service).
 **Learning:** Any path traversal validation using `os.path.realpath()` must handle null bytes to prevent unhandled `ValueError` crashes in Python 3.12+. Simply catching `ValueError` from `os.path.commonpath` is insufficient because `os.path.realpath` itself will throw the exception before `commonpath` is reached.
 **Prevention:** Explicitly check for null bytes (`if '\0' in path: return False`) and ensure that calls to `os.path.realpath()` are enclosed within a `try...except ValueError` block when processing untrusted input.
+
+## 2026-06-21 - [B607] Starting a process with a partial executable path
+**Vulnerability:** The script executed git commands using a partial executable path ("git") rather than an absolute path. This makes the application vulnerable to path hijacking (where an attacker modifies the PATH environment variable to point to a malicious executable named "git").
+**Learning:** Even if the PATH is sanitized or allowlisted, relying on the environment's PATH to resolve executables introduces unnecessary risk. Absolute paths should always be used.
+**Prevention:** Always use `shutil.which("executable_name")` to resolve the absolute path of system binaries before passing them to `subprocess` functions.

@@ -5,6 +5,7 @@ Scanner module for codebase health checks.
 import logging
 import os
 import re
+import shutil
 import subprocess
 
 
@@ -27,9 +28,11 @@ def get_repo_info():
         if "PATH" in os.environ:
             env["PATH"] = os.environ["PATH"]
 
+        git_bin = shutil.which("git") or "git"
+
         # Get origin URL
         origin_url = subprocess.check_output(
-            ["git", "remote", "get-url", "origin"],
+            [git_bin, "remote", "get-url", "origin"],
             stderr=subprocess.DEVNULL,
             env=env,
             text=True,
@@ -45,7 +48,7 @@ def get_repo_info():
 
         # Get current commit hash
         commit_hash = subprocess.check_output(
-            ["git", "rev-parse", "HEAD"],
+            [git_bin, "rev-parse", "HEAD"],
             stderr=subprocess.DEVNULL,
             env=env,
             text=True,

@@ -13,6 +13,8 @@
 
 **Merged pull requests:**
 
+- ⚡ Bolt: Optimize path traversal checks with string operations [\#348](https://github.com/abhimehro/Seatek_Analysis/pull/348) ([abhimehro](https://github.com/abhimehro))
+- 🛡️ Sentinel: \[security improvement\] Use absolute path for git executable [\#347](https://github.com/abhimehro/Seatek_Analysis/pull/347) ([abhimehro](https://github.com/abhimehro))
 - 🛡️ Sentinel: Daily QA & Agentic Review Summary [\#346](https://github.com/abhimehro/Seatek_Analysis/pull/346) ([abhimehro](https://github.com/abhimehro))
 - 🛡️ Sentinel: \[HIGH\] Fix Null Byte DoS in path traversal validation [\#343](https://github.com/abhimehro/Seatek_Analysis/pull/343) ([abhimehro](https://github.com/abhimehro))
 - 🛡️ Sentinel: \[style improvement\] Fix lintr warnings [\#339](https://github.com/abhimehro/Seatek_Analysis/pull/339) ([abhimehro](https://github.com/abhimehro))

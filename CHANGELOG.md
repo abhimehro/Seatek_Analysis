@@ -15,6 +15,7 @@
 **Merged pull requests:**
 
 - ⚡ Bolt: Concurrent API calls in create\_or\_update\_issue [\#358](https://github.com/abhimehro/Seatek_Analysis/pull/358) ([abhimehro](https://github.com/abhimehro))
+- 🛡️ Sentinel: Fix R linter warnings [\#357](https://github.com/abhimehro/Seatek_Analysis/pull/357) ([abhimehro](https://github.com/abhimehro))
 - chore\(deps\): bump actions/cache from 4.2.3 to 5.0.5 [\#355](https://github.com/abhimehro/Seatek_Analysis/pull/355) ([dependabot[bot]](https://github.com/apps/dependabot))
 - chore\(deps\): bump ruby/setup-ruby from 1.313.0 to 1.314.0 [\#354](https://github.com/abhimehro/Seatek_Analysis/pull/354) ([dependabot[bot]](https://github.com/apps/dependabot))
 - chore\(deps\): bump release-drafter/release-drafter from 7.2.1 to 7.4.0 [\#353](https://github.com/abhimehro/Seatek_Analysis/pull/353) ([dependabot[bot]](https://github.com/apps/dependabot))

@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import concurrent.futures
 import datetime as dt
 import fnmatch
 import json
@@ -321,21 +322,29 @@ def gh_with_body(args: list[str], body: str) -> str:
 
 
 def create_or_update_issue(title: str, body: str, labels: list[Any]) -> str:
-    search = gh_json(
-        [
-            "issue",
-            "list",
-            "--state",
-            "all",
-            "--limit",
-            "100",
-            "--json",
-            "number,title,url",
-        ],
-        default=[],
-    )
+    # ⚡ Bolt: Using ThreadPoolExecutor to run independent GitHub API calls concurrently
+    # significantly reduces blocking I/O time in create_or_update_issue.
+    with concurrent.futures.ThreadPoolExecutor(max_workers=2) as executor:
+        f_search = executor.submit(
+            gh_json,
+            [
+                "issue",
+                "list",
+                "--state",
+                "all",
+                "--limit",
+                "100",
+                "--json",
+                "number,title,url",
+            ],
+            default=[],
+        )
+        f_labels = executor.submit(filter_existing_labels, labels)
+
+        search = f_search.result()
+        existing_labels = f_labels.result()
+
     existing = next((item for item in search if item.get("title") == title), None)
-    existing_labels = filter_existing_labels(labels)
     if existing:
         command = ["issue", "edit", str(existing["number"]), "--body-file", "-"]
         if existing_labels:

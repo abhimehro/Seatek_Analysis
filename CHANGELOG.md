@@ -6,6 +6,7 @@
 
 **Closed issues:**
 
+- Daily QA & Agentic Review — 2026-06-22 [\#356](https://github.com/abhimehro/Seatek_Analysis/issues/356)
 - Daily QA & Agentic Review — 2026-06-21 [\#345](https://github.com/abhimehro/Seatek_Analysis/issues/345)
 - \[repo-automation\] Daily Status Report - 2026-06-21 [\#344](https://github.com/abhimehro/Seatek_Analysis/issues/344)
 - Daily QA & Agentic Review — 2026-06-20 [\#341](https://github.com/abhimehro/Seatek_Analysis/issues/341)
@@ -13,6 +14,12 @@
 
 **Merged pull requests:**
 
+- ⚡ Bolt: Concurrent API calls in create\_or\_update\_issue [\#358](https://github.com/abhimehro/Seatek_Analysis/pull/358) ([abhimehro](https://github.com/abhimehro))
+- chore\(deps\): bump actions/cache from 4.2.3 to 5.0.5 [\#355](https://github.com/abhimehro/Seatek_Analysis/pull/355) ([dependabot[bot]](https://github.com/apps/dependabot))
+- chore\(deps\): bump ruby/setup-ruby from 1.313.0 to 1.314.0 [\#354](https://github.com/abhimehro/Seatek_Analysis/pull/354) ([dependabot[bot]](https://github.com/apps/dependabot))
+- chore\(deps\): bump release-drafter/release-drafter from 7.2.1 to 7.4.0 [\#353](https://github.com/abhimehro/Seatek_Analysis/pull/353) ([dependabot[bot]](https://github.com/apps/dependabot))
+- chore\(deps\): bump actions/checkout from 4.2.2 to 7.0.0 [\#352](https://github.com/abhimehro/Seatek_Analysis/pull/352) ([dependabot[bot]](https://github.com/apps/dependabot))
+- chore\(deps\): bump pnpm/action-setup from 6.0.8 to 6.0.9 [\#350](https://github.com/abhimehro/Seatek_Analysis/pull/350) ([dependabot[bot]](https://github.com/apps/dependabot))
 - ⚡ Bolt: Optimize path traversal checks with string operations [\#348](https://github.com/abhimehro/Seatek_Analysis/pull/348) ([abhimehro](https://github.com/abhimehro))
 - 🛡️ Sentinel: \[security improvement\] Use absolute path for git executable [\#347](https://github.com/abhimehro/Seatek_Analysis/pull/347) ([abhimehro](https://github.com/abhimehro))
 - 🛡️ Sentinel: Daily QA & Agentic Review Summary [\#346](https://github.com/abhimehro/Seatek_Analysis/pull/346) ([abhimehro](https://github.com/abhimehro))

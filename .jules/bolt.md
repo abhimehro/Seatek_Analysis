@@ -44,21 +44,24 @@
 **Learning:** Sequential network calls inside loops, like fetching GitHub Action tags for workflow updates, introduce significant blocking I/O bottlenecks.
 **Action:** Extract the network fetching logic into a separate helper function (to avoid "Large Method" static analysis violations) and use `concurrent.futures.ThreadPoolExecutor` to run the independent requests concurrently. This reduces execution time substantially (e.g., from ~2.6s to ~1s). Always ensure `import concurrent.futures` is present.
 
-## $(date +%Y-%m-%d) - Optimize pandas Excel sheet loading
+## 2026-06-23 - Optimize pandas Excel sheet loading
 **Learning:** Parsing multiple sheets sequentially via `xls.parse(sheet)` within a loop over a `pd.ExcelFile` introduces repeated overhead that significantly slows down script execution. Using `pd.read_excel(xls, sheet_name=target_sheets)` to bulk-read necessary sheets provides an immediate 20-25% speedup without altering functionality.
 **Action:** When extracting data from multiple sheets in Pandas, prefer bulk loading with a pre-validated `sheet_name` list instead of parsing sequentially within a loop. Ensure any generator inputs (like `DataFrameGroupBy` objects) are explicitly converted to a list to prevent accidental iterator exhaustion before bulk loading.
-## $(date +%Y-%m-%d) - Simplify complex methods in parsing loops
+## 2026-06-23 - Simplify complex methods in parsing loops
 **Learning:** Adding complex logic (like generating lists of target sheets and iterating over dictionaries of dataframes) directly inside `try...except` file handlers or context managers can quickly balloon the cyclomatic complexity of a function and trigger CodeScene "Complex Method" or "Bumpy Road Ahead" alerts.
 **Action:** When introducing optimization logic (like bulk-loading and subsequent application of that data), proactively extract the loading logic (`_bulk_read_excel_sheets`) and the application logic (`_apply_corrections_to_sheets`) into their own dedicated helper functions. This keeps the primary handler function clean and focused purely on managing the file context and high-level orchestrating.
 ## 2024-06-12 - data.table NAs handling performance
 **Learning:** In grouped data.table operations (i.e. inside `j` using `by`), filtering out missing values using `Value[!is.na(Value)]` is noticeably faster (roughly 2x faster in our benchmarks) than using `na.omit(Value)` because `na.omit` involves method dispatch and attribute handling (S3 overhead) that the subset operation entirely avoids.
 **Action:** When filtering missing values in highly iterative grouped operations on vectors (like `data.table` grouping loops), always use `x[!is.na(x)]` instead of `na.omit(x)` to avoid S3 method dispatch overhead.
-## $(date +%Y-%m-%d) - Pre-compile inline regular expressions
+## 2026-06-23 - Pre-compile inline regular expressions
 **Learning:** Using `re.search` or `re.fullmatch` with inline string patterns inside functions that are called repeatedly (e.g., in loops) causes redundant compilation overhead on every invocation. Although Python internally caches recent patterns, the cache lookup itself adds a small overhead, and compiling explicitly is considered a best practice for high-performance loops.
 **Action:** Always extract inline regular expressions (`r"..."`) into pre-compiled module-level constants (e.g., `PATTERN = re.compile(...)`) and use the compiled object's methods (`PATTERN.search()`, `PATTERN.fullmatch()`) within the functions.
 ## 2026-06-18 - Optimize file extension parsing with strict .endswith()
 **Learning:** Using `.lower()` on the full file path string first, and *then* using strict lowercase `.endswith()` string matching (`filepath.lower().endswith('.py')`), runs nearly 3x faster than extracting the extension via `os.path.splitext()` and checking it against a dictionary. This avoids the slower path processing logic while keeping the code perfectly readable, solving the combinatorial explosion problem of case permutations.
 **Action:** When checking file extensions for numerous files in performance-critical loops, lower the entire path string and use strict `.endswith()` string matches.
-## $(date +%Y-%m-%d) - Optimize path traversal checks with string operations
+## 2026-06-23 - Optimize path traversal checks with string operations
 **Learning:** Using `os.path.commonpath([base_path, resolved_path]) != base_path` for path traversal checks is significantly slower (~37x) than native string operations because it iteratively processes path components in Python.
 **Action:** Use `not resolved_path.startswith(base_path_plus_sep) and resolved_path != base_path` (where `base_path_plus_sep = os.path.join(base_path, '')`) to achieve the exact same path traversal protection without the performance overhead.
+## 2026-06-23 - Concurrent API calls in create_or_update_issue
+**Learning:** Fetching issue lists and validating labels sequentially in GitHub Actions introduces unnecessary blocking I/O overhead.
+**Action:** Use concurrent.futures.ThreadPoolExecutor when performing independent network-bound operations (like fetching issues and labels) to reduce latency.

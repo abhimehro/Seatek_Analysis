@@ -37,20 +37,25 @@ auto_detect_data_dir <- function(data_dir) {
     stop(sprintf("Data directory not found: %s", data_dir))
   }
 
-  # SECURITY: Prevent path traversal by ensuring the data directory is within the workspace
+  # SECURITY: Prevent path traversal by ensuring the data directory is
+  # within the workspace
   cwd <- paste0(normalizePath(getwd(), winslash = "/"), "/")
   resolved_dir <- paste0(normalizePath(data_dir, winslash = "/"), "/")
   if (!startsWith(resolved_dir, cwd)) {
-    stop("SECURITY: Path traversal detected. data_dir must be within the current working directory.")
+    stop(paste(
+      "SECURITY: Path traversal detected.",
+      "data_dir must be within the current working directory."
+    ))
   }
 
-  return(normalizePath(data_dir))
+  normalizePath(data_dir)
 }
 
 # Read a single sensor data file
 read_sensor_data <- function(file_path,
                              sep = " ",
-                             verbose = getOption("seatek.read.verbose", interactive())) {
+                             verbose = getOption("seatek.read.verbose",
+                                                 interactive())) {
   file_path <- normalizePath(file_path)
   if (isTRUE(verbose)) {
     cat(sprintf("  📂 Reading: %s\n", basename(file_path)))
@@ -61,10 +66,11 @@ read_sensor_data <- function(file_path,
   }
 
   # SECURITY: Prevent Out-Of-Memory (OOM) DoS attacks by limiting file size
-  MAX_FILE_SIZE <- 50 * 1024 * 1024 # 50 MB
+  max_file_size <- 50 * 1024 * 1024 # 50 MB
   file_size <- file.info(file_path)$size
-  if (is.na(file_size) || file_size > MAX_FILE_SIZE) {
-    stop(sprintf("File %s exceeds maximum allowed size of %d MB.", basename(file_path), MAX_FILE_SIZE / (1024 * 1024)))
+  if (is.na(file_size) || file_size > max_file_size) {
+    stop(sprintf("File %s exceeds maximum allowed size of %d MB.",
+                 basename(file_path), max_file_size / (1024 * 1024)))
   }
 
   dt <- tryCatch(
@@ -95,11 +101,12 @@ read_sensor_data <- function(file_path,
     "Timestamp"
   ), with = FALSE]
   # Convert timestamp if numeric
-  # ⚡ Bolt: Prevent redundant memory allocations and full traversals by using anyNA
-  # and reusing the parsed numeric timestamp vector instead of calling as.numeric twice
+  # ⚡ Bolt: Prevent redundant memory allocations and full traversals
+  # by using anyNA and reusing the parsed numeric timestamp vector
+  # instead of calling as.numeric twice
   num_ts <- suppressWarnings(as.numeric(dt$Timestamp))
   if (!anyNA(num_ts)) {
-    dt[, "Timestamp" := as.POSIXct(num_ts, origin = "1970-01-01")]
+    dt[, "Timestamp" := as.POSIXct(num_ts, origin = "1970-01-01")] # nolint: object_name_linter
   }
   dt
 }
@@ -115,8 +122,10 @@ execute_tasks_parallel <- function(tasks, task_func) {
   }
 
   if (requireNamespace("parallel", quietly = TRUE)) {
-    cores_detected <- tryCatch(parallel::detectCores(), error = function(e) NA_real_)
-    if (!is.numeric(cores_detected) || !is.finite(cores_detected) || cores_detected < 1) {
+    cores_detected <- tryCatch(parallel::detectCores(),
+                               error = function(e) NA_real_)
+    if (!is.numeric(cores_detected) || !is.finite(cores_detected) ||
+          cores_detected < 1) {
       cores <- 1L
     } else {
       cores <- max(1L, as.integer(cores_detected) - 1L)
@@ -147,13 +156,21 @@ execute_tasks_parallel <- function(tasks, task_func) {
 
 # Helper to compute metrics for a single sensor dataframe
 compute_sensor_metrics <- function(df, filename) {
-  # OPTIMIZATION: which(x > 0) is natively faster at dropping NAs than !is.na() &
+  # OPTIMIZATION: which(x > 0) is natively faster at dropping NAs than
+  # !is.na() &
   sensor_names <- grep("^Sensor", names(df), value = TRUE)
 
-  # ⚡ Bolt: Replace sapply with data.table native lapply(.SD) for O(1) row subsetting
-  first10 <- unlist(df[1:min(10, .N), lapply(.SD, function(x) mean(clean_vals(x))), .SDcols = sensor_names])
-  last5 <- unlist(df[max(1, .N - 4):.N, lapply(.SD, function(x) mean(clean_vals(x))), .SDcols = sensor_names])
-  full <- unlist(df[, lapply(.SD, function(x) mean(clean_vals(x))), .SDcols = sensor_names])
+  # ⚡ Bolt: Replace sapply with data.table native lapply(.SD) for O(1) row
+  # subsetting
+  first10 <- unlist(df[1:min(10, .N),
+                       lapply(.SD, function(x) mean(clean_vals(x))),
+                       .SDcols = sensor_names])
+  last5 <- unlist(df[max(1, .N - 4):.N,
+                     lapply(.SD, function(x) mean(clean_vals(x))),
+                     .SDcols = sensor_names])
+  full <- unlist(df[,
+                    lapply(.SD, function(x) mean(clean_vals(x))),
+                    .SDcols = sensor_names])
   diff <- full - first10
   # Derive sheet/year name
   year_tag <- sub("^SS_Y([0-9]{2})\\.txt$", "\\1", basename(filename))
@@ -202,8 +219,10 @@ process_all_data <- function(data_dir) {
   if (length(files) == 0) {
     stop(sprintf("No sensor files found matching %s in %s", pattern, data_dir))
   }
-  cat(sprintf("\n🚀 Found %d sensor files. Starting processing...\n", length(files)))
-  # ⚡ Bolt: Pre-allocate lists to avoid O(N^2) memory reallocation overhead in loops
+  cat(sprintf("\n🚀 Found %d sensor files. Starting processing...\n",
+              length(files)))
+  # ⚡ Bolt: Pre-allocate lists to avoid O(N^2) memory reallocation overhead
+  # in loops
   results <- vector("list", length(files))
   sheet_names <- character(length(files))
   raw_export_tasks <- vector("list", length(files))
@@ -236,7 +255,8 @@ process_all_data <- function(data_dir) {
   }
   close(pb)
   names(results) <- sheet_names
-  cat("\nℹ Sensor files read and metrics computed; starting raw Excel exports...\n")
+  cat(paste("\nℹ Sensor files read and metrics computed;",
+            "starting raw Excel exports...\n"))
 
   # ⚡ Bolt: Parallelize raw Excel writes to remove serial I/O bottleneck
   cat("\n⚡ Writing raw Excel files in parallel...\n")
@@ -246,7 +266,8 @@ process_all_data <- function(data_dir) {
 }
 
 # Write a single year's sheet to the workbook
-write_year_sheet <- function(wb, year, data, header_style, highlight_style_yearly = NULL) {
+write_year_sheet <- function(wb, year, data, header_style,
+                             highlight_style_yearly = NULL) {
   addWorksheet(wb, year)
   # ⚡ Bolt: No as.data.frame() conversion needed, use data.table natively
   writeData(wb,
@@ -257,7 +278,8 @@ write_year_sheet <- function(wb, year, data, header_style, highlight_style_yearl
   # Optional: highlight largest within_diff in each year
   if ("within_diff" %in% colnames(data) && !is.null(highlight_style_yearly)) {
     max_idx <- which.max(abs(data$within_diff))
-    # ⚡ Bolt: Remove '+ 1' from cols offset since Sensor is a standard column now
+    # ⚡ Bolt: Remove '+ 1' from cols offset since Sensor is a standard column
+    # now
     addStyle(wb,
       sheet = year, style = highlight_style_yearly,
       rows = max_idx + 1,
@@ -270,7 +292,8 @@ write_year_sheet <- function(wb, year, data, header_style, highlight_style_yearl
 # Compute summary statistics across all years
 calculate_summary_stats <- function(results) {
   # Add summary sheet with overall stats
-  # ⚡ Bolt: No lapply conversion required. results list natively contains data.tables
+  # ⚡ Bolt: No lapply conversion required. results list natively contains
+  # data.tables
   all_stats_dt <- rbindlist(results, idcol = "Year")
 
   # Identify metric columns (numeric columns excluding ID columns)
@@ -284,7 +307,8 @@ calculate_summary_stats <- function(results) {
   )
 
   # Calculate aggregated statistics
-  # OPTIMIZATION: Extract Value[!is.na(Value)] once per group instead of repeatedly traversing NA checks
+  # OPTIMIZATION: Extract Value[!is.na(Value)] once per group instead of
+  # repeatedly traversing NA checks
   agg_dt <- long_dt[,
     {
       v_val <- get("Value")[!is.na(get("Value"))]
@@ -318,14 +342,18 @@ calculate_summary_stats <- function(results) {
   )
 
   # Cast to final wide format with combined column names (Metric_Stat)
-  # dcast automatically uses "_" as separator, producing "first10_mean", "full_sd", etc.
-  summary_wide <- dcast(agg_long, Sensor ~ Metric + Stat, value.var = "Value", sep = "_")
+  # dcast automatically uses "_" as separator, producing "first10_mean",
+  # "full_sd", etc.
+  summary_wide <- dcast(agg_long, Sensor ~ Metric + Stat,
+                        value.var = "Value", sep = "_")
 
   # Calculate percent non-missing for 'full'
   if (is.data.table(summary_wide)) {
-    summary_wide[, "full_pct_nonmissing" := 100 * get("full_count") / length(results)]
+    summary_wide[, "full_pct_nonmissing" :=
+                   100 * get("full_count") / length(results)]
   } else {
-    summary_wide$full_pct_nonmissing <- 100 * summary_wide$full_count / length(results)
+    summary_wide$full_pct_nonmissing <-
+      100 * summary_wide$full_count / length(results)
   }
 
   summary_wide # Implicit return
@@ -360,8 +388,10 @@ export_top_sensors_summary <- function(wb, summary_df, output_file,
     "full_pct_nonmissing"
   )
   if (is.data.table(summary_df)) {
-    # use get or with=FALSE to avoid no visible binding warning for ..cols_to_keep
-    top_sensors <- summary_df[order(-abs_diff)][1:top_n, cols_to_keep, with = FALSE]
+    # use get or with=FALSE to avoid no visible binding warning for
+    # ..cols_to_keep
+    top_sensors <-
+      summary_df[order(-abs_diff)][1:top_n, cols_to_keep, with = FALSE]
   } else {
     top_sensors <- summary_df[order(-abs_diff), ][1:top_n, cols_to_keep]
   }
@@ -394,7 +424,7 @@ export_main_summary <- function(wb, summary_df, output_file,
 
   # Highlight top N sensors with largest absolute within_diff_mean
   if ("within_diff_mean" %in% colnames(summary_df) &&
-    !is.null(highlight_style_summary)) {
+        !is.null(highlight_style_summary)) {
     abs_diff <- abs(summary_df$within_diff_mean)
     top_idx <- order(abs_diff, decreasing = TRUE)[
       seq_len(min(highlight_top_n, length(abs_diff)))
@@ -493,7 +523,8 @@ dump_summary_excel <- function(results, output_file, highlight_top_n = 5) {
     )
     i <- 0
     for (year in names(results)) {
-      write_year_sheet(wb, year, results[[year]], header_style, highlight_style_yearly)
+      write_year_sheet(wb, year, results[[year]], header_style,
+                       highlight_style_yearly)
       i <- i + 1
       setTxtProgressBar(pb, i)
     }
@@ -539,13 +570,17 @@ run_pipeline <- function() {
     },
     error = function(e) {
       error_message <- conditionMessage(e)
-      if (grepl("could not find function|Error in library|there is no package called", error_message, ignore.case = TRUE)) {
+      if (grepl("could not find function|Error in library|there is no package called", # nolint: line_length_linter
+                error_message, ignore.case = TRUE)) {
         log_handler("DEPENDENCY_ERROR", error_message)
       } else {
         log_handler("PROCESSING_ERROR", error_message)
       }
       if (interactive()) {
-        message(sprintf("An error occurred: %s. Check 'processing_warnings.log' for details.", error_message))
+        message(sprintf(
+          "An error occurred: %s. Check 'processing_warnings.log' for details.",
+          error_message
+        ))
       }
     },
     message = function(m) {

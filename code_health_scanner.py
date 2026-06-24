@@ -28,7 +28,12 @@ def get_repo_info():
         if "PATH" in os.environ:
             env["PATH"] = os.environ["PATH"]
 
-        git_bin = shutil.which("git") or "git"
+        git_bin = shutil.which("git")
+        if not git_bin:
+            # SECURITY: Fail fast if executable not found instead of falling back to
+            # a partial path like "git" which is vulnerable to path hijacking.
+            logging.error("Git executable not found in PATH.")
+            return "unknown", "unknown", "unknown"
 
         # Get origin URL
         origin_url = subprocess.check_output(

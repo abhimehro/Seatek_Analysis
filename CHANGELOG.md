@@ -20,6 +20,8 @@
 **Merged pull requests:**
 
 - 🛡️ Sentinel: \[MEDIUM\] Enforce absolute path resolution for system binaries [\#367](https://github.com/abhimehro/Seatek_Analysis/pull/367) ([abhimehro](https://github.com/abhimehro))
+- chore\(deps\): bump actions/setup-python from 6.2.0 to 6.3.0 [\#364](https://github.com/abhimehro/Seatek_Analysis/pull/364) ([dependabot[bot]](https://github.com/apps/dependabot))
+- chore\(deps\): bump actions/cache from 5.0.5 to 6.0.0 [\#360](https://github.com/abhimehro/Seatek_Analysis/pull/360) ([dependabot[bot]](https://github.com/apps/dependabot))
 - ⚡ Bolt: Concurrent API calls in create\_or\_update\_issue [\#358](https://github.com/abhimehro/Seatek_Analysis/pull/358) ([abhimehro](https://github.com/abhimehro))
 - 🛡️ Sentinel: Fix R linter warnings [\#357](https://github.com/abhimehro/Seatek_Analysis/pull/357) ([abhimehro](https://github.com/abhimehro))
 - chore\(deps\): bump actions/cache from 4.2.3 to 5.0.5 [\#355](https://github.com/abhimehro/Seatek_Analysis/pull/355) ([dependabot[bot]](https://github.com/apps/dependabot))

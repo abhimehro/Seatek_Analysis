@@ -6,7 +6,12 @@
 
 **Closed issues:**
 
+- Daily QA & Agentic Review — 2026-06-24 [\#365](https://github.com/abhimehro/Seatek_Analysis/issues/365)
+- \[repo-automation\] Daily Status Report - 2026-06-24 [\#363](https://github.com/abhimehro/Seatek_Analysis/issues/363)
+- Daily QA & Agentic Review — 2026-06-23 [\#361](https://github.com/abhimehro/Seatek_Analysis/issues/361)
+- \[repo-automation\] Daily Status Report - 2026-06-23 [\#359](https://github.com/abhimehro/Seatek_Analysis/issues/359)
 - Daily QA & Agentic Review — 2026-06-22 [\#356](https://github.com/abhimehro/Seatek_Analysis/issues/356)
+- \[repo-automation\] Daily Status Report - 2026-06-22 [\#349](https://github.com/abhimehro/Seatek_Analysis/issues/349)
 - Daily QA & Agentic Review — 2026-06-21 [\#345](https://github.com/abhimehro/Seatek_Analysis/issues/345)
 - \[repo-automation\] Daily Status Report - 2026-06-21 [\#344](https://github.com/abhimehro/Seatek_Analysis/issues/344)
 - Daily QA & Agentic Review — 2026-06-20 [\#341](https://github.com/abhimehro/Seatek_Analysis/issues/341)
@@ -14,6 +19,7 @@
 
 **Merged pull requests:**
 
+- 🛡️ Sentinel: \[MEDIUM\] Enforce absolute path resolution for system binaries [\#367](https://github.com/abhimehro/Seatek_Analysis/pull/367) ([abhimehro](https://github.com/abhimehro))
 - ⚡ Bolt: Concurrent API calls in create\_or\_update\_issue [\#358](https://github.com/abhimehro/Seatek_Analysis/pull/358) ([abhimehro](https://github.com/abhimehro))
 - 🛡️ Sentinel: Fix R linter warnings [\#357](https://github.com/abhimehro/Seatek_Analysis/pull/357) ([abhimehro](https://github.com/abhimehro))
 - chore\(deps\): bump actions/cache from 4.2.3 to 5.0.5 [\#355](https://github.com/abhimehro/Seatek_Analysis/pull/355) ([dependabot[bot]](https://github.com/apps/dependabot))

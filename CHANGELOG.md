@@ -6,6 +6,7 @@
 
 **Closed issues:**
 
+- Daily QA & Agentic Review - 2026-06-25 [\#370](https://github.com/abhimehro/Seatek_Analysis/issues/370)
 - Daily QA & Agentic Review — 2026-06-24 [\#365](https://github.com/abhimehro/Seatek_Analysis/issues/365)
 - \[repo-automation\] Daily Status Report - 2026-06-24 [\#363](https://github.com/abhimehro/Seatek_Analysis/issues/363)
 - Daily QA & Agentic Review — 2026-06-23 [\#361](https://github.com/abhimehro/Seatek_Analysis/issues/361)

@@ -159,7 +159,8 @@ execute_tasks_parallel <- function(tasks, task_func) {
 compute_sensor_metrics <- function(df, filename) {
   # OPTIMIZATION: which(x > 0) is natively faster at dropping NAs than
   # !is.na() &
-  # ⚡ Bolt: Replace regex grep with native startsWith for faster column name subsetting
+  # ⚡ Bolt: Replace regex grep with native startsWith for faster column
+  # name subsetting
   sensor_names <- names(df)[startsWith(names(df), "Sensor")]
 
   # ⚡ Bolt: Replace sapply with data.table native lapply(.SD) for O(1) row

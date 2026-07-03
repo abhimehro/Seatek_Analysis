@@ -20,9 +20,17 @@ CONFIG_PATH = ROOT / ".github" / "repository-automation.yml"
 OUTPUT_ROOT = ROOT / ".automation-output"
 DAILY_WORKFLOW_NAME = "Repository Automation - Daily"
 
-BASH_BIN = shutil.which("bash") or "/bin/bash"
-GH_BIN = shutil.which("gh") or "gh"
-GIT_BIN = shutil.which("git") or "git"
+BASH_BIN = shutil.which("bash")
+if not BASH_BIN:
+    raise RuntimeError("bash executable not found in PATH")
+
+GH_BIN = shutil.which("gh")
+if not GH_BIN:
+    raise RuntimeError("gh executable not found in PATH")
+
+GIT_BIN = shutil.which("git")
+if not GIT_BIN:
+    raise RuntimeError("git executable not found in PATH")
 
 ALLOWED_STATUSES = {"success", "warning", "failure", "needs_review", "skipped"}
 

@@ -61,7 +61,8 @@ read_sensor_data <- function(file_path,
     cat(sprintf("  📂 Reading: %s\n", basename(file_path)))
     message(sprintf("Reading sensor file: %s", basename(file_path)))
   }
-  if (!file.exists(file_path) || !grepl("\\.txt$", file_path)) {
+  # ⚡ Bolt: Replace regex with native endsWith for faster string matching
+  if (!file.exists(file_path) || !endsWith(file_path, ".txt")) {
     stop(sprintf("Invalid file: %s", file_path))
   }
 
@@ -158,7 +159,8 @@ execute_tasks_parallel <- function(tasks, task_func) {
 compute_sensor_metrics <- function(df, filename) {
   # OPTIMIZATION: which(x > 0) is natively faster at dropping NAs than
   # !is.na() &
-  sensor_names <- grep("^Sensor", names(df), value = TRUE)
+  # ⚡ Bolt: Replace regex grep with native startsWith for faster column name subsetting
+  sensor_names <- names(df)[startsWith(names(df), "Sensor")]
 
   # ⚡ Bolt: Replace sapply with data.table native lapply(.SD) for O(1) row
   # subsetting

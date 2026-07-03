@@ -65,3 +65,6 @@
 ## 2026-06-23 - Concurrent API calls in create_or_update_issue
 **Learning:** Fetching issue lists and validating labels sequentially in GitHub Actions introduces unnecessary blocking I/O overhead.
 **Action:** Use concurrent.futures.ThreadPoolExecutor when performing independent network-bound operations (like fetching issues and labels) to reduce latency.
+## 2025-05-06 - Optimize string matching over regex
+**Learning:** Checking for prefixes and suffixes with `startsWidth()` and `endsWith()` directly is faster than using regex string manipulation `grep()` and `grepl()` since it avoids the regex engine parsing.
+**Action:** Use `.startsWidth()` and `endsWith()` to verify prefixes/suffixes, which executes at a lower-level and avoids regex compilation.

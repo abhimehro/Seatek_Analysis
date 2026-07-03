@@ -37,6 +37,8 @@
 
 **Merged pull requests:**
 
+- ⚡ Bolt: Replace regex with native string matching for faster subsetting [\#398](https://github.com/abhimehro/Seatek_Analysis/pull/398) ([abhimehro](https://github.com/abhimehro))
+- 🛡️ Sentinel: \[CRITICAL/HIGH\] Fix path hijacking vulnerability [\#397](https://github.com/abhimehro/Seatek_Analysis/pull/397) ([abhimehro](https://github.com/abhimehro))
 - Jules Daily QA & Agentic Review - Healthy Repository [\#396](https://github.com/abhimehro/Seatek_Analysis/pull/396) ([abhimehro](https://github.com/abhimehro))
 - chore\(deps\): bump ruby/setup-ruby from 1.314.0 to 1.315.0 [\#387](https://github.com/abhimehro/Seatek_Analysis/pull/387) ([dependabot[bot]](https://github.com/apps/dependabot))
 - Jules Daily QA & Agentic Review - Healthy Repository [\#385](https://github.com/abhimehro/Seatek_Analysis/pull/385) ([abhimehro](https://github.com/abhimehro))

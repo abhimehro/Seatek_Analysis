@@ -51,16 +51,8 @@ auto_detect_data_dir <- function(data_dir) {
   normalizePath(data_dir)
 }
 
-# Read a single sensor data file
-read_sensor_data <- function(file_path,
-                             sep = " ",
-                             verbose = getOption("seatek.read.verbose",
-                                                 interactive())) {
-  file_path <- normalizePath(file_path)
-  if (isTRUE(verbose)) {
-    cat(sprintf("  📂 Reading: %s\n", basename(file_path)))
-    message(sprintf("Reading sensor file: %s", basename(file_path)))
-  }
+# Helper function to validate sensor data files
+validate_sensor_file <- function(file_path) {
   # ⚡ Bolt: Replace regex with native endsWith for faster string matching
   if (!file.exists(file_path) || !endsWith(file_path, ".txt")) {
     stop(sprintf("Invalid file: %s", file_path))
@@ -73,6 +65,19 @@ read_sensor_data <- function(file_path,
     stop(sprintf("File %s exceeds maximum allowed size of %d MB.",
                  basename(file_path), max_file_size / (1024 * 1024)))
   }
+}
+
+# Read a single sensor data file
+read_sensor_data <- function(file_path,
+                             sep = " ",
+                             verbose = getOption("seatek.read.verbose",
+                                                 interactive())) {
+  file_path <- normalizePath(file_path)
+  if (isTRUE(verbose)) {
+    cat(sprintf("  📂 Reading: %s\n", basename(file_path)))
+    message(sprintf("Reading sensor file: %s", basename(file_path)))
+  }
+  validate_sensor_file(file_path)
 
   dt <- tryCatch(
     fread(file_path,

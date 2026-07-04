@@ -54,3 +54,30 @@ def test_target_ref_skips_commit_pins() -> None:
     sha = "df4cb1c069e1874edd31b4311f1884172cec0e10"
     assert numeric_version(sha) is None
     assert target_ref(sha, "v6.0.4") is None
+
+
+def test_numeric_version_extracts_tuples_and_handles_edge_cases() -> None:
+    # Full versions
+    assert numeric_version("v1.2.3") == (1, 2, 3)
+    assert numeric_version("1.2.3") == (1, 2, 3)
+
+    # Partial versions (missing patch, missing minor)
+    assert numeric_version("v1.2") == (1, 2, 0)
+    assert numeric_version("v1") == (1, 0, 0)
+    assert numeric_version("4.5") == (4, 5, 0)
+    assert numeric_version("4") == (4, 0, 0)
+
+    # Versions with prefixes or suffixes
+    assert numeric_version("v2.0.0-rc.1") == (2, 0, 0)
+    assert numeric_version("v5.6.7-beta") == (5, 6, 7)
+    assert numeric_version("pkg-v3.4.5") == (3, 4, 5)
+
+    # Invalid formats
+    assert numeric_version("invalid") is None
+    assert numeric_version("v") is None
+    assert numeric_version("a.b.c") is None
+    assert numeric_version("") is None
+
+    # Commit SHA
+    sha = "df4cb1c069e1874edd31b4311f1884172cec0e10"
+    assert numeric_version(sha) is None

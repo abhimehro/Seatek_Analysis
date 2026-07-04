@@ -34,6 +34,38 @@ if not GIT_BIN:
 
 ALLOWED_STATUSES = {"success", "warning", "failure", "needs_review", "skipped"}
 
+# SECURITY: Define an explicit allowlist of safe environment variables for subprocess execution.
+# This prevents credential exfiltration (e.g., AWS_ACCESS_KEY_ID, NPM_TOKEN) while allowing
+# standard CI and system functionality.
+SAFE_ENV_VARS = {
+    "PATH",
+    "HOME",
+    "USER",
+    "LOGNAME",
+    "SHELL",
+    "TERM",
+    "LANG",
+    "LC_ALL",
+    "GITHUB_WORKSPACE",
+    "GITHUB_REPOSITORY",
+    "GITHUB_SHA",
+    "GITHUB_REF",
+    "GITHUB_ACTOR",
+    "GITHUB_API_URL",
+    "GITHUB_SERVER_URL",
+    "GITHUB_GRAPHQL_URL",
+    "GITHUB_RUN_ID",
+    "GITHUB_RUN_NUMBER",
+    "GITHUB_RUN_ATTEMPT",
+    "GITHUB_ACTION",
+    "RUNNER_OS",
+    "RUNNER_ARCH",
+    "RUNNER_NAME",
+    "RUNNER_TEMP",
+    "RUNNER_TOOL_CACHE",
+    "CI",
+}
+
 
 def command_env() -> dict[str, str]:
     return {**os.environ, "GH_PAGER": "cat"}
@@ -73,13 +105,23 @@ def run_process(
     env: dict[str, str] | None = None,
 ) -> subprocess.CompletedProcess[str]:
     proc_env = env if env is not None else command_env()
-    # SECURITY: Strip sensitive tokens to enforce least privilege and prevent credential
-    # exfiltration by potentially compromised third-party dependencies.
-    # While a strict allowlist is ideal, it breaks CI functionality (e.g. stripping HOME, GITHUB_WORKSPACE).
+    # SECURITY: Use an explicit allowlist to prevent credential exfiltration.
+    # Third-party dependencies may attempt to scrape the environment for secrets.
     if command[0] != GH_BIN:
-        proc_env = proc_env.copy()
+        proc_env = {
+            k: v
+            for k, v in proc_env.items()
+            if k in SAFE_ENV_VARS or k.startswith("GITHUB_")
+        }
+        # Defense in depth: strictly remove known high-value tokens even if passed in custom_env
+        # or caught by the GITHUB_ prefix.
         for token in ["GH_TOKEN", "GITHUB_TOKEN"]:
             proc_env.pop(token, None)
+        # Ensure PATH is always present even if stripped, to avoid breaking basic commands
+        if "PATH" not in proc_env and "PATH" in (
+            env if env is not None else os.environ
+        ):
+            proc_env["PATH"] = (env if env is not None else os.environ).get("PATH", "")
 
     return subprocess.run(
         command,
@@ -94,14 +136,31 @@ def run_process(
     )
 
 
-def run_shell_command(command: str | list[str], timeout: int = 1800, custom_env: dict[str, str] | None = None) -> dict[str, Any]:
+def run_shell_command(
+    command: str | list[str],
+    timeout: int = 1800,
+    custom_env: dict[str, str] | None = None,
+) -> dict[str, Any]:
     safe_env = command_env()
     if custom_env:
         safe_env.update(custom_env)
 
-    # SECURITY: Strip sensitive tokens to enforce least privilege and prevent credential
-    # exfiltration by potentially compromised third-party dependencies executed in the shell.
-    # While a strict allowlist is ideal, it breaks CI functionality (e.g. stripping HOME, GITHUB_WORKSPACE).
+    # SECURITY: Apply allowlist to enforce least privilege, while preserving explicitly
+    # provided custom_env configurations for intentional overrides.
+    filtered_env = {
+        k: v
+        for k, v in safe_env.items()
+        if k in SAFE_ENV_VARS or k.startswith("GITHUB_")
+    }
+    if "PATH" not in filtered_env and "PATH" in safe_env:
+        filtered_env["PATH"] = safe_env["PATH"]
+
+    safe_env = filtered_env
+    if custom_env:
+        safe_env.update(custom_env)
+
+    # Defense in depth: strictly remove known high-value tokens even if passed in custom_env
+    # or caught by the GITHUB_ prefix.
     for token in ["GH_TOKEN", "GITHUB_TOKEN"]:
         safe_env.pop(token, None)
 

@@ -106,27 +106,14 @@ def read_file_safe(filepath):
         return []
 
 
-# ⚡ Bolt: Removed LANG_MAP since we are now using .endswith() which is faster.
-# Using .endswith() evaluated at the C level in Python is faster than string
-# manipulation and dictionary lookup for file extensions.
-# ⚡ Bolt: Avoid string allocation overhead by passing a tuple of case permutations
-# directly to `.endswith()` instead of calling `.lower()` on the original string.
-# Performance metric: ~35% faster execution for file extension checks.
-# ⚡ Bolt: Reverted `.endswith()` case permutation chain as it creates a combinatorial
-# explosion of case permutations, sacrificing readability for negligible performance gains.
-# Using the idiomatic `os.path.splitext(filepath)[1].lower()` instead.
-# ⚡ Bolt: Further optimized to call .lower() on the entire path string and perform
-# strict case .endswith() checks instead of using os.path.splitext.
-# Performance metric: ~3x faster execution for file extension checks.
+LANG_MAP = {
+    '.py': 'python',
+    '.r': 'r',
+    '.js': 'javascript',
+    '.ts': 'typescript'
+}
+
 def get_language(filepath):
     """Determines language based on file extension."""
-    filepath_lower = filepath.lower()
-    if filepath_lower.endswith('.py'):
-        return 'python'
-    if filepath_lower.endswith('.r'):
-        return 'r'
-    if filepath_lower.endswith('.js'):
-        return 'javascript'
-    if filepath_lower.endswith('.ts'):
-        return 'typescript'
-    return 'unknown'
+    ext = os.path.splitext(filepath)[1].lower()
+    return LANG_MAP.get(ext, 'unknown')

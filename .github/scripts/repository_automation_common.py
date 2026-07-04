@@ -37,6 +37,39 @@ ALLOWED_STATUSES = {"success", "warning", "failure", "needs_review", "skipped"}
 # SECURITY: Define an explicit allowlist of safe environment variables for subprocess execution.
 # This prevents credential exfiltration (e.g., AWS_ACCESS_KEY_ID, NPM_TOKEN) while allowing
 # standard CI and system functionality.
+
+
+def filter_env_securely(
+    base_env: dict[str, str], custom_env: dict[str, str] | None = None
+) -> dict[str, str]:
+    """
+    Applies the SAFE_ENV_VARS allowlist to the environment to prevent credential exfiltration.
+    Preserves explicitly provided custom_env variables, but strictly removes high-value tokens.
+    """
+    env = base_env.copy()
+    if custom_env:
+        env.update(custom_env)
+
+    # Apply allowlist
+    filtered_env = {
+        k: v for k, v in env.items() if k in SAFE_ENV_VARS or k.startswith("GITHUB_")
+    }
+
+    # Ensure PATH survives
+    if "PATH" not in filtered_env and "PATH" in env:
+        filtered_env["PATH"] = env["PATH"]
+
+    # Re-apply custom overrides that might have been filtered out
+    if custom_env:
+        filtered_env.update(custom_env)
+
+    # Strict defense in depth removal
+    for token in ["GH_TOKEN", "GITHUB_TOKEN"]:
+        filtered_env.pop(token, None)
+
+    return filtered_env
+
+
 SAFE_ENV_VARS = {
     "PATH",
     "HOME",
@@ -108,20 +141,10 @@ def run_process(
     # SECURITY: Use an explicit allowlist to prevent credential exfiltration.
     # Third-party dependencies may attempt to scrape the environment for secrets.
     if command[0] != GH_BIN:
-        proc_env = {
-            k: v
-            for k, v in proc_env.items()
-            if k in SAFE_ENV_VARS or k.startswith("GITHUB_")
-        }
-        # Defense in depth: strictly remove known high-value tokens even if passed in custom_env
-        # or caught by the GITHUB_ prefix.
-        for token in ["GH_TOKEN", "GITHUB_TOKEN"]:
-            proc_env.pop(token, None)
-        # Ensure PATH is always present even if stripped, to avoid breaking basic commands
-        if "PATH" not in proc_env and "PATH" in (
-            env if env is not None else os.environ
-        ):
-            proc_env["PATH"] = (env if env is not None else os.environ).get("PATH", "")
+        fallback_env = env if env is not None else os.environ
+        if "PATH" not in proc_env and "PATH" in fallback_env:
+            proc_env["PATH"] = fallback_env.get("PATH", "")
+        proc_env = filter_env_securely(proc_env)
 
     return subprocess.run(
         command,
@@ -136,39 +159,12 @@ def run_process(
     )
 
 
-def _prepare_safe_env(custom_env: dict[str, str] | None) -> dict[str, str]:
-    safe_env = command_env()
-    if custom_env:
-        safe_env.update(custom_env)
-
-    # SECURITY: Apply allowlist to enforce least privilege, while preserving explicitly
-    # provided custom_env configurations for intentional overrides.
-    filtered_env = {
-        k: v
-        for k, v in safe_env.items()
-        if k in SAFE_ENV_VARS or k.startswith("GITHUB_")
-    }
-
-    if "PATH" not in filtered_env and "PATH" in safe_env:
-        filtered_env["PATH"] = safe_env["PATH"]
-
-    if custom_env:
-        filtered_env.update(custom_env)
-
-    # Defense in depth: strictly remove known high-value tokens even if passed in custom_env
-    # or caught by the GITHUB_ prefix.
-    filtered_env.pop("GH_TOKEN", None)
-    filtered_env.pop("GITHUB_TOKEN", None)
-
-    return filtered_env
-
-
 def run_shell_command(
     command: str | list[str],
     timeout: int = 1800,
     custom_env: dict[str, str] | None = None,
 ) -> dict[str, Any]:
-    safe_env = _prepare_safe_env(custom_env)
+    safe_env = filter_env_securely(command_env(), custom_env)
 
     # Allow backward compatibility for existing command string configurations while we migrate,
     # but the primary path relies on lists of arguments to avoid shell injection.

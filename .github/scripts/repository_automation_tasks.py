@@ -747,8 +747,11 @@ def run_safe_adjustment_commands(
 ) -> tuple[list[dict[str, Any]], str]:
     if not writes_allowed() or not section.get("auto_apply_safe_changes"):
         return [], ""
-    command_results = [
-        {
+
+    commands = section.get("safe_adjustment_commands", [])
+
+    def execute_command(item):
+        return {
             "name": item["name"],
             **run_shell_command(
                 item["run"],
@@ -756,8 +759,12 @@ def run_safe_adjustment_commands(
                 custom_env=item.get("env")
             ),
         }
-        for item in section.get("safe_adjustment_commands", [])
-    ]
+
+    command_results = []
+    if commands:
+        with concurrent.futures.ThreadPoolExecutor(max_workers=min(10, len(commands))) as executor:
+            # map preserves the order of the results matching the input iterable
+            command_results = list(executor.map(execute_command, commands))
     changed = [
         line[3:] for line in git_output("status", "--porcelain").splitlines() if line
     ]

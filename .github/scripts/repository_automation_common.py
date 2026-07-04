@@ -136,11 +136,7 @@ def run_process(
     )
 
 
-def run_shell_command(
-    command: str | list[str],
-    timeout: int = 1800,
-    custom_env: dict[str, str] | None = None,
-) -> dict[str, Any]:
+def _prepare_safe_env(custom_env: dict[str, str] | None) -> dict[str, str]:
     safe_env = command_env()
     if custom_env:
         safe_env.update(custom_env)
@@ -152,17 +148,27 @@ def run_shell_command(
         for k, v in safe_env.items()
         if k in SAFE_ENV_VARS or k.startswith("GITHUB_")
     }
+
     if "PATH" not in filtered_env and "PATH" in safe_env:
         filtered_env["PATH"] = safe_env["PATH"]
 
-    safe_env = filtered_env
     if custom_env:
-        safe_env.update(custom_env)
+        filtered_env.update(custom_env)
 
     # Defense in depth: strictly remove known high-value tokens even if passed in custom_env
     # or caught by the GITHUB_ prefix.
-    for token in ["GH_TOKEN", "GITHUB_TOKEN"]:
-        safe_env.pop(token, None)
+    filtered_env.pop("GH_TOKEN", None)
+    filtered_env.pop("GITHUB_TOKEN", None)
+
+    return filtered_env
+
+
+def run_shell_command(
+    command: str | list[str],
+    timeout: int = 1800,
+    custom_env: dict[str, str] | None = None,
+) -> dict[str, Any]:
+    safe_env = _prepare_safe_env(custom_env)
 
     # Allow backward compatibility for existing command string configurations while we migrate,
     # but the primary path relies on lists of arguments to avoid shell injection.

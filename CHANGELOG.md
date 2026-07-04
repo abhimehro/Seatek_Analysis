@@ -2,41 +2,7 @@
 
 ## [Unreleased](https://github.com/abhimehro/Seatek_Analysis/tree/HEAD)
 
-[Full Changelog](https://github.com/abhimehro/Seatek_Analysis/compare/v0.1.0...HEAD)
-
-**Closed issues:**
-
-- \[repo-automation\] Daily Status Report - 2026-07-04 [\#403](https://github.com/abhimehro/Seatek_Analysis/issues/403)
-- Daily QA & Agentic Review - 2026-07-03 [\#401](https://github.com/abhimehro/Seatek_Analysis/issues/401)
-- \[repo-automation\] Daily Status Report - 2026-07-03 [\#399](https://github.com/abhimehro/Seatek_Analysis/issues/399)
-- Daily QA & Agentic Review - 2026-07-02 [\#395](https://github.com/abhimehro/Seatek_Analysis/issues/395)
-- \[repo-automation\] Daily Status Report - 2026-07-02 [\#394](https://github.com/abhimehro/Seatek_Analysis/issues/394)
-- Jules Daily QA & Agentic Review - All Clear [\#392](https://github.com/abhimehro/Seatek_Analysis/issues/392)
-- Daily QA & Agentic Review - 2026-07-01 [\#391](https://github.com/abhimehro/Seatek_Analysis/issues/391)
-- \[repo-automation\] Daily Status Report - 2026-07-01 [\#390](https://github.com/abhimehro/Seatek_Analysis/issues/390)
-- Daily QA & Agentic Review - 2026-06-30 [\#388](https://github.com/abhimehro/Seatek_Analysis/issues/388)
-- \[repo-automation\] Daily Status Report - 2026-06-30 [\#386](https://github.com/abhimehro/Seatek_Analysis/issues/386)
-- Jules Daily QA & Agentic Review - Healthy Repository [\#384](https://github.com/abhimehro/Seatek_Analysis/issues/384)
-- Daily QA & Agentic Review - 2026-06-29 [\#383](https://github.com/abhimehro/Seatek_Analysis/issues/383)
-- \[repo-automation\] Daily Status Report - 2026-06-29 [\#381](https://github.com/abhimehro/Seatek_Analysis/issues/381)
-- Daily QA & Agentic Review - 2026-06-28 [\#379](https://github.com/abhimehro/Seatek_Analysis/issues/379)
-- \[repo-automation\] Daily Status Report - 2026-06-28 [\#378](https://github.com/abhimehro/Seatek_Analysis/issues/378)
-- Daily QA & Agentic Review - 2026-06-27 [\#376](https://github.com/abhimehro/Seatek_Analysis/issues/376)
-- \[repo-automation\] Daily Status Report - 2026-06-27 [\#375](https://github.com/abhimehro/Seatek_Analysis/issues/375)
-- Daily QA & Agentic Review - 2026-06-26 [\#373](https://github.com/abhimehro/Seatek_Analysis/issues/373)
-- \[repo-automation\] Daily Status Report - 2026-06-26 [\#372](https://github.com/abhimehro/Seatek_Analysis/issues/372)
-- Daily QA & Agentic Review - 2026-06-25 [\#370](https://github.com/abhimehro/Seatek_Analysis/issues/370)
-- \[repo-automation\] Daily Status Report - 2026-06-25 [\#368](https://github.com/abhimehro/Seatek_Analysis/issues/368)
-- Daily QA & Agentic Review — 2026-06-24 [\#365](https://github.com/abhimehro/Seatek_Analysis/issues/365)
-- \[repo-automation\] Daily Status Report - 2026-06-24 [\#363](https://github.com/abhimehro/Seatek_Analysis/issues/363)
-- Daily QA & Agentic Review — 2026-06-23 [\#361](https://github.com/abhimehro/Seatek_Analysis/issues/361)
-- \[repo-automation\] Daily Status Report - 2026-06-23 [\#359](https://github.com/abhimehro/Seatek_Analysis/issues/359)
-- Daily QA & Agentic Review — 2026-06-22 [\#356](https://github.com/abhimehro/Seatek_Analysis/issues/356)
-- \[repo-automation\] Daily Status Report - 2026-06-22 [\#349](https://github.com/abhimehro/Seatek_Analysis/issues/349)
-- Daily QA & Agentic Review — 2026-06-21 [\#345](https://github.com/abhimehro/Seatek_Analysis/issues/345)
-- \[repo-automation\] Daily Status Report - 2026-06-21 [\#344](https://github.com/abhimehro/Seatek_Analysis/issues/344)
-- Daily QA & Agentic Review — 2026-06-20 [\#341](https://github.com/abhimehro/Seatek_Analysis/issues/341)
-- \[repo-automation\] Daily Status Report - 2026-06-20 [\#340](https://github.com/abhimehro/Seatek_Analysis/issues/340)
+[Full Changelog](https://github.com/abhimehro/Seatek_Analysis/compare/v0.0.1...HEAD)
 
 **Merged pull requests:**
 
@@ -77,6 +43,45 @@
 - 🛡️ Sentinel: Daily QA & Agentic Review Summary [\#346](https://github.com/abhimehro/Seatek_Analysis/pull/346) ([abhimehro](https://github.com/abhimehro))
 - 🛡️ Sentinel: \[HIGH\] Fix Null Byte DoS in path traversal validation [\#343](https://github.com/abhimehro/Seatek_Analysis/pull/343) ([abhimehro](https://github.com/abhimehro))
 - 🛡️ Sentinel: \[style improvement\] Fix lintr warnings [\#339](https://github.com/abhimehro/Seatek_Analysis/pull/339) ([abhimehro](https://github.com/abhimehro))
+
+## [v0.0.1](https://github.com/abhimehro/Seatek_Analysis/tree/v0.0.1) (2026-07-04)
+
+[Full Changelog](https://github.com/abhimehro/Seatek_Analysis/compare/v0.1.0...v0.0.1)
+
+**Closed issues:**
+
+- Daily QA & Agentic Review - 2026-07-04 [\#416](https://github.com/abhimehro/Seatek_Analysis/issues/416)
+- \[repo-automation\] Daily Status Report - 2026-07-04 [\#403](https://github.com/abhimehro/Seatek_Analysis/issues/403)
+- Daily QA & Agentic Review - 2026-07-03 [\#401](https://github.com/abhimehro/Seatek_Analysis/issues/401)
+- \[repo-automation\] Daily Status Report - 2026-07-03 [\#399](https://github.com/abhimehro/Seatek_Analysis/issues/399)
+- Daily QA & Agentic Review - 2026-07-02 [\#395](https://github.com/abhimehro/Seatek_Analysis/issues/395)
+- \[repo-automation\] Daily Status Report - 2026-07-02 [\#394](https://github.com/abhimehro/Seatek_Analysis/issues/394)
+- Jules Daily QA & Agentic Review - All Clear [\#392](https://github.com/abhimehro/Seatek_Analysis/issues/392)
+- Daily QA & Agentic Review - 2026-07-01 [\#391](https://github.com/abhimehro/Seatek_Analysis/issues/391)
+- \[repo-automation\] Daily Status Report - 2026-07-01 [\#390](https://github.com/abhimehro/Seatek_Analysis/issues/390)
+- Daily QA & Agentic Review - 2026-06-30 [\#388](https://github.com/abhimehro/Seatek_Analysis/issues/388)
+- \[repo-automation\] Daily Status Report - 2026-06-30 [\#386](https://github.com/abhimehro/Seatek_Analysis/issues/386)
+- Jules Daily QA & Agentic Review - Healthy Repository [\#384](https://github.com/abhimehro/Seatek_Analysis/issues/384)
+- Daily QA & Agentic Review - 2026-06-29 [\#383](https://github.com/abhimehro/Seatek_Analysis/issues/383)
+- \[repo-automation\] Daily Status Report - 2026-06-29 [\#381](https://github.com/abhimehro/Seatek_Analysis/issues/381)
+- Daily QA & Agentic Review - 2026-06-28 [\#379](https://github.com/abhimehro/Seatek_Analysis/issues/379)
+- \[repo-automation\] Daily Status Report - 2026-06-28 [\#378](https://github.com/abhimehro/Seatek_Analysis/issues/378)
+- Daily QA & Agentic Review - 2026-06-27 [\#376](https://github.com/abhimehro/Seatek_Analysis/issues/376)
+- \[repo-automation\] Daily Status Report - 2026-06-27 [\#375](https://github.com/abhimehro/Seatek_Analysis/issues/375)
+- Daily QA & Agentic Review - 2026-06-26 [\#373](https://github.com/abhimehro/Seatek_Analysis/issues/373)
+- \[repo-automation\] Daily Status Report - 2026-06-26 [\#372](https://github.com/abhimehro/Seatek_Analysis/issues/372)
+- Daily QA & Agentic Review - 2026-06-25 [\#370](https://github.com/abhimehro/Seatek_Analysis/issues/370)
+- \[repo-automation\] Daily Status Report - 2026-06-25 [\#368](https://github.com/abhimehro/Seatek_Analysis/issues/368)
+- Daily QA & Agentic Review — 2026-06-24 [\#365](https://github.com/abhimehro/Seatek_Analysis/issues/365)
+- \[repo-automation\] Daily Status Report - 2026-06-24 [\#363](https://github.com/abhimehro/Seatek_Analysis/issues/363)
+- Daily QA & Agentic Review — 2026-06-23 [\#361](https://github.com/abhimehro/Seatek_Analysis/issues/361)
+- \[repo-automation\] Daily Status Report - 2026-06-23 [\#359](https://github.com/abhimehro/Seatek_Analysis/issues/359)
+- Daily QA & Agentic Review — 2026-06-22 [\#356](https://github.com/abhimehro/Seatek_Analysis/issues/356)
+- \[repo-automation\] Daily Status Report - 2026-06-22 [\#349](https://github.com/abhimehro/Seatek_Analysis/issues/349)
+- Daily QA & Agentic Review — 2026-06-21 [\#345](https://github.com/abhimehro/Seatek_Analysis/issues/345)
+- \[repo-automation\] Daily Status Report - 2026-06-21 [\#344](https://github.com/abhimehro/Seatek_Analysis/issues/344)
+- Daily QA & Agentic Review — 2026-06-20 [\#341](https://github.com/abhimehro/Seatek_Analysis/issues/341)
+- \[repo-automation\] Daily Status Report - 2026-06-20 [\#340](https://github.com/abhimehro/Seatek_Analysis/issues/340)
 
 ## [v0.1.0](https://github.com/abhimehro/Seatek_Analysis/tree/v0.1.0) (2026-06-20)
 

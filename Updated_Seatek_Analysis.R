@@ -314,7 +314,7 @@ calculate_summary_stats <- function(results) {
   # repeatedly traversing NA checks
   agg_dt <- long_dt[,
     {
-      v_val <- get("Value")[!is.na(get("Value"))]
+      v_val <- Value[!is.na(Value)] # nolint: object_usage_linter.
       n <- length(v_val)
       if (n == 0) {
         list(

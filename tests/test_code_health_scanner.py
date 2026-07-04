@@ -99,3 +99,17 @@ def test_read_file_safe_null_byte():
     # Attempting to read a file with an embedded null character should return empty list
     # and not raise a ValueError (ValueError: lstat: embedded null character in path)
     assert read_file_safe("test\0.txt") == []
+
+def test_read_file_safe_restricted_permissions():
+    test_file = "test_restricted.txt"
+    with open(test_file, "w") as f:
+        f.write("test content")
+    try:
+        # Remove read permissions
+        os.chmod(test_file, 0o000)
+        assert read_file_safe(test_file) == []
+    finally:
+        # Restore permissions so it can be deleted
+        if os.path.exists(test_file):
+            os.chmod(test_file, 0o644)
+            os.remove(test_file)

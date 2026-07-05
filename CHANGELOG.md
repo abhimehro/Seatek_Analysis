@@ -6,6 +6,9 @@
 
 **Merged pull requests:**
 
+- ⚡ Bolt: \[performance improvement\] by-reference column dropping [\#419](https://github.com/abhimehro/Seatek_Analysis/pull/419) ([abhimehro](https://github.com/abhimehro))
+- 🛡️ Sentinel: \[security improvement\] explicitly disable shell in subprocess.run for tests [\#418](https://github.com/abhimehro/Seatek_Analysis/pull/418) ([abhimehro](https://github.com/abhimehro))
+- chore: daily QA review [\#417](https://github.com/abhimehro/Seatek_Analysis/pull/417) ([abhimehro](https://github.com/abhimehro))
 - 🧪 Add equivalence tests for sapply vs lapply optimization [\#415](https://github.com/abhimehro/Seatek_Analysis/pull/415) ([abhimehro](https://github.com/abhimehro))
 - 🧪 Add tests for export\_main\_summary function [\#414](https://github.com/abhimehro/Seatek_Analysis/pull/414) ([abhimehro](https://github.com/abhimehro))
 - ⚡ Bolt: \[performance\] Parallelize I/O bound shell commands in safe adjustments [\#413](https://github.com/abhimehro/Seatek_Analysis/pull/413) ([abhimehro](https://github.com/abhimehro))

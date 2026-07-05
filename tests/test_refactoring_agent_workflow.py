@@ -71,6 +71,7 @@ def test_prepare_command_extracts_first_cs_agent_line_from_multiline_comment(tmp
         [bash, "-e", "-c", prepare_command_step["run"]],
         check=False,
         capture_output=True,
+        shell=False,
         text=True,
         env={
             "PATH": os.environ.get("PATH", ""),
@@ -110,6 +111,7 @@ def test_prepare_command_fails_when_no_cs_agent_line_present(tmp_path):
         [bash, "-e", "-c", prepare_command_step["run"]],
         check=False,
         capture_output=True,
+        shell=False,
         text=True,
         env={
             "PATH": os.environ.get("PATH", ""),

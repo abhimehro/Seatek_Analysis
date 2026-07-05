@@ -68,3 +68,6 @@
 ## 2025-05-06 - Optimize string matching over regex
 **Learning:** Checking for prefixes and suffixes with `startsWidth()` and `endsWith()` directly is faster than using regex string manipulation `grep()` and `grepl()` since it avoids the regex engine parsing.
 **Action:** Use `.startsWidth()` and `endsWith()` to verify prefixes/suffixes, which executes at a lower-level and avoids regex compilation.
+## 2025-05-06 - [Performance Improvement] By-Reference Column Deletion in R data.table
+**Learning:** Using deep copy subsetting `dt <- dt[, cols_to_keep, with = FALSE]` for dropping columns in large R data.tables creates a full memory copy of the data, which is slow and memory-intensive (O(N) operation).
+**Action:** Always use `data.table`'s by-reference deletion `dt[, (cols_to_drop) := NULL]` to remove columns in place. This achieves an O(1) operation without memory reallocation, significantly improving performance and reducing memory overhead on large files.

@@ -102,10 +102,15 @@ read_sensor_data <- function(file_path,
     setnames(dt, sensor_cols + 1, "Timestamp")
   }
   # Keep only sensor columns + Timestamp
-  dt <- dt[, c(
+  # ⚡ Bolt: Use by-reference deletion to prevent deep copy memory allocations
+  cols_to_keep <- c(
     paste0("Sensor", sprintf("%02d", 1:sensor_cols)),
     "Timestamp"
-  ), with = FALSE]
+  )
+  cols_to_drop <- setdiff(names(dt), cols_to_keep)
+  if (length(cols_to_drop) > 0) {
+    dt[, (cols_to_drop) := NULL]
+  }
   # Convert timestamp if numeric
   # ⚡ Bolt: Prevent redundant memory allocations and full traversals
   # by using anyNA and reusing the parsed numeric timestamp vector

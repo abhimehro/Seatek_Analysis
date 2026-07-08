@@ -71,3 +71,6 @@
 ## 2025-05-06 - [Performance Improvement] By-Reference Column Deletion in R data.table
 **Learning:** Using deep copy subsetting `dt <- dt[, cols_to_keep, with = FALSE]` for dropping columns in large R data.tables creates a full memory copy of the data, which is slow and memory-intensive (O(N) operation).
 **Action:** Always use `data.table`'s by-reference deletion `dt[, (cols_to_drop) := NULL]` to remove columns in place. This achieves an O(1) operation without memory reallocation, significantly improving performance and reducing memory overhead on large files.
+## 2025-05-24 - Optimize get() with unquoted column referencing in data.table
+**Learning:** In `data.table` operations, using standard evaluation like `get("column_name")` introduces function call dispatch overhead compared to directly using unquoted column names (`column_name`).
+**Action:** Replace `get("col")` with unquoted `col` where applicable. Remember to append `# nolint: object_usage_linter.` or use `# nolint next: object_usage_linter.` on the line prior if length limits apply, to prevent lintr from falsely flagging the unquoted reference as an undefined global variable.

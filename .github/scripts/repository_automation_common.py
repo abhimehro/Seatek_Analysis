@@ -59,11 +59,23 @@ def filter_env_securely(
     if "PATH" not in filtered_env and "PATH" in env:
         filtered_env["PATH"] = env["PATH"]
 
+    # Strict defense in depth removal using heuristic approach
+    # We apply this BEFORE custom_env overrides, so that explicitly provided secrets
+    # in custom_env are allowed, but implicit environment bleed is prevented.
+    sensitive_substrings = ("TOKEN", "SECRET", "KEY", "PASSWORD", "AUTH", "CRED")
+    keys_to_remove = [
+        k for k in filtered_env.keys()
+        if any(sub in k.upper() for sub in sensitive_substrings)
+    ]
+    for k in keys_to_remove:
+        filtered_env.pop(k, None)
+
     # Re-apply custom overrides that might have been filtered out
     if custom_env:
         filtered_env.update(custom_env)
 
-    # Strict defense in depth removal
+    # Specifically strip GitHub tokens for defense in depth as they are automatically available
+    # but shouldn't be passed to untrusted subprocesses unless explicitly needed.
     for token in ["GH_TOKEN", "GITHUB_TOKEN"]:
         filtered_env.pop(token, None)
 

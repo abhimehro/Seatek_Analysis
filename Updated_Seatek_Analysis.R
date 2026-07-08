@@ -361,9 +361,12 @@ calculate_summary_stats <- function(results) {
                         value.var = "Value", sep = "_")
 
   # Calculate percent non-missing for 'full'
+  # ⚡ Bolt: Direct unquoted column referencing is faster than standard
+  # evaluation with get()
   if (is.data.table(summary_wide)) {
     summary_wide[, "full_pct_nonmissing" :=
-                   100 * get("full_count") / length(results)]
+                   # nolint next: object_usage_linter.
+                   100 * full_count / length(results)]
   } else {
     summary_wide$full_pct_nonmissing <-
       100 * summary_wide$full_count / length(results)
@@ -495,8 +498,11 @@ write_summary_sheets <- function(wb, summary_df, output_file,
   # Flag high-variability sensors (e.g., full_sd > threshold)
   sd_threshold <- 2 # adjust as needed
   # Modifying in place if data.table
+  # ⚡ Bolt: Direct unquoted column referencing is faster than standard
+  # evaluation with get()
   if (is.data.table(summary_df)) {
-    summary_df[, "flag_high_variability" := get("full_sd") > sd_threshold]
+    # nolint next: object_usage_linter.
+    summary_df[, "flag_high_variability" := full_sd > sd_threshold]
   } else {
     summary_df$flag_high_variability <- summary_df$full_sd > sd_threshold
   }

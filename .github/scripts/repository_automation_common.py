@@ -39,6 +39,17 @@ ALLOWED_STATUSES = {"success", "warning", "failure", "needs_review", "skipped"}
 # standard CI and system functionality.
 
 
+def _remove_heuristic_secrets(env_dict: dict[str, str]) -> None:
+    """Mutates env_dict in place to remove keys matching secret heuristic."""
+    sensitive_substrings = ("TOKEN", "SECRET", "KEY", "PASSWORD", "AUTH", "CRED")
+    keys_to_remove = [
+        k for k in env_dict.keys()
+        if any(sub in k.upper() for sub in sensitive_substrings)
+    ]
+    for k in keys_to_remove:
+        env_dict.pop(k, None)
+
+
 def filter_env_securely(
     base_env: dict[str, str], custom_env: dict[str, str] | None = None
 ) -> dict[str, str]:
@@ -59,11 +70,17 @@ def filter_env_securely(
     if "PATH" not in filtered_env and "PATH" in env:
         filtered_env["PATH"] = env["PATH"]
 
+    # Strict defense in depth removal using heuristic approach
+    # We apply this BEFORE custom_env overrides, so that explicitly provided secrets
+    # in custom_env are allowed, but implicit environment bleed is prevented.
+    _remove_heuristic_secrets(filtered_env)
+
     # Re-apply custom overrides that might have been filtered out
     if custom_env:
         filtered_env.update(custom_env)
 
-    # Strict defense in depth removal
+    # Specifically strip GitHub tokens for defense in depth as they are automatically available
+    # but shouldn't be passed to untrusted subprocesses unless explicitly needed.
     for token in ["GH_TOKEN", "GITHUB_TOKEN"]:
         filtered_env.pop(token, None)
 

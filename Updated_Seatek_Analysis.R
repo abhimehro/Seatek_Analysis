@@ -312,19 +312,13 @@ calculate_summary_stats <- function(results) {
   # Identify metric columns (numeric columns excluding ID columns)
   metrics <- setdiff(names(all_stats_dt), c("Sensor", "Year"))
 
-  # Melt to long format: Sensor, Year, Metric, Value
-  long_dt <- melt(all_stats_dt,
-    id.vars = c("Sensor", "Year"),
-    measure.vars = metrics,
-    variable.name = "Metric", value.name = "Value"
-  )
 
-  # Calculate aggregated statistics
-  # OPTIMIZATION: Extract Value[!is.na(Value)] once per group instead of
-  # repeatedly traversing NA checks
-  agg_dt <- long_dt[,
-    {
-      v_val <- Value[!is.na(Value)] # nolint: object_usage_linter.
+  # ⚡ Bolt: Use lapply(.SD) natively grouped by Sensor to bypass the expensive
+  # melt -> aggregate -> melt -> dcast pipeline, reducing memory allocation.
+  # ⚡ Bolt: Use keyby = "Sensor" to ensure the output is sorted like dcast.
+  summary_wide <- all_stats_dt[, {
+    res_list <- lapply(.SD, function(v_val) {
+      v_val <- v_val[!is.na(v_val)]
       n <- length(v_val)
       if (n == 0) {
         list(
@@ -343,22 +337,16 @@ calculate_summary_stats <- function(results) {
           rollmean3 = if (n < 3) NA_real_ else mean(tail(v_val, 3))
         )
       }
-    },
-    by = c("Sensor", "Metric")
-  ]
+    })
+    unlist(unname(res_list), recursive = FALSE)
+  }, keyby = "Sensor", .SDcols = metrics]
 
-  # Reshape to wide format: Sensor ~ Metric_Stat
-  # Melt the aggregated stats to stack them
-  agg_long <- melt(agg_dt,
-    id.vars = c("Sensor", "Metric"),
-    variable.name = "Stat", value.name = "Value"
-  )
-
-  # Cast to final wide format with combined column names (Metric_Stat)
-  # dcast automatically uses "_" as separator, producing "first10_mean",
-  # "full_sd", etc.
-  summary_wide <- dcast(agg_long, Sensor ~ Metric + Stat,
-                        value.var = "Value", sep = "_")
+  stat_names <- c("mean", "sd", "median", "mad", "min", "max",
+                  "count", "rollmean3")
+  new_names <- c("Sensor",
+                 paste(rep(metrics, each = length(stat_names)),
+                       stat_names, sep = "_"))
+  setnames(summary_wide, new_names)
 
   # Calculate percent non-missing for 'full'
   # ⚡ Bolt: Direct unquoted column referencing is faster than standard

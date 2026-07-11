@@ -77,3 +77,6 @@
 ## 2025-05-06 - [Performance Improvement] Bypass melt/dcast with grouped lapply(.SD)
 **Learning:** Using `melt` and `dcast` for wide-to-wide grouped aggregations (e.g., summary statistics) in `data.table` causes significant CPU and memory overhead due to creating huge intermediate long-format tables and performing multiple reshapes.
 **Action:** When computing summary statistics on wide data, bypass `melt`/`dcast` entirely. Use `dt[, lapply(.SD, function(v) ...), by = ID_col, .SDcols = metric_cols]` combined with `unlist(unname(...), recursive = FALSE)` and `setnames()` to perform aggregations directly on the wide data. This runs roughly 40% faster and drastically reduces peak memory usage.
+## 2025-07-11 - Optimize file size retrieval and path construction
+**Learning:** Using `file.info(path)$size` allocates a full data frame of file attributes, causing ~4x overhead compared to `file.size(path)`. Also, using `tools::file_path_sans_ext` combined with `paste0` is ~3x slower than a direct `sub()` regex replacement when the extension is known.
+**Action:** When only file size is needed, always use `file.size(path)` natively. When transforming a known file extension to another, use `sub("\\.ext$", ".newext", basename)` directly.

@@ -49,6 +49,7 @@ if [ -f "$REQUIREMENTS_FILE" ]; then
 	source "$VENV_DIR/bin/activate"
 	pip install --upgrade pip
 	pip install -r "$REQUIREMENTS_FILE"
+	pip install bandit
 	deactivate
 else
 	echo "Warning: Requirements file $REQUIREMENTS_FILE not found."

@@ -59,6 +59,10 @@ pre-commit:
       glob: "*.py"
       run: ./scripts/my_check.sh
 
+    bandit:
+      glob: "*.py"
+      run: python3 -m bandit -ll -r {staged_files}
+
   pre-push:
     # Example 4: Run tests before pushing
     run-tests:

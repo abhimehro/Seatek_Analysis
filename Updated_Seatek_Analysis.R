@@ -177,13 +177,13 @@ compute_sensor_metrics <- function(df, filename) {
   # ⚡ Bolt: Replace sapply with data.table native lapply(.SD) for O(1) row
   # subsetting
   first10 <- unlist(df[1:min(10, .N),
-                       lapply(.SD, function(x) mean(clean_vals(x))),
+                       lapply(.SD, function(x) mean(x[which(x > 0)])),
                        .SDcols = sensor_names])
   last5 <- unlist(df[max(1, .N - 4):.N,
-                     lapply(.SD, function(x) mean(clean_vals(x))),
+                     lapply(.SD, function(x) mean(x[which(x > 0)])),
                      .SDcols = sensor_names])
   full <- unlist(df[,
-                    lapply(.SD, function(x) mean(clean_vals(x))),
+                    lapply(.SD, function(x) mean(x[which(x > 0)])),
                     .SDcols = sensor_names])
   diff <- full - first10
   # Derive sheet/year name
@@ -316,30 +316,33 @@ calculate_summary_stats <- function(results) {
   # ⚡ Bolt: Use lapply(.SD) natively grouped by Sensor to bypass the expensive
   # melt -> aggregate -> melt -> dcast pipeline, reducing memory allocation.
   # ⚡ Bolt: Use keyby = "Sensor" to ensure the output is sorted like dcast.
-  summary_wide <- all_stats_dt[, {
-    res_list <- lapply(.SD, function(v_val) {
-      v_val <- v_val[!is.na(v_val)]
-      n <- length(v_val)
-      if (n == 0) {
-        list(
-          mean = NA_real_, sd = NA_real_, median = NA_real_, mad = NA_real_,
-          min = NA_real_, max = NA_real_, count = 0L, rollmean3 = NA_real_
-        )
-      } else {
-        list(
-          mean      = mean(v_val),
-          sd        = sd(v_val),
-          median    = median(v_val),
-          mad       = mad(v_val),
-          min       = min(v_val),
-          max       = max(v_val),
-          count     = n,
-          rollmean3 = if (n < 3) NA_real_ else mean(tail(v_val, 3))
-        )
-      }
-    })
-    unlist(unname(res_list), recursive = FALSE)
-  }, keyby = "Sensor", .SDcols = metrics]
+
+  calc_stats <- function(v_val) {
+    v_val <- v_val[!is.na(v_val)]
+    n <- length(v_val)
+    if (n == 0) {
+      list(
+        mean = NA_real_, sd = NA_real_, median = NA_real_, mad = NA_real_,
+        min = NA_real_, max = NA_real_, count = 0L, rollmean3 = NA_real_
+      )
+    } else {
+      list(
+        mean      = mean(v_val),
+        sd        = sd(v_val),
+        median    = median(v_val),
+        mad       = mad(v_val),
+        min       = min(v_val),
+        max       = max(v_val),
+        count     = n,
+        rollmean3 = if (n < 3) NA_real_ else mean(tail(v_val, 3))
+      )
+    }
+  }
+
+  summary_wide <- all_stats_dt[,
+    unlist(unname(lapply(.SD, calc_stats)), recursive = FALSE),
+    keyby = "Sensor", .SDcols = metrics
+  ]
 
   stat_names <- c("mean", "sd", "median", "mad", "min", "max",
                   "count", "rollmean3")

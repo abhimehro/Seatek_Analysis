@@ -80,3 +80,14 @@
 ## 2025-07-11 - Optimize file size retrieval and path construction
 **Learning:** Using `file.info(path)$size` allocates a full data frame of file attributes, causing ~4x overhead compared to `file.size(path)`. Also, using `tools::file_path_sans_ext` combined with `paste0` is ~3x slower than a direct `sub()` regex replacement when the extension is known.
 **Action:** When only file size is needed, always use `file.size(path)` natively. When transforming a known file extension to another, use `sub("\\.ext$", ".newext", basename)` directly.
+## 2025-05-24 - Optimize data.table .SD aggregation closures
+**Learning:** When using `lapply(.SD, function(x) ...)` inside a grouped `data.table` operation, defining the anonymous function directly inside the `j` expression causes R to redefine the closure for every single group, leading to unnecessary memory allocation and parsing overhead.
+**Action:** Extract the anonymous function and assign it to a variable immediately outside of the `data.table` operation, then pass that variable into the `lapply`. This prevents closure redefinition and provides a measurable speedup.
+
+## 2025-05-24 - Unlist overhead with names
+**Learning:** Using `unlist()` to flatten lists into vectors inherently constructs and assigns names to each element, which causes significant memory and string manipulation overhead in hot loops.
+**Action:** When the resulting names of an unlisted vector are not required for downstream logic, explicitly pass `use.names = FALSE` to `unlist()`.
+
+## 2025-05-24 - Safe inline vector filtering
+**Learning:** Inlining operations like `x[x > 0]` is unsafe if `x` contains `NA` values because logical operations on `NA` evaluate to `NA`, polluting the filtered array.
+**Action:** Always use `x[which(x > 0)]` instead of `x[x > 0]` for inline filtering. The `which()` function inherently and safely drops `NA` values, preventing downstream functional regressions.

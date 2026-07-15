@@ -34,7 +34,8 @@ from repository_automation_common import (
 )
 
 WORKFLOW_PATTERN = re.compile(r"(uses:\s*)([^@\s]+)@([^\s#]+)")
-IGNORED_DIRS = {".git", ".venv", "node_modules", "__pycache__"}
+# ⚡ Bolt: Exclude virtual environments and backup directories to significantly reduce disk I/O during repository-wide hot-spot file scanning.
+IGNORED_DIRS = {".git", ".venv", "venv", "renv", "backups", "node_modules", "__pycache__"}
 
 
 def configured_commands(section: dict[str, Any]) -> list[tuple[str, dict[str, Any]]]:

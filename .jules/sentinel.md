@@ -38,3 +38,10 @@
 **Vulnerability:** Adding the heuristic environment variable filter directly into `filter_env_securely` increased the function's complexity, triggering a "Complex Method" hotspot decline in CodeScene. While the security logic was correct, overly complex methods become harder to maintain and audit, which is itself a long-term security risk.
 **Learning:** Security enhancements should not degrade code health metrics like cyclomatic complexity. Code that is hard to read is hard to secure.
 **Prevention:** When adding new security layers or heuristics to existing functions, extract the logic into small, standalone, single-responsibility helper functions (e.g., `_remove_heuristic_secrets(env_dict)`) to maintain the Code Health score and improve readability.
+## 2026-07-15 - [Security Improvement] SAST Tuning for Subprocess Security
+
+**Vulnerability:** The Bandit static analysis tool flagged false positives (`B603` and `B404`) in `code_health_scanner.py` and `.github/scripts/repository_automation_common.py` regarding `subprocess` executions. While the usage was actually safe (utilizing `shutil.which` and explicitly avoiding `shell=True` with hardcoded arrays), leaving false positives unresolved degrades the signal-to-noise ratio of security tooling, which can lead to actual vulnerabilities being ignored.
+
+**Learning:** Proper SAST hygiene requires explicitly addressing false positives. Ignoring them creates alert fatigue and masks real issues. By appending inline suppression flags (e.g., `# nosec B603`), the tool acknowledges the manual review of the specific pattern, ensuring the scan remains clean and actionable.
+
+**Prevention:** When writing or auditing `subprocess` calls, ensure they strictly use `shell=False` and array arguments. Once validated as safe against command injection, explicitly append `# nosec B603` to the call and `# nosec B404` to the import to document the security review and prevent SAST noise in automated pipelines.

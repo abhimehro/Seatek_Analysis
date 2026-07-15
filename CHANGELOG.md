@@ -6,6 +6,12 @@
 
 **Closed issues:**
 
+- Daily QA & Agentic Review - 2026-07-14 [\#455](https://github.com/abhimehro/Seatek_Analysis/issues/455)
+- \[repo-automation\] Daily Status Report - 2026-07-14 [\#452](https://github.com/abhimehro/Seatek_Analysis/issues/452)
+- \[repo-automation\] Daily Status Report - 2026-07-13 [\#450](https://github.com/abhimehro/Seatek_Analysis/issues/450)
+- Daily QA & Agentic Review - 2026-07-12 [\#449](https://github.com/abhimehro/Seatek_Analysis/issues/449)
+- Daily QA & Agentic Review - 2026-07-12 [\#448](https://github.com/abhimehro/Seatek_Analysis/issues/448)
+- \[repo-automation\] Daily Status Report - 2026-07-12 [\#447](https://github.com/abhimehro/Seatek_Analysis/issues/447)
 - Daily QA & Agentic Review - 2026-07-11 [\#445](https://github.com/abhimehro/Seatek_Analysis/issues/445)
 - \[repo-automation\] Daily Status Report - 2026-07-11 [\#444](https://github.com/abhimehro/Seatek_Analysis/issues/444)
 - Daily QA & Agentic Review - 2026-07-10 [\#441](https://github.com/abhimehro/Seatek_Analysis/issues/441)
@@ -23,6 +29,9 @@
 
 **Merged pull requests:**
 
+- ⚡ Bolt: Ignore venv and backups in discover\_hotspots [\#457](https://github.com/abhimehro/Seatek_Analysis/pull/457) ([abhimehro](https://github.com/abhimehro))
+- chore\(deps\): bump ruby/setup-ruby from 1.316.0 to 1.317.0 [\#454](https://github.com/abhimehro/Seatek_Analysis/pull/454) ([dependabot[bot]](https://github.com/apps/dependabot))
+- chore\(deps\): bump actions/setup-node from 6.4.0 to 7.0.0 [\#453](https://github.com/abhimehro/Seatek_Analysis/pull/453) ([dependabot[bot]](https://github.com/apps/dependabot))
 - ⚡ Bolt: Optimize R data.table metric aggregation [\#446](https://github.com/abhimehro/Seatek_Analysis/pull/446) ([abhimehro](https://github.com/abhimehro))
 - ⚡ Bolt: \[Performance\] Optimize file I/O operations and path construction [\#443](https://github.com/abhimehro/Seatek_Analysis/pull/443) ([abhimehro](https://github.com/abhimehro))
 - 🛡️ Sentinel: \[security improvement\] Add bandit pre-commit checks [\#439](https://github.com/abhimehro/Seatek_Analysis/pull/439) ([abhimehro](https://github.com/abhimehro))

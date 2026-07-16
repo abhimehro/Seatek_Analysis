@@ -37,7 +37,8 @@ def get_repo_info():
 
         # Get origin URL
         origin_url = subprocess.check_output(
-            [git_bin, "remote", "get-url", "origin"],
+            ["git", "remote", "get-url", "origin"],
+            executable=git_bin,
             stderr=subprocess.DEVNULL,
             env=env,
             text=True,
@@ -53,7 +54,8 @@ def get_repo_info():
 
         # Get current commit hash
         commit_hash = subprocess.check_output(
-            [git_bin, "rev-parse", "HEAD"],
+            ["git", "rev-parse", "HEAD"],
+            executable=git_bin,
             stderr=subprocess.DEVNULL,
             env=env,
             text=True,

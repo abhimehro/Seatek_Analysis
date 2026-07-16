@@ -6,7 +6,7 @@ import logging
 import os
 import re
 import shutil
-import subprocess
+import subprocess  # nosec B404
 
 
 # Pre-compile the regex pattern for parsing git origin URLs.
@@ -36,7 +36,7 @@ def get_repo_info():
             return "unknown", "unknown", "unknown"
 
         # Get origin URL
-        origin_url = subprocess.check_output(
+        origin_url = subprocess.check_output(  # nosec B603
             [git_bin, "remote", "get-url", "origin"],
             stderr=subprocess.DEVNULL,
             env=env,
@@ -52,7 +52,7 @@ def get_repo_info():
         account, project = match.groups()
 
         # Get current commit hash
-        commit_hash = subprocess.check_output(
+        commit_hash = subprocess.check_output(  # nosec B603
             [git_bin, "rev-parse", "HEAD"],
             stderr=subprocess.DEVNULL,
             env=env,

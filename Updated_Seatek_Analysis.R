@@ -219,9 +219,8 @@ export_raw_data_parallel <- function(raw_export_tasks) {
     }
 
     out_files <- execute_tasks_parallel(raw_export_tasks, write_task)
-    for (out_file in out_files) {
-      message(sprintf("Raw data written to %s", out_file))
-    }
+    message(paste0(sprintf("Raw data written to %s", out_files),
+                   collapse = "\n"))
   }
 }
 

@@ -283,9 +283,15 @@ def apply_workflow_updates(plans: list[dict[str, Any]]) -> None:
         plan["path"].write_text(updated_text)
 
 
+def _write_plan(plan: dict[str, Any]) -> None:
+    plan["path"].write_text(plan["text"])
+
+
 def restore_workflow_updates(plans: list[dict[str, Any]]) -> None:
-    for plan in plans:
-        plan["path"].write_text(plan["text"])
+    if not plans:
+        return
+    with concurrent.futures.ThreadPoolExecutor(max_workers=min(10, len(plans))) as executor:
+        list(executor.map(_write_plan, plans))
 
 
 def allowed_workflow_updates(

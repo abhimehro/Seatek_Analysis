@@ -334,7 +334,9 @@ calculate_summary_stats <- function(results) {
         min       = min(v_val),
         max       = max(v_val),
         count     = n,
-        rollmean3 = if (n < 3) NA_real_ else mean(tail(v_val, 3))
+        # ⚡ Bolt: Replace mean(tail()) with direct indexing and sum() for
+        # faster trailing window calculation
+        rollmean3 = if (n < 3) NA_real_ else sum(v_val[(n - 2):n]) / 3
       )
     }
   }

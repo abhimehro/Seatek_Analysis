@@ -31,7 +31,9 @@
 
 **Merged pull requests:**
 
+- 🧹 \[Code Health\] Refactor install\_and\_verify in environment setup to improve readability [\#475](https://github.com/abhimehro/Seatek_Analysis/pull/475) ([abhimehro](https://github.com/abhimehro))
 - 🔒 Fix path traversal bypass in tar extraction [\#471](https://github.com/abhimehro/Seatek_Analysis/pull/471) ([abhimehro](https://github.com/abhimehro))
+- 🧹 Refactor verify\_environment\(\) into smaller helper functions [\#463](https://github.com/abhimehro/Seatek_Analysis/pull/463) ([abhimehro](https://github.com/abhimehro))
 - 🛡️ Sentinel: \[security improvement\] tune SAST tooling to suppress false positives [\#461](https://github.com/abhimehro/Seatek_Analysis/pull/461) ([abhimehro](https://github.com/abhimehro))
 - chore\(deps\): bump ruby/setup-ruby from 1.317.0 to 1.318.0 [\#459](https://github.com/abhimehro/Seatek_Analysis/pull/459) ([dependabot[bot]](https://github.com/apps/dependabot))
 - ⚡ Bolt: Ignore venv and backups in discover\_hotspots [\#457](https://github.com/abhimehro/Seatek_Analysis/pull/457) ([abhimehro](https://github.com/abhimehro))

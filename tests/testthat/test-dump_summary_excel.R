@@ -3,10 +3,6 @@ library(testthat)
 # It's a dependency of Updated_Seatek_Analysis.R, so it should be loaded
 # if tests are run after sourcing the main script.
 # An explicit library call can be a safeguard if running tests in isolation.
-# library(openxlsx)
-# library(tools) # for file_path_sans_ext
-# library(utils) # for read.csv
-# library(stats) # for setNames
 
 # The dump_summary_excel function is expected to be in the global environment
 # as Updated_Seatek_Analysis.R should be sourced by the testthat.R helper.

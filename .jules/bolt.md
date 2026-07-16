@@ -94,3 +94,6 @@
 ## 2026-07-15 - Prune heavy directories in os.walk
 **Learning:** When using `os.walk(topdown=True)` for directory traversal in Python, failing to explicitly prune heavy directories (like `venv`, `renv`, `.venv`, `node_modules`, `backups`) from the `dirs` list causes Python to traverse massive third-party package trees. This leads to a severe disk I/O bottleneck and significantly degrades performance for repository-wide scanning functions.
 **Action:** Always modify the `dirs` list in place (e.g., `dirs[:] = [d for d in dirs if d not in IGNORED_DIRS]`) and ensure the `IGNORED_DIRS` set explicitly includes all common virtual environment and backup directories to avoid scanning non-repository code.
+## 2025-02-23 - Avoid redundant datetime operations in comprehensions
+**Learning:** Calling functions that query the current time (`now_utc()`) and perform date math inside large list comprehensions adds significant constant-factor overhead.
+**Action:** Pre-calculate absolute datetime cutoffs outside loops and compare parsed timestamps directly against the cutoff to improve performance.

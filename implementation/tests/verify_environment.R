@@ -9,24 +9,7 @@
 # Source the environment setup script
 source("../scripts/01_environment_setup.R")
 
-#' Comprehensive environment verification
-#' 
-#' @return List with verification results
-verify_environment <- function() {
-  
-  cat("=== Seatek R Environment Verification ===\n")
-  cat("Starting comprehensive environment verification...\n\n")
-  
-  # Initialize results
-  verification_results <- list(
-    r_version_check = NULL,
-    package_loading = NULL,
-    write_permissions = NULL,
-    overall_success = FALSE,
-    verification_timestamp = Sys.time()
-  )
-  
-  # Step 1: Check R version compatibility
+verify_step_r_version <- function(verification_results) {
   cat("Step 1: R Version Compatibility Check\n")
   r_version_check <- check_r_version()
   verification_results$r_version_check <- r_version_check
@@ -37,7 +20,10 @@ verify_environment <- function() {
     cat("  ✗ R version incompatible: ", r_version_check$message, "\n")
   }
   
-  # Step 2: Load and verify all packages
+  return(verification_results)
+}
+
+verify_step_packages <- function(verification_results) {
   cat("\nStep 2: Package Loading Verification\n")
   package_loading <- load_and_verify_packages()
   verification_results$package_loading <- package_loading
@@ -48,7 +34,13 @@ verify_environment <- function() {
   
   cat("  Package loading summary: ", successful_loads, "/", total_packages, " successful\n")
   
-  # Step 3: Check write permissions
+  verification_results$stats$successful_loads <- successful_loads
+  verification_results$stats$total_packages <- total_packages
+
+  return(verification_results)
+}
+
+verify_step_permissions <- function(verification_results) {
   cat("\nStep 3: Write Permission Verification\n")
   write_permissions <- check_write_permissions()
   verification_results$write_permissions <- write_permissions
@@ -59,7 +51,13 @@ verify_environment <- function() {
   
   cat("  Permission check summary: ", successful_permissions, "/", total_directories, " successful\n")
   
-  # Step 4: Additional verification checks
+  verification_results$stats$successful_permissions <- successful_permissions
+  verification_results$stats$total_directories <- total_directories
+
+  return(verification_results)
+}
+
+verify_step_additional <- function(verification_results) {
   cat("\nStep 4: Additional Verification Checks\n")
 
   # Check if package manifest exists
@@ -87,21 +85,36 @@ verify_environment <- function() {
   main_script_exists <- file.exists("Updated_Seatek_Analysis.R")
   cat("  Main analysis script exists: ", ifelse(main_script_exists, "✓ YES", "✗ NO"), "\n")
   
-  # Determine overall success
-  r_version_ok <- r_version_check$success
-  all_packages_loaded <- successful_loads == total_packages
-  all_permissions_ok <- successful_permissions == total_directories
-  key_components_exist <- manifest_exists && main_script_exists
+  verification_results$stats$manifest_exists <- manifest_exists
+  verification_results$stats$main_script_exists <- main_script_exists
+
+  return(verification_results)
+}
+
+determine_overall_success <- function(verification_results) {
+  r_version_ok <- verification_results$r_version_check$success
+  all_packages_loaded <- verification_results$stats$successful_loads == verification_results$stats$total_packages
+  all_permissions_ok <- verification_results$stats$successful_permissions == verification_results$stats$total_directories
+  key_components_exist <- verification_results$stats$manifest_exists && verification_results$stats$main_script_exists
   
   overall_success <- r_version_ok && all_packages_loaded && all_permissions_ok && key_components_exist
   
   verification_results$overall_success <- overall_success
   
-  # Print final summary
+  return(verification_results)
+}
+
+print_verification_summary <- function(verification_results) {
+  r_version_ok <- verification_results$r_version_check$success
+  all_packages_loaded <- verification_results$stats$successful_loads == verification_results$stats$total_packages
+  all_permissions_ok <- verification_results$stats$successful_permissions == verification_results$stats$total_directories
+  key_components_exist <- verification_results$stats$manifest_exists && verification_results$stats$main_script_exists
+  overall_success <- verification_results$overall_success
+
   cat("\n=== Verification Summary ===\n")
   cat("R Version Compatibility: ", ifelse(r_version_ok, "✓ PASS", "✗ FAIL"), "\n")
-  cat("Package Loading: ", ifelse(all_packages_loaded, "✓ PASS", "✗ FAIL"), " (", successful_loads, "/", total_packages, ")\n")
-  cat("Write Permissions: ", ifelse(all_permissions_ok, "✓ PASS", "✗ FAIL"), " (", successful_permissions, "/", total_directories, ")\n")
+  cat("Package Loading: ", ifelse(all_packages_loaded, "✓ PASS", "✗ FAIL"), " (", verification_results$stats$successful_loads, "/", verification_results$stats$total_packages, ")\n")
+  cat("Write Permissions: ", ifelse(all_permissions_ok, "✓ PASS", "✗ FAIL"), " (", verification_results$stats$successful_permissions, "/", verification_results$stats$total_directories, ")\n")
   cat("Key Components: ", ifelse(key_components_exist, "✓ PASS", "✗ FAIL"), "\n")
   cat("Overall Status: ", ifelse(overall_success, "✓ PASS", "✗ FAIL"), "\n")
 
@@ -112,16 +125,51 @@ verify_environment <- function() {
     cat("\n⚠ Environment verification completed with issues.\n")
     cat("Please review the failures above and resolve them.\n")
   }
+}
 
-  # Save verification results
+save_verification_results <- function(verification_results) {
   verification_path <- VERIFICATION_RESULTS_PATH
+  # Remove stats from the final saved results for backward compatibility
+  final_results <- verification_results
+  final_results$stats <- NULL
+
   tryCatch({
-    saveRDS(verification_results, verification_path)
+    saveRDS(final_results, verification_path)
     cat("  Verification results saved to: ", verification_path, "\n")
   }, error = function(e) {
     cat("  ✗ Failed to save verification results: ", e$message, "\n")
   })
+}
+
+#' Comprehensive environment verification
+#'
+#' @return List with verification results
+verify_environment <- function() {
+
+  cat("=== Seatek R Environment Verification ===\n")
+  cat("Starting comprehensive environment verification...\n\n")
+
+  # Initialize results
+  verification_results <- list(
+    r_version_check = NULL,
+    package_loading = NULL,
+    write_permissions = NULL,
+    overall_success = FALSE,
+    verification_timestamp = Sys.time(),
+    stats = list()
+  )
+
+  verification_results <- verify_step_r_version(verification_results)
+  verification_results <- verify_step_packages(verification_results)
+  verification_results <- verify_step_permissions(verification_results)
+  verification_results <- verify_step_additional(verification_results)
+  verification_results <- determine_overall_success(verification_results)
+
+  print_verification_summary(verification_results)
+  save_verification_results(verification_results)
   
+  # Remove stats before returning to match previous return value structure
+  verification_results$stats <- NULL
   return(verification_results)
 }
 

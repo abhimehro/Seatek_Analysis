@@ -1,6 +1,5 @@
 library(testthat)
 library(data.table) # process_all_data likely uses data.table indirectly via read_sensor_data
-# library(openxlsx) # process_all_data uses openxlsx for writing, ensure it's noted if tests require it explicitly
 
 # The process_all_data function is expected to be in the global environment
 # as Updated_Seatek_Analysis.R should be sourced by the testthat.R helper.

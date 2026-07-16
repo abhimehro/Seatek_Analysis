@@ -6,7 +6,7 @@ import logging
 import os
 import re
 import shutil
-import subprocess
+import subprocess  # nosec B404
 
 
 # Pre-compile the regex pattern for parsing git origin URLs.

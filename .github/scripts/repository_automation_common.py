@@ -8,7 +8,7 @@ import logging
 import os
 import re
 import shutil
-import subprocess
+import subprocess  # nosec B404
 import sys
 from pathlib import Path
 from typing import Any
@@ -163,7 +163,7 @@ def run_process(
             proc_env["PATH"] = fallback_env.get("PATH", "")
         proc_env = filter_env_securely(proc_env)
 
-    return subprocess.run(
+    return subprocess.run(  # nosec B603
         command,
         cwd=ROOT,
         check=check,

@@ -97,3 +97,6 @@
 ## 2025-02-23 - Avoid redundant datetime operations in comprehensions
 **Learning:** Calling functions that query the current time (`now_utc()`) and perform date math inside large list comprehensions adds significant constant-factor overhead.
 **Action:** Pre-calculate absolute datetime cutoffs outside loops and compare parsed timestamps directly against the cutoff to improve performance.
+## 2025-07-11 - Optimize tail() in high-frequency loops
+**Learning:** Replacing `tail(x, n)` with direct vector indexing like `x[(length(x)-n+1):length(x)]` inside grouped data.table operations significantly reduces execution time by avoiding S3 generic method dispatch overhead.
+**Action:** When extracting the last elements of a vector within a high-frequency loop or grouped data.table operation, always use direct vector indexing instead of the `tail()` function.

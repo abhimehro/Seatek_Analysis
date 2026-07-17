@@ -333,7 +333,7 @@ calculate_summary_stats <- function(results) {
         min       = min(v_val),
         max       = max(v_val),
         count     = n,
-        rollmean3 = if (n < 3) NA_real_ else mean(tail(v_val, 3))
+        rollmean3 = if (n < 3) NA_real_ else mean(v_val[(n - 2):n])
       )
     }
   }

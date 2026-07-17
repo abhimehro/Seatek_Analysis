@@ -36,8 +36,9 @@ def get_repo_info():
             return "unknown", "unknown", "unknown"
 
         # Get origin URL
-        origin_url = subprocess.check_output(  # nosec B603
-            [git_bin, "remote", "get-url", "origin"],
+        origin_url = subprocess.check_output(
+            ["git", "remote", "get-url", "origin"],
+            executable=git_bin,
             stderr=subprocess.DEVNULL,
             env=env,
             text=True,
@@ -52,8 +53,9 @@ def get_repo_info():
         account, project = match.groups()
 
         # Get current commit hash
-        commit_hash = subprocess.check_output(  # nosec B603
-            [git_bin, "rev-parse", "HEAD"],
+        commit_hash = subprocess.check_output(
+            ["git", "rev-parse", "HEAD"],
+            executable=git_bin,
             stderr=subprocess.DEVNULL,
             env=env,
             text=True,

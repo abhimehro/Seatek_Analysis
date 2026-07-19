@@ -97,3 +97,6 @@
 ## 2025-02-23 - Avoid redundant datetime operations in comprehensions
 **Learning:** Calling functions that query the current time (`now_utc()`) and perform date math inside large list comprehensions adds significant constant-factor overhead.
 **Action:** Pre-calculate absolute datetime cutoffs outside loops and compare parsed timestamps directly against the cutoff to improve performance.
+## 2025-07-20 - Optimize redundant datetime calculations
+**Learning:** In `.github/scripts/repository_automation_tasks.py`, calling `now_utc()` within loops inside format strings for age calculation (e.g. `age_days()`) resulted in thousands of redundant system calls and slight chrono-inconsistency.
+**Action:** When filtering lists by relative time or calculating object age, pre-calculate the absolute `now` or datetime cutoff outside the loop (e.g., `now = now_utc()`) and compare against it directly, removing repeated calls and helper functions that hide the system call.

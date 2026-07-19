@@ -465,11 +465,7 @@ def parse_timestamp(value: str) -> dt.datetime:
     return dt.datetime.fromisoformat(value.replace("Z", "+00:00"))
 
 
-def age_days(timestamp: str) -> int:
-    return (now_utc() - parse_timestamp(timestamp)).days
-
-
-def render_issue_rows(issues: list[dict[str, Any]]) -> list[str]:
+def render_issue_rows(issues: list[dict[str, Any]], now: dt.datetime) -> list[str]:
     rows = [
         "## Open issues (oldest updated first)",
         "| Issue | Last updated | Age (days) | Labels |",
@@ -477,13 +473,14 @@ def render_issue_rows(issues: list[dict[str, Any]]) -> list[str]:
     ]
     for item in issues:
         labels = ", ".join(label["name"] for label in item.get("labels", []))
+        age = (now - parse_timestamp(item['updatedAt'])).days
         rows.append(
-            f"| [#{item['number']}]({item['url']}) | {item['updatedAt'][:10]} | {age_days(item['updatedAt'])} | {labels or '-'} |"
+            f"| [#{item['number']}]({item['url']}) | {item['updatedAt'][:10]} | {age} | {labels or '-'} |"
         )
     return rows
 
 
-def render_pr_rows(prs: list[dict[str, Any]]) -> list[str]:
+def render_pr_rows(prs: list[dict[str, Any]], now: dt.datetime) -> list[str]:
     rows = [
         "",
         "## Open pull requests (oldest updated first)",
@@ -492,7 +489,7 @@ def render_pr_rows(prs: list[dict[str, Any]]) -> list[str]:
     ]
     rows.extend(
         [
-            f"| [#{item['number']}]({item['url']}) | {item['updatedAt'][:10]} | {age_days(item['updatedAt'])} | {item.get('isDraft')} | {item.get('reviewDecision') or '-'} | {item.get('mergeStateStatus') or '-'} |"
+            f"| [#{item['number']}]({item['url']}) | {item['updatedAt'][:10]} | {(now - parse_timestamp(item['updatedAt'])).days} | {item.get('isDraft')} | {item.get('reviewDecision') or '-'} | {item.get('mergeStateStatus') or '-'} |"
             for item in prs
         ]
     )
@@ -544,7 +541,8 @@ def run_backlog_manager(config: dict[str, Any]) -> dict[str, Any]:
     stale_days = int(section.get("stale_days", 14))
     # Pre-calculate the cutoff threshold to avoid redundant now_utc()
     # lookups during loop evaluations over issues and PRs.
-    cutoff = now_utc() - dt.timedelta(days=stale_days)
+    now = now_utc()
+    cutoff = now - dt.timedelta(days=stale_days)
     stale_issues = [
         item for item in issues if parse_timestamp(item["updatedAt"]) <= cutoff
     ]
@@ -561,19 +559,19 @@ def run_backlog_manager(config: dict[str, Any]) -> dict[str, Any]:
         f"- Stale threshold: **{stale_days} days**",
         "",
     ]
-    lines.extend(render_issue_rows(issues))
-    lines.extend(render_pr_rows(prs))
+    lines.extend(render_issue_rows(issues, now))
+    lines.extend(render_pr_rows(prs, now))
     if stale_issues or stale_prs:
         lines.extend(["", "## Human review candidates"])
         lines.extend(
             [
-                f"- Issue #{item['number']} has been quiet for {age_days(item['updatedAt'])} days: {item['title']}"
+                f"- Issue #{item['number']} has been quiet for {(now - parse_timestamp(item['updatedAt'])).days} days: {item['title']}"
                 for item in stale_issues
             ]
         )
         lines.extend(
             [
-                f"- PR #{item['number']} has been quiet for {age_days(item['updatedAt'])} days: {item['title']}"
+                f"- PR #{item['number']} has been quiet for {(now - parse_timestamp(item['updatedAt'])).days} days: {item['title']}"
                 for item in stale_prs
             ]
         )

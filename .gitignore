@@ -8,3 +8,4 @@ renv_restore.log
 processing_warnings.log
 __pycache__/
 *.pyc
+test_venv/

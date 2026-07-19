@@ -170,25 +170,22 @@ def test_apply_corrections_path_traversal(tmp_path):
 
     output_dir = str(tmp_path)
 
-    with patch("pandas.ExcelFile") as mock_excel:
+    with patch("pandas.ExcelFile") as mock_excel, patch("outlier_analysis_series27._bulk_read_excel_sheets") as mock_bulk_read:
         mock_xls = MagicMock()
         mock_excel.return_value.__enter__.return_value = mock_xls
+        mock_xls.sheet_names = ["../../../etc/passwd"]
 
-        mock_df_raw = MagicMock()
-        mock_df_raw.empty = False
-        mock_df_raw.columns = ["V1"]
-        mock_xls.parse.return_value = mock_df_raw
+        real_df = pd.DataFrame({"V1": [1.0, 2.0], "time": ["12:00", "13:00"]})
+        mock_bulk_read.return_value = {"../../../etc/passwd": real_df}
 
-        # Exercise the real os.path.join / _is_safe_path defense-in-depth check
-        result = apply_corrections(b"dummy", "dummy.xlsx", output_dir, outliers_df)
+        with patch.object(pd.DataFrame, "to_excel") as mock_to_excel:
+            result = apply_corrections(b"dummy", "dummy.xlsx", output_dir, outliers_df)
 
-        # The MagicMock-based df_raw still records the to_excel call
-        assert mock_df_raw.to_excel.called, "to_excel should be invoked"
-        out_file = mock_df_raw.to_excel.call_args[0][0]
-        filename = os.path.basename(out_file)
-        assert (
-            "/" not in filename
-        ), f"Path traversal character / found in {filename}"
+            assert mock_to_excel.called, "to_excel should be invoked"
+            out_file = mock_to_excel.call_args[0][0]
+            filename = os.path.basename(out_file)
+            assert "/" not in filename
+            assert filename == "dummy_2024_etc_passwd_corrected.xlsx", f"Path traversal character / found in {filename}"
         assert (
             "\\" not in filename
         ), f"Path traversal character \\ found in {filename}"

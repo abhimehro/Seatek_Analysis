@@ -146,7 +146,7 @@ from outlier_analysis_series27 import apply_corrections, secure_filename
 
 
 def test_secure_filename():
-    assert secure_filename("../../../etc/passwd") == "etc_passwd"
+    assert secure_filename("../../../outside/traversal_target") == "outside_traversal_target"
     assert secure_filename("C:\\Windows\\System32") == "C__Windows_System32"
     assert secure_filename("..") == "unnamed"
     assert secure_filename(".hidden") == "hidden"
@@ -164,7 +164,7 @@ def test_apply_corrections_path_traversal(tmp_path):
             "Sensor": [1],
             "Difference": [0.5],
             "next_year": ["2024"],
-            "sheet": ["../../../etc/passwd"],
+            "sheet": ["../../../outside/traversal_target"],
         }
     )
 
@@ -192,7 +192,7 @@ def test_apply_corrections_path_traversal(tmp_path):
         assert (
             "\\" not in filename
         ), f"Path traversal character \\ found in {filename}"
-        assert "etc_passwd" in filename
+        assert "outside_traversal_target" in filename
 
         # Defense-in-depth: resolved path must remain within output_dir
         assert os.path.realpath(out_file).startswith(

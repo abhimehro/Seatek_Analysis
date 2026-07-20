@@ -6,6 +6,7 @@
 
 **Closed issues:**
 
+- Daily QA & Agentic Review — 2026-07-19 [\#492](https://github.com/abhimehro/Seatek_Analysis/issues/492)
 - Daily QA & Agentic Review — 2026-07-18 [\#488](https://github.com/abhimehro/Seatek_Analysis/issues/488)
 - \[repo-automation\] Daily Status Report - 2026-07-18 [\#487](https://github.com/abhimehro/Seatek_Analysis/issues/487)
 - Daily QA Check - Seatek\_Analysis - 2026-07-17 [\#486](https://github.com/abhimehro/Seatek_Analysis/issues/486)
@@ -39,6 +40,7 @@
 
 **Merged pull requests:**
 
+- fix\(tests\): path-traversal fixtures without GG Generic Password FP \(salvages \#493\) [\#494](https://github.com/abhimehro/Seatek_Analysis/pull/494) ([abhimehro](https://github.com/abhimehro))
 - ⚡ Bolt: \[cache now\_utc to prevent redundant system calls\] [\#490](https://github.com/abhimehro/Seatek_Analysis/pull/490) ([abhimehro](https://github.com/abhimehro))
 - chore\(deps\): bump ruby/setup-ruby from 1.318.0 to 1.319.0 [\#479](https://github.com/abhimehro/Seatek_Analysis/pull/479) ([dependabot[bot]](https://github.com/apps/dependabot))
 - Draft: Salvage \#476 rollmean3 tail optimization [\#478](https://github.com/abhimehro/Seatek_Analysis/pull/478) ([abhimehro](https://github.com/abhimehro))

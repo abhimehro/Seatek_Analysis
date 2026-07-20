@@ -84,7 +84,7 @@ def test_read_file_safe_non_existent():
 def test_get_repo_info_exception_logging(caplog):
     import logging
     with patch("subprocess.check_output") as mock_run:
-        mock_run.side_effect = Exception("Some secret internal error")
+        mock_run.side_effect = Exception("Some hidden internal error")
         with caplog.at_level(logging.ERROR):
             account, project, commit_hash = get_repo_info()
 
@@ -93,7 +93,7 @@ def test_get_repo_info_exception_logging(caplog):
         assert commit_hash == "unknown"
 
         assert "Error getting repo info: Internal error occurred (Exception)." in caplog.text
-        assert "Some secret internal error" not in caplog.text
+        assert "Some hidden internal error" not in caplog.text
 
 def test_read_file_safe_null_byte():
     # Attempting to read a file with an embedded null character should return empty list

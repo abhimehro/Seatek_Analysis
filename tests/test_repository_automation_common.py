@@ -74,10 +74,10 @@ def test_run_process_allowlist(mock_run):
     test_env = {
         "PATH": "/usr/bin",
         "HOME": "/home/user",
-        "AWS_ACCESS_KEY_ID": "sensitive1",
-        "NPM_TOKEN": "sensitive2",
-        "GH_TOKEN": "sensitive3",
-        "GITHUB_TOKEN": "sensitive4",
+        "AWS_ACCESS_KEY_ID": "DUMMY_VALUE_1",
+        "NPM_TOKEN": "DUMMY_VALUE_2",
+        "GH_TOKEN": "DUMMY_VALUE_3",
+        "GITHUB_TOKEN": "DUMMY_VALUE_4",
         "GITHUB_WORKSPACE": "/workspace",
     }
 
@@ -107,7 +107,7 @@ def test_run_shell_command_allowlist_and_custom(mock_run_process):
     mock_run_process.return_value = mock_proc
 
     # Ensure os.environ has some sensitive stuff for the default safe_env grab
-    with patch.dict(os.environ, {"AWS_ACCESS_KEY_ID": "sensitive1", "PATH": "/bin"}):
+    with patch.dict(os.environ, {"AWS_ACCESS_KEY_ID": "DUMMY_VALUE_1", "PATH": "/bin"}):
         result = run_shell_command(
             "echo hello",
             custom_env={"MY_VAR": "custom_val", "GH_TOKEN": "should_be_stripped"},

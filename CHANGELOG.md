@@ -41,6 +41,7 @@
 
 **Merged pull requests:**
 
+- 🛡️ Sentinel: \[Medium\] Suppress Bandit false positives for subprocess executions [\#502](https://github.com/abhimehro/Seatek_Analysis/pull/502) ([abhimehro](https://github.com/abhimehro))
 - chore\(deps\): bump actions/checkout from 7.0.0 to 7.0.1 [\#499](https://github.com/abhimehro/Seatek_Analysis/pull/499) ([dependabot[bot]](https://github.com/apps/dependabot))
 - chore\(deps\): update matplotlib requirement from \>=3.11.0 to \>=3.11.1 in /Series\_27/Analysis [\#498](https://github.com/abhimehro/Seatek_Analysis/pull/498) ([dependabot[bot]](https://github.com/apps/dependabot))
 - chore\(deps\): bump actions/setup-python from 6.3.0 to 7.0.0 [\#497](https://github.com/abhimehro/Seatek_Analysis/pull/497) ([dependabot[bot]](https://github.com/apps/dependabot))

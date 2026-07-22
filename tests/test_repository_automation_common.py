@@ -1,7 +1,6 @@
-import pytest
-from unittest.mock import patch, MagicMock
-import sys
 import os
+import sys
+from unittest.mock import MagicMock, patch
 
 sys.path.insert(
     0, os.path.abspath(os.path.join(os.path.dirname(__file__), "../.github/scripts"))
@@ -108,7 +107,7 @@ def test_run_shell_command_allowlist_and_custom(mock_run_process):
 
     # Ensure os.environ has some sensitive stuff for the default safe_env grab
     with patch.dict(os.environ, {"AWS_ACCESS_KEY_ID": "DUMMY_VALUE_1", "PATH": "/bin"}):
-        result = run_shell_command(
+        run_shell_command(
             "echo hello",
             custom_env={"MY_VAR": "custom_val", "GH_TOKEN": "should_be_stripped"},
         )

@@ -4,6 +4,7 @@ import logging
 import os
 import re
 from io import BytesIO
+from pathlib import Path
 
 import matplotlib.pyplot as plt
 import pandas as pd
@@ -158,22 +159,21 @@ def prepare_outliers_df(outliers):
 def _is_safe_path(basedir: str, path: str) -> bool:
     """Verify that path is inside basedir to prevent path traversal escapes.
 
-    Uses ``os.path.realpath`` to resolve symlinks so that an attacker cannot
-    bypass the containment check via a symlinked component.
+    Resolves both the base directory and target path with
+    :meth:`pathlib.Path.resolve`, which normalizes ``..`` segments and follows
+    symlinks, then confirms containment with :meth:`pathlib.Path.is_relative_to`.
+    This blocks traversal via relative segments or symlinked components.
     """
-    if '\0' in basedir or '\0' in path:
+    if "\0" in str(basedir) or "\0" in str(path):
         return False
 
     try:
-        abs_base = os.path.realpath(basedir)
-        abs_path = os.path.realpath(path)
-        # ⚡ Bolt: Use native string operations for path traversal checks to avoid
-        # os.path.commonpath overhead, which iterates over path components in Python.
-        # This achieves the same traversal protection ~37x faster.
-        abs_base_plus_sep = os.path.join(abs_base, '')
-        return abs_path.startswith(abs_base_plus_sep) or abs_path == abs_base
-    except ValueError:
-        # realpath raises ValueError in Python 3.12+ if path contains a null byte
+        resolved_base = Path(basedir).resolve()
+        resolved_path = Path(path).resolve()
+        return resolved_path.is_relative_to(resolved_base)
+    except (ValueError, OSError):
+        # resolve() raises ValueError on embedded null bytes and may raise
+        # OSError on some platforms for malformed paths.
         return False
 
 

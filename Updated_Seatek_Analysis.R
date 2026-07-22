@@ -288,16 +288,17 @@ write_year_sheet <- function(wb, year, data, header_style,
   )
   freezePane(wb, sheet = year, firstRow = TRUE)
   # Optional: highlight largest within_diff in each year
-  if ("within_diff" %in% colnames(data) && !is.null(highlight_style_yearly)) {
+  if ("within_diff" %in% colnames(data) && !is.null(highlight_style_yearly) &&
+        nrow(data) > 0 && is.numeric(data$within_diff)) {
     max_idx <- which.max(abs(data$within_diff))
-    # ⚡ Bolt: Remove '+ 1' from cols offset since Sensor is a standard column
-    # now
-    addStyle(wb,
-      sheet = year, style = highlight_style_yearly,
-      rows = max_idx + 1,
-      cols = which(colnames(data) == "within_diff"),
-      gridExpand = TRUE, stack = TRUE
-    )
+    if (length(max_idx) == 1L) {
+      addStyle(wb,
+        sheet = year, style = highlight_style_yearly,
+        rows = max_idx + 1,
+        cols = which(colnames(data) == "within_diff"),
+        gridExpand = TRUE, stack = TRUE
+      )
+    }
   }
 }
 
@@ -555,47 +556,61 @@ dump_summary_excel <- function(results, output_file, highlight_top_n = 5) {
   cat("\n✅ Summary workbook complete.\n")
 }
 
+resolve_pipeline_data_dir <- function() {
+  data_dir <- file.path(getwd(), "Data")
+  message(sprintf("Running main(). Data directory: %s", data_dir))
+  if (!dir.exists(data_dir)) {
+    stop(sprintf("Data directory does not exist: %s", data_dir))
+  }
+  normalizePath(data_dir)
+}
+
+execute_pipeline <- function(data_dir) {
+  results <- process_all_data(data_dir)
+  summary_out <- file.path(data_dir, "Seatek_Summary.xlsx")
+  dump_summary_excel(results, summary_out)
+  message("Processing complete.")
+  cat(sprintf("\n🎉 Pipeline finished! Output saved to: %s\n", summary_out))
+}
+
+handle_pipeline_warning <- function(w) {
+  log_handler("WARNING", conditionMessage(w))
+  invokeRestart("muffleWarning")
+}
+
+handle_pipeline_error <- function(e) {
+  error_message <- conditionMessage(e)
+  if (grepl("could not find function|Error in library|there is no package called", # nolint: line_length_linter
+            error_message, ignore.case = TRUE)) {
+    log_handler("DEPENDENCY_ERROR", error_message)
+  } else {
+    log_handler("PROCESSING_ERROR", error_message)
+  }
+  if (interactive()) {
+    message(sprintf(
+      "An error occurred: %s. Check 'processing_warnings.log' for details.",
+      error_message
+    ))
+  }
+}
+
+handle_pipeline_message <- function(m) {
+  log_handler("MESSAGE", conditionMessage(m))
+  invokeRestart("muffleMessage")
+}
+
 #' Run Pipeline
 #'
 #' Executes the main data processing pipeline with error handling.
 run_pipeline <- function() {
   withCallingHandlers(
     {
-      data_dir <- file.path(getwd(), "Data")
-      message(sprintf("Running main(). Data directory: %s", data_dir))
-      if (!dir.exists(data_dir)) {
-        stop(sprintf("Data directory does not exist: %s", data_dir))
-      }
-      data_dir <- normalizePath(data_dir)
-      results <- process_all_data(data_dir)
-      summary_out <- file.path(data_dir, "Seatek_Summary.xlsx")
-      dump_summary_excel(results, summary_out)
-      message("Processing complete.")
-      cat(sprintf("\n🎉 Pipeline finished! Output saved to: %s\n", summary_out))
+      data_dir <- resolve_pipeline_data_dir()
+      execute_pipeline(data_dir)
     },
-    warning = function(w) {
-      log_handler("WARNING", conditionMessage(w))
-      invokeRestart("muffleWarning")
-    },
-    error = function(e) {
-      error_message <- conditionMessage(e)
-      if (grepl("could not find function|Error in library|there is no package called", # nolint: line_length_linter
-                error_message, ignore.case = TRUE)) {
-        log_handler("DEPENDENCY_ERROR", error_message)
-      } else {
-        log_handler("PROCESSING_ERROR", error_message)
-      }
-      if (interactive()) {
-        message(sprintf(
-          "An error occurred: %s. Check 'processing_warnings.log' for details.",
-          error_message
-        ))
-      }
-    },
-    message = function(m) {
-      log_handler("MESSAGE", conditionMessage(m))
-      invokeRestart("muffleMessage")
-    }
+    warning = handle_pipeline_warning,
+    error = handle_pipeline_error,
+    message = handle_pipeline_message
   )
 }
 

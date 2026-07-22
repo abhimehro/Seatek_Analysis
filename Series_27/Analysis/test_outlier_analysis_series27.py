@@ -174,6 +174,16 @@ def test_resolve_within_base_accepts_base_dir(tmp_path):
     assert _resolve_within_base(base_dir, base_dir) == base_dir.resolve()
 
 
+def test_resolve_within_base_anchors_relative_path_to_base(tmp_path):
+    base_dir = tmp_path / "base"
+    relative_path = "nested/input.xlsx"
+    base_dir.mkdir()
+
+    assert _resolve_within_base(relative_path, base_dir) == (
+        base_dir / relative_path
+    ).resolve()
+
+
 def test_resolve_within_base_rejects_traversal_escape(tmp_path):
     base_dir = tmp_path / "base"
     base_dir.mkdir()

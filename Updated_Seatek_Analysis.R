@@ -118,7 +118,8 @@ read_sensor_data <- function(file_path,
   # instead of calling as.numeric twice
   num_ts <- suppressWarnings(as.numeric(dt$Timestamp))
   if (!anyNA(num_ts)) {
-    dt[, "Timestamp" := as.POSIXct(num_ts, origin = "1970-01-01")] # nolint: object_name_linter
+    # ⚡ Bolt: Specifying tz="UTC" prevents the system timezone lookup overhead
+    dt[, "Timestamp" := as.POSIXct(num_ts, origin = "1970-01-01", tz = "UTC")] # nolint: object_name_linter
   }
   dt
 }

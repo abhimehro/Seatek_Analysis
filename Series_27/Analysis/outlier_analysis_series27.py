@@ -93,6 +93,35 @@ def _resolve_within_base(path, base_dir):
     return resolved
 
 
+def _resolve_input_output_paths(base_dir_arg, input_arg, output_arg):
+    try:
+        base_dir = Path(base_dir_arg).resolve()
+    except (ValueError, OSError) as exc:
+        logging.error(
+            f"Base directory '{base_dir_arg}' could not be resolved "
+            f"({type(exc).__name__}). Refusing to proceed."
+        )
+        return None
+
+    safe_input = _resolve_within_base(input_arg, base_dir)
+    if safe_input is None:
+        logging.error(
+            f"Input path '{input_arg}' is outside the allowed base directory "
+            f"'{base_dir}'. Refusing to proceed."
+        )
+        return None
+    input_path = str(safe_input)
+
+    safe_output = _resolve_within_base(output_arg, base_dir)
+    if safe_output is None:
+        logging.error(
+            f"Output path '{output_arg}' is outside the allowed base directory "
+            f"'{base_dir}'. Refusing to proceed."
+        )
+        return None
+    return input_path, str(safe_output)
+
+
 _MAX_FILENAME_LEN = 128
 
 # ⚡ Bolt: Pre-compile regex for secure_filename to avoid compilation overhead on every call
@@ -388,32 +417,12 @@ def main():
     args = parse_args()
     logging.basicConfig(level=logging.INFO, format="%(levelname)s: %(message)s")
 
-    try:
-        base_dir = Path(args.base_dir).resolve()
-    except (ValueError, OSError) as exc:
-        logging.error(
-            f"Base directory '{args.base_dir}' could not be resolved "
-            f"({type(exc).__name__}). Refusing to proceed."
-        )
+    resolved_paths = _resolve_input_output_paths(
+        args.base_dir, args.input, args.output
+    )
+    if resolved_paths is None:
         return
-
-    safe_input = _resolve_within_base(args.input, base_dir)
-    if safe_input is None:
-        logging.error(
-            f"Input path '{args.input}' is outside the allowed base directory "
-            f"'{base_dir}'. Refusing to proceed."
-        )
-        return
-    input_path = str(safe_input)
-
-    safe_output = _resolve_within_base(args.output, base_dir)
-    if safe_output is None:
-        logging.error(
-            f"Output path '{args.output}' is outside the allowed base directory "
-            f"'{base_dir}'. Refusing to proceed."
-        )
-        return
-    output_dir = str(safe_output)
+    input_path, output_dir = resolved_paths
 
     file_buffer = _load_and_validate_file(input_path)
     if not file_buffer:

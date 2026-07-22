@@ -26,7 +26,11 @@ except ImportError:
     sys.modules["matplotlib"] = MagicMock()
     sys.modules["matplotlib.pyplot"] = MagicMock()
 
-from outlier_analysis_series27 import detect_outliers
+from outlier_analysis_series27 import (
+    _is_safe_path,
+    _resolve_within_base,
+    detect_outliers,
+)
 import pytest
 
 @pytest.mark.skipif(not HAS_PANDAS, reason="Pandas not available, using mocks for logic check")
@@ -155,6 +159,57 @@ def test_secure_filename():
     assert secure_filename("") == "unnamed"
 
 
+def test_resolve_within_base_accepts_path_inside_base(tmp_path):
+    base_dir = tmp_path / "base"
+    inside_path = base_dir / "nested" / "input.xlsx"
+    base_dir.mkdir()
+
+    assert _resolve_within_base(inside_path, base_dir) == inside_path.resolve()
+
+
+def test_resolve_within_base_accepts_base_dir(tmp_path):
+    base_dir = tmp_path / "base"
+    base_dir.mkdir()
+
+    assert _resolve_within_base(base_dir, base_dir) == base_dir.resolve()
+
+
+def test_resolve_within_base_rejects_traversal_escape(tmp_path):
+    base_dir = tmp_path / "base"
+    base_dir.mkdir()
+
+    assert _resolve_within_base(base_dir / ".." / "outside.xlsx", base_dir) is None
+
+
+def test_resolve_within_base_rejects_absolute_path_outside_base(tmp_path):
+    base_dir = tmp_path / "base"
+    outside_path = tmp_path / "outside.xlsx"
+    base_dir.mkdir()
+
+    assert _resolve_within_base(outside_path, base_dir) is None
+
+
+def test_is_safe_path_accepts_path_inside_base(tmp_path):
+    base_dir = tmp_path / "base"
+    base_dir.mkdir()
+
+    assert _is_safe_path(str(base_dir), str(base_dir / "input.xlsx"))
+
+
+def test_is_safe_path_rejects_traversal_escape(tmp_path):
+    base_dir = tmp_path / "base"
+    base_dir.mkdir()
+
+    assert not _is_safe_path(str(base_dir), str(base_dir / ".." / "outside.xlsx"))
+
+
+def test_is_safe_path_rejects_null_byte(tmp_path):
+    base_dir = tmp_path / "base"
+    base_dir.mkdir()
+
+    assert not _is_safe_path(str(base_dir), str(base_dir / "bad\0.xlsx"))
+
+
 @pytest.mark.skipif(not HAS_PANDAS, reason="Pandas not available")
 def test_apply_corrections_path_traversal(tmp_path):
     # Create dummy outliers df with malicious sheet name
@@ -173,18 +228,22 @@ def test_apply_corrections_path_traversal(tmp_path):
     with patch("pandas.ExcelFile") as mock_excel:
         mock_xls = MagicMock()
         mock_excel.return_value.__enter__.return_value = mock_xls
+        mock_xls.sheet_names = ["../../../outside/traversal_target"]
 
         mock_df_raw = MagicMock()
         mock_df_raw.empty = False
         mock_df_raw.columns = ["V1"]
-        mock_xls.parse.return_value = mock_df_raw
+        mock_df_processed = MagicMock()
+        mock_df_processed.empty = False
+        mock_df_processed.columns = ["V1"]
+        mock_df_raw.copy.return_value = mock_df_processed
 
-        # Exercise the real os.path.join / _is_safe_path defense-in-depth check
-        result = apply_corrections(b"dummy", "dummy.xlsx", output_dir, outliers_df)
+        with patch("pandas.read_excel", return_value={mock_xls.sheet_names[0]: mock_df_raw}):
+            result = apply_corrections(b"dummy", "dummy.xlsx", output_dir, outliers_df)
 
-        # The MagicMock-based df_raw still records the to_excel call
-        assert mock_df_raw.to_excel.called, "to_excel should be invoked"
-        out_file = mock_df_raw.to_excel.call_args[0][0]
+        # The MagicMock-based df_raw copy still records the to_excel call
+        assert mock_df_processed.to_excel.called, "to_excel should be invoked"
+        out_file = mock_df_processed.to_excel.call_args[0][0]
         filename = os.path.basename(out_file)
         assert (
             "/" not in filename

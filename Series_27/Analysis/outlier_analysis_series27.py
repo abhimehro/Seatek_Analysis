@@ -82,7 +82,10 @@ def _resolve_within_base(path, base_dir):
     """
     try:
         base = Path(base_dir).resolve()
-        resolved = Path(path).resolve()
+        candidate = Path(path)
+        if not candidate.is_absolute():
+            candidate = base / candidate
+        resolved = candidate.resolve()
     except (ValueError, OSError):
         return None
     if not resolved.is_relative_to(base):
@@ -385,7 +388,14 @@ def main():
     args = parse_args()
     logging.basicConfig(level=logging.INFO, format="%(levelname)s: %(message)s")
 
-    base_dir = Path(args.base_dir).resolve()
+    try:
+        base_dir = Path(args.base_dir).resolve()
+    except (ValueError, OSError) as exc:
+        logging.error(
+            f"Base directory '{args.base_dir}' could not be resolved "
+            f"({type(exc).__name__}). Refusing to proceed."
+        )
+        return
 
     safe_input = _resolve_within_base(args.input, base_dir)
     if safe_input is None:

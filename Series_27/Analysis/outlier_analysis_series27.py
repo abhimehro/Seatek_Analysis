@@ -219,21 +219,18 @@ def prepare_outliers_df(outliers):
 def _is_safe_path(basedir: str, path: str) -> bool:
     """Verify that path is inside basedir to prevent path traversal escapes.
 
-    Resolves both the base directory and target path with
-    :meth:`pathlib.Path.resolve`, which normalizes ``..`` segments and follows
-    symlinks, then confirms containment with :meth:`pathlib.Path.is_relative_to`.
-    This blocks traversal via relative segments or symlinked components.
+    Resolves both paths (following symlinks) and uses
+    :meth:`pathlib.Path.is_relative_to` so that an attacker cannot escape the
+    base directory via ``..`` segments or a symlinked component.
     """
     if "\0" in str(basedir) or "\0" in str(path):
         return False
 
     try:
-        resolved_base = Path(basedir).resolve()
-        resolved_path = Path(path).resolve()
-        return resolved_path.is_relative_to(resolved_base)
+        base = Path(basedir).resolve()
+        target = Path(path).resolve()
     except (ValueError, OSError):
-        # resolve() raises ValueError on embedded null bytes and may raise
-        # OSError on some platforms for malformed paths.
+        # resolve() raises ValueError if a path contains a null byte.
         return False
     return target.is_relative_to(base)
 

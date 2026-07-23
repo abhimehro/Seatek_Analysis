@@ -58,26 +58,24 @@ def filter_env_securely(
     Preserves explicitly provided custom_env variables, but strictly removes high-value tokens.
     """
     env = base_env.copy()
-    if custom_env:
-        env.update(custom_env)
 
     # Apply allowlist
     filtered_env = {
         k: v for k, v in env.items() if k in SAFE_ENV_VARS or k.startswith("GITHUB_")
     }
 
-    # Ensure PATH survives
-    if "PATH" not in filtered_env and "PATH" in env:
-        filtered_env["PATH"] = env["PATH"]
-
     # Strict defense in depth removal using heuristic approach
     # We apply this BEFORE custom_env overrides, so that explicitly provided secrets
     # in custom_env are allowed, but implicit environment bleed is prevented.
     _remove_heuristic_secrets(filtered_env)
 
-    # Re-apply custom overrides that might have been filtered out
+    # Apply custom overrides that might have been filtered out
     if custom_env:
         filtered_env.update(custom_env)
+
+    # Ensure PATH survives
+    if "PATH" not in filtered_env and "PATH" in env:
+        filtered_env["PATH"] = env["PATH"]
 
     # Specifically strip GitHub tokens for defense in depth as they are automatically available
     # but shouldn't be passed to untrusted subprocesses unless explicitly needed.

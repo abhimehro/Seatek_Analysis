@@ -58,10 +58,8 @@ def filter_env_securely(
     Preserves explicitly provided custom_env variables, but strictly removes high-value tokens.
     """
     env = base_env.copy()
-    if custom_env:
-        env.update(custom_env)
 
-    # Apply allowlist
+    # Apply allowlist to base environment first
     filtered_env = {
         k: v for k, v in env.items() if k in SAFE_ENV_VARS or k.startswith("GITHUB_")
     }
@@ -75,7 +73,7 @@ def filter_env_securely(
     # in custom_env are allowed, but implicit environment bleed is prevented.
     _remove_heuristic_secrets(filtered_env)
 
-    # Re-apply custom overrides that might have been filtered out
+    # Now apply custom overrides, allowing explicit secrets to pass through
     if custom_env:
         filtered_env.update(custom_env)
 

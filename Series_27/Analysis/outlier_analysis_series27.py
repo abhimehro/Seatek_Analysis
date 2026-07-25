@@ -161,7 +161,7 @@ def _is_safe_path(basedir: str, path: str) -> bool:
     Uses ``os.path.realpath`` to resolve symlinks so that an attacker cannot
     bypass the containment check via a symlinked component.
     """
-    if '\0' in basedir or '\0' in path:
+    if "\0" in str(basedir) or "\0" in str(path):
         return False
 
     try:

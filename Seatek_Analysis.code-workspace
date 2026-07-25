@@ -1,0 +1,55 @@
+{
+  "folders": [
+    {
+      "name": "Seatek Analysis (root)",
+      "path": "."
+    },
+    {
+      "name": "Series 27 Outlier Analysis (Python)",
+      "path": "Series_27/Analysis"
+    },
+    {
+      "name": "Automation Scripts (Python)",
+      "path": ".github/scripts"
+    }
+  ],
+  "settings": {
+    "search.exclude": {
+      "renv/**": true,
+      "backups/**": true,
+      "**/venv/**": true,
+      "**/__pycache__/**": true,
+      "**/.git/**": true,
+      "node_modules": true,
+      "**/*.xlsx": true
+    },
+    "files.watcherExclude": {
+      "renv/**": true,
+      "backups/**": true,
+      "**/venv/**": true,
+      "**/__pycache__/**": true,
+      "**/.git/**": true,
+      "node_modules": true,
+      "**/*.xlsx": true
+    },
+    "files.trimTrailingWhitespace": true,
+    "files.insertFinalNewline": true,
+    "editor.rulers": [
+      80
+    ],
+    "[r]": {
+      "editor.tabSize": 2,
+      "editor.insertSpaces": true
+    },
+    "[python]": {
+      "editor.tabSize": 4,
+      "editor.formatOnSave": true
+    },
+    "cSpell.words": [
+      "matplotlib",
+      "numpy",
+      "openpyxl",
+      "defusedxml"
+    ]
+  }
+}

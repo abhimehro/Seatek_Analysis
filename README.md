@@ -15,7 +15,7 @@
 
 This repository contains the R-based analysis tier for processing Seatek sensor data and generating Excel workbooks. It is part of a three-tier analysis system:
 
-1. **R-Tier (This Repository):** Ingests, validates, and processes raw Seatek sensor data (primarily `SS_Yxx.txt` for Series 28, and `S26_Yxx.txt` for Series 26), exports cleaned data and summary metrics (first 10, last 5, full, and within_diff for each sensor) to Excel, and generates a combined summary workbook. Robust logging and error handling are included.
+1. **R-Tier (This Repository):** Ingests, validates, and processes raw Seatek sensor data matching `^SS_Y[0-9]{2}\\.txt$` under `Data/` (Series 28-style inputs), exports cleaned data and summary metrics (first 10, last 5, full, and within_diff for each sensor) to Excel, and generates a combined summary workbook. Robust logging and error handling are included. Series 26 (`S26_Yxx.txt`) is documented historically in the tree layout but is **not** matched by the current `Updated_Seatek_Analysis.R` file pattern.
 2. **Excel-Tier:** Manages intermediate data processing and basic visualizations.
 3. **Python-Tier:** Handles advanced data visualization and large-scale data processing.
 
@@ -213,22 +213,18 @@ These robust statistics support more reliable sensor diagnostics and anomaly det
 
 ## Linting
 
-This project uses `lintr` for static code analysis of R scripts. The `lintr` package is managed via `renv`.
-To run the linter locally, ensure `lintr` is installed in your project environment (`renv::install("lintr")` if needed, though it should be picked up from `requirements.R` during `renv::restore()`).
-You can then run the linter using:
+This project uses `lintr` for static code analysis of R scripts. Install it into the project library (it is listed in `requirements.R` but is **not** currently present as a top-level package in `renv.lock`):
 
 ```R
-lintr::lint_dir(".")
+renv::install("lintr")
+# or, for a fast agent/CI bootstrap without full restore:
+# install.packages("lintr", repos="https://packagemanager.posit.co/cran/__linux__/noble/latest")
+lintr::lint_dir(".", exclusions = list("renv/", "backups/", "Series_27/Analysis/venv/", "implementation/"))
 ```
 
-The linter configuration is currently the default provided by `lintr`. Key changes during the recent linter upgrade (February 2025):
-
-- `lintr` was added to `requirements.R` and its version (and dependencies) are now tracked in `renv.lock`.
-- Several style issues (line length, spacing, brace placement, etc.) were autofixed across project R files.
-- Some variable names in `Updated_Seatek_Analysis.R` (`headerStyle`, `highlightStyle`) were refactored to `header_style`, `highlight_style_yearly`, and `highlight_style_summary` for style consistency. These were internal changes to a function and are not expected to be breaking.
-- `lintr` currently flags potential `object_usage_linter` warnings for the 'Timestamp' variable within `data.table` assignments. These are believed to be false positives due to `data.table`'s non-standard evaluation and have been left as is for now.
+Known false positives: `object_usage_linter` warnings for `Timestamp` / `..sensor_names` in `Updated_Seatek_Analysis.R` (data.table NSE).
 
 When running CI workflows where packages are installed manually (such as GitHub
 Actions), disable renv's autoloader to avoid interfering with `install.packages`
 by setting the environment variable `RENV_CONFIG_AUTOLOADER_ENABLED=FALSE`.
-The provided `lintr` workflow already sets this variable.
+There is currently **no** dedicated lintr GitHub Actions workflow; use the local command above.

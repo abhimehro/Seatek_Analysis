@@ -17,15 +17,15 @@ if command -v apt-get &>/dev/null; then
 	fi
 fi
 
-# Ensure Python is available
-if ! command -v python3 &>/dev/null && command -v apt-get &>/dev/null; then
-	echo "Python3 not found. Installing Python3..."
+# Ensure Python and venv/pip tooling are available
+if command -v apt-get &>/dev/null; then
+	echo "Ensuring Python3, venv, and pip are installed..."
 	apt-get install -y -qq python3 python3-venv python3-pip
 fi
 
 # Restore R packages from the lockfile
 echo "Restoring R packages with renv..."
-Rscript -e "renv::restore()" | tee renv_restore.log
+Rscript -e "if (!requireNamespace('renv', quietly = TRUE)) install.packages('renv', repos = 'https://cloud.r-project.org'); renv::restore()" | tee renv_restore.log
 
 # Setup Python virtual environment
 VENV_DIR="Series_27/Analysis/venv"

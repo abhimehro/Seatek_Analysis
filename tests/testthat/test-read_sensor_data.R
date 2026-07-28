@@ -113,6 +113,9 @@ test_that("fread error is caught in read_sensor_data", {
   # Make the file unreadable to trigger an fread error
   Sys.chmod(test_file, "000")
 
+  # Skip when running as root, where permissions are bypassed
+  skip_if(file.access(test_file, 4) == 0, "File still readable; permission test not applicable")
+
   # Ensure file is cleaned up and permissions restored so tempfile can delete it
   on.exit({
     Sys.chmod(test_file, "644")

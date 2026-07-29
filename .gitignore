@@ -3,6 +3,12 @@
 .RData
 .Ruserdata
 venv/
+*/venv/
+backups/
+Data/*.xlsx
+Data/Seatek_Summary*.csv
+test_*.xlsx
+test_*.csv
 test_out_*.xlsx
 renv_restore.log
 processing_warnings.log

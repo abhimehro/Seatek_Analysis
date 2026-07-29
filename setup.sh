@@ -3,38 +3,29 @@ set -euo pipefail
 
 echo "Starting dependency setup..."
 
-# Update package index
-apt-get update
+# Update package index and install build/system libraries (if apt is available)
+if command -v apt-get &>/dev/null; then
+	apt-get update
+	apt-get install -y -qq libcurl4-openssl-dev libxml2-dev libssl-dev \
+	  libfontconfig1-dev libharfbuzz-dev libfribidi-dev libuv1-dev \
+	  libzip-dev zlib1g-dev libgit2-dev pandoc cmake
 
-# Install R and required system libraries if R is missing
-if ! command -v R &>/dev/null; then
-	echo "R not found. Installing R and system libraries..."
-	apt-get install -y r-base r-base-dev libgit2-dev pandoc
+	# Install R if missing (version is OS/repo dependent; lockfile target is 4.3.3)
+	if ! command -v R &>/dev/null; then
+		echo "R not found. Installing R and build tools..."
+		apt-get install -y -qq r-base r-base-dev
+	fi
 fi
 
-# Ensure python and venv tools are available
-if ! command -v python3 &>/dev/null; then
-	echo "Python3 not found. Installing Python3..."
-	apt-get install -y python3 python3-venv python3-pip
-else
-	apt-get install -y python3-venv python3-pip
+# Ensure Python and venv/pip tooling are available
+if command -v apt-get &>/dev/null; then
+	echo "Ensuring Python3, venv, and pip are installed..."
+	apt-get install -y -qq python3 python3-venv python3-pip
 fi
 
-# Restore R packages using renv
+# Restore R packages from the lockfile
 echo "Restoring R packages with renv..."
-Rscript -e "if(!'renv' %in% rownames(installed.packages())) install.packages('renv', repos='https://cloud.r-project.org'); renv::restore()" >renv_restore.log 2>&1 || echo "renv restore failed - check renv_restore.log for details. Proceeding with base install."
-
-# Install additional packages needed for linting and testing
-echo "Installing core R packages for linting and testing..."
-Rscript - <<'EOF'
-packages <- c('testthat', 'data.table', 'openxlsx', 'dplyr', 'tidyr', 'logger', 'lintr')
-install_if_missing <- function(pkg) {
-  if (!requireNamespace(pkg, quietly = TRUE)) {
-    install.packages(pkg, repos = 'https://cloud.r-project.org')
-  }
-}
-invisible(lapply(packages, install_if_missing))
-EOF
+Rscript -e "if (!requireNamespace('renv', quietly = TRUE)) install.packages('renv', repos = 'https://cloud.r-project.org'); renv::restore()" | tee renv_restore.log
 
 # Setup Python virtual environment
 VENV_DIR="Series_27/Analysis/venv"

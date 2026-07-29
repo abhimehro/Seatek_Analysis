@@ -1,23 +1,20 @@
-# Ignore all data and output folders
+# Ignore data and output folders
 Data/
 Series_26/
 Series_27/
+backups/
+implementation/
 processing_log.txt
 seatek_analysis.log
 *.xlsx
 
-# Ignore patterns specific to renv configuration
-
-# Version control
+# Version control and IDE
 .git/
 .Rproj.user/
 
-# Data files - adjust as per your project structure
-*.csv
+# Data/output files
 *.csv
 *.rds
-
-# Output files
 output/
 plots/
 results/
@@ -25,12 +22,15 @@ results/
 *.pdf
 *.png
 
+# Optional performance benchmark; not part of testthat/CI
+tests/test_perf_sapply_vs_lapply.R
+
 # renv's own library
 renv/library/
 renv/staging/
 renv/cellar/
 
-# Other common ignores
+# Other
 .DS_Store
 Thumbs.db
 node_modules/

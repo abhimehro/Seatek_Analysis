@@ -6,10 +6,9 @@ import datetime as dt
 import json
 import logging
 import os
+import pathlib
 import re
 from typing import Any
-
-import pathlib
 
 from repository_automation_common import (
     DAILY_WORKFLOW_NAME,
@@ -35,7 +34,15 @@ from repository_automation_common import (
 
 WORKFLOW_PATTERN = re.compile(r"(uses:\s*)([^@\s]+)@([^\s#]+)")
 # ⚡ Bolt: Exclude virtual environments and backup directories to significantly reduce disk I/O during repository-wide hot-spot file scanning.
-IGNORED_DIRS = {".git", ".venv", "venv", "renv", "backups", "node_modules", "__pycache__"}
+IGNORED_DIRS = {
+    ".git",
+    ".venv",
+    "venv",
+    "renv",
+    "backups",
+    "node_modules",
+    "__pycache__",
+}
 
 
 def configured_commands(section: dict[str, Any]) -> list[tuple[str, dict[str, Any]]]:
@@ -62,7 +69,7 @@ def execute_configured_commands(
             **run_shell_command(
                 item["run"],
                 int(item.get("timeout_seconds", 1800)),
-                custom_env=item.get("env")
+                custom_env=item.get("env"),
             ),
             "optional": bool(item.get("optional", False)),
         }
@@ -182,7 +189,9 @@ def discover_hotspots(limit: int = 5) -> list[tuple[str, int]]:
             if not file.endswith((".py", ".sh")):
                 continue
             path_str = os.path.join(current_dir, file)
-            rel_path = path_str[root_len:] if path_str.startswith(root_str) else path_str
+            rel_path = (
+                path_str[root_len:] if path_str.startswith(root_str) else path_str
+            )
             candidates.append((rel_path, path_str))
 
     paths = [path_str for _, path_str in candidates]
@@ -199,7 +208,10 @@ def discover_hotspots(limit: int = 5) -> list[tuple[str, int]]:
 def fetch_latest_tags(repo_ids: set[str]) -> dict[str, str]:
     tags = {}
     with concurrent.futures.ThreadPoolExecutor(max_workers=5) as executor:
-        future_to_repo = {executor.submit(latest_tag_for_action, repo_id): repo_id for repo_id in repo_ids}
+        future_to_repo = {
+            executor.submit(latest_tag_for_action, repo_id): repo_id
+            for repo_id in repo_ids
+        }
         for future in concurrent.futures.as_completed(future_to_repo):
             repo_id = future_to_repo[future]
             try:
@@ -236,7 +248,10 @@ def _parse_workflow_files() -> tuple[set[str], list[dict[str, Any]]]:
         file_data.append({"path": file_path, "text": text, "matches": matches})
     return repo_ids_to_fetch, file_data
 
-def _compute_workflow_replacements(file_data: list[dict[str, Any]], latest_cache: dict[str, str]) -> list[dict[str, Any]]:
+
+def _compute_workflow_replacements(
+    file_data: list[dict[str, Any]], latest_cache: dict[str, str]
+) -> list[dict[str, Any]]:
     plans = []
     for data in file_data:
         text = data["text"]
@@ -266,6 +281,7 @@ def _compute_workflow_replacements(file_data: list[dict[str, Any]], latest_cache
                 {"path": data["path"], "text": text, "replacements": replacements}
             )
     return plans
+
 
 def workflow_file_plans() -> list[dict[str, Any]]:
     repo_ids_to_fetch, file_data = _parse_workflow_files()
@@ -312,10 +328,9 @@ def _write_plan(plan: dict[str, Any]) -> None:
 def restore_workflow_updates(plans: list[dict[str, Any]]) -> None:
     if not plans:
         return
+
     async def write_plans() -> None:
-        await asyncio.gather(
-            *(asyncio.to_thread(_write_plan, plan) for plan in plans)
-        )
+        await asyncio.gather(*(asyncio.to_thread(_write_plan, plan) for plan in plans))
 
     asyncio.run(write_plans())
 
@@ -431,7 +446,10 @@ def run_workflow_updater(config: dict[str, Any]) -> dict[str, Any]:
         body_parts.extend(["## Draft PR", f"- {pr_url}", ""])
     except Exception as exc:  # pragma: no cover - runtime integration
         # SECURITY: Fail securely, don't expose internal exception details with exc_info=True
-        logging.error("Error updating workflows: Internal error occurred (%s).", type(exc).__name__)
+        logging.error(
+            "Error updating workflows: Internal error occurred (%s).",
+            type(exc).__name__,
+        )
         restore_workflow_updates(plans)
         status = "failure"
         body_parts.extend(["## Draft PR failure", f"- {type(exc).__name__}", ""])
@@ -499,7 +517,7 @@ def render_issue_rows(issues: list[dict[str, Any]], now: dt.datetime) -> list[st
     ]
     for item in issues:
         labels = ", ".join(label["name"] for label in item.get("labels", []))
-        age = (now - parse_timestamp(item['updatedAt'])).days
+        age = (now - parse_timestamp(item["updatedAt"])).days
         rows.append(
             f"| [#{item['number']}]({item['url']}) | {item['updatedAt'][:10]} | {age} | {labels or '-'} |"
         )
@@ -522,7 +540,9 @@ def render_pr_rows(prs: list[dict[str, Any]], now: dt.datetime) -> list[str]:
     return rows
 
 
-def fetch_backlog_data(max_issues: int, max_prs: int) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
+def fetch_backlog_data(
+    max_issues: int, max_prs: int
+) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
     # ⚡ Bolt: Using ThreadPoolExecutor to run independent GitHub API calls concurrently
     # significantly reduces blocking I/O time in run_backlog_manager.
     with concurrent.futures.ThreadPoolExecutor(max_workers=2) as executor:
@@ -572,9 +592,7 @@ def run_backlog_manager(config: dict[str, Any]) -> dict[str, Any]:
     stale_issues = [
         item for item in issues if parse_timestamp(item["updatedAt"]) <= cutoff
     ]
-    stale_prs = [
-        item for item in prs if parse_timestamp(item["updatedAt"]) <= cutoff
-    ]
+    stale_prs = [item for item in prs if parse_timestamp(item["updatedAt"]) <= cutoff]
     status = "warning" if stale_issues or stale_prs else "success"
     summary = f"Backlog scan found {len(issues)} open issues and {len(prs)} open PRs in the sampled set."
     lines = [
@@ -624,6 +642,7 @@ def _read_result(path: pathlib.Path) -> dict[str, Any] | None:
 
 def load_task_results() -> list[dict[str, Any]]:
     paths = sorted(OUTPUT_ROOT.glob("*/result.json"))
+
     async def read_results() -> list[dict[str, Any] | None]:
         return await asyncio.gather(
             *(asyncio.to_thread(_read_result, path) for path in paths)
@@ -663,7 +682,9 @@ def status_icon(status: str) -> str:
 
 # ⚡ Bolt: Helper function extracted to avoid "Large Method" rule violations when
 # replacing sequential API calls with concurrent execution via ThreadPoolExecutor.
-def fetch_daily_report_data() -> tuple[list[dict[str, Any]], list[dict[str, Any]], list[dict[str, Any]]]:
+def fetch_daily_report_data() -> (
+    tuple[list[dict[str, Any]], list[dict[str, Any]], list[dict[str, Any]]]
+):
     # ⚡ Bolt: Using ThreadPoolExecutor to run independent GitHub API calls concurrently
     # significantly reduces blocking I/O time in daily_report_lines.
     with concurrent.futures.ThreadPoolExecutor(max_workers=3) as executor:
@@ -792,13 +813,15 @@ def run_safe_adjustment_commands(
             **run_shell_command(
                 item["run"],
                 int(item.get("timeout_seconds", 1200)),
-                custom_env=item.get("env")
+                custom_env=item.get("env"),
             ),
         }
 
     command_results = []
     if commands:
-        with concurrent.futures.ThreadPoolExecutor(max_workers=min(10, len(commands))) as executor:
+        with concurrent.futures.ThreadPoolExecutor(
+            max_workers=min(10, len(commands))
+        ) as executor:
             # map preserves the order of the results matching the input iterable
             command_results = list(executor.map(execute_command, commands))
     changed = [
@@ -934,7 +957,9 @@ def weekly_report_lines(
     return status, lines
 
 
-def fetch_weekly_retrospective_data(prefix: str) -> tuple[list[dict[str, Any]], dict[str, dict[str, int]]]:
+def fetch_weekly_retrospective_data(
+    prefix: str,
+) -> tuple[list[dict[str, Any]], dict[str, dict[str, int]]]:
     """
     ⚡ Bolt: Use ThreadPoolExecutor to run independent network API calls concurrently.
     This reduces blocking I/O time in run_weekly_retrospective by roughly 50%.
@@ -959,7 +984,10 @@ def run_weekly_retrospective(config: dict[str, Any]) -> dict[str, Any]:
             safe_changes, safe_pr_url = run_safe_adjustment_commands(section)
         except Exception as exc:  # pragma: no cover - runtime integration
             # SECURITY: Fail securely, don't expose internal exception details with exc_info=True
-            logging.error("Error applying safe adjustment commands: Internal error occurred (%s).", type(exc).__name__)
+            logging.error(
+                "Error applying safe adjustment commands: Internal error occurred (%s).",
+                type(exc).__name__,
+            )
             safe_changes = [
                 {
                     "name": "safe-adjustment-commands",

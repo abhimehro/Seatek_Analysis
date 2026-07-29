@@ -7,8 +7,8 @@ echo "Starting dependency setup..."
 if command -v apt-get &>/dev/null; then
 	apt-get update
 	apt-get install -y -qq libcurl4-openssl-dev libxml2-dev libssl-dev \
-	  libfontconfig1-dev libharfbuzz-dev libfribidi-dev libuv1-dev \
-	  libzip-dev zlib1g-dev libgit2-dev pandoc cmake
+		libfontconfig1-dev libharfbuzz-dev libfribidi-dev libuv1-dev \
+		libzip-dev zlib1g-dev libgit2-dev pandoc cmake
 
 	# Install R if missing (version is OS/repo dependent; lockfile target is 4.3.3)
 	if ! command -v R &>/dev/null; then

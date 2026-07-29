@@ -130,12 +130,7 @@ def prepare_outliers_df(outliers):
 
         # ⚡ Bolt: Replace .str.replace() with string slicing to avoid regex engine overhead
         # Slicing bypasses the string replacement and regex engines entirely for faster parsing
-        sensors = (
-            valid_outliers["Sensor"]
-            .astype(str)
-            .str[7:]
-            .astype(int)
-        )
+        sensors = valid_outliers["Sensor"].astype(str).str[7:].astype(int)
         next_years = extracted_years.loc[valid_mask, 0].astype(int)
 
         outliers_df = pd.DataFrame(
@@ -170,7 +165,7 @@ def _is_safe_path(basedir: str, path: str) -> bool:
         # ⚡ Bolt: Use native string operations for path traversal checks to avoid
         # os.path.commonpath overhead, which iterates over path components in Python.
         # This achieves the same traversal protection ~37x faster.
-        abs_base_plus_sep = os.path.join(abs_base, '')
+        abs_base_plus_sep = os.path.join(abs_base, "")
         return abs_path.startswith(abs_base_plus_sep) or abs_path == abs_base
     except ValueError:
         # realpath raises ValueError in Python 3.12+ if path contains a null byte
@@ -234,7 +229,10 @@ def _bulk_read_excel_sheets(xls, grouped_list, available_sheets):
         return pd.read_excel(xls, sheet_name=target_sheets)
     return {}
 
-def _apply_corrections_to_sheets(parsed_sheets, grouped_list, available_sheets, input_path, output_dir):
+
+def _apply_corrections_to_sheets(
+    parsed_sheets, grouped_list, available_sheets, input_path, output_dir
+):
     """Iterates over sheets and applies corrections, returning the correction DataFrames."""
     corrections_dfs = []
     for sheet, group in grouped_list:
@@ -243,7 +241,11 @@ def _apply_corrections_to_sheets(parsed_sheets, grouped_list, available_sheets, 
             continue
 
         try:
-            df_raw = parsed_sheets[sheet] if isinstance(parsed_sheets, dict) else parsed_sheets
+            df_raw = (
+                parsed_sheets[sheet]
+                if isinstance(parsed_sheets, dict)
+                else parsed_sheets
+            )
             new_corrections = _process_single_sheet(
                 df_raw.copy(), sheet, group, input_path, output_dir
             )
@@ -256,6 +258,7 @@ def _apply_corrections_to_sheets(parsed_sheets, grouped_list, available_sheets, 
             continue
     return corrections_dfs
 
+
 def _process_excel_sheets(file_buffer, input_path, output_dir, grouped):
     """Process grouped sheets to apply corrections and return dataframe list."""
     grouped_list = list(grouped)
@@ -263,7 +266,9 @@ def _process_excel_sheets(file_buffer, input_path, output_dir, grouped):
         with pd.ExcelFile(BytesIO(file_buffer)) as xls:
             available_sheets = set(xls.sheet_names)
             parsed_sheets = _bulk_read_excel_sheets(xls, grouped_list, available_sheets)
-            return _apply_corrections_to_sheets(parsed_sheets, grouped_list, available_sheets, input_path, output_dir)
+            return _apply_corrections_to_sheets(
+                parsed_sheets, grouped_list, available_sheets, input_path, output_dir
+            )
     except (FileNotFoundError, PermissionError, OSError) as e:
         # SECURITY: Do not leak stack traces in logs to prevent information disclosure
         logging.error(f"Could not open file '{input_path}': {e}")
@@ -281,7 +286,9 @@ def apply_corrections(file_buffer, input_path, output_dir, outliers_df):
 
     if not outliers_df.empty:
         grouped = outliers_df.groupby("sheet")
-        corrections_dfs = _process_excel_sheets(file_buffer, input_path, output_dir, grouped)
+        corrections_dfs = _process_excel_sheets(
+            file_buffer, input_path, output_dir, grouped
+        )
 
     if corrections_dfs:
         return pd.concat(corrections_dfs, ignore_index=True)

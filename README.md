@@ -13,17 +13,25 @@
 
 ## Project Overview
 
-This repository contains the R-based analysis tier for processing Seatek sensor data and generating Excel workbooks. It is part of a three-tier analysis system:
+This repository contains the R-based analysis tier for processing Seatek sensor
+data and generating Excel workbooks. It is part of a three-tier analysis system:
 
-1. **R-Tier (This Repository):** Ingests, validates, and processes raw Seatek sensor data (primarily `SS_Yxx.txt` for Series 28, and `S26_Yxx.txt` for Series 26), exports cleaned data and summary metrics (first 10, last 5, full, and within_diff for each sensor) to Excel, and generates a combined summary workbook. Robust logging and error handling are included.
-2. **Excel-Tier:** Manages intermediate data processing and basic visualizations.
-3. **Python-Tier:** Handles advanced data visualization and large-scale data processing.
+1. **R-Tier (This Repository):** Ingests, validates, and processes raw Seatek
+   sensor data (primarily `SS_Yxx.txt` for Series 28, and `S26_Yxx.txt` for
+   Series 26), exports cleaned data and summary metrics (first 10, last 5, full,
+   and within_diff for each sensor) to Excel, and generates a combined summary
+   workbook. Robust logging and error handling are included.
+2. **Excel-Tier:** Manages intermediate data processing and basic
+   visualizations.
+3. **Python-Tier:** Handles advanced data visualization and large-scale data
+   processing.
 
 ---
 
 ## Setup
 
-To get started with this project and ensure all dependencies are correctly installed, please run the setup script:
+To get started with this project and ensure all dependencies are correctly
+installed, please run the setup script:
 
 ```bash
 ./setup.sh
@@ -33,7 +41,8 @@ This script will:
 
 - Install system packages (R, Python, and required build libraries) if missing.
 - Restore the R environment from `renv.lock` using `renv::restore()`.
-- Create a Python virtual environment (if it doesn't exist) and install required Python packages.
+- Create a Python virtual environment (if it doesn't exist) and install required
+  Python packages.
 
 ---
 
@@ -112,7 +121,8 @@ This script will:
 
 ## Visual Summary: Automated Changelog Workflow
 
-Below is a high-level diagram of the changelog automation process, designed for clarity and reproducibility in collaborative research environments:
+Below is a high-level diagram of the changelog automation process, designed for
+clarity and reproducibility in collaborative research environments:
 
 ```mermaid
 flowchart TD
@@ -127,24 +137,34 @@ flowchart TD
 **How it works:**
 
 - Every push to `main` triggers the changelog workflow.
-- The workflow installs dependencies, reads your changelog config, and generates or updates `CHANGELOG.md`.
+- The workflow installs dependencies, reads your changelog config, and generates
+  or updates `CHANGELOG.md`.
 - If there are changes, it commits and pushes them back to the repository.
-- The [Changelog Status badge](https://github.com/abhimehro/Seatek_Analysis/actions/workflows/changelog.yml) at the top of this README reflects the latest workflow run.
+- The
+  [Changelog Status badge](https://github.com/abhimehro/Seatek_Analysis/actions/workflows/changelog.yml)
+  at the top of this README reflects the latest workflow run.
 
-(Checkpoint: This step involves continuous integration and automated documentation, which are foundational for reproducible research and collaborative data science.)
+(Checkpoint: This step involves continuous integration and automated
+documentation, which are foundational for reproducible research and
+collaborative data science.)
 
 ---
 
 ## Changelog Automation
 
-This project uses [github_changelog_generator](https://github.com/github-changelog-generator/github-changelog-generator) for automated changelog management.  
+This project uses
+[github_changelog_generator](https://github.com/github-changelog-generator/github-changelog-generator)
+for automated changelog management.\
 **Configuration:**
 
-- The changelog generator is configured via the `.github_changelog_generator` file (located in the project root or `.github/` directory).
-- The changelog is automatically updated on each push to `main` via a GitHub Actions workflow.
+- The changelog generator is configured via the `.github_changelog_generator`
+  file (located in the project root or `.github/` directory).
+- The changelog is automatically updated on each push to `main` via a GitHub
+  Actions workflow.
 
-**Label conventions:**  
-To ensure your contributions are categorized correctly in the changelog, please use the following labels on issues and pull requests:
+**Label conventions:**\
+To ensure your contributions are categorized correctly in the changelog, please
+use the following labels on issues and pull requests:
 
 | Section              | Example Labels                       | Description                                  |
 | -------------------- | ------------------------------------ | -------------------------------------------- |
@@ -158,23 +178,30 @@ To ensure your contributions are categorized correctly in the changelog, please 
 | **Analysis**         | `analysis`, `results`                | New or updated analyses, results, or methods |
 | **Documentation**    | `documentation`                      | Improvements to docs, guides, or READMEs     |
 
-_Excluded from changelog:_ `duplicate`, `question`, `invalid`, `wontfix`, `Meta: Exclude From Changelog`
+_Excluded from changelog:_ `duplicate`, `question`, `invalid`, `wontfix`,
+`Meta: Exclude From Changelog`
 
-**Tip:**  
-If you're unsure which label to use, see [CONTRIBUTING.md](./CONTRIBUTING.md) for detailed guidance.
+**Tip:**\
+If you're unsure which label to use, see [CONTRIBUTING.md](./CONTRIBUTING.md)
+for detailed guidance.
 
 ---
 
 ## Contributing
 
-We welcome contributions from all backgrounds!  
-Please see [CONTRIBUTING.md](./CONTRIBUTING.md) for our workflow, label conventions, and best practices for reproducible, transparent research and development.
+We welcome contributions from all backgrounds!\
+Please see [CONTRIBUTING.md](./CONTRIBUTING.md) for our workflow, label
+conventions, and best practices for reproducible, transparent research and
+development.
 
 ---
 
 ## Changelog
 
-See [CHANGELOG.md](./CHANGELOG.md) for a detailed, automatically generated history of project changes. This file is updated automatically by a GitHub Actions workflow using `github_changelog_generator`. Refer to the "Changelog Automation" section for more details on labels and configuration.
+See [CHANGELOG.md](./CHANGELOG.md) for a detailed, automatically generated
+history of project changes. This file is updated automatically by a GitHub
+Actions workflow using `github_changelog_generator`. Refer to the "Changelog
+Automation" section for more details on labels and configuration.
 
 ---
 
@@ -184,51 +211,72 @@ Verify license compatibility before use.
 
 ---
 
-**Checkpoint:**  
-This README reflects the latest automation, changelog, and contribution practices. If you update label conventions, workflows, or project structure, please revise this document to keep it current and clear for all collaborators.
+**Checkpoint:**\
+This README reflects the latest automation, changelog, and contribution
+practices. If you update label conventions, workflows, or project structure,
+please revise this document to keep it current and clear for all collaborators.
 
 ---
 
 **Next Steps & Recommendations:**
 
-- If you're contributing, review the [CONTRIBUTING.md](./CONTRIBUTING.md) for label usage and workflow details.
-- For changelog or workflow questions, consult the `.github_changelog_generator` config or open an issue.
-- Use browser-based features (e.g., highlight-to-note, integrated search) to streamline your workflow and documentation review.
+- If you're contributing, review the [CONTRIBUTING.md](./CONTRIBUTING.md) for
+  label usage and workflow details.
+- For changelog or workflow questions, consult the `.github_changelog_generator`
+  config or open an issue.
+- Use browser-based features (e.g., highlight-to-note, integrated search) to
+  streamline your workflow and documentation review.
 
 ## Robust Sensor Statistics and Outputs
 
-The analysis now computes and exports robust statistics for each sensor and metric, including:
+The analysis now computes and exports robust statistics for each sensor and
+metric, including:
 
 - **Mean** and **Standard Deviation (SD)**
 - **Median** and **Median Absolute Deviation (MAD)**
 - **3-year Rolling Mean** (where possible)
 
-These are available in the main summary workbook and in `Data/Seatek_Summary_robust.csv`.
+These are available in the main summary workbook and in
+`Data/Seatek_Summary_robust.csv`.
 
-**Sufficient data threshold:** Sensors are included in the filtered summary if they have at least 5 valid data points.
+**Sufficient data threshold:** Sensors are included in the filtered summary if
+they have at least 5 valid data points.
 
-All outputs are updated automatically as new data is added to the `Data/` directory.
+All outputs are updated automatically as new data is added to the `Data/`
+directory.
 
-These robust statistics support more reliable sensor diagnostics and anomaly detection.
+These robust statistics support more reliable sensor diagnostics and anomaly
+detection.
 
 ## Linting
 
-This project uses `lintr` for static code analysis of R scripts. The `lintr` package is managed via `renv`.
-To run the linter locally, ensure `lintr` is installed in your project environment (`renv::install("lintr")` if needed, though it should be picked up from `requirements.R` during `renv::restore()`).
+This project uses `lintr` for static code analysis of R scripts. The `lintr`
+package is managed via `renv`. To run the linter locally, ensure `lintr` is
+installed in your project environment (`renv::install("lintr")` if needed,
+though it should be picked up from `requirements.R` during `renv::restore()`).
 You can then run the linter using:
 
 ```R
 lintr::lint_dir(".")
 ```
 
-The linter configuration is currently the default provided by `lintr`. Key changes during the recent linter upgrade (February 2025):
+The linter configuration is currently the default provided by `lintr`. Key
+changes during the recent linter upgrade (February 2025):
 
-- `lintr` was added to `requirements.R` and its version (and dependencies) are now tracked in `renv.lock`.
-- Several style issues (line length, spacing, brace placement, etc.) were autofixed across project R files.
-- Some variable names in `Updated_Seatek_Analysis.R` (`headerStyle`, `highlightStyle`) were refactored to `header_style`, `highlight_style_yearly`, and `highlight_style_summary` for style consistency. These were internal changes to a function and are not expected to be breaking.
-- `lintr` currently flags potential `object_usage_linter` warnings for the 'Timestamp' variable within `data.table` assignments. These are believed to be false positives due to `data.table`'s non-standard evaluation and have been left as is for now.
+- `lintr` was added to `requirements.R` and its version (and dependencies) are
+  now tracked in `renv.lock`.
+- Several style issues (line length, spacing, brace placement, etc.) were
+  autofixed across project R files.
+- Some variable names in `Updated_Seatek_Analysis.R` (`headerStyle`,
+  `highlightStyle`) were refactored to `header_style`, `highlight_style_yearly`,
+  and `highlight_style_summary` for style consistency. These were internal
+  changes to a function and are not expected to be breaking.
+- `lintr` currently flags potential `object_usage_linter` warnings for the
+  'Timestamp' variable within `data.table` assignments. These are believed to be
+  false positives due to `data.table`'s non-standard evaluation and have been
+  left as is for now.
 
 When running CI workflows where packages are installed manually (such as GitHub
 Actions), disable renv's autoloader to avoid interfering with `install.packages`
-by setting the environment variable `RENV_CONFIG_AUTOLOADER_ENABLED=FALSE`.
-The provided `lintr` workflow already sets this variable.
+by setting the environment variable `RENV_CONFIG_AUTOLOADER_ENABLED=FALSE`. The
+provided `lintr` workflow already sets this variable.

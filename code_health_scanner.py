@@ -8,13 +8,13 @@ import re
 import shutil
 import subprocess  # nosec B404
 
-
 # Pre-compile the regex pattern for parsing git origin URLs.
 # This prevents redundant pattern compilation overhead on every get_repo_info() call.
 # Matches formats:
 # https://github.com/account/project.git
 # git@github.com:account/project.git
 REPO_URL_PATTERN = re.compile(r"[:/]([^/:]+)/([^/:]+?)(?:\.git)?$")
+
 
 def get_repo_info():
     """
@@ -41,7 +41,7 @@ def get_repo_info():
             stderr=subprocess.DEVNULL,
             env=env,
             text=True,
-            shell=False
+            shell=False,
         ).strip()
 
         # Parse account and project from URL
@@ -57,12 +57,12 @@ def get_repo_info():
             stderr=subprocess.DEVNULL,
             env=env,
             text=True,
-            shell=False
+            shell=False,
         ).strip()
 
         return account, project, commit_hash
 
-    except Exception as e: # pylint: disable=broad-exception-caught
+    except Exception as e:  # pylint: disable=broad-exception-caught
         # SECURITY: Fail securely, don't expose internal exception details
         logging.error(
             "Error getting repo info: Internal error occurred (%s).", type(e).__name__
@@ -76,7 +76,7 @@ MAX_FILE_SIZE = 10 * 1024 * 1024  # 10 MB
 # This prevents executing redundant `os.getcwd()` and `os.path.realpath()` system calls
 # on every `read_file_safe` invocation, reducing CPU overhead by ~33%.
 CWD_REALPATH = os.path.realpath(os.getcwd())
-CWD_REALPATH_PLUS_SEP = os.path.join(CWD_REALPATH, '')
+CWD_REALPATH_PLUS_SEP = os.path.join(CWD_REALPATH, "")
 
 
 def read_file_safe(filepath):
@@ -84,19 +84,21 @@ def read_file_safe(filepath):
     try:
         # SECURITY: Handle null bytes in path which cause ValueError in Python 3.12+
         # preventing unhandled exception DoS attacks.
-        if '\0' in filepath:
+        if "\0" in filepath:
             return []
 
         # SECURITY: Prevent path traversal by ensuring file is within current directory.
         # Uses startswith and realpath to securely prevent bypass and escape attacks.
         resolved_filepath = os.path.realpath(filepath)
-        if not resolved_filepath.startswith(CWD_REALPATH_PLUS_SEP) and \
-           resolved_filepath != CWD_REALPATH:
+        if (
+            not resolved_filepath.startswith(CWD_REALPATH_PLUS_SEP)
+            and resolved_filepath != CWD_REALPATH
+        ):
             return []
 
         # SECURITY: Prevent Out-Of-Memory (OOM) DoS attacks by limiting file size
         # To avoid TOCTOU vulnerability, we read up to MAX_FILE_SIZE + 1 bytes.
-        with open(resolved_filepath, 'r', encoding='utf-8') as f:
+        with open(resolved_filepath, "r", encoding="utf-8") as f:
             content = f.read(MAX_FILE_SIZE + 1)
             if len(content) > MAX_FILE_SIZE:
                 return []
@@ -106,14 +108,10 @@ def read_file_safe(filepath):
         return []
 
 
-LANG_MAP = {
-    '.py': 'python',
-    '.r': 'r',
-    '.js': 'javascript',
-    '.ts': 'typescript'
-}
+LANG_MAP = {".py": "python", ".r": "r", ".js": "javascript", ".ts": "typescript"}
+
 
 def get_language(filepath):
     """Determines language based on file extension."""
     ext = os.path.splitext(filepath)[1].lower()
-    return LANG_MAP.get(ext, 'unknown')
+    return LANG_MAP.get(ext, "unknown")

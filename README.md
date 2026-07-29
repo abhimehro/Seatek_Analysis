@@ -31,8 +31,8 @@ To get started with this project and ensure all dependencies are correctly insta
 
 This script will:
 
-- Install system packages (R, Python, libgit2-dev, pandoc) if missing.
-- Install required R packages using `renv`.
+- Install system packages (R, Python, and required build libraries) if missing.
+- Restore the R environment from `renv.lock` using `renv::restore()`.
 - Create a Python virtual environment (if it doesn't exist) and install required Python packages.
 
 ---
@@ -40,17 +40,17 @@ This script will:
 ## Repository Structure
 
 ```Markdown
-├── Data/                             # Primary output directory for Updated_Seatek_Analysis.R
-│   ├── SS_Yxx.txt                    # Raw Series 28 data files (input for Updated_Seatek_Analysis.R, sourced from Data/ or Series_28/Raw_Data/)
-│   ├── S26_Yxx.txt                   # Raw Series 26 data files (input for Updated_Seatek_Analysis.R, sourced from Series_26/Raw_Data/Text_Files/) - if processed, results are here.
-│   ├── SS_Yxx.xlsx                   # Processed Series 28 data per year (output of Updated_Seatek_Analysis.R, placed in Data/)
-│   ├── S26_Yxx.xlsx                  # Processed Series 26 data per year (output of Updated_Seatek_Analysis.R, placed in Data/)
-│   ├── Seatek_Summary.xlsx           # Main summary Excel workbook from Updated_Seatek_Analysis.R (multi-sheet output)
-│   ├── Seatek_Summary.csv            # Main summary CSV (output of Updated_Seatek_Analysis.R)
-│   ├── Seatek_Summary_all.csv        # Comprehensive summary CSV (output of Updated_Seatek_Analysis.R)
-│   ├── Seatek_Summary_robust.csv     # Summary with robust statistics (output of Updated_Seatek_Analysis.R)
-│   ├── Seatek_Summary_sufficient.csv # Summary for sensors with sufficient data (output of Updated_Seatek_Analysis.R)
-│   └── Seatek_Summary_top_sensors.csv # Summary for top sensors (output of Updated_Seatek_Analysis.R)
+├── Data/                             # Primary working directory for Updated_Seatek_Analysis.R
+│   ├── SS_Yxx.txt                    # Raw Series 28 data files (input, tracked)
+│   ├── S26_Yxx.txt                   # Raw Series 26 data files (input, tracked)
+│   ├── SS_Yxx.xlsx                   # Processed Series 28 data per year (output, gitignored / regenerable)
+│   ├── S26_Yxx.xlsx                  # Processed Series 26 data per year (output, gitignored / regenerable)
+│   ├── Seatek_Summary.xlsx           # Main summary Excel workbook (output, gitignored / regenerable)
+│   ├── Seatek_Summary.csv            # Main summary CSV (output, gitignored / regenerable)
+│   ├── Seatek_Summary_all.csv        # Comprehensive summary CSV (output, gitignored / regenerable)
+│   ├── Seatek_Summary_robust.csv     # Summary with robust statistics (output, gitignored / regenerable)
+│   ├── Seatek_Summary_sufficient.csv # Summary for sensors with sufficient data (output, gitignored / regenerable)
+│   └── Seatek_Summary_top_sensors.csv # Summary for top sensors (output, gitignored / regenerable)
 ├── Series_26/                        # Data and analysis specific to Series 26 sensors
 │   ├── Raw_Data/
 │   │   ├── Text_Files/

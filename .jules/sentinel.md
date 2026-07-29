@@ -178,3 +178,8 @@ applied, so that the overrides are trusted and not accidentally stripped.
 exfiltration in `subprocess` environments, apply the heuristic to the base
 environment, _then_ merge explicitly provided custom overrides, and finally
 apply any hardcoded strict denylists as a last line of defense.
+
+## 2026-07-29 - [File Read DoS via Special Files]
+**Vulnerability:** The `read_file_safe` function in `code_health_scanner.py` attempted to read files using `open()` without first verifying that the file was a regular file. If a path pointing to a special file, such as a FIFO (named pipe) or device file, was passed to the function, the `open()` call or subsequent `read()` could block indefinitely, causing the scanner process to hang (Denial of Service).
+**Learning:** Checking for file existence and size is insufficient when interacting with untrusted file paths. Special file types can have blocking behaviors or infinite streams (e.g., `/dev/zero`) that circumvent simple size checks if the check is performed after opening the file, or if the metadata check doesn't identify the file type.
+**Prevention:** Always verify that a file is a regular file using `os.path.isfile()` or `stat.S_ISREG(os.stat(path).st_mode)` before attempting to open and read its contents, especially in security wrappers designed to read untrusted files safely.

@@ -96,6 +96,10 @@ def read_file_safe(filepath):
         ):
             return []
 
+        # SECURITY: Prevent DoS by only reading regular files.
+        if not os.path.isfile(resolved_filepath):
+            return []
+
         # SECURITY: Prevent Out-Of-Memory (OOM) DoS attacks by limiting file size
         # To avoid TOCTOU vulnerability, we read up to MAX_FILE_SIZE + 1 bytes.
         with open(resolved_filepath, "r", encoding="utf-8") as f:

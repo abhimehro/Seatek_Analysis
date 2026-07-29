@@ -1,36 +1,22 @@
 # Package requirements for Seatek Analysis Project
-# Note: Robust statistics (mean, SD, median, MAD, 3-year rolling mean) are
-# now computed and exported for each sensor and metric. Sufficient data
-# threshold is 5.
+# Runtime (analysis): data.table, openxlsx
+# Test / lint:        testthat, lintr
 
-# Package installation function
 install_if_missing <- function(package) {
-  if (!require(package, character.only = TRUE)) {
+  if (!requireNamespace(package, quietly = TRUE)) {
     # Use HTTPS to prevent MITM attacks
     install.packages(package, repos = "https://cloud.r-project.org")
-    library(package, character.only = TRUE)
   }
 }
 
-# Core data manipulation and analysis
-packages <- c(
-  "tidyverse",    # Data manipulation and visualization
-  "readxl",       # Excel file reading
-  "writexl",      # Excel file writing
-  "lubridate",    # Date/time manipulation
-  "zoo",          # Time series analysis
-  "openxlsx",     # Advanced Excel operations
-  "data.table",   # Fast data manipulation
-  "janitor",      # Data cleaning
-  "stringr",      # String manipulation
-  "here",          # Project relative paths
-  "lintr"         # Static code analysis
-)
-
-# Install all packages
+packages <- c("data.table", "openxlsx", "testthat", "lintr")
 invisible(sapply(packages, install_if_missing))
+
+# Load packages (also declares them for renv dependency discovery)
+library(data.table)
+library(openxlsx)
+library(testthat)
+library(lintr)
 
 # Print session info for reproducibility
 sessionInfo()
-
-renv::restore()

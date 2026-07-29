@@ -22,4 +22,4 @@ jobs:
 
       - name: Check Python Syntax
         run: |
-          find . -name "*.py" -exec python3 -m py_compile {} +
+          find . -name "*.py" -not -path "*/venv/*" -not -path "*/.venv/*" -exec python3 -m py_compile {} +

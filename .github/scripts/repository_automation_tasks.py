@@ -1,14 +1,14 @@
 from __future__ import annotations
 
+import asyncio
+import concurrent.futures
 import datetime as dt
 import json
-import concurrent.futures
 import logging
 import os
 import re
 from typing import Any
 
-import os
 import pathlib
 
 from repository_automation_common import (
@@ -152,43 +152,47 @@ def run_command_set(
 
 MAX_FILE_SIZE = 10 * 1024 * 1024  # 10 MB
 
+
+def _hotspot_line_count(path_str: str) -> int | None:
+    try:
+        with open(path_str, "rb") as file:
+            content = file.read(MAX_FILE_SIZE + 1)
+        if len(content) > MAX_FILE_SIZE:
+            return None
+        return content.count(b"\n") + 1
+    except OSError:
+        return None
+
+
+async def _gather_line_counts(paths: list[str]) -> list[int | None]:
+    return await asyncio.gather(
+        *(asyncio.to_thread(_hotspot_line_count, path) for path in paths)
+    )
+
+
 def discover_hotspots(limit: int = 5) -> list[tuple[str, int]]:
     candidates = []
 
-    # ⚡ Bolt: Pre-calculate root string length to avoid redundant string operations
-    # and use fast native slicing for relative paths in the hot loop.
     root_str = str(ROOT) + os.sep
     root_len = len(root_str)
 
-    # Use os.walk(topdown=True) so we can prune ignored directories early instead of traversing them
     for current_dir, dirs, files in os.walk(ROOT, topdown=True):
         dirs[:] = [d for d in dirs if d not in IGNORED_DIRS]
         for file in files:
-            # ⚡ Bolt: Use tuple with .endswith() for faster C-level evaluation
             if not file.endswith((".py", ".sh")):
                 continue
-
-            # ⚡ Bolt: Use os.path.join() and native string slicing for relative paths
-            # instead of pathlib.Path instantiation and .relative_to() inside the hot loop.
-            # This avoids significant object allocation overhead during directory traversals.
             path_str = os.path.join(current_dir, file)
-
-            try:
-                # SECURITY: Prevent Out-Of-Memory (OOM) DoS attacks by limiting file size.
-                # Read up to MAX_FILE_SIZE + 1 bytes directly so the 10 MB cap is exact.
-                with open(path_str, "rb") as f:
-                    content = f.read(MAX_FILE_SIZE + 1)
-                    if len(content) > MAX_FILE_SIZE:
-                        continue
-                    line_count = content.count(b"\n") + 1
-            except OSError:
-                continue
-
-            # Calculate relative path using fast string slicing
             rel_path = path_str[root_len:] if path_str.startswith(root_str) else path_str
-            candidates.append((rel_path, line_count))
+            candidates.append((rel_path, path_str))
 
-    return sorted(candidates, key=lambda item: item[1], reverse=True)[:limit]
+    paths = [path_str for _, path_str in candidates]
+    counts = asyncio.run(_gather_line_counts(paths))
+    counted = [
+        (rel_path, count)
+        for (rel_path, _), count in zip(candidates, counts)
+        if count is not None
+    ]
+    return sorted(counted, key=lambda item: item[1], reverse=True)[:limit]
 
 
 # ⚡ Bolt: Fetch tags concurrently to avoid sequential blocking I/O bottleneck
@@ -209,8 +213,15 @@ def fetch_latest_tags(repo_ids: set[str]) -> dict[str, str]:
 def _parse_workflow_files() -> tuple[set[str], list[dict[str, Any]]]:
     repo_ids_to_fetch = set()
     file_data = []
-    for file_path in sorted((ROOT / ".github" / "workflows").glob("*.y*ml")):
-        text = file_path.read_text()
+    paths = sorted((ROOT / ".github" / "workflows").glob("*.y*ml"))
+
+    async def read_workflow_files() -> list[str]:
+        return await asyncio.gather(
+            *(asyncio.to_thread(path.read_text) for path in paths)
+        )
+
+    texts = asyncio.run(read_workflow_files())
+    for file_path, text in zip(paths, texts):
         matches = []
         for match in WORKFLOW_PATTERN.finditer(text):
             action_ref = match.group(2)
@@ -276,11 +287,22 @@ def flattened_updates(plans: list[dict[str, Any]]) -> list[dict[str, str]]:
 
 
 def apply_workflow_updates(plans: list[dict[str, Any]]) -> None:
+    updated_plans = []
     for plan in plans:
         updated_text = plan["text"]
         for replacement in plan["replacements"]:
             updated_text = updated_text.replace(replacement["old"], replacement["new"])
-        plan["path"].write_text(updated_text)
+        updated_plans.append((plan["path"], updated_text))
+
+    async def write_updates() -> None:
+        await asyncio.gather(
+            *(
+                asyncio.to_thread(path.write_text, updated_text)
+                for path, updated_text in updated_plans
+            )
+        )
+
+    asyncio.run(write_updates())
 
 
 def _write_plan(plan: dict[str, Any]) -> None:
@@ -290,8 +312,12 @@ def _write_plan(plan: dict[str, Any]) -> None:
 def restore_workflow_updates(plans: list[dict[str, Any]]) -> None:
     if not plans:
         return
-    with concurrent.futures.ThreadPoolExecutor(max_workers=min(10, len(plans))) as executor:
-        list(executor.map(_write_plan, plans))
+    async def write_plans() -> None:
+        await asyncio.gather(
+            *(asyncio.to_thread(_write_plan, plan) for plan in plans)
+        )
+
+    asyncio.run(write_plans())
 
 
 def allowed_workflow_updates(
@@ -598,9 +624,12 @@ def _read_result(path: pathlib.Path) -> dict[str, Any] | None:
 
 def load_task_results() -> list[dict[str, Any]]:
     paths = sorted(OUTPUT_ROOT.glob("*/result.json"))
-    # ⚡ Bolt: Pure synchronous list comprehension for local JSON disk reads
-    # avoids ThreadPoolExecutor or asyncio event loop overhead and runs 5x faster.
-    res_tmp = [_read_result(p) for p in paths]
+    async def read_results() -> list[dict[str, Any] | None]:
+        return await asyncio.gather(
+            *(asyncio.to_thread(_read_result, path) for path in paths)
+        )
+
+    res_tmp = asyncio.run(read_results())
     results = [r for r in res_tmp if r is not None]
     return results
 

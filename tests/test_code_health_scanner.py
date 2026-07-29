@@ -1,40 +1,41 @@
 import os
 import subprocess
 from unittest.mock import patch
-from code_health_scanner import get_repo_info, read_file_safe, get_language, MAX_FILE_SIZE
+
+from code_health_scanner import (
+    MAX_FILE_SIZE,
+    get_language,
+    get_repo_info,
+    read_file_safe,
+)
+
 
 def test_get_repo_info_https():
     with patch("subprocess.check_output") as mock_run:
-        mock_run.side_effect = [
-            "https://github.com/account/project.git\n",
-            "hash\n"
-        ]
+        mock_run.side_effect = ["https://github.com/account/project.git\n", "hash\n"]
         account, project, commit_hash = get_repo_info()
         assert account == "account"
         assert project == "project"
         assert commit_hash == "hash"
+
 
 def test_get_repo_info_ssh():
     with patch("subprocess.check_output") as mock_run:
-        mock_run.side_effect = [
-            "git@github.com:account/project.git\n",
-            "hash\n"
-        ]
+        mock_run.side_effect = ["git@github.com:account/project.git\n", "hash\n"]
         account, project, commit_hash = get_repo_info()
         assert account == "account"
         assert project == "project"
         assert commit_hash == "hash"
 
+
 def test_get_repo_info_no_dot_git():
     with patch("subprocess.check_output") as mock_run:
-        mock_run.side_effect = [
-            "https://github.com/account/project\n",
-            "hash\n"
-        ]
+        mock_run.side_effect = ["https://github.com/account/project\n", "hash\n"]
         account, project, commit_hash = get_repo_info()
         assert account == "account"
         assert project == "project"
         assert commit_hash == "hash"
+
 
 def test_get_repo_info_failure():
     with patch("subprocess.check_output") as mock_run:
@@ -44,12 +45,14 @@ def test_get_repo_info_failure():
         assert project == "unknown"
         assert commit_hash == "unknown"
 
+
 def test_get_language():
     assert get_language("test.py") == "python"
     assert get_language("test.R") == "r"
     assert get_language("test.js") == "javascript"
     assert get_language("test.ts") == "typescript"
     assert get_language("test.txt") == "unknown"
+
 
 def test_read_file_safe_happy_path():
     test_file = "test_happy.txt"
@@ -63,9 +66,11 @@ def test_read_file_safe_happy_path():
         if os.path.exists(test_file):
             os.remove(test_file)
 
+
 def test_read_file_safe_path_traversal():
     # Attempting to read a file outside CWD should return empty list
     assert read_file_safe("/etc/passwd") == []
+
 
 def test_read_file_safe_too_large():
     test_file = "test_large.txt"
@@ -78,11 +83,14 @@ def test_read_file_safe_too_large():
         if os.path.exists(test_file):
             os.remove(test_file)
 
+
 def test_read_file_safe_non_existent():
     assert read_file_safe("non_existent_file_12345.txt") == []
 
+
 def test_get_repo_info_exception_logging(caplog):
     import logging
+
     with patch("subprocess.check_output") as mock_run:
         mock_run.side_effect = Exception("Some hidden internal error")
         with caplog.at_level(logging.ERROR):
@@ -92,13 +100,18 @@ def test_get_repo_info_exception_logging(caplog):
         assert project == "unknown"
         assert commit_hash == "unknown"
 
-        assert "Error getting repo info: Internal error occurred (Exception)." in caplog.text
+        assert (
+            "Error getting repo info: Internal error occurred (Exception)."
+            in caplog.text
+        )
         assert "Some hidden internal error" not in caplog.text
+
 
 def test_read_file_safe_null_byte():
     # Attempting to read a file with an embedded null character should return empty list
     # and not raise a ValueError (ValueError: lstat: embedded null character in path)
     assert read_file_safe("test\0.txt") == []
+
 
 def test_read_file_safe_restricted_permissions():
     test_file = "test_restricted.txt"

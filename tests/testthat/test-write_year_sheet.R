@@ -85,3 +85,88 @@ test_that("write_year_sheet works correctly", {
   # Cleanup
   if (file.exists(temp_file)) file.remove(temp_file)
 })
+
+test_that("write_year_sheet skips highlighting all-NA within_diff", {
+  wb <- createWorkbook()
+  d <- data.table(
+    Sensor = c("Sensor01", "Sensor02"),
+    first10 = c(1, 2),
+    last5 = c(1, 2),
+    full = c(1, 2),
+    within_diff = c(NA_real_, NA_real_)
+  )
+  header_style <- createStyle(textDecoration = "Bold")
+  highlight_style_yearly <- createStyle(bgFill = "#C6EFCE")
+
+  expect_no_error(
+    write_year_sheet(wb, "2030", d, header_style, highlight_style_yearly)
+  )
+  expect_true("2030" %in% names(wb))
+  highlighted <- Filter(
+    function(obj) {
+      obj$sheet == "2030" && 5 %in% obj$cols && any(obj$rows > 1)
+    },
+    wb$styleObjects
+  )
+  expect_length(highlighted, 0)
+})
+
+test_that("write_year_sheet handles empty data", {
+  wb <- createWorkbook()
+  d <- data.table(
+    Sensor = character(),
+    first10 = numeric(),
+    last5 = numeric(),
+    full = numeric(),
+    within_diff = numeric()
+  )
+  header_style <- createStyle(textDecoration = "Bold")
+  highlight_style_yearly <- createStyle(bgFill = "#C6EFCE")
+
+  expect_no_error(
+    write_year_sheet(wb, "2031", d, header_style, highlight_style_yearly)
+  )
+  expect_true("2031" %in% names(wb))
+})
+
+test_that("write_year_sheet skips malformed within_diff", {
+  wb <- createWorkbook()
+  d <- data.table(
+    Sensor = c("Sensor01", "Sensor02"),
+    first10 = c(1, 2),
+    last5 = c(1, 2),
+    full = c(1, 2),
+    within_diff = c("a", "b")
+  )
+  header_style <- createStyle(textDecoration = "Bold")
+  highlight_style_yearly <- createStyle(bgFill = "#C6EFCE")
+
+  expect_no_error(
+    write_year_sheet(wb, "2032", d, header_style, highlight_style_yearly)
+  )
+  expect_true("2032" %in% names(wb))
+})
+
+test_that("write_year_sheet skips highlighting without within_diff", {
+  wb <- createWorkbook()
+  d <- data.table(
+    Sensor = c("Sensor01", "Sensor02"),
+    first10 = c(1, 2),
+    last5 = c(1, 2),
+    full = c(1, 2)
+  )
+  header_style <- createStyle(textDecoration = "Bold")
+  highlight_style_yearly <- createStyle(bgFill = "#C6EFCE")
+
+  expect_no_error(
+    write_year_sheet(wb, "2033", d, header_style, highlight_style_yearly)
+  )
+  expect_true("2033" %in% names(wb))
+  highlighted <- Filter(
+    function(obj) {
+      obj$sheet == "2033" && any(obj$rows > 1)
+    },
+    wb$styleObjects
+  )
+  expect_length(highlighted, 0)
+})

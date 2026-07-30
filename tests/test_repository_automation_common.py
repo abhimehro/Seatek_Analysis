@@ -127,26 +127,20 @@ def test_run_shell_command_allowlist_and_custom(mock_run_process):
 
 
 
-def test_warn_on_default(capsys) -> None:
+import pytest
+
+@pytest.mark.parametrize(
+    "used_val, context, expected_err",
+    [
+        ("default_val", "", "Warning: Using default value 'default_val' for MY_VAR\n"),
+        ("default_val", "Some Context", "Warning: Using default value 'default_val' for MY_VAR in Some Context\n"),
+        ("custom_val", "default_val", ""),
+    ],
+)
+def test_warn_on_default(capsys, used_val, context, expected_err) -> None:
     from repository_automation_common import warn_on_default
 
-    # Test warning with no context
-    warn_on_default("MY_VAR", "default_val", "default_val")
+    warn_on_default("MY_VAR", used_val, "default_val", context)
     captured = capsys.readouterr()
-    assert "Warning: Using default value 'default_val' for MY_VAR\n" == captured.err
-    assert captured.out == ""
-
-    # Test warning with context
-    warn_on_default("MY_VAR", "default_val", "default_val", "Some Context")
-    captured = capsys.readouterr()
-    assert (
-        "Warning: Using default value 'default_val' for MY_VAR in Some Context\n"
-        == captured.err
-    )
-    assert captured.out == ""
-
-    # Test no warning when value is not default
-    warn_on_default("MY_VAR", "custom_val", "default_val")
-    captured = capsys.readouterr()
-    assert captured.err == ""
+    assert captured.err == expected_err
     assert captured.out == ""

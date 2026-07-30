@@ -124,3 +124,29 @@ def test_run_shell_command_allowlist_and_custom(mock_run_process):
 
         # Check GH_TOKEN explicitly stripped even if in custom_env
         assert "GH_TOKEN" not in passed_env
+
+
+
+def test_warn_on_default(capsys) -> None:
+    from repository_automation_common import warn_on_default
+
+    # Test warning with no context
+    warn_on_default("MY_VAR", "default_val", "default_val")
+    captured = capsys.readouterr()
+    assert "Warning: Using default value 'default_val' for MY_VAR\n" == captured.err
+    assert captured.out == ""
+
+    # Test warning with context
+    warn_on_default("MY_VAR", "default_val", "default_val", "Some Context")
+    captured = capsys.readouterr()
+    assert (
+        "Warning: Using default value 'default_val' for MY_VAR in Some Context\n"
+        == captured.err
+    )
+    assert captured.out == ""
+
+    # Test no warning when value is not default
+    warn_on_default("MY_VAR", "custom_val", "default_val")
+    captured = capsys.readouterr()
+    assert captured.err == ""
+    assert captured.out == ""

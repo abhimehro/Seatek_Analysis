@@ -214,8 +214,19 @@ def run_shell_command(
 def run_checked(command: list[str]) -> subprocess.CompletedProcess[str]:
     return run_process(command, check=True)
 
-
 def warn_on_default(
+    param_name: str, used_value: str, default_value: str, context: str = ""
+) -> None:
+    if used_value == default_value:
+        msg = f"Warning: Using default value '{default_value}' for {param_name}"
+        if context:
+            msg += f" in {context}"
+        print(msg, file=sys.stderr)
+
+
+
+
+def warn_on_failure(
     tool: str, args: list[str], proc: subprocess.CompletedProcess[str]
 ) -> None:
     error_text = proc.stderr.strip() or proc.stdout.strip()
@@ -229,7 +240,7 @@ def gh_json(args: list[str], default=None):
     proc = run_process([GH_BIN, *args])
     if proc.returncode != 0:
         if default is not None:
-            warn_on_default("gh", args, proc)
+            warn_on_failure("gh", args, proc)
             return default
         raise RuntimeError(proc.stderr.strip() or proc.stdout.strip())
     output = proc.stdout.strip()
@@ -241,7 +252,7 @@ def gh_json(args: list[str], default=None):
 def gh_text(args: list[str], default: str = "") -> str:
     proc = run_process([GH_BIN, *args])
     if proc.returncode != 0:
-        warn_on_default("gh", args, proc)
+        warn_on_failure("gh", args, proc)
         return default
     return proc.stdout.strip()
 

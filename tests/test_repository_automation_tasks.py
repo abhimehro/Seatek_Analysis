@@ -5,7 +5,7 @@ from typing import Any
 sys.path.insert(
     0, os.path.abspath(os.path.join(os.path.dirname(__file__), "../.github/scripts"))
 )
-from repository_automation_tasks import configured_commands, classify_entries
+from repository_automation_tasks import configured_commands
 
 
 def test_configured_commands_all_keys():
@@ -65,7 +65,7 @@ def test_configured_commands_extra_keys():
     assert len(result) == 1
     assert result[0] == ("command", {"name": "cmd1", "run": "c1"})
 
-
+from repository_automation_tasks import classify_entries
 
 def test_classify_entries_success():
     entries = [{"state": "success", "id": 1}, {"state": "success", "id": 2}]

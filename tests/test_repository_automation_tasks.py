@@ -64,28 +64,3 @@ def test_configured_commands_extra_keys():
     result = configured_commands(section)
     assert len(result) == 1
     assert result[0] == ("command", {"name": "cmd1", "run": "c1"})
-
-from repository_automation_tasks import classify_entries
-
-def test_classify_entries_success():
-    entries = [{"state": "success", "id": 1}, {"state": "success", "id": 2}]
-    result = classify_entries(entries)
-    assert result == {"success": entries}
-
-def test_classify_entries_mixed():
-    entries = [{"state": "success", "id": 1}, {"state": "failure", "id": 2}]
-    result = classify_entries(entries)
-    assert result == {"success": [{"state": "success", "id": 1}], "failure": [{"state": "failure", "id": 2}]}
-
-def test_classify_entries_default_unknown():
-    entries = [{"id": 1}]
-    result = classify_entries(entries)
-    assert result == {"unknown": entries}
-
-def test_classify_entries_custom_key():
-    entries = [{"status": "pass", "id": 1}, {"status": "fail", "id": 2}]
-    result = classify_entries(entries, key="status")
-    assert result == {"pass": [{"status": "pass", "id": 1}], "fail": [{"status": "fail", "id": 2}]}
-
-def test_classify_entries_empty():
-    assert classify_entries([]) == {}

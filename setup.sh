@@ -15,15 +15,19 @@ if command -v apt-get &>/dev/null; then
 		echo "R not found. Installing R and build tools..."
 		apt-get install -y -qq r-base r-base-dev
 	fi
+
+	# Ensure Python and venv/pip tooling are available before the version guard.
+	echo "Ensuring Python3, venv, and pip are installed..."
+	apt-get install -y -qq python3 python3-venv python3-pip
 fi
 
-# Ensure Python 3.11+ is available for the Series 27 analysis environment.
-# Prefer a versioned interpreter (3.13 > 3.12 > 3.11) over the generic `python3`.
+# Ensure a Python 3.11/3.12 interpreter is available for the Series 27 analysis
+# environment. The pinned numpy==1.26.0 only ships wheels for 3.11/3.12, so we
+# restrict the guard to that range to avoid a source-build failure on 3.13+.
 PYTHON_BIN=""
-for py in python3.13 python3.12 python3.11 python3; do
+for py in python3.11 python3.12 python3; do
 	if command -v "$py" &>/dev/null; then
-		minor=$("$py" -c "import sys; print(sys.version_info.minor)" 2>/dev/null || echo 0)
-		if [ "$minor" -ge 11 ]; then
+		if "$py" -c "import sys; sys.exit(0 if (3, 11) <= sys.version_info[:2] <= (3, 12) else 1)" 2>/dev/null; then
 			PYTHON_BIN="$py"
 			break
 		fi
@@ -31,17 +35,11 @@ for py in python3.13 python3.12 python3.11 python3; do
 done
 
 if [ -z "$PYTHON_BIN" ]; then
-	echo "Error: Python 3.11 or newer is required for the Series 27 analysis environment." >&2
+	echo "Error: Python 3.11 or 3.12 is required for the Series 27 analysis environment." >&2
 	exit 1
 fi
 
 echo "Using Python interpreter: $PYTHON_BIN ($($PYTHON_BIN --version))"
-
-# Ensure Python and venv/pip tooling are available
-if command -v apt-get &>/dev/null; then
-	echo "Ensuring Python3, venv, and pip are installed..."
-	apt-get install -y -qq python3 python3-venv python3-pip
-fi
 
 # Restore R packages from the lockfile
 echo "Restoring R packages with renv..."

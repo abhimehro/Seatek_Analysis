@@ -54,8 +54,9 @@ sensor data. See `README.md` for full details.
 - Some existing tests have pre-existing failures due to mismatched error message
   patterns; these are not environment issues.
 - The Python venv at `Series_27/Analysis/venv/` is for the optional Series 27
-  outlier analysis script only. It requires **Python 3.11 or newer**; recreate
-  it with a 3.11+ interpreter if necessary:
+  outlier analysis script only. It requires **Python 3.11 or 3.12** (the pinned
+  `numpy==1.26.0` only ships wheels for those versions); recreate it with a
+  3.11/3.12 interpreter if necessary:
   `rm -rf Series_27/Analysis/venv && python3.11 -m venv Series_27/Analysis/venv && Series_27/Analysis/venv/bin/pip install -r Series_27/Analysis/requirements.txt`.
   Recreating overwrites tracked files, so
   `git checkout -- Series_27/Analysis/venv` afterward to keep the tree clean.

@@ -17,6 +17,26 @@ if command -v apt-get &>/dev/null; then
 	fi
 fi
 
+# Ensure Python 3.11+ is available for the Series 27 analysis environment.
+# Prefer a versioned interpreter (3.13 > 3.12 > 3.11) over the generic `python3`.
+PYTHON_BIN=""
+for py in python3.13 python3.12 python3.11 python3; do
+	if command -v "$py" &>/dev/null; then
+		minor=$("$py" -c "import sys; print(sys.version_info.minor)" 2>/dev/null || echo 0)
+		if [ "$minor" -ge 11 ]; then
+			PYTHON_BIN="$py"
+			break
+		fi
+	fi
+done
+
+if [ -z "$PYTHON_BIN" ]; then
+	echo "Error: Python 3.11 or newer is required for the Series 27 analysis environment." >&2
+	exit 1
+fi
+
+echo "Using Python interpreter: $PYTHON_BIN ($($PYTHON_BIN --version))"
+
 # Ensure Python and venv/pip tooling are available
 if command -v apt-get &>/dev/null; then
 	echo "Ensuring Python3, venv, and pip are installed..."
@@ -30,9 +50,10 @@ Rscript -e "if (!requireNamespace('renv', quietly = TRUE)) install.packages('ren
 # Setup Python virtual environment
 VENV_DIR="Series_27/Analysis/venv"
 REQUIREMENTS_FILE="Series_27/Analysis/requirements.txt"
+REQUIREMENTS_DEV_FILE="requirements-dev.txt"
 if [ ! -d "$VENV_DIR" ]; then
 	echo "Creating Python virtual environment at $VENV_DIR..."
-	python3 -m venv "$VENV_DIR"
+	"$PYTHON_BIN" -m venv "$VENV_DIR"
 fi
 
 echo "Installing Python packages from $REQUIREMENTS_FILE..."
@@ -40,7 +61,9 @@ if [ -f "$REQUIREMENTS_FILE" ]; then
 	source "$VENV_DIR/bin/activate"
 	pip install --upgrade pip
 	pip install -r "$REQUIREMENTS_FILE"
-	pip install bandit
+	if [ -f "$REQUIREMENTS_DEV_FILE" ]; then
+		pip install -r "$REQUIREMENTS_DEV_FILE"
+	fi
 	deactivate
 else
 	echo "Warning: Requirements file $REQUIREMENTS_FILE not found."

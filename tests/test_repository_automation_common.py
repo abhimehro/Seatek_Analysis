@@ -14,10 +14,6 @@ from repository_automation_common import (
 )
 
 
-def _setup_mock_proc(mock_run_process):
-    _setup_mock_proc(mock_run_process)
-    return mock_proc
-
 def _setup_mock_proc(mock):
     mock_proc = MagicMock()
     mock_proc.returncode = 0

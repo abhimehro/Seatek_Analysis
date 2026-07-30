@@ -7,17 +7,17 @@ description: Test the Series 27 outlier analysis CLI (Series_27/Analysis/outlier
 
 The app under test is a Python CLI:
 `Series_27/Analysis/outlier_analysis_series27.py`. It reads an Excel workbook
-(`-i`), detects outliers, and writes a `corrections_summary.xlsx` and
-`outliers_plot.png` into an output dir (`-o`).
+(`-i`), detects outliers, and writes per-sheet corrected workbooks,
+`corrections_summary.xlsx`, and `outliers_plot.png` into an output dir (`-o`).
 
 ## Environment setup
 
 - Do NOT use the committed `Series_27/Analysis/venv`; it may be broken.
-- Create a fresh Python 3.11 or 3.12 venv (the pinned `numpy==1.26.0` only ships
-  wheels for those versions).
-- Install from the pinned manifests:
+- Create a fresh Python 3.11+ venv.
+- Install from the dependency manifests (the second install also provides
+  `pytest`, `ruff`, etc.):
   ```bash
-  python3.12 -m venv ~/s27_test_venv
+  python3.11 -m venv ~/s27_test_venv
   ~/s27_test_venv/bin/python -m pip install -r Series_27/Analysis/requirements.txt
   ~/s27_test_venv/bin/python -m pip install -r requirements-dev.txt
   ```
@@ -34,8 +34,9 @@ Legitimate run:
   -i Series_27/Analysis/Seatek_Comprehensive_Analysis.xlsx -o s27_demo_out
 ```
 
-Expect: "Detected N outliers", and `s27_demo_out/corrections_summary.xlsx` +
-`s27_demo_out/outliers_plot.png` created.
+Expect: "Detected N outliers", and `s27_demo_out/corrections_summary.xlsx`,
+`s27_demo_out/outliers_plot.png`, plus per-sheet `corrected_*.xlsx` files
+created.
 
 ## Output-path validation
 

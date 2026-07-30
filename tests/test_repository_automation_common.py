@@ -14,17 +14,22 @@ from repository_automation_common import (
 )
 
 
-@patch("repository_automation_common.run_process")
-def test_run_shell_command_string(mock_run_process):
+def _setup_mock_proc(mock_run_process):
+    _setup_mock_proc(mock_run_process)
+    return mock_proc
+
+def _setup_mock_proc(mock):
     mock_proc = MagicMock()
     mock_proc.returncode = 0
     mock_proc.stdout = "output"
     mock_proc.stderr = ""
-    mock_run_process.return_value = mock_proc
+    mock.return_value = mock_proc
+    return mock_proc
 
+@patch("repository_automation_common.run_process")
+def test_run_shell_command_string(mock_run_process):
+    _setup_mock_proc(mock_run_process)
     result = run_shell_command("echo hello")
-
-    # Assert that bash -c is used instead of bash -lc
     mock_run_process.assert_called_once()
     args = mock_run_process.call_args[0][0]
     assert args == [BASH_BIN, "-c", "echo hello"]
@@ -33,11 +38,27 @@ def test_run_shell_command_string(mock_run_process):
 
 @patch("repository_automation_common.run_process")
 def test_run_shell_command_list(mock_run_process):
-    mock_proc = MagicMock()
-    mock_proc.returncode = 0
-    mock_proc.stdout = "output"
-    mock_proc.stderr = ""
-    mock_run_process.return_value = mock_proc
+    _setup_mock_proc(mock_run_process)
+    result = run_shell_command(["echo", "hello"])
+    mock_run_process.assert_called_once()
+    args = mock_run_process.call_args[0][0]
+    assert args == ["echo", "hello"]
+    assert result["exit_code"] == 0
+
+
+@patch("repository_automation_common.run_process")
+def test_run_shell_command_list(mock_run_process):
+    _setup_mock_proc(mock_run_process)
+    result = run_shell_command(["echo", "hello"])
+    mock_run_process.assert_called_once()
+    args = mock_run_process.call_args[0][0]
+    assert args == ["echo", "hello"]
+    assert result["exit_code"] == 0
+
+
+@patch("repository_automation_common.run_process")
+def test_run_shell_command_list(mock_run_process):
+    _setup_mock_proc(mock_run_process)
 
     result = run_shell_command(["echo", "hello"])
 
@@ -61,11 +82,7 @@ def test_target_ref_skips_commit_pins() -> None:
 
 @patch("repository_automation_common.subprocess.run")
 def test_run_process_allowlist(mock_run):
-    mock_proc = MagicMock()
-    mock_proc.returncode = 0
-    mock_proc.stdout = "output"
-    mock_proc.stderr = ""
-    mock_run.return_value = mock_proc
+    _setup_mock_proc(mock_run)
 
     from repository_automation_common import run_process
 
@@ -99,11 +116,7 @@ def test_run_process_allowlist(mock_run):
 
 @patch("repository_automation_common.run_process")
 def test_run_shell_command_allowlist_and_custom(mock_run_process):
-    mock_proc = MagicMock()
-    mock_proc.returncode = 0
-    mock_proc.stdout = "output"
-    mock_proc.stderr = ""
-    mock_run_process.return_value = mock_proc
+    _setup_mock_proc(mock_run_process)
 
     # Ensure os.environ has some sensitive stuff for the default safe_env grab
     with patch.dict(os.environ, {"AWS_ACCESS_KEY_ID": "DUMMY_VALUE_1", "PATH": "/bin"}):

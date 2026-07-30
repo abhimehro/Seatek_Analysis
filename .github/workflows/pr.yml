@@ -17,6 +17,6 @@ jobs:
         with:
           python-version: "3.11"
       - name: Install dependencies
-        run: pip install -r Series_27/Analysis/requirements.txt
+        run: python -m pip install -r Series_27/Analysis/requirements.txt
       - name: Syntax check
         run: python -m py_compile Series_27/Analysis/outlier_analysis_series27.py code_health_scanner.py

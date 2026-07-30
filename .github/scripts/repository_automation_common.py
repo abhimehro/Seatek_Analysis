@@ -24,7 +24,7 @@ BASH_BIN = shutil.which("bash")
 if not BASH_BIN:
     raise RuntimeError("bash executable not found in PATH")
 
-GH_BIN = shutil.which("gh")
+GH_BIN = shutil.which("gh") or "gh"
 if not GH_BIN:
     raise RuntimeError("gh executable not found in PATH")
 

@@ -15,13 +15,17 @@ from repository_automation_common import (
 )
 
 
-@patch("repository_automation_common.run_process")
-def test_run_shell_command_string(mock_run_process):
+def setup_mock_process(mock_run_process):
     mock_proc = MagicMock()
     mock_proc.returncode = 0
     mock_proc.stdout = "output"
     mock_proc.stderr = ""
     mock_run_process.return_value = mock_proc
+
+
+@patch("repository_automation_common.run_process")
+def test_run_shell_command_string(mock_run_process):
+    setup_mock_process(mock_run_process)
 
     result = run_shell_command("echo hello")
 
@@ -34,11 +38,7 @@ def test_run_shell_command_string(mock_run_process):
 
 @patch("repository_automation_common.run_process")
 def test_run_shell_command_list(mock_run_process):
-    mock_proc = MagicMock()
-    mock_proc.returncode = 0
-    mock_proc.stdout = "output"
-    mock_proc.stderr = ""
-    mock_run_process.return_value = mock_proc
+    setup_mock_process(mock_run_process)
 
     result = run_shell_command(["echo", "hello"])
 
@@ -62,11 +62,7 @@ def test_target_ref_skips_commit_pins() -> None:
 
 @patch("repository_automation_common.subprocess.run")
 def test_run_process_allowlist(mock_run):
-    mock_proc = MagicMock()
-    mock_proc.returncode = 0
-    mock_proc.stdout = "output"
-    mock_proc.stderr = ""
-    mock_run.return_value = mock_proc
+    setup_mock_process(mock_run)
 
     from repository_automation_common import run_process
 
@@ -100,11 +96,7 @@ def test_run_process_allowlist(mock_run):
 
 @patch("repository_automation_common.run_process")
 def test_run_shell_command_allowlist_and_custom(mock_run_process):
-    mock_proc = MagicMock()
-    mock_proc.returncode = 0
-    mock_proc.stdout = "output"
-    mock_proc.stderr = ""
-    mock_run_process.return_value = mock_proc
+    setup_mock_process(mock_run_process)
 
     # Ensure os.environ has some sensitive stuff for the default safe_env grab
     with patch.dict(os.environ, {"AWS_ACCESS_KEY_ID": "DUMMY_VALUE_1", "PATH": "/bin"}):

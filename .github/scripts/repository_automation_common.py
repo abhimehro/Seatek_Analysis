@@ -142,7 +142,7 @@ def task_dir(task: str) -> Path:
 def truncate(text: str, limit: int = 4000) -> str:
     if len(text) <= limit:
         return text
-    return text[: limit - 15] + "\n... [truncated]"
+    return text[: limit - 16] + "\n... [truncated]"
 
 
 def run_process(

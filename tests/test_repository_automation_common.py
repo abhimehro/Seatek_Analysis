@@ -124,3 +124,19 @@ def test_run_shell_command_allowlist_and_custom(mock_run_process):
 
         # Check GH_TOKEN explicitly stripped even if in custom_env
         assert "GH_TOKEN" not in passed_env
+
+
+def test_truncate() -> None:
+    from repository_automation_common import truncate
+    assert truncate("hello", 10) == "hello"
+
+    # Text length exactly matches limit
+    exact_match = "1234567890"
+    assert truncate(exact_match, 10) == exact_match
+
+    # Text length exceeds limit
+    long_text = "This is a very long text that needs to be truncated"
+    truncated = truncate(long_text, 20)
+    assert len(truncated) == 20
+    assert truncated.endswith("\n... [truncated]")
+    assert truncated == "This\n... [truncated]"

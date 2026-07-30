@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import asyncio
+import collections
 import concurrent.futures
 import datetime as dt
 import json
@@ -80,7 +81,7 @@ def execute_configured_commands(
     return setup_entries, command_entries
 
 
-def classify_entries(
+def warn_on_failure(
     entries: list[dict[str, Any]],
 ) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
     failures = []
@@ -93,6 +94,17 @@ def classify_entries(
         else:
             failures.append(entry)
     return failures, warnings
+
+
+def classify_entries(
+    entries: list[dict[str, Any]], key: str = "state"
+) -> dict[str, list[dict[str, Any]]]:
+    """Groups entries by a specific key."""
+    result: dict[str, list[dict[str, Any]]] = collections.defaultdict(list)
+    for entry in entries:
+        val = entry.get(key, "unknown")
+        result[val].append(entry)
+    return dict(result)
 
 
 def render_entry_section(title: str, entries: list[dict[str, Any]]) -> list[str]:
@@ -119,7 +131,7 @@ def run_command_set(
     task_name: str, section: dict[str, Any]
 ) -> tuple[str, str, dict[str, Any]]:
     setup_entries, command_entries = execute_configured_commands(section)
-    failures, warnings = classify_entries(setup_entries + command_entries)
+    failures, warnings = warn_on_failure(setup_entries + command_entries)
     status = "failure" if failures else "warning" if warnings else "success"
     summary = f"{task_name} executed {len(setup_entries)} setup commands and {len(command_entries)} validation commands."
     body_parts = [

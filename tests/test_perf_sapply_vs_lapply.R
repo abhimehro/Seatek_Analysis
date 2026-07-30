@@ -31,8 +31,6 @@ if (!requireNamespace("microbenchmark", quietly = TRUE)) {
 library(data.table)
 library(microbenchmark)
 # nolint end
-
-
 # Setup synthetic data.table with large number of rows
 set.seed(42)
 n_rows <- 500000
@@ -52,10 +50,12 @@ mb <- microbenchmark(
   # Baseline: Using sapply with column slicing
   baseline_sapply = {
     first10 <- sapply(df[, ..sensor_names], function(x) {
-      mean(head(x, 10)[which(head(x, 10) > 0)])
+      h <- head(x, 10)
+      mean(h[which(h > 0)])
     })
     last5   <- sapply(df[, ..sensor_names], function(x) {
-      mean(tail(x, 5)[which(tail(x, 5) > 0)])
+      t <- tail(x, 5)
+      mean(t[which(t > 0)])
     })
     full    <- sapply(df[, ..sensor_names], function(x) {
       mean(x[which(x > 0)])

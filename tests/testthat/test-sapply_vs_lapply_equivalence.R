@@ -1,7 +1,5 @@
+library(data.table)
 test_that("lapply(.SD) optimization produces exact same results as sapply baseline", {
-  library(data.table)
-
-
   # Setup synthetic data.table mimicking the benchmark data
   set.seed(42)
   n_rows <- 50
@@ -19,10 +17,12 @@ test_that("lapply(.SD) optimization produces exact same results as sapply baseli
 
   # --- Baseline: Using sapply with column slicing ---
   baseline_first10 <- sapply(df[, ..sensor_names], function(x) {
-    mean(head(x, 10)[which(head(x, 10) > 0)])
+    h <- head(x, 10)
+    mean(h[which(h > 0)])
   })
   baseline_last5   <- sapply(df[, ..sensor_names], function(x) {
-    mean(tail(x, 5)[which(tail(x, 5) > 0)])
+    t <- tail(x, 5)
+    mean(t[which(t > 0)])
   })
   baseline_full    <- sapply(df[, ..sensor_names], function(x) {
     mean(x[which(x > 0)])

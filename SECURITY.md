@@ -27,8 +27,10 @@ Only the latest version (`main` branch) receives security updates.
 
 ## Dependency Management
 
-- Python dependencies are managed via `requirements.txt`. Keep packages updated
-  with `pip install --upgrade -r requirements.txt`.
+- Python runtime dependencies for the Series 27 outlier analysis are pinned in
+  `Series_27/Analysis/requirements.txt`; dev/CI tools are pinned in
+  `requirements-dev.txt`. Update them through reviewed Dependabot or manual PRs
+  rather than `pip install --upgrade -r ...`.
 - R dependencies should be updated regularly with `update.packages()`.
 - Use tools like [`pip-audit`](https://pypi.org/project/pip-audit/) (Python) and
   [`renv`](https://rstudio.github.io/renv/) (R) to check for known

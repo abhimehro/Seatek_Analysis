@@ -8,6 +8,7 @@ on:
     branches: [main]
     paths:
       - "**.py"
+      - "Series_27/Analysis/requirements.txt"
       - "requirements*.txt"
       - ".github/workflows/pr-validation.yml"
 
@@ -28,8 +29,8 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install ruff pytest pandas openpyxl matplotlib
-          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+          python -m pip install -r Series_27/Analysis/requirements.txt
+          python -m pip install -r requirements-dev.txt
 
       - name: Lint with ruff
         run: |
@@ -41,12 +42,12 @@ jobs:
       - name: Compile Python files
         run: |
           # SECURITY: Use -exec to securely handle file paths with spaces and prevent word splitting/command injection
-          find . -name "*.py" -not -path "*/venv/*" -not -path "*/.venv/*" -exec python3 -m py_compile {} +
+          find . -name "*.py" -not -path "*/venv/*" -not -path "*/.venv/*" -exec python -m py_compile {} +
 
       - name: Run tests
         run: |
           if [ -d tests ]; then
-            python3 -m pytest tests/ -v || echo "::warning::Some tests failed"
+            python -m pytest tests/ -v || echo "::warning::Some tests failed"
           else
             echo "::notice::No tests directory found, skipping pytest"
           fi

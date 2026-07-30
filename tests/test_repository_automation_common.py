@@ -1,4 +1,5 @@
 import os
+import datetime as dt
 import sys
 from unittest.mock import MagicMock, patch
 
@@ -8,6 +9,7 @@ sys.path.insert(
 from repository_automation_common import (
     BASH_BIN,
     is_commit_sha,
+    iso_day,
     numeric_version,
     run_shell_command,
     target_ref,
@@ -124,3 +126,19 @@ def test_run_shell_command_allowlist_and_custom(mock_run_process):
 
         # Check GH_TOKEN explicitly stripped even if in custom_env
         assert "GH_TOKEN" not in passed_env
+
+def test_iso_day_with_value():
+    # Use a timezone-aware datetime just to ensure we correctly use .date() regardless
+    known_time = dt.datetime(2024, 10, 15, 12, 30, 45, tzinfo=dt.UTC)
+    result = iso_day(known_time)
+    assert result == "2024-10-15"
+
+@patch("repository_automation_common.now_utc")
+def test_iso_day_default(mock_now_utc):
+    mock_time = dt.datetime(2023, 5, 2, 8, 15, 0, tzinfo=dt.UTC)
+    mock_now_utc.return_value = mock_time
+
+    result = iso_day()
+
+    mock_now_utc.assert_called_once()
+    assert result == "2023-05-02"

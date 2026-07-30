@@ -77,7 +77,7 @@ jobs:
           if [[ -n "${MODEL_OVERRIDE:-}" ]]; then
             MODEL="$MODEL_OVERRIDE"
           elif [[ "$ENABLE_GOOGLE" == "true" ]]; then
-            MODEL="google/gemini-1.5-pro"
+            MODEL="google/gemini-1.5-flash"
           else
             MODEL="mistral/mistral-medium-latest"
           fi

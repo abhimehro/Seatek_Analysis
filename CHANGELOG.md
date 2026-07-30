@@ -4,6 +4,10 @@
 
 [Full Changelog](https://github.com/abhimehro/Seatek_Analysis/compare/v0.0.1...HEAD)
 
+**Security fixes:**
+
+- 🔒 Supply Chain: Pin all dependencies to specific versions [\#538](https://github.com/abhimehro/Seatek_Analysis/issues/538)
+
 **Closed issues:**
 
 - Daily QA & Agentic Review — 2026-07-29 [\#545](https://github.com/abhimehro/Seatek_Analysis/issues/545)
@@ -61,6 +65,8 @@
 
 **Merged pull requests:**
 
+- Update testing-s27-outlier-cli SKILL.md for pinned dependencies and current CLI behavior [\#549](https://github.com/abhimehro/Seatek_Analysis/pull/549) ([abhimehro](https://github.com/abhimehro))
+- chore\(deps\): pin Series 27 Python dependencies to exact versions \(ABHI-1589\) [\#548](https://github.com/abhimehro/Seatek_Analysis/pull/548) ([abhimehro](https://github.com/abhimehro))
 - 🛡️ Sentinel: \[CRITICAL\] Fix File Read DoS via Special Files [\#547](https://github.com/abhimehro/Seatek_Analysis/pull/547) ([abhimehro](https://github.com/abhimehro))
 - Jules Daily QA & Agentic Review [\#546](https://github.com/abhimehro/Seatek_Analysis/pull/546) ([abhimehro](https://github.com/abhimehro))
 - chore\(deps\): bump release-drafter/release-drafter from 7.6.0 to 7.7.0 [\#544](https://github.com/abhimehro/Seatek_Analysis/pull/544) ([dependabot[bot]](https://github.com/apps/dependabot))

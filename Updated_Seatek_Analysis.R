@@ -235,39 +235,41 @@ process_all_data <- function(data_dir) {
   }
   cat(sprintf("\n🚀 Found %d sensor files. Starting processing...\n",
               length(files)))
-  # ⚡ Bolt: Pre-allocate lists to avoid O(N^2) memory reallocation overhead
-  # in loops
-  results <- vector("list", length(files))
-  sheet_names <- character(length(files))
-  raw_export_tasks <- vector("list", length(files))
-  pb <- txtProgressBar(min = 0, max = length(files), style = 3)
-  on.exit(
-    {
-      if (!is.null(pb)) {
-        close(pb)
-        pb <- NULL
-      }
-    },
-    add = TRUE
-  )
-  i <- 0
-  for (f in files) {
+
+  # ⚡ Bolt: Parallelize the entire read/compute pipeline
+  process_file_task <- function(f) {
     df <- read_sensor_data(f, verbose = FALSE)
     # Export raw data to Excel
     # ⚡ Bolt: sub() is ~3x faster than tools::file_path_sans_ext + paste0
     out_raw <- file.path(data_dir, sub("\\.txt$", ".xlsx", basename(f)))
-    raw_export_tasks[[i + 1]] <- list(df = df, out_raw = out_raw)
 
     # Compute summary metrics
     metrics_res <- compute_sensor_metrics(df, f)
 
-    results[[i + 1]] <- metrics_res$dt
-    sheet_names[i + 1] <- metrics_res$sheet_name
-    i <- i + 1
-    setTxtProgressBar(pb, i)
+    list(
+      df = df,
+      out_raw = out_raw,
+      dt = metrics_res$dt,
+      sheet_name = metrics_res$sheet_name
+    )
   }
-  close(pb)
+
+  cat("\n⚡ Reading files and computing metrics in parallel...\n")
+  all_res <- execute_tasks_parallel(files, process_file_task)
+
+  # ⚡ Bolt: Pre-allocate lists to avoid O(N^2) memory reallocation overhead
+  results <- vector("list", length(files))
+  sheet_names <- character(length(files))
+  raw_export_tasks <- vector("list", length(files))
+
+  for (i in seq_along(all_res)) {
+    res <- all_res[[i]]
+    results[[i]] <- res$dt
+    sheet_names[i] <- res$sheet_name
+    raw_export_tasks[[i]] <- list(df = res$df, out_raw = res$out_raw)
+  }
   names(results) <- sheet_names
+
   cat(paste("\nℹ Sensor files read and metrics computed;",
             "starting raw Excel exports...\n"))
 

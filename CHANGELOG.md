@@ -61,6 +61,9 @@
 
 **Merged pull requests:**
 
+- 🛡️ Sentinel: \[CRITICAL\] Fix File Read DoS via Special Files [\#547](https://github.com/abhimehro/Seatek_Analysis/pull/547) ([abhimehro](https://github.com/abhimehro))
+- Jules Daily QA & Agentic Review [\#546](https://github.com/abhimehro/Seatek_Analysis/pull/546) ([abhimehro](https://github.com/abhimehro))
+- chore\(deps\): bump release-drafter/release-drafter from 7.6.0 to 7.7.0 [\#544](https://github.com/abhimehro/Seatek_Analysis/pull/544) ([dependabot[bot]](https://github.com/apps/dependabot))
 - Jules Daily QA & Agentic Review - Healthy Repository [\#542](https://github.com/abhimehro/Seatek_Analysis/pull/542) ([abhimehro](https://github.com/abhimehro))
 - ABHI-1588: Resnapshot renv.lock around real analysis deps + add R testthat CI [\#541](https://github.com/abhimehro/Seatek_Analysis/pull/541) ([abhimehro](https://github.com/abhimehro))
 - Jules Daily QA & Agentic Review - No Issues Found [\#537](https://github.com/abhimehro/Seatek_Analysis/pull/537) ([abhimehro](https://github.com/abhimehro))

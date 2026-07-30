@@ -32,8 +32,6 @@ library(data.table)
 library(microbenchmark)
 # nolint end
 
-# Function to clean values (dropping NAs and values <= 0)
-clean_vals <- function(x) x[which(x > 0)]
 
 # Setup synthetic data.table with large number of rows
 set.seed(42)
@@ -54,26 +52,26 @@ mb <- microbenchmark(
   # Baseline: Using sapply with column slicing
   baseline_sapply = {
     first10 <- sapply(df[, ..sensor_names], function(x) {
-      mean(clean_vals(head(x, 10)))
+      mean(head(x, 10)[which(head(x, 10) > 0)])
     })
     last5   <- sapply(df[, ..sensor_names], function(x) {
-      mean(clean_vals(tail(x, 5)))
+      mean(tail(x, 5)[which(tail(x, 5) > 0)])
     })
     full    <- sapply(df[, ..sensor_names], function(x) {
-      mean(clean_vals(x))
+      mean(x[which(x > 0)])
     })
   },
 
   # Optimized: Using data.table native lapply(.SD)
   optimized_lapply_sd = {
     first10 <- unlist(df[1:min(10, .N), lapply(.SD, function(x) {
-      mean(clean_vals(x))
+      mean(x[which(x > 0)])
     }), .SDcols = sensor_names])
     last5   <- unlist(df[max(1, .N - 4):.N, lapply(.SD, function(x) {
-      mean(clean_vals(x))
+      mean(x[which(x > 0)])
     }), .SDcols = sensor_names])
     full    <- unlist(df[, lapply(.SD, function(x) {
-      mean(clean_vals(x))
+      mean(x[which(x > 0)])
     }), .SDcols = sensor_names])
   },
 

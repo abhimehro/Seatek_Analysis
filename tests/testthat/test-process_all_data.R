@@ -40,7 +40,7 @@ test_that("process_all_data correctly processes valid data", {
   expect_equal(year_data$Sensor[1], "Sensor01", info = "First row name should be 'Sensor01'")
 
   # Values for Sensor01 in SS_Y01.txt are 10.1, 10.2, 10.3
-  # The clean_vals function (called by process_sensor_data) filters for > 0, which these are.
+  # The processing logic filters for > 0, which these are.
   # For SS_Y01.txt (3 data points):
   # first10: uses all 3 points as 3 < 10
   # last5: uses all 3 points as 3 < 5

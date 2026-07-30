@@ -124,3 +124,50 @@ def test_run_shell_command_allowlist_and_custom(mock_run_process):
 
         # Check GH_TOKEN explicitly stripped even if in custom_env
         assert "GH_TOKEN" not in passed_env
+
+
+def test_filter_env_securely():
+    from repository_automation_common import filter_env_securely
+
+    base_env = {
+        "PATH": "/usr/bin",
+        "HOME": "/home/user",
+        "GITHUB_WORKSPACE": "/workspace",
+        "UNSAFE_VAR": "secret_data",
+        "MY_TOKEN": "DUMMY_VALUE_1",
+        "RANDOM_PASSWORD": "DUMMY_VALUE_2",
+        "AWS_SECRET_KEY": "DUMMY_VALUE_3",
+        "GITHUB_SECRET": "should_be_stripped",
+        "GITHUB_PASSWORD": "dummy",
+        "GITHUB_KEY": "dummy",
+    }
+    custom_env = {
+        "MY_CUSTOM_VAR": "custom_value",
+        "GH_TOKEN": "should_be_stripped",
+        "GITHUB_TOKEN": "should_be_stripped_too",
+    }
+
+    result = filter_env_securely(base_env, custom_env)
+
+    # 1. Allowlist preservation
+    assert result.get("PATH") == "/usr/bin"
+    assert result.get("HOME") == "/home/user"
+    assert result.get("GITHUB_WORKSPACE") == "/workspace"
+
+    # 2. Removal of variables not in the allowlist
+    assert "UNSAFE_VAR" not in result
+
+    # 3. Removal of heuristic secrets in the base environment
+    assert "MY_TOKEN" not in result
+    assert "RANDOM_PASSWORD" not in result
+    assert "AWS_SECRET_KEY" not in result
+    assert "GITHUB_SECRET" not in result
+    assert "GITHUB_PASSWORD" not in result
+    assert "GITHUB_KEY" not in result
+
+    # 4. Preservation of explicitly provided custom_env variables
+    assert result.get("MY_CUSTOM_VAR") == "custom_value"
+
+    # 5. Strict removal of GH_TOKEN and GITHUB_TOKEN even if provided in custom_env
+    assert "GH_TOKEN" not in result
+    assert "GITHUB_TOKEN" not in result

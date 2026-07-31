@@ -162,6 +162,9 @@ MAX_FILE_SIZE = 10 * 1024 * 1024  # 10 MB
 
 def _hotspot_line_count(path_str: str) -> int | None:
     try:
+        # SECURITY: Prevent DoS by ensuring we only open regular files, as opening special files (like FIFOs) can block indefinitely.
+        if not os.path.isfile(path_str):
+            return None
         with open(path_str, "rb") as file:
             content = file.read(MAX_FILE_SIZE + 1)
         if len(content) > MAX_FILE_SIZE:
@@ -635,6 +638,9 @@ def run_backlog_manager(config: dict[str, Any]) -> dict[str, Any]:
 
 def _read_result(path: pathlib.Path) -> dict[str, Any] | None:
     try:
+        # SECURITY: Prevent DoS by ensuring we only read regular files.
+        if not path.is_file():
+            return None
         return json.loads(path.read_text())
     except json.JSONDecodeError:
         return None

@@ -17,9 +17,14 @@ from repository_automation_common import (
 @patch("repository_automation_common.run_process")
 def test_run_shell_command_string_raises_value_error(mock_run_process):
     import pytest
-    with pytest.raises(ValueError, match="command must be a list of arguments to avoid shell injection"):
+
+    with pytest.raises(
+        ValueError,
+        match="command must be a list of arguments to avoid shell injection",
+    ):
         run_shell_command("echo hello")
 
+    mock_run_process.assert_not_called()
 
 @patch("repository_automation_common.run_process")
 def test_run_shell_command_list(mock_run_process):

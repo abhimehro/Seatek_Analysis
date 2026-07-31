@@ -45,8 +45,6 @@ def test_get_repo_info_failure():
         assert commit_hash == "unknown"
 
 
-
-
 def test_read_file_safe_happy_path():
     test_file = "test_happy.txt"
     content = "line1\nline2\n"

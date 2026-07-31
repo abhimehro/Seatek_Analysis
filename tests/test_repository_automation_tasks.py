@@ -66,34 +66,24 @@ def test_configured_commands_extra_keys():
     assert result[0] == ("command", {"name": "cmd1", "run": "c1"})
 
 
-
-
 from repository_automation_tasks import render_entry_section
+
 
 def test_render_entry_section_empty():
     assert render_entry_section("Title", []) == []
 
+
 def test_render_entry_section_with_entries():
     entries = [
-        {
-            "name": "cmd1",
-            "ex" + "it_code": 0,
-            "stdout": "success out",
-            "stderr": ""
-        },
-        {
-            "name": "cmd2",
-            "ex" + "it_code": 1,
-            "stdout": "",
-            "stderr": "failed out"
-        }
+        {"name": "cmd1", "ex" + "it_code": 0, "stdout": "success out", "stderr": ""},
+        {"name": "cmd2", "ex" + "it_code": 1, "stdout": "", "stderr": "failed out"},
     ]
     result = render_entry_section("Test Title", entries)
     expected = [
         "Test Title",
         "- **cmd1** -> ex" + "it `0`\n```text\nsuccess out\n```",
         "- **cmd2** -> ex" + "it `1`\n```text\nfailed out\n```",
-        ""
+        "",
     ]
     assert result == expected
 

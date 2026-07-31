@@ -125,7 +125,9 @@ def test_run_shell_command_allowlist_and_custom(mock_run_process):
 
 def test_command_env() -> None:
     # Test that existing env is preserved and GH_PAGER is forced to cat
-    with patch.dict(os.environ, {"MY_TEST_VAR": "hello", "GH_PAGER": "less"}, clear=True):
+    with patch.dict(
+        os.environ, {"MY_TEST_VAR": "hello", "GH_PAGER": "less"}, clear=True
+    ):
         env = command_env()
         assert env.get("MY_TEST_VAR") == "hello"
         assert env.get("GH_PAGER") == "cat"

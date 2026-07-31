@@ -292,13 +292,13 @@ def workflow_file_plans() -> list[dict[str, Any]]:
 def flattened_updates(plans: list[dict[str, Any]]) -> list[dict[str, str]]:
     return [
         {
-            "file": item["file"],
+            "file": plan.get("path", ""),
             "action": item["action"],
             "current": item["current"],
             "target": item["target"],
         }
         for plan in plans
-        for item in plan["replacements"]
+        for item in plan.get("replacements", [])
     ]
 
 

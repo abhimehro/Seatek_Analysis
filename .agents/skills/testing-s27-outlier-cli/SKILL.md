@@ -43,8 +43,8 @@ created.
 `outlier_analysis_series27.py` uses `_is_safe_path` to ensure generated
 corrected-file paths stay inside the output directory. It does not currently
 implement a top-level `--base-dir` / `is_relative_to` check on `--input` or
-`--output` in `main()`, so do not fail the test if `-i /etc/hostname` is
-rejected for a different reason.
+`--output` in `main()`, so do not fail the test if `-i /etc/hostname` is rejected
+for a different reason.
 
 ## Unit tests
 

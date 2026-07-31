@@ -315,6 +315,3 @@ chrono-inconsistency. **Action:** When filtering lists by relative time or
 calculating object age, pre-calculate the absolute `now` or datetime cutoff
 outside the loop (e.g., `now = now_utc()`) and compare against it directly,
 removing repeated calls and helper functions that hide the system call.
-## 2026-07-30 - [Parallelizing Independent Tasks in R]
-**Learning:** Sequential loops that perform independent I/O and heavy computation (like processing multiple sensor files and exporting intermediate raw data) are a massive bottleneck in R.
-**Action:** Extract the sequential loop body into a pure function and use `parallel::mclapply` (or `parLapply` on Windows) to execute it. This can yield ~10x speedups for I/O and compute-heavy pipelines with many files. Ensure the function captures all necessary state and returns a structured object (e.g., a `list`) that can be reassembled into the expected data structures downstream.

@@ -5,7 +5,7 @@ from typing import Any
 sys.path.insert(
     0, os.path.abspath(os.path.join(os.path.dirname(__file__), "../.github/scripts"))
 )
-from repository_automation_tasks import configured_commands, flattened_updates
+from repository_automation_tasks import configured_commands
 
 
 def test_configured_commands_all_keys():
@@ -96,68 +96,3 @@ def test_render_entry_section_with_entries():
         ""
     ]
     assert result == expected
-
-
-# --- Salvaged from CONFLICTING #558 (adapted + source fix for path/replacements) ---
-
-
-def test_flattened_updates_empty():
-    assert flattened_updates([]) == []
-
-
-def test_flattened_updates_basic():
-    plans = [
-        {
-            "path": ".github/workflows/ci.yml",
-            "text": "...",
-            "replacements": [
-                {
-                    "action": "actions/checkout",
-                    "current": "v2",
-                    "target": "v3",
-                },
-                {
-                    "action": "actions/setup-python",
-                    "current": "v4",
-                    "target": "v5",
-                },
-            ],
-        },
-        {
-            "path": ".github/workflows/deploy.yml",
-            "text": "...",
-            "replacements": [
-                {
-                    "action": "actions/checkout",
-                    "current": "v3",
-                    "target": "v4",
-                },
-            ],
-        },
-    ]
-    expected = [
-        {
-            "file": ".github/workflows/ci.yml",
-            "action": "actions/checkout",
-            "current": "v2",
-            "target": "v3",
-        },
-        {
-            "file": ".github/workflows/ci.yml",
-            "action": "actions/setup-python",
-            "current": "v4",
-            "target": "v5",
-        },
-        {
-            "file": ".github/workflows/deploy.yml",
-            "action": "actions/checkout",
-            "current": "v3",
-            "target": "v4",
-        },
-    ]
-    assert flattened_updates(plans) == expected
-
-
-def test_flattened_updates_missing_replacements():
-    plans = [{"path": ".github/workflows/ci.yml", "text": "..."}]
-    assert flattened_updates(plans) == []

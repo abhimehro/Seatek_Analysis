@@ -315,3 +315,7 @@ chrono-inconsistency. **Action:** When filtering lists by relative time or
 calculating object age, pre-calculate the absolute `now` or datetime cutoff
 outside the loop (e.g., `now = now_utc()`) and compare against it directly,
 removing repeated calls and helper functions that hide the system call.
+
+## 2024-07-30 - Optimize data.table lapply anonymous functions
+**Learning:** Instantiating the same anonymous function inside multiple `lapply(.SD, ...)` calls within a high-frequency loop incurs unnecessary overhead due to R's function instantiation and garbage collection.
+**Action:** When a complex anonymous function is repeated across multiple subset operations on the same data frame (like `lapply(.SD, function(x) ...)`), extract it to a named function in the immediately enclosing scope before the calls. This ensures the function is parsed and instantiated only once.

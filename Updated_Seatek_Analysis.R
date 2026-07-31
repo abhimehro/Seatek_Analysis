@@ -173,14 +173,15 @@ compute_sensor_metrics <- function(df, filename) {
 
   # ⚡ Bolt: Replace sapply with data.table native lapply(.SD) for O(1) row
   # subsetting
+  mean_clean <- function(x) mean(x[which(x > 0)])
   first10 <- unlist(df[1:min(10, .N),
-                       lapply(.SD, function(x) mean(x[which(x > 0)])),
+                       lapply(.SD, mean_clean),
                        .SDcols = sensor_names])
   last5 <- unlist(df[max(1, .N - 4):.N,
-                     lapply(.SD, function(x) mean(x[which(x > 0)])),
+                     lapply(.SD, mean_clean),
                      .SDcols = sensor_names])
   full <- unlist(df[,
-                    lapply(.SD, function(x) mean(x[which(x > 0)])),
+                    lapply(.SD, mean_clean),
                     .SDcols = sensor_names])
   diff <- full - first10
   # Derive sheet/year name

@@ -315,3 +315,8 @@ chrono-inconsistency. **Action:** When filtering lists by relative time or
 calculating object age, pre-calculate the absolute `now` or datetime cutoff
 outside the loop (e.g., `now = now_utc()`) and compare against it directly,
 removing repeated calls and helper functions that hide the system call.
+
+## 2025-05-24 - Bypass data.table .SD lapply overhead for multiple column metrics
+
+**Learning:** When calculating multiple row-wise metrics (e.g. `first10`, `last5`, `full`) across many columns in `data.table` using `lapply(.SD, ...)`, the overhead of creating subsets (`df[1:min(10, .N), ...]`) and evaluating closures on `.SD` for each metric is significantly higher than directly iterating over the columns with a standard `for` loop, extracting the column once, and applying the metrics.
+**Action:** When computing multiple different aggregations over row subsets for the same columns, use a direct `for` loop over the column names (e.g., `for (col in sensor_names)`) and pre-calculate row indices (e.g., `idx_first <- 1:min(10, n)`), assigning results to pre-allocated numeric vectors. This achieves a ~4x speedup by eliminating closure and subsetting overhead.

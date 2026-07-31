@@ -7,6 +7,7 @@ sys.path.insert(
 )
 from repository_automation_common import (
     BASH_BIN,
+    command_env,
     is_commit_sha,
     numeric_version,
     run_shell_command,
@@ -14,13 +15,17 @@ from repository_automation_common import (
 )
 
 
-@patch("repository_automation_common.run_process")
-def test_run_shell_command_string(mock_run_process):
+def setup_mock_process(mock_run_process):
     mock_proc = MagicMock()
     mock_proc.returncode = 0
     mock_proc.stdout = "output"
     mock_proc.stderr = ""
     mock_run_process.return_value = mock_proc
+
+
+@patch("repository_automation_common.run_process")
+def test_run_shell_command_string(mock_run_process):
+    setup_mock_process(mock_run_process)
 
     result = run_shell_command("echo hello")
 
@@ -33,11 +38,7 @@ def test_run_shell_command_string(mock_run_process):
 
 @patch("repository_automation_common.run_process")
 def test_run_shell_command_list(mock_run_process):
-    mock_proc = MagicMock()
-    mock_proc.returncode = 0
-    mock_proc.stdout = "output"
-    mock_proc.stderr = ""
-    mock_run_process.return_value = mock_proc
+    setup_mock_process(mock_run_process)
 
     result = run_shell_command(["echo", "hello"])
 
@@ -61,11 +62,7 @@ def test_target_ref_skips_commit_pins() -> None:
 
 @patch("repository_automation_common.subprocess.run")
 def test_run_process_allowlist(mock_run):
-    mock_proc = MagicMock()
-    mock_proc.returncode = 0
-    mock_proc.stdout = "output"
-    mock_proc.stderr = ""
-    mock_run.return_value = mock_proc
+    setup_mock_process(mock_run)
 
     from repository_automation_common import run_process
 
@@ -99,11 +96,7 @@ def test_run_process_allowlist(mock_run):
 
 @patch("repository_automation_common.run_process")
 def test_run_shell_command_allowlist_and_custom(mock_run_process):
-    mock_proc = MagicMock()
-    mock_proc.returncode = 0
-    mock_proc.stdout = "output"
-    mock_proc.stderr = ""
-    mock_run_process.return_value = mock_proc
+    setup_mock_process(mock_run_process)
 
     # Ensure os.environ has some sensitive stuff for the default safe_env grab
     with patch.dict(os.environ, {"AWS_ACCESS_KEY_ID": "DUMMY_VALUE_1", "PATH": "/bin"}):
@@ -124,3 +117,11 @@ def test_run_shell_command_allowlist_and_custom(mock_run_process):
 
         # Check GH_TOKEN explicitly stripped even if in custom_env
         assert "GH_TOKEN" not in passed_env
+
+
+def test_command_env() -> None:
+    # Test that existing env is preserved and GH_PAGER is forced to cat
+    with patch.dict(os.environ, {"MY_TEST_VAR": "hello", "GH_PAGER": "less"}, clear=True):
+        env = command_env()
+        assert env.get("MY_TEST_VAR") == "hello"
+        assert env.get("GH_PAGER") == "cat"

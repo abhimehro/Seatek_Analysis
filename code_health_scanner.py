@@ -116,10 +116,3 @@ def read_file_safe(filepath):
         return []
 
 
-LANG_MAP = {".py": "python", ".r": "r", ".js": "javascript", ".ts": "typescript"}
-
-
-def get_language(filepath):
-    """Determines language based on file extension."""
-    ext = os.path.splitext(filepath)[1].lower()
-    return LANG_MAP.get(ext, "unknown")

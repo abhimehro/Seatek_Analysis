@@ -4,7 +4,6 @@ from unittest.mock import patch
 
 from code_health_scanner import (
     MAX_FILE_SIZE,
-    get_language,
     get_repo_info,
     read_file_safe,
 )
@@ -46,12 +45,6 @@ def test_get_repo_info_failure():
         assert commit_hash == "unknown"
 
 
-def test_get_language():
-    assert get_language("test.py") == "python"
-    assert get_language("test.R") == "r"
-    assert get_language("test.js") == "javascript"
-    assert get_language("test.ts") == "typescript"
-    assert get_language("test.txt") == "unknown"
 
 
 def test_read_file_safe_happy_path():

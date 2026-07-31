@@ -65,6 +65,10 @@
 
 **Merged pull requests:**
 
+- 🧹 \[dead code removal\] Remove unused clean\_vals function [\#562](https://github.com/abhimehro/Seatek_Analysis/pull/562) ([abhimehro](https://github.com/abhimehro))
+- 🧪 \[testing improvement\] Add unit tests for render\_entry\_section [\#559](https://github.com/abhimehro/Seatek_Analysis/pull/559) ([abhimehro](https://github.com/abhimehro))
+- 🧹 \[code health improvement\] Remove unused get\_language function [\#556](https://github.com/abhimehro/Seatek_Analysis/pull/556) ([abhimehro](https://github.com/abhimehro))
+- 🧪 Add tests for command\_env to improve test reliability [\#550](https://github.com/abhimehro/Seatek_Analysis/pull/550) ([abhimehro](https://github.com/abhimehro))
 - Update testing-s27-outlier-cli SKILL.md for pinned dependencies and current CLI behavior [\#549](https://github.com/abhimehro/Seatek_Analysis/pull/549) ([abhimehro](https://github.com/abhimehro))
 - chore\(deps\): pin Series 27 Python dependencies to exact versions \(ABHI-1589\) [\#548](https://github.com/abhimehro/Seatek_Analysis/pull/548) ([abhimehro](https://github.com/abhimehro))
 - 🛡️ Sentinel: \[CRITICAL\] Fix File Read DoS via Special Files [\#547](https://github.com/abhimehro/Seatek_Analysis/pull/547) ([abhimehro](https://github.com/abhimehro))

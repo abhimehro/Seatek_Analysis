@@ -124,10 +124,6 @@ read_sensor_data <- function(file_path,
   dt
 }
 
-# ⚡ Bolt: Hoisted clean_vals helper out of the process_all_data loop
-# to prevent function re-definition overhead on every file iteration
-clean_vals <- function(x) x[which(x > 0)]
-
 # Utility: Execute a list of tasks in parallel (or serially as fallback)
 execute_tasks_parallel <- function(tasks, task_func) {
   if (length(tasks) == 0) {

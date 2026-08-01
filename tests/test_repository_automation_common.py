@@ -217,7 +217,7 @@ def test_warn_on_default_param(used_val, context, expected_err, capsys):
 
 def test_warn_on_failure_emits(capsys):
     from repository_automation_common import warn_on_failure
-    from unittest.mock import MagicMock
+    # MagicMock imported at module scope
 
     proc = MagicMock()
     proc.returncode = 1

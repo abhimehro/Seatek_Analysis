@@ -319,3 +319,8 @@ removing repeated calls and helper functions that hide the system call.
 ## 2024-07-30 - Optimize data.table lapply anonymous functions
 **Learning:** Instantiating the same anonymous function inside multiple `lapply(.SD, ...)` calls within a high-frequency loop incurs unnecessary overhead due to R's function instantiation and garbage collection.
 **Action:** When a complex anonymous function is repeated across multiple subset operations on the same data frame (like `lapply(.SD, function(x) ...)`), extract it to a named function in the immediately enclosing scope before the calls. This ensures the function is parsed and instantiated only once.
+
+## 2025-05-06 - Optimize data.table multiple row-wise metrics calculation
+
+**Learning:** In R's `data.table`, when calculating multiple row-wise metrics (like subsets for first N or last N rows) across many columns, iterating over column names with a direct `for` loop and pre-calculated row indices is significantly faster (avoiding `.SD` closure and redundant subsetting overhead) than using multiple `lapply(.SD, ...)` calls.
+**Action:** Replace multiple `lapply(.SD, ...)` calls with a direct `for` loop over sensor columns using pre-calculated row indices to improve performance.

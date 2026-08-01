@@ -1,0 +1,55 @@
+# https://docs.devin.ai/onboard-devin/environment-yaml
+initialize: |
+  # Add CRAN apt repository and install R 4.3.3 with required build libraries.
+  sudo apt-get update -qq
+  sudo apt-get install -y -qq curl gnupg ca-certificates software-properties-common
+  curl -fsSL https://cloud.r-project.org/bin/linux/ubuntu/marutter_pubkey.asc | sudo gpg --batch --yes --dearmor -o /usr/share/keyrings/cran.gpg
+  printf 'deb [signed-by=/usr/share/keyrings/cran.gpg] https://cloud.r-project.org/bin/linux/ubuntu %s-cran40/\n' "$(lsb_release -cs)" | sudo tee /etc/apt/sources.list.d/cran.list
+  # deadsnakes PPA provides python3.12 on Ubuntu 22.04; tolerated if unavailable.
+  sudo add-apt-repository -y ppa:deadsnakes/ppa || true
+  sudo apt-get update -qq
+  sudo apt-get install -y -qq libcurl4-openssl-dev libxml2-dev libssl-dev \
+    libfontconfig1-dev libharfbuzz-dev libfribidi-dev libuv1-dev \
+    libzip-dev zlib1g-dev libgit2-dev pandoc cmake
+  sudo apt-get install -y -qq 'r-base=4.3.3*' 'r-base-core=4.3.3*' \
+    'r-recommended=4.3.3*' 'r-base-dev=4.3.3*'
+  # Python 3.11/3.12 is preferred for the Series 27 venv; tolerate absence.
+  sudo apt-get install -y -qq python3.12 python3.12-venv python3-pip || true
+maintenance: |
+  # Install renv into the project library and restore packages from renv.lock using Posit PPM binaries.
+  Rscript --no-init-file -e 'lib <- file.path("renv/library", paste0("R-", format(getRversion()[1, 1:2])), R.version$platform); dir.create(lib, recursive = TRUE, showWarnings = FALSE); install.packages("renv", repos = "https://packagemanager.posit.co/cran/__linux__/jammy/latest", lib = lib)'
+  Rscript -e "options(renv.config.repos.override = c(CRAN = 'https://packagemanager.posit.co/cran/__linux__/jammy/latest')); renv::restore()"
+  # Create an isolated Python 3.11/3.12 venv for the optional Series 27 outlier script and Python tests.
+  PYTHON_BIN=""
+  for py in python3.12 python3.11 python3; do
+    if command -v "$py" &>/dev/null && "$py" -c "import sys; sys.exit(0 if (3, 11) <= sys.version_info[:2] <= (3, 12) else 1)" 2>/dev/null; then
+      PYTHON_BIN="$py"
+      break
+    fi
+  done
+  if [ -n "$PYTHON_BIN" ]; then
+    test -d "${HOME}/.venvs/seatek_series27" || "$PYTHON_BIN" -m venv "${HOME}/.venvs/seatek_series27"
+    "${HOME}/.venvs/seatek_series27/bin/python" -m pip install -U pip
+    "${HOME}/.venvs/seatek_series27/bin/python" -m pip install -r Series_27/Analysis/requirements.txt
+    "${HOME}/.venvs/seatek_series27/bin/python" -m pip install -r requirements-dev.txt
+  else
+    echo "Warning: No Python 3.11/3.12 interpreter found; skipping optional Series 27 venv setup." >&2
+  fi
+knowledge:
+  - name: test
+    contents: |
+      R: ./run_tests.sh
+      Python: ${HOME}/.venvs/seatek_series27/bin/python -m pytest tests/
+  - name: run
+    contents: |
+      Rscript Updated_Seatek_Analysis.R
+  - name: python-outlier
+    contents: |
+      ${HOME}/.venvs/seatek_series27/bin/python Series_27/Analysis/outlier_analysis_series27.py -i Series_27/Analysis/Seatek_Comprehensive_Analysis.xlsx -o /tmp/s27_out
+  - name: lint
+    contents: |
+      R: Rscript -e "library(lintr); lint_dir('.', exclusions = list('renv/', 'backups/', 'Series_27/Analysis/venv/', 'implementation/'))"
+      Python: ${HOME}/.venvs/seatek_series27/bin/python -m ruff check .
+  - name: notes
+    contents: |
+      This blueprint targets Ubuntu 22.04 (jammy) images. R 4.3.3 is pinned to match renv.lock. Posit PPM provides fast binary installs for jammy. The tracked Series_27/Analysis/venv is a macOS placeholder with broken symlinks; use ${HOME}/.venvs/seatek_series27 instead. renv may warn that microbenchmark is used but not recorded (tests/test_perf_sapply_vs_lapply.R); this is harmless.

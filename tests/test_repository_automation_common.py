@@ -194,3 +194,36 @@ def test_filter_env_securely():
     assert result.get("MY_CUSTOM_VAR") == "custom_value"
     assert "GH_TOKEN" not in result
     assert "GITHUB_TOKEN" not in result
+
+
+import pytest
+
+
+@pytest.mark.parametrize(
+    "used_val, context, expected_err",
+    [
+        ("default_val", "", "Warning: Using default value 'default_val' for MY_VAR\n"),
+        ("default_val", "unit-test", "Warning: Using default value 'default_val' for MY_VAR in unit-test\n"),
+        ("other", "", ""),
+    ],
+)
+def test_warn_on_default_param(used_val, context, expected_err, capsys):
+    from repository_automation_common import warn_on_default
+
+    warn_on_default("MY_VAR", used_val, "default_val", context)
+    captured = capsys.readouterr()
+    assert captured.err == expected_err
+
+
+def test_warn_on_failure_emits(capsys):
+    from repository_automation_common import warn_on_failure
+    from unittest.mock import MagicMock
+
+    proc = MagicMock()
+    proc.returncode = 1
+    proc.stderr = "boom"
+    proc.stdout = ""
+    warn_on_failure("gh", ["api"], proc)
+    err = capsys.readouterr().err
+    assert "gh" in err
+    assert "boom" in err

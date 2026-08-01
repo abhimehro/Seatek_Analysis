@@ -176,22 +176,18 @@ def run_process(
 
 
 def run_shell_command(
-    command: str | list[str],
+    command: list[str],
     timeout: int = 1800,
     custom_env: dict[str, str] | None = None,
 ) -> dict[str, Any]:
     safe_env = filter_env_securely(command_env(), custom_env)
 
-    # Allow backward compatibility for existing command string configurations while we migrate,
-    # but the primary path relies on lists of arguments to avoid shell injection.
     if isinstance(command, str):
-        # We still need to support strings during migration, so we run them via bash
-        cmd_args = [BASH_BIN, "-c", command]
-        cmd_str = command
-    else:
-        # Secure execution without shell wrapper
-        cmd_args = command
-        cmd_str = " ".join(command)
+        raise ValueError("command must be a list of arguments to avoid shell injection")
+
+    # Secure execution without shell wrapper
+    cmd_args = command
+    cmd_str = " ".join(command)
 
     try:
         proc = run_process(cmd_args, timeout=timeout, env=safe_env)

@@ -28,16 +28,17 @@ def setup_mock_process(mock_run_process):
 
 
 @patch("repository_automation_common.run_process")
-def test_run_shell_command_string(mock_run_process):
-    setup_mock_process(mock_run_process)
+def test_run_shell_command_string_raises_value_error(mock_run_process):
+    import pytest
 
-    result = run_shell_command("echo hello")
+    with pytest.raises(
+        ValueError,
+        match="command must be a list of arguments to avoid shell injection",
+    ):
+        run_shell_command("echo hello")
 
-    # Assert that bash -c is used instead of bash -lc
-    mock_run_process.assert_called_once()
-    args = mock_run_process.call_args[0][0]
-    assert args == [BASH_BIN, "-c", "echo hello"]
-    assert result["exit_code"] == 0
+    mock_run_process.assert_not_called()
+
 
 
 @patch("repository_automation_common.run_process")
@@ -105,7 +106,7 @@ def test_run_shell_command_allowlist_and_custom(mock_run_process):
     # Ensure os.environ has some sensitive stuff for the default safe_env grab
     with patch.dict(os.environ, {"AWS_ACCESS_KEY_ID": "DUMMY_VALUE_1", "PATH": "/bin"}):
         run_shell_command(
-            "echo hello",
+            ["echo", "hello"],
             custom_env={"MY_VAR": "custom_val", "GH_TOKEN": "should_be_stripped"},
         )
 

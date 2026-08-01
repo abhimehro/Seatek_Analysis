@@ -171,18 +171,31 @@ compute_sensor_metrics <- function(df, filename) {
   # name subsetting
   sensor_names <- names(df)[startsWith(names(df), "Sensor")]
 
-  # ⚡ Bolt: Replace sapply with data.table native lapply(.SD) for O(1) row
-  # subsetting
-  mean_clean <- function(x) mean(x[which(x > 0)])
-  first10 <- unlist(df[1:min(10, .N),
-                       lapply(.SD, mean_clean),
-                       .SDcols = sensor_names])
-  last5 <- unlist(df[max(1, .N - 4):.N,
-                     lapply(.SD, mean_clean),
-                     .SDcols = sensor_names])
-  full <- unlist(df[,
-                    lapply(.SD, mean_clean),
-                    .SDcols = sensor_names])
+  # ⚡ Bolt: Replace multiple lapply(.SD, ...) calls with a direct for loop
+  # over sensor columns using pre-calculated row indices. This significantly
+  # reduces execution time by avoiding .SD closure and redundant subsetting
+  # overhead.
+
+  n_rows <- nrow(df)
+  idx_first <- 1:min(10, n_rows)
+  idx_last <- max(1, n_rows - 4):n_rows
+
+  len_sensors <- length(sensor_names)
+  first10 <- numeric(len_sensors)
+  last5 <- numeric(len_sensors)
+  full <- numeric(len_sensors)
+
+  for (j in seq_len(len_sensors)) {
+    v <- df[[sensor_names[j]]]
+
+    v_first <- v[idx_first]
+    first10[j] <- mean(v_first[which(v_first > 0)])
+
+    v_last <- v[idx_last]
+    last5[j] <- mean(v_last[which(v_last > 0)])
+
+    full[j] <- mean(v[which(v > 0)])
+  }
   diff <- full - first10
   # Derive sheet/year name
   year_tag <- sub("^SS_Y([0-9]{2})\\.txt$", "\\1", basename(filename))

@@ -1,0 +1,41 @@
+# https://docs.devin.ai/onboard-devin/environment-yaml
+initialize: |
+  # Add CRAN apt repository and install R 4.3.3 with required build libraries.
+  sudo apt-get update -qq
+  sudo apt-get install -y -qq curl gnupg ca-certificates
+  curl -fsSL https://cloud.r-project.org/bin/linux/ubuntu/marutter_pubkey.asc | sudo gpg --batch --yes --dearmor -o /usr/share/keyrings/cran.gpg
+  printf 'deb [signed-by=/usr/share/keyrings/cran.gpg] https://cloud.r-project.org/bin/linux/ubuntu %s-cran40/\n' "$(lsb_release -cs)" | sudo tee /etc/apt/sources.list.d/cran.list
+  sudo apt-get update -qq
+  sudo apt-get install -y -qq libcurl4-openssl-dev libxml2-dev libssl-dev \
+    libfontconfig1-dev libharfbuzz-dev libfribidi-dev libuv1-dev \
+    libzip-dev zlib1g-dev libgit2-dev pandoc cmake
+  sudo apt-get install -y -qq r-base=4.3.3-1.2204.0 r-base-core=4.3.3-1.2204.0 \
+    r-recommended=4.3.3-1.2204.0 r-base-dev=4.3.3-1.2204.0
+  sudo apt-get install -y -qq python3 python3-venv python3-pip
+maintenance: |
+  # Install renv into the project library and restore packages from renv.lock using Posit PPM binaries.
+  Rscript --no-init-file -e "lib <- file.path('renv/library', paste0('R-', R.version$major, '.', R.version$minor), R.version$platform); dir.create(lib, recursive = TRUE, showWarnings = FALSE); install.packages('renv', repos = 'https://packagemanager.posit.co/cran/__linux__/jammy/latest', lib = lib)"
+  Rscript -e "options(renv.config.repos.override = c(CRAN = 'https://packagemanager.posit.co/cran/__linux__/jammy/latest')); renv::restore()"
+  # Create an isolated Python venv for the optional Series 27 outlier script and Python tests.
+  test -d /home/ubuntu/.venvs/seatek_series27 || python3 -m venv /home/ubuntu/.venvs/seatek_series27
+  /home/ubuntu/.venvs/seatek_series27/bin/pip install -U pip
+  /home/ubuntu/.venvs/seatek_series27/bin/pip install -r Series_27/Analysis/requirements.txt
+  /home/ubuntu/.venvs/seatek_series27/bin/pip install -r requirements-dev.txt
+knowledge:
+  - name: test
+    contents: |
+      R: ./run_tests.sh
+      Python: /home/ubuntu/.venvs/seatek_series27/bin/python -m pytest tests/
+  - name: run
+    contents: |
+      Rscript Updated_Seatek_Analysis.R
+  - name: python-outlier
+    contents: |
+      /home/ubuntu/.venvs/seatek_series27/bin/python Series_27/Analysis/outlier_analysis_series27.py -i Series_27/Analysis/Seatek_Comprehensive_Analysis.xlsx -o /tmp/s27_out
+  - name: lint
+    contents: |
+      R: Rscript -e "library(lintr); lint_dir('.', exclusions = list('renv/', 'backups/', 'Series_27/Analysis/venv/', 'implementation/'))"
+      Python: /home/ubuntu/.venvs/seatek_series27/bin/python -m ruff check .
+  - name: notes
+    contents: |
+      R 4.3.3 is pinned to match renv.lock. Posit PPM provides fast binary installs for jammy. The tracked Series_27/Analysis/venv is a macOS placeholder with broken symlinks; use /home/ubuntu/.venvs/seatek_series27 instead. renv may warn that microbenchmark is used but not recorded (tests/test_perf_sapply_vs_lapply.R); this is harmless.

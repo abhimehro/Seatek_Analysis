@@ -351,7 +351,11 @@ calculate_summary_stats <- function(results) {
   }
 
   summary_wide <- all_stats_dt[,
-    unlist(unname(lapply(.SD, calc_stats)), recursive = FALSE),
+    unlist(
+      unname(lapply(.SD, calc_stats)),
+      recursive = FALSE,
+      use.names = FALSE
+    ),
     keyby = "Sensor", .SDcols = metrics
   ]
 

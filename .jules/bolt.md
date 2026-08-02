@@ -324,3 +324,8 @@ removing repeated calls and helper functions that hide the system call.
 
 **Learning:** In R's `data.table`, when calculating multiple row-wise metrics (like subsets for first N or last N rows) across many columns, iterating over column names with a direct `for` loop and pre-calculated row indices is significantly faster (avoiding `.SD` closure and redundant subsetting overhead) than using multiple `lapply(.SD, ...)` calls.
 **Action:** Replace multiple `lapply(.SD, ...)` calls with a direct `for` loop over sensor columns using pre-calculated row indices to improve performance.
+
+## 2025-05-24 - Unlist overhead with names
+
+**Learning:** In R, when using `unlist()` to flatten lists into vectors within high-frequency loops or grouped `data.table` aggregations, inherently constructing and assigning names causes significant memory and string manipulation overhead.
+**Action:** When the resulting names of an unlisted vector are not required for downstream logic, explicitly pass `use.names = FALSE` to `unlist()`. This significantly reduces memory allocation overhead.

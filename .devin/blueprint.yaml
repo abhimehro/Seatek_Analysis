@@ -1,20 +1,28 @@
 # https://docs.devin.ai/onboard-devin/environment-yaml
 initialize: |
-  # Add CRAN apt repository and install R 4.3.3 with required build libraries.
-  sudo apt-get update -qq
-  sudo apt-get install -y -qq curl gnupg ca-certificates software-properties-common
-  curl -fsSL https://cloud.r-project.org/bin/linux/ubuntu/marutter_pubkey.asc | sudo gpg --batch --yes --dearmor -o /usr/share/keyrings/cran.gpg
-  printf 'deb [signed-by=/usr/share/keyrings/cran.gpg] https://cloud.r-project.org/bin/linux/ubuntu %s-cran40/\n' "$(lsb_release -cs)" | sudo tee /etc/apt/sources.list.d/cran.list
-  # deadsnakes PPA provides python3.12 on Ubuntu 22.04; tolerated if unavailable.
-  sudo add-apt-repository -y ppa:deadsnakes/ppa || true
-  sudo apt-get update -qq
-  sudo apt-get install -y -qq libcurl4-openssl-dev libxml2-dev libssl-dev \
+  # Install R 4.3.3 and build dependencies. CRAN's Ubuntu archive only keeps the
+  # current R release, so use Posit's signed r-builds apt repository for the
+  # pinned version and symlink R/Rscript into /usr/local/bin.
+  sudo DEBIAN_FRONTEND=noninteractive apt-get update -qq
+  sudo DEBIAN_FRONTEND=noninteractive apt-get install -y -qq curl gnupg ca-certificates software-properties-common \
+    build-essential gfortran libcurl4-openssl-dev libxml2-dev libssl-dev \
     libfontconfig1-dev libharfbuzz-dev libfribidi-dev libuv1-dev \
     libzip-dev zlib1g-dev libgit2-dev pandoc cmake
-  sudo apt-get install -y -qq 'r-base=4.3.3*' 'r-base-core=4.3.3*' \
-    'r-recommended=4.3.3*' 'r-base-dev=4.3.3*'
-  # Python 3.11/3.12 is preferred for the Series 27 venv; tolerate absence.
-  sudo apt-get install -y -qq python3.12 python3.12-venv python3-pip || true
+  # deadsnakes PPA provides python3.12 on Ubuntu 22.04; tolerated if unavailable.
+  sudo DEBIAN_FRONTEND=noninteractive add-apt-repository -y ppa:deadsnakes/ppa || true
+  sudo DEBIAN_FRONTEND=noninteractive apt-get update -qq
+  sudo DEBIAN_FRONTEND=noninteractive apt-get install -y -qq python3.12 python3.12-venv python3-pip || true
+  # Posit Open r-builds repository: signed, versioned R 4.3.3 binaries for jammy.
+  curl -1sLf 'https://dl.posit.co/public/open/gpg.51C0B5BB19F92D60.key' | \
+    sudo gpg --batch --yes --dearmor -o /usr/share/keyrings/posit-open-archive-keyring.gpg
+  printf 'deb [signed-by=/usr/share/keyrings/posit-open-archive-keyring.gpg] https://dl.posit.co/public/open/deb/ubuntu %s main\n' "$(lsb_release -cs)" | \
+    sudo tee /etc/apt/sources.list.d/posit-open.list
+  sudo DEBIAN_FRONTEND=noninteractive apt-get update -qq
+  sudo DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends r-4.3.3
+  sudo ln -sf /opt/R/4.3.3/bin/R /usr/local/bin/R
+  sudo ln -sf /opt/R/4.3.3/bin/Rscript /usr/local/bin/Rscript
+  R --version
+  Rscript --version
 maintenance: |
   # Install renv into the project library and restore packages from renv.lock using Posit PPM binaries.
   Rscript --no-init-file -e 'lib <- file.path("renv/library", paste0("R-", format(getRversion()[1, 1:2])), R.version$platform); dir.create(lib, recursive = TRUE, showWarnings = FALSE); install.packages("renv", repos = "https://packagemanager.posit.co/cran/__linux__/jammy/latest", lib = lib)'
@@ -52,4 +60,4 @@ knowledge:
       Python: ${HOME}/.venvs/seatek_series27/bin/python -m ruff check .
   - name: notes
     contents: |
-      This blueprint targets Ubuntu 22.04 (jammy) images. R 4.3.3 is pinned to match renv.lock. Posit PPM provides fast binary installs for jammy. The tracked Series_27/Analysis/venv is a macOS placeholder with broken symlinks; use ${HOME}/.venvs/seatek_series27 instead. renv may warn that microbenchmark is used but not recorded (tests/test_perf_sapply_vs_lapply.R); this is harmless.
+      This blueprint targets Ubuntu 22.04 (jammy) images. R 4.3.3 is installed from Posit r-builds to match renv.lock (CRAN's Ubuntu archive only ships the current R release). Posit PPM provides fast binary installs for jammy. The tracked Series_27/Analysis/venv is a macOS placeholder with broken symlinks; use ${HOME}/.venvs/seatek_series27 instead. renv may warn that microbenchmark is used but not recorded (tests/test_perf_sapply_vs_lapply.R); this is harmless.

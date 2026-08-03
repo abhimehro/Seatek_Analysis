@@ -1,5 +1,6 @@
 # https://docs.devin.ai/onboard-devin/environment-yaml
 initialize: |
+  set -e
   # Install R 4.3.3 and build dependencies. CRAN's Ubuntu archive only keeps the
   # current R release, so install the pinned version from Posit's r-builds CDN
   # and symlink R/Rscript into /usr/local/bin.
@@ -13,11 +14,18 @@ initialize: |
   sudo DEBIAN_FRONTEND=noninteractive apt-get update -qq
   sudo DEBIAN_FRONTEND=noninteractive apt-get install -y -qq python3.12 python3.12-venv python3-pip || true
   # Posit r-builds: download the Ubuntu 22.04 binary package and install it with apt
-  # so dependencies are resolved from Ubuntu's repositories.
+  # so dependencies are resolved from Ubuntu's repositories. SHA-256 hashes are pinned
+  # to verify the downloaded artifact before apt installs it.
   R_VERSION=4.3.3
   ARCH=$(dpkg --print-architecture)
   R_DEB="r-${R_VERSION}_1_${ARCH}.deb"
+  case "$ARCH" in
+    amd64) R_SHA256="dde20cc255a1c5627ec5ed84c8d3b24f094b4b0459b363e96c137fb98220bae5" ;;
+    arm64) R_SHA256="5349604db30056bd8b40ab32518ea002bd748bcecff9e56b0ad4415981d3776e" ;;
+    *) echo "Unsupported architecture: $ARCH" >&2; exit 1 ;;
+  esac
   curl -fsSL -o "/tmp/${R_DEB}" "https://cdn.posit.co/r/ubuntu-2204/pkgs/${R_DEB}"
+  printf "%s  /tmp/%s\n" "$R_SHA256" "$R_DEB" | sha256sum -c -
   sudo DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends "/tmp/${R_DEB}"
   sudo ln -sf /opt/R/${R_VERSION}/bin/R /usr/local/bin/R
   sudo ln -sf /opt/R/${R_VERSION}/bin/Rscript /usr/local/bin/Rscript

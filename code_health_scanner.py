@@ -42,6 +42,7 @@ def get_repo_info():
             env=env,
             text=True,
             shell=False,
+            timeout=15,
         ).strip()
 
         # Parse account and project from URL
@@ -58,6 +59,7 @@ def get_repo_info():
             env=env,
             text=True,
             shell=False,
+            timeout=15,
         ).strip()
 
         return account, project, commit_hash
@@ -94,10 +96,6 @@ def read_file_safe(filepath):
             not resolved_filepath.startswith(CWD_REALPATH_PLUS_SEP)
             and resolved_filepath != CWD_REALPATH
         ):
-            return []
-
-        # SECURITY: Prevent DoS by only reading regular files.
-        if not os.path.isfile(resolved_filepath):
             return []
 
         # SECURITY: Prevent DoS by only reading regular files.

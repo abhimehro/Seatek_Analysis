@@ -212,3 +212,9 @@ that a file is a regular file using `os.path.isfile()` or
 `stat.S_ISREG(os.stat(path).st_mode)` before attempting to open and read its
 contents, especially in security wrappers designed to read untrusted files
 safely.
+
+## 2026-08-03 - [Missing Subprocess Timeout]
+
+**Vulnerability:** The `get_repo_info` function in `code_health_scanner.py` executed `git` commands using `subprocess.check_output` without specifying a `timeout` argument. If the underlying `git` command hangs (e.g., waiting for interactive input, or due to network issues if reaching out to a remote), the scanner process would hang indefinitely (Denial of Service).
+**Learning:** Subprocess calls without timeouts are inherently fragile and present a resource exhaustion risk, as they assume the external process will always return in a timely manner.
+**Prevention:** Always provide a reasonable `timeout` argument (e.g., `timeout=15`) when using blocking subprocess functions like `subprocess.run`, `subprocess.check_output`, or `subprocess.call` to ensure the parent process can recover and fail securely.

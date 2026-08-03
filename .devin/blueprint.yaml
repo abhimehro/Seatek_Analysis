@@ -1,8 +1,8 @@
 # https://docs.devin.ai/onboard-devin/environment-yaml
 initialize: |
   # Install R 4.3.3 and build dependencies. CRAN's Ubuntu archive only keeps the
-  # current R release, so use Posit's signed r-builds apt repository for the
-  # pinned version and symlink R/Rscript into /usr/local/bin.
+  # current R release, so install the pinned version from Posit's r-builds CDN
+  # and symlink R/Rscript into /usr/local/bin.
   sudo DEBIAN_FRONTEND=noninteractive apt-get update -qq
   sudo DEBIAN_FRONTEND=noninteractive apt-get install -y -qq curl gnupg ca-certificates software-properties-common \
     build-essential gfortran libcurl4-openssl-dev libxml2-dev libssl-dev \
@@ -12,15 +12,15 @@ initialize: |
   sudo DEBIAN_FRONTEND=noninteractive add-apt-repository -y ppa:deadsnakes/ppa || true
   sudo DEBIAN_FRONTEND=noninteractive apt-get update -qq
   sudo DEBIAN_FRONTEND=noninteractive apt-get install -y -qq python3.12 python3.12-venv python3-pip || true
-  # Posit Open r-builds repository: signed, versioned R 4.3.3 binaries for jammy.
-  curl -1sLf 'https://dl.posit.co/public/open/gpg.51C0B5BB19F92D60.key' | \
-    sudo gpg --batch --yes --dearmor -o /usr/share/keyrings/posit-open-archive-keyring.gpg
-  printf 'deb [signed-by=/usr/share/keyrings/posit-open-archive-keyring.gpg] https://dl.posit.co/public/open/deb/ubuntu %s main\n' "$(lsb_release -cs)" | \
-    sudo tee /etc/apt/sources.list.d/posit-open.list
-  sudo DEBIAN_FRONTEND=noninteractive apt-get update -qq
-  sudo DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends r-4.3.3
-  sudo ln -sf /opt/R/4.3.3/bin/R /usr/local/bin/R
-  sudo ln -sf /opt/R/4.3.3/bin/Rscript /usr/local/bin/Rscript
+  # Posit r-builds: download the Ubuntu 22.04 binary package and install it with apt
+  # so dependencies are resolved from Ubuntu's repositories.
+  R_VERSION=4.3.3
+  ARCH=$(dpkg --print-architecture)
+  R_DEB="r-${R_VERSION}_1_${ARCH}.deb"
+  curl -fsSL -o "/tmp/${R_DEB}" "https://cdn.posit.co/r/ubuntu-2204/pkgs/${R_DEB}"
+  sudo DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends "/tmp/${R_DEB}"
+  sudo ln -sf /opt/R/${R_VERSION}/bin/R /usr/local/bin/R
+  sudo ln -sf /opt/R/${R_VERSION}/bin/Rscript /usr/local/bin/Rscript
   R --version
   Rscript --version
 maintenance: |

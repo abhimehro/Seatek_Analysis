@@ -25,8 +25,8 @@ sensor data. See `README.md` for full details.
 ### Non-obvious Caveats
 
 - R 4.3.3 is required (matches `renv.lock`). The `.devin/blueprint.yaml`
-  installs it from Posit's signed r-builds apt repository for Ubuntu 22.04 (jammy)
-  under `/opt/R/4.3.3` and symlinks `R`/`Rscript` into `/usr/local/bin`.
+  installs it from Posit's r-builds CDN for Ubuntu 22.04 (jammy) under
+  `/opt/R/4.3.3` and symlinks `R`/`Rscript` into `/usr/local/bin`.
 - System libraries `libgit2-dev`, `pandoc`, `libcurl4-openssl-dev`,
   `libxml2-dev`, `libssl-dev`, `libfontconfig1-dev`, `libharfbuzz-dev`,
   `libfribidi-dev`, and `libuv1-dev` must be installed before `renv::restore()`

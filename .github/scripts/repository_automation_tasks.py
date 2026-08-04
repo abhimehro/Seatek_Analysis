@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import asyncio
+import collections
 import concurrent.futures
 import datetime as dt
 import json
@@ -178,6 +179,23 @@ async def _gather_line_counts(paths: list[str]) -> list[int | None]:
 
 
 def discover_hotspots(limit: int = 5) -> list[tuple[str, int]]:
+    """Identifies files with the most changes recently."""
+    # A simple heuristic: files modified in the last N commits
+    # This is an approximation. A robust version would parse git log --numstat
+    try:
+        # Get list of recently modified files
+        out = git_output("log", "--name-only", "--pretty=format:", "-n", "20")
+        files = [f for f in out.splitlines() if f.strip()]
+
+        # Count frequencies
+        counter = collections.Counter(files)
+
+        # Get top files
+        return [(f, count) for f, count in counter.most_common(limit)]
+    except Exception:
+        return []
+
+def discover_static_hotspots(limit: int = 5) -> list[tuple[str, int]]:
     candidates = []
 
     root_str = str(ROOT) + os.sep
@@ -237,7 +255,7 @@ def _parse_workflow_files() -> tuple[set[str], list[dict[str, Any]]]:
         matches = []
         for match in WORKFLOW_PATTERN.finditer(text):
             action_ref = match.group(2)
-            if action_ref.startswith("./") or action_ref.startswith("docker://"):
+            if action_ref.startswith(("./", "docker://")):
                 continue
             parts = action_ref.split("/")
             if len(parts) < 2:
@@ -471,7 +489,7 @@ def run_performance_optimizer(config: dict[str, Any]) -> dict[str, Any]:
             "commands": section.get("commands", []),
         },
     )
-    hotspots = discover_hotspots()
+    hotspots = discover_static_hotspots()
     lines = [
         details["body"].rstrip(),
         "## Static hotspots",
@@ -783,7 +801,7 @@ def run_daily_status_report(config: dict[str, Any]) -> dict[str, Any]:
 # ⚡ Bolt: Pre-compile regular expressions to prevent redundant pattern compilation
 # overhead on every invocation, particularly in loops over issues.
 STATUS_MARKER_PATTERN = re.compile(
-    r"<!-- repository-automation:task-status\n(.*?)\n-->", re.S
+    r"<!-- repository-automation:task-status\n(.*?)\n-->", re.DOTALL
 )
 
 

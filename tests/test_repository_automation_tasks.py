@@ -151,3 +151,39 @@ def test_flattened_updates_basic():
 def test_flattened_updates_missing_replacements():
     plans = [{"path": ".github/workflows/ci.yml", "text": "..."}]
     assert flattened_updates(plans) == []
+
+def test_discover_hotspots_happy_path(mocker):
+    """
+    Test discover_hotspots correctly ranks files by frequency.
+    """
+    # Create a fake output where file_a appears 3 times, file_b 2 times, file_c 1 time
+    fake_out = "file_a.py\nfile_b.py\n\nfile_a.py\nfile_c.py\n\nfile_b.py\nfile_a.py\n"
+    mocker.patch(
+        "repository_automation_tasks.git_output",
+        return_value=fake_out
+    )
+    from repository_automation_tasks import discover_hotspots
+
+    result = discover_hotspots(limit=2)
+    assert len(result) == 2
+    assert result[0] == ("file_a.py", 3)
+    assert result[1] == ("file_b.py", 2)
+
+    # Test limit 5
+    result_full = discover_hotspots(limit=5)
+    assert len(result_full) == 3
+    assert result_full[2] == ("file_c.py", 1)
+
+
+def test_discover_hotspots_exception(mocker):
+    """
+    Test discover_hotspots returns empty list on exception.
+    """
+    mocker.patch(
+        "repository_automation_tasks.git_output",
+        side_effect=RuntimeError("git failed")
+    )
+    from repository_automation_tasks import discover_hotspots
+
+    result = discover_hotspots(limit=2)
+    assert result == []

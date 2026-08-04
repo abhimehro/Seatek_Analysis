@@ -137,6 +137,37 @@ def test_command_env() -> None:
 # --- Salvaged from CONFLICTING #551 / #553 / #557 (adapted to main APIs) ---
 
 
+
+@patch("repository_automation_common.Path.read_text")
+def test_load_config_with_automation(mock_read_text):
+    mock_read_text.return_value = "automation:\n  enabled: true\n  key: value\n"
+    from repository_automation_common import load_config
+
+    result = load_config()
+
+    assert result == {"enabled": True, "key": "value"}
+    mock_read_text.assert_called_once()
+
+@patch("repository_automation_common.Path.read_text")
+def test_load_config_without_automation(mock_read_text):
+    mock_read_text.return_value = "other_section:\n  some_key: 123\n"
+    from repository_automation_common import load_config
+
+    result = load_config()
+
+    assert result == {}
+    mock_read_text.assert_called_once()
+
+@patch("repository_automation_common.Path.read_text")
+def test_load_config_empty_file(mock_read_text):
+    mock_read_text.return_value = ""
+    from repository_automation_common import load_config
+
+    result = load_config()
+
+    assert result == {}
+    mock_read_text.assert_called_once()
+
 def test_iso_day_with_value():
     known_time = dt.datetime(2024, 10, 15, 12, 30, 45, tzinfo=dt.UTC)
     assert iso_day(known_time) == "2024-10-15"

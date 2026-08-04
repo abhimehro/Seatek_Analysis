@@ -243,3 +243,12 @@ def test_warn_on_failure_emits(capsys):
     err = capsys.readouterr().err
     assert "gh" in err
     assert "boom" in err
+
+
+def test_task_dir(tmp_path):
+    from repository_automation_common import task_dir
+
+    with patch("repository_automation_common.OUTPUT_ROOT", tmp_path):
+        result = task_dir("test_task")
+        assert result == tmp_path / "test_task"
+        assert result.is_dir()

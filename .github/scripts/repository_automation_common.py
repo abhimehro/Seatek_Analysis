@@ -208,7 +208,16 @@ def run_shell_command(
 
 
 def run_checked(command: list[str]) -> subprocess.CompletedProcess[str]:
-    return run_process(command, check=True)
+    """Helper for simple subprocess calls that must succeed."""
+    env = command_env()
+    return subprocess.run(
+        command,
+        check=True,
+        capture_output=True,
+        text=True,
+        env=env,
+        timeout=300,
+    )
 
 
 def warn_on_default(

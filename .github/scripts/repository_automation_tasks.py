@@ -244,17 +244,22 @@ def _parse_workflow_files() -> tuple[set[str], list[dict[str, Any]]]:
     for file_path, text in zip(paths, texts):
         matches = []
         for match in WORKFLOW_PATTERN.finditer(text):
-            action_ref = match.group(2)
-            if action_ref.startswith("./") or action_ref.startswith("docker://"):
-                continue
-            parts = action_ref.split("/")
-            if len(parts) < 2:
-                continue
-            repo_id = "/".join(parts[:2])
-            repo_ids_to_fetch.add(repo_id)
-            matches.append(match)
+            repo_id = _extract_action_repo_id(match.group(2))
+            if repo_id:
+                repo_ids_to_fetch.add(repo_id)
+                matches.append(match)
         file_data.append({"path": file_path, "text": text, "matches": matches})
     return repo_ids_to_fetch, file_data
+
+
+def _extract_action_repo_id(action_ref: str) -> str | None:
+    """Extracts the repository ID from a GitHub Action reference if valid."""
+    if action_ref.startswith(("./", "docker://")):
+        return None
+    parts = action_ref.split("/")
+    if len(parts) < 2:
+        return None
+    return "/".join(parts[:2])
 
 
 def _compute_workflow_replacements(

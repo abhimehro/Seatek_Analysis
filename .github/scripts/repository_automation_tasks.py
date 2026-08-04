@@ -223,16 +223,24 @@ def fetch_latest_tags(repo_ids: set[str]) -> dict[str, str]:
 
 
 def _parse_workflow_files() -> tuple[set[str], list[dict[str, Any]]]:
-    repo_ids_to_fetch = set()
-    file_data = []
-    paths = sorted((ROOT / ".github" / "workflows").glob("*.y*ml"))
+    """Parses workflow files to find uses clauses."""
+    workflow_dir = ROOT / ".github" / "workflows"
+    if not workflow_dir.is_dir():
+        return set(), []
 
     async def read_workflow_files() -> list[str]:
-        return await asyncio.gather(
-            *(asyncio.to_thread(path.read_text) for path in paths)
-        )
+        loop = asyncio.get_running_loop()
+        tasks = []
+        for path in sorted(workflow_dir.glob("*.y*ml")):
+            tasks.append(loop.run_in_executor(None, path.read_text, "utf-8"))
+        if not tasks:
+            return []
+        return await asyncio.gather(*tasks)
 
+    repo_ids_to_fetch = set()
+    file_data = []
     texts = asyncio.run(read_workflow_files())
+    paths = sorted(workflow_dir.glob("*.y*ml"))
     for file_path, text in zip(paths, texts):
         matches = []
         for match in WORKFLOW_PATTERN.finditer(text):

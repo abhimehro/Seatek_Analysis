@@ -5,7 +5,7 @@ from typing import Any
 sys.path.insert(
     0, os.path.abspath(os.path.join(os.path.dirname(__file__), "../.github/scripts"))
 )
-from repository_automation_tasks import configured_commands, flattened_updates
+from repository_automation_tasks import configured_commands, flattened_updates, _parse_workflow_files
 
 
 def test_configured_commands_all_keys():
@@ -151,3 +151,43 @@ def test_flattened_updates_basic():
 def test_flattened_updates_missing_replacements():
     plans = [{"path": ".github/workflows/ci.yml", "text": "..."}]
     assert flattened_updates(plans) == []
+
+def test_parse_workflow_files_empty(mocker, tmp_path):
+    mocker.patch("repository_automation_tasks.ROOT", tmp_path)
+    # The workflows directory doesn't exist yet
+    repo_ids, file_data = _parse_workflow_files()
+    assert repo_ids == set()
+    assert file_data == []
+
+    # Directory exists but is empty
+    workflow_dir = tmp_path / ".github" / "workflows"
+    workflow_dir.mkdir(parents=True)
+    repo_ids, file_data = _parse_workflow_files()
+    assert repo_ids == set()
+    assert file_data == []
+
+
+def test_parse_workflow_files_valid(mocker, tmp_path):
+    mocker.patch("repository_automation_tasks.ROOT", tmp_path)
+    workflow_dir = tmp_path / ".github" / "workflows"
+    workflow_dir.mkdir(parents=True)
+
+    wf1 = workflow_dir / "ci.yml"
+    wf1.write_text("uses: actions/checkout@v3\nuses: custom/action/sub@v1")
+    wf2 = workflow_dir / "deploy.yaml"
+    wf2.write_text("uses:  docker://image:tag\nuses: ./local-action\nuses: other/repo@v2")
+
+    repo_ids, file_data = _parse_workflow_files()
+
+    assert repo_ids == {"actions/checkout", "custom/action", "other/repo"}
+    assert len(file_data) == 2
+
+    # Check ci.yml
+    assert file_data[0]["path"] == wf1
+    assert "actions/checkout@v3" in file_data[0]["text"]
+    assert len(file_data[0]["matches"]) == 2
+
+    # Check deploy.yaml
+    assert file_data[1]["path"] == wf2
+    assert "other/repo@v2" in file_data[1]["text"]
+    assert len(file_data[1]["matches"]) == 1 # only other/repo is matched, docker and local are skipped

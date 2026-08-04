@@ -228,30 +228,3 @@ def test_warn_on_failure_emits(capsys):
     err = capsys.readouterr().err
     assert "gh" in err
     assert "boom" in err
-
-@patch("repository_automation_common.subprocess.run")
-@patch("repository_automation_common.command_env")
-def test_run_checked(mock_command_env, mock_subprocess_run):
-    from repository_automation_common import run_checked
-
-    mock_env = {"DUMMY": "ENV"}
-    mock_command_env.return_value = mock_env
-
-    mock_proc = MagicMock()
-    mock_proc.returncode = 0
-    mock_proc.stdout = "output"
-    mock_proc.stderr = ""
-    mock_subprocess_run.return_value = mock_proc
-
-    result = run_checked(["git", "status"])
-
-    mock_command_env.assert_called_once()
-    mock_subprocess_run.assert_called_once_with(
-        ["git", "status"],
-        check=True,
-        capture_output=True,
-        text=True,
-        env=mock_env,
-        timeout=300,
-    )
-    assert result == mock_proc

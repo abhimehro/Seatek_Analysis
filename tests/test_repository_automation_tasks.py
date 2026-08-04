@@ -151,3 +151,41 @@ def test_flattened_updates_basic():
 def test_flattened_updates_missing_replacements():
     plans = [{"path": ".github/workflows/ci.yml", "text": "..."}]
     assert flattened_updates(plans) == []
+
+from unittest.mock import patch
+from repository_automation_tasks import run_command_set
+
+@patch("repository_automation_tasks.execute_configured_commands")
+def test_run_command_set_skipped(mock_exec):
+    config = {}
+    result = run_command_set(config, "my_section", "my_context")
+    assert result["status"] == "skipped"
+    assert "No my_section configuration found" in result["summary"]
+    mock_exec.assert_not_called()
+
+@patch("repository_automation_tasks.execute_configured_commands")
+def test_run_command_set_no_commands(mock_exec):
+    config = {"my_section": {"some": "config"}}
+    mock_exec.return_value = ([], [])
+    result = run_command_set(config, "my_section", "my_context")
+    assert result["status"] == "success"
+    assert result["summary"] == "No commands configured."
+    mock_exec.assert_called_once_with({"some": "config"}, "my_context")
+
+@patch("repository_automation_tasks.execute_configured_commands")
+def test_run_command_set_success(mock_exec):
+    config = {"my_section": {"some": "config"}}
+    mock_exec.return_value = ([1,2,3], [])
+    result = run_command_set(config, "my_section", "my_context")
+    assert result["status"] == "success"
+    assert result["summary"] == "All 3 commands succeeded."
+    mock_exec.assert_called_once_with({"some": "config"}, "my_context")
+
+@patch("repository_automation_tasks.execute_configured_commands")
+def test_run_command_set_failure(mock_exec):
+    config = {"my_section": {"some": "config"}}
+    mock_exec.return_value = ([1], [1,2])
+    result = run_command_set(config, "my_section", "my_context")
+    assert result["status"] == "failure"
+    assert result["summary"] == "2 commands failed."
+    mock_exec.assert_called_once_with({"some": "config"}, "my_context")

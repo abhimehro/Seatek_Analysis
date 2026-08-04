@@ -8,6 +8,7 @@ sys.path.insert(
 )
 from repository_automation_common import (
     BASH_BIN,
+    _remove_heuristic_secrets,
     command_env,
     filter_env_securely,
     is_commit_sha,
@@ -174,6 +175,28 @@ def test_truncate() -> None:
     assert truncated == long_text[: 20 - 15] + "\n... [truncated]"
     assert truncated.endswith("\n... [truncated]")
     assert len(truncated) < len(long_text)
+
+
+def test_remove_heuristic_secrets():
+    env = {
+        "SAFE_VAR": "keep_me",
+        "AWS_TOKEN": "remove_me",
+        "my_secret_key": "remove_me",
+        "DB_PASSWORD_PROD": "remove_me",
+        "AUTH_BEARER": "remove_me",
+        "GITHUB_CRED": "remove_me",
+        "REGULAR_SETTING": "keep_me_too",
+    }
+
+    _remove_heuristic_secrets(env)
+
+    assert env.get("SAFE_VAR") == "keep_me"
+    assert env.get("REGULAR_SETTING") == "keep_me_too"
+    assert "AWS_TOKEN" not in env
+    assert "my_secret_key" not in env
+    assert "DB_PASSWORD_PROD" not in env
+    assert "AUTH_BEARER" not in env
+    assert "GITHUB_CRED" not in env
 
 
 def test_filter_env_securely():

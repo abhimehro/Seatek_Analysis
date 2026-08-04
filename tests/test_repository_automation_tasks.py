@@ -5,7 +5,9 @@ from typing import Any
 sys.path.insert(
     0, os.path.abspath(os.path.join(os.path.dirname(__file__), "../.github/scripts"))
 )
-from repository_automation_tasks import configured_commands, flattened_updates
+from repository_automation_tasks import configured_commands, flattened_updates, _hotspot_line_count
+from pathlib import Path
+import tempfile
 
 
 def test_configured_commands_all_keys():
@@ -151,3 +153,28 @@ def test_flattened_updates_basic():
 def test_flattened_updates_missing_replacements():
     plans = [{"path": ".github/workflows/ci.yml", "text": "..."}]
     assert flattened_updates(plans) == []
+
+
+
+def test_hotspot_line_count_valid_file():
+    with tempfile.NamedTemporaryFile(mode="w", delete=False, encoding="utf-8") as tf:
+        tf.write("line 1\nline 2\nline 3")
+        tf_path = tf.name
+
+    try:
+        assert _hotspot_line_count(tf_path) == 3
+    finally:
+        os.remove(tf_path)
+
+def test_hotspot_line_count_non_existent():
+    assert _hotspot_line_count("/path/that/does/not/exist.txt") is None
+
+def test_hotspot_line_count_not_a_file(tmp_path):
+    dir_path = tmp_path / "test_dir"
+    dir_path.mkdir()
+    assert _hotspot_line_count(str(dir_path)) is None
+
+def test_hotspot_line_count_unreadable(tmp_path):
+    file_path = tmp_path / "unreadable.txt"
+    file_path.write_bytes(b"\xff\xfe\x00\x00") # some binary data that could cause decode error if read as utf-8
+    assert _hotspot_line_count(str(file_path)) is None

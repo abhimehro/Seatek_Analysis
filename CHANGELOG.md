@@ -71,6 +71,7 @@
 
 **Merged pull requests:**
 
+- fix\(env\): install R 4.3.3 from Posit r-builds CDN .deb [\#591](https://github.com/abhimehro/Seatek_Analysis/pull/591) ([abhimehro](https://github.com/abhimehro))
 - fix\(env\): install R 4.3.3 from Posit signed r-builds apt repo [\#589](https://github.com/abhimehro/Seatek_Analysis/pull/589) ([abhimehro](https://github.com/abhimehro))
 - ⚡ Bolt: \[performance improvement\] Optimize unlist overhead in data.table aggregation [\#581](https://github.com/abhimehro/Seatek_Analysis/pull/581) ([abhimehro](https://github.com/abhimehro))
 - chore\(devin\): add environment blueprint for R and Python setup [\#579](https://github.com/abhimehro/Seatek_Analysis/pull/579) ([abhimehro](https://github.com/abhimehro))

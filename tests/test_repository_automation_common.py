@@ -12,6 +12,7 @@ from repository_automation_common import (
     filter_env_securely,
     is_commit_sha,
     iso_day,
+    now_utc,
     numeric_version,
     run_shell_command,
     target_ref,
@@ -135,6 +136,20 @@ def test_command_env() -> None:
 
 
 # --- Salvaged from CONFLICTING #551 / #553 / #557 (adapted to main APIs) ---
+
+
+def test_now_utc():
+    now = now_utc()
+    assert isinstance(now, dt.datetime)
+    assert now.tzinfo == dt.timezone.utc
+
+
+def test_now_utc_mocked():
+    with patch("repository_automation_common.dt.datetime") as mock_datetime:
+        expected = dt.datetime(2025, 1, 1, 12, 0, 0, tzinfo=dt.timezone.utc)
+        mock_datetime.now.return_value = expected
+        assert now_utc() == expected
+        mock_datetime.now.assert_called_once_with(dt.UTC)
 
 
 def test_iso_day_with_value():

@@ -74,6 +74,7 @@ def test_prepare_command_extracts_first_cs_agent_line_from_multiline_comment(tmp
         capture_output=True,
         shell=False,
         text=True,
+        timeout=15,
         env={
             "PATH": os.environ.get("PATH", ""),
             "HOME": str(home_dir),
@@ -116,6 +117,7 @@ def test_prepare_command_fails_when_no_cs_agent_line_present(tmp_path):
         capture_output=True,
         shell=False,
         text=True,
+        timeout=15,
         env={
             "PATH": os.environ.get("PATH", ""),
             "HOME": str(home_dir),

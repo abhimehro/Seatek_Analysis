@@ -15,3 +15,4 @@ processing_warnings.log
 __pycache__/
 *.pyc
 test_venv/
+test_env/

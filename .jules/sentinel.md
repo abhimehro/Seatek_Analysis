@@ -212,3 +212,8 @@ that a file is a regular file using `os.path.isfile()` or
 `stat.S_ISREG(os.stat(path).st_mode)` before attempting to open and read its
 contents, especially in security wrappers designed to read untrusted files
 safely.
+
+## 2026-08-05 - Fix subprocess path hijacking and DoS risks
+**Vulnerability:** Found `shutil.which("gh") or "gh"` which causes path hijacking if `gh` isn't found. Also found missing `timeout` arguments in `subprocess.check_output` and `subprocess.run` calls, which can cause DoS if the external command hangs.
+**Learning:** `shutil.which` can return `None`, and falling back to a bare string literal reintroduces path hijacking risks. Subprocesses should always have timeouts to prevent indefinite hanging.
+**Prevention:** Remove fallback to bare string literals when using `shutil.which()`. Always specify a `timeout` argument (e.g. `timeout=15`) in `subprocess.check_output`, `subprocess.run`, or `subprocess.call` calls.

@@ -72,6 +72,7 @@
 
 **Merged pull requests:**
 
+- fix\(ci\): harden load\_config empty YAML \(salvages \#593\) [\#603](https://github.com/abhimehro/Seatek_Analysis/pull/603) ([abhimehro](https://github.com/abhimehro))
 - 🧪 Add missing tests for \_remove\_heuristic\_secrets [\#597](https://github.com/abhimehro/Seatek_Analysis/pull/597) ([abhimehro](https://github.com/abhimehro))
 - 🧪 Add test for task\_dir [\#594](https://github.com/abhimehro/Seatek_Analysis/pull/594) ([abhimehro](https://github.com/abhimehro))
 - 🧪 \[testing improvement description\] Add tests for now\_utc function [\#592](https://github.com/abhimehro/Seatek_Analysis/pull/592) ([abhimehro](https://github.com/abhimehro))

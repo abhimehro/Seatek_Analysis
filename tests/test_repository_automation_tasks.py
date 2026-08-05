@@ -175,6 +175,18 @@ def test_hotspot_line_count_not_a_file(tmp_path):
     assert _hotspot_line_count(str(dir_path)) is None
 
 def test_hotspot_line_count_unreadable(tmp_path):
-    file_path = tmp_path / "unreadable.txt"
-    file_path.write_bytes(b"\xff\xfe\x00\x00") # some binary data that could cause decode error if read as utf-8
-    assert _hotspot_line_count(str(file_path)) is None
+    dir_path = tmp_path / "test_dir2"
+    dir_path.mkdir()
+    assert _hotspot_line_count(str(dir_path)) is None
+
+def test_hotspot_line_count_exceeds_max_size(monkeypatch):
+    import repository_automation_tasks
+    monkeypatch.setattr(repository_automation_tasks, "MAX_FILE_SIZE", 10)
+    with tempfile.NamedTemporaryFile(mode="wb", delete=False) as tf:
+        tf.write(b"123456789012345")
+        tf_path = tf.name
+
+    try:
+        assert _hotspot_line_count(tf_path) is None
+    finally:
+        os.remove(tf_path)

@@ -66,19 +66,19 @@ def test_configured_commands_extra_keys():
     assert result[0] == ("command", {"name": "cmd1", "run": "c1"})
 
 
-from repository_automation_tasks import render_command_entry_section, render_entry_section, render_review_section
+from repository_automation_tasks import render_entry_section
 
 
-def test_render_command_entry_section_empty():
-    assert render_command_entry_section("Title", []) == []
+def test_render_entry_section_empty():
+    assert render_entry_section("Title", []) == []
 
 
-def test_render_command_entry_section_with_entries():
+def test_render_entry_section_with_entries():
     entries = [
         {"name": "cmd1", "ex" + "it_code": 0, "stdout": "success out", "stderr": ""},
         {"name": "cmd2", "ex" + "it_code": 1, "stdout": "", "stderr": "failed out"},
     ]
-    result = render_command_entry_section("Test Title", entries)
+    result = render_entry_section("Test Title", entries)
     expected = [
         "Test Title",
         "- **cmd1** -> ex" + "it `0`\n```text\nsuccess out\n```",
@@ -152,82 +152,18 @@ def test_flattened_updates_missing_replacements():
     plans = [{"path": ".github/workflows/ci.yml", "text": "..."}]
     assert flattened_updates(plans) == []
 
-
-def test_render_entry_section_empty():
-    assert render_entry_section("Title", []) == []
-
-def test_render_entry_section_with_entries():
-    entries = [
-        {
-            "number": 123,
-            "title": "Fix bug",
-            "url": "https://github.com/org/repo/pull/123",
-            "author": {"login": "johndoe"}
-        },
-        {
-            "number": 124,
-            "title": "Add feature",
-            # missing url to test edge case
-            "author": {"login": "janedoe"}
-        }
-    ]
-    result = render_entry_section("PRs", entries)
-    expected = [
-        "PRs",
-        "- [#123](https://github.com/org/repo/pull/123) **Fix bug** (@johndoe)",
-        "- #124 **Add feature** (@janedoe)",
-        ""
-    ]
-    assert result == expected
+from repository_automation_tasks import render_review_section
 
 def test_render_review_section_empty():
-    assert render_review_section("Title", [], "APPROVED") == []
+    assert render_review_section("Title", [], "Template: {name}") == []
 
-def test_render_review_section_filtering():
-    entries = [
-        {
-            "number": 101,
-            "title": "PR 1",
-            "url": "http://example.com/101",
-            "author": {"login": "alice"},
-            "reviewDecision": "APPROVED"
-        },
-        {
-            "number": 102,
-            "title": "PR 2",
-            "url": "http://example.com/102",
-            "author": {"login": "bob"},
-            "reviewDecision": "CHANGES_REQUESTED"
-        },
-        {
-            "number": 103,
-            "title": "PR 3",
-            "url": "http://example.com/103",
-            "author": {"login": "charlie"},
-            "reviewDecision": "APPROVED"
-        }
-    ]
-
-    # Should only return APPROVED PRs
-    result = render_review_section("Approved PRs", entries, "APPROVED")
+def test_render_review_section_with_entries():
+    entries = [{"name": "item1"}, {"name": "item2"}]
+    result = render_review_section("Review Title", entries, "- Needs review: {name}")
     expected = [
-        "Approved PRs",
-        "- [#101](http://example.com/101) **PR 1** (@alice)",
-        "- [#103](http://example.com/103) **PR 3** (@charlie)",
+        "Review Title",
+        "- Needs review: item1",
+        "- Needs review: item2",
         ""
     ]
     assert result == expected
-
-def test_render_review_section_no_match():
-    entries = [
-        {
-            "number": 101,
-            "title": "PR 1",
-            "url": "http://example.com/101",
-            "author": {"login": "alice"},
-            "reviewDecision": "CHANGES_REQUESTED"
-        }
-    ]
-
-    result = render_review_section("Approved PRs", entries, "APPROVED")
-    assert result == []

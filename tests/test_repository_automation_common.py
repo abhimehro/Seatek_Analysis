@@ -8,10 +8,12 @@ sys.path.insert(
 )
 from repository_automation_common import (
     BASH_BIN,
+    _remove_heuristic_secrets,
     command_env,
     filter_env_securely,
     is_commit_sha,
     iso_day,
+    now_utc,
     numeric_version,
     run_shell_command,
     target_ref,
@@ -137,6 +139,53 @@ def test_command_env() -> None:
 # --- Salvaged from CONFLICTING #551 / #553 / #557 (adapted to main APIs) ---
 
 
+def test_now_utc():
+    now = now_utc()
+    assert isinstance(now, dt.datetime)
+    assert now.tzinfo == dt.timezone.utc
+
+
+def test_now_utc_mocked():
+    with patch("repository_automation_common.dt.datetime") as mock_datetime:
+        expected = dt.datetime(2025, 1, 1, 12, 0, 0, tzinfo=dt.timezone.utc)
+        mock_datetime.now.return_value = expected
+        assert now_utc() == expected
+        mock_datetime.now.assert_called_once_with(dt.UTC)
+
+
+
+@patch("repository_automation_common.Path.read_text")
+def test_load_config_with_automation(mock_read_text):
+    mock_read_text.return_value = "automation:\n  enabled: true\n  key: value\n"
+    from repository_automation_common import load_config
+
+    result = load_config()
+
+    assert result == {"enabled": True, "key": "value"}
+    mock_read_text.assert_called_once()
+
+
+@patch("repository_automation_common.Path.read_text")
+def test_load_config_without_automation(mock_read_text):
+    mock_read_text.return_value = "other_section:\n  some_key: 123\n"
+    from repository_automation_common import load_config
+
+    result = load_config()
+
+    assert result == {}
+    mock_read_text.assert_called_once()
+
+
+@patch("repository_automation_common.Path.read_text")
+def test_load_config_empty_file(mock_read_text):
+    mock_read_text.return_value = ""
+    from repository_automation_common import load_config
+
+    result = load_config()
+
+    assert result == {}
+    mock_read_text.assert_called_once()
+
 def test_iso_day_with_value():
     known_time = dt.datetime(2024, 10, 15, 12, 30, 45, tzinfo=dt.UTC)
     assert iso_day(known_time) == "2024-10-15"
@@ -159,6 +208,28 @@ def test_truncate() -> None:
     assert truncated == long_text[: 20 - 15] + "\n... [truncated]"
     assert truncated.endswith("\n... [truncated]")
     assert len(truncated) < len(long_text)
+
+
+def test_remove_heuristic_secrets():
+    env = {
+        "SAFE_VAR": "keep_me",
+        "AWS_TOKEN": "remove_me",
+        "my_secret_key": "remove_me",
+        "DB_PASSWORD_PROD": "remove_me",
+        "AUTH_BEARER": "remove_me",
+        "GITHUB_CRED": "remove_me",
+        "REGULAR_SETTING": "keep_me_too",
+    }
+
+    _remove_heuristic_secrets(env)
+
+    assert env.get("SAFE_VAR") == "keep_me"
+    assert env.get("REGULAR_SETTING") == "keep_me_too"
+    assert "AWS_TOKEN" not in env
+    assert "my_secret_key" not in env
+    assert "DB_PASSWORD_PROD" not in env
+    assert "AUTH_BEARER" not in env
+    assert "GITHUB_CRED" not in env
 
 
 def test_filter_env_securely():
@@ -228,3 +299,12 @@ def test_warn_on_failure_emits(capsys):
     err = capsys.readouterr().err
     assert "gh" in err
     assert "boom" in err
+
+
+def test_task_dir(tmp_path):
+    from repository_automation_common import task_dir
+
+    with patch("repository_automation_common.OUTPUT_ROOT", tmp_path):
+        result = task_dir("test_task")
+        assert result == tmp_path / "test_task"
+        assert result.is_dir()

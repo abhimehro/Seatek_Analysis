@@ -10,9 +10,14 @@
 
 **Closed issues:**
 
+- \[repo-automation\] Daily Status Report - 2026-08-05 [\#609](https://github.com/abhimehro/Seatek_Analysis/issues/609)
+- Daily QA & Agentic Review — 2026-08-04 [\#604](https://github.com/abhimehro/Seatek_Analysis/issues/604)
+- \[repo-automation\] Daily Status Report - 2026-08-04 [\#602](https://github.com/abhimehro/Seatek_Analysis/issues/602)
+- Daily QA & Agentic Review — 2026-08-03 [\#587](https://github.com/abhimehro/Seatek_Analysis/issues/587)
 - \[repo-automation\] Daily Status Report - 2026-08-03 [\#586](https://github.com/abhimehro/Seatek_Analysis/issues/586)
 - Daily QA & Agentic Review — 2026-08-02 [\#583](https://github.com/abhimehro/Seatek_Analysis/issues/583)
 - \[repo-automation\] Daily Status Report - 2026-08-02 [\#582](https://github.com/abhimehro/Seatek_Analysis/issues/582)
+- Daily QA & Agentic Review — 2026-08-01 [\#577](https://github.com/abhimehro/Seatek_Analysis/issues/577)
 - \[repo-automation\] Daily Status Report - 2026-08-01 [\#575](https://github.com/abhimehro/Seatek_Analysis/issues/575)
 - \[repo-automation\] Daily Status Report - 2026-07-31 [\#570](https://github.com/abhimehro/Seatek_Analysis/issues/570)
 - Daily QA & Agentic Review — 2026-07-30 [\#566](https://github.com/abhimehro/Seatek_Analysis/issues/566)
@@ -72,6 +77,7 @@
 
 **Merged pull requests:**
 
+- ⚡ Bolt: Optimize dataframe column extraction in loop [\#613](https://github.com/abhimehro/Seatek_Analysis/pull/613) ([abhimehro](https://github.com/abhimehro))
 - ⚡ Bolt: Optimize top N data.table row subsetting [\#608](https://github.com/abhimehro/Seatek_Analysis/pull/608) ([abhimehro](https://github.com/abhimehro))
 - fix\(ci\): harden load\_config empty YAML \(salvages \#593\) [\#603](https://github.com/abhimehro/Seatek_Analysis/pull/603) ([abhimehro](https://github.com/abhimehro))
 - 🧪 Add missing tests for \_remove\_heuristic\_secrets [\#597](https://github.com/abhimehro/Seatek_Analysis/pull/597) ([abhimehro](https://github.com/abhimehro))

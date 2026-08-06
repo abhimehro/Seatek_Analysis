@@ -185,16 +185,18 @@ compute_sensor_metrics <- function(df, filename) {
   last5 <- numeric(len_sensors)
   full <- numeric(len_sensors)
 
+  # ⚡ Bolt: Use .subset2 to avoid [[.data.frame dispatch overhead
   for (j in seq_len(len_sensors)) {
-    v <- df[[sensor_names[j]]]
+    v <- .subset2(df, sensor_names[j])
 
     v_first <- v[idx_first]
-    first10[j] <- mean(v_first[which(v_first > 0)])
+    # ⚡ Bolt: Bypass generic mean() S3 dispatch with mean.default() for speed
+    first10[j] <- mean.default(v_first[which(v_first > 0)])
 
     v_last <- v[idx_last]
-    last5[j] <- mean(v_last[which(v_last > 0)])
+    last5[j] <- mean.default(v_last[which(v_last > 0)])
 
-    full[j] <- mean(v[which(v > 0)])
+    full[j] <- mean.default(v[which(v > 0)])
   }
   diff <- full - first10
   # Derive sheet/year name

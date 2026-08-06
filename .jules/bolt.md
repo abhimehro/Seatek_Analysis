@@ -334,3 +334,8 @@ removing repeated calls and helper functions that hide the system call.
 
 **Learning:** In `data.table`, when extracting the top N rows based on an ordered column, applying the row subsetting directly to the order index (e.g., `dt[order(-col)[1:N], ...]`) rather than subsetting the sorted data table (e.g., `dt[order(-col)][1:N, ...]`) prevents allocating memory for a full O(N) copy of the sorted dataset.
 **Action:** Always apply subset indices to the `order()` function's output rather than the sorted `data.table` object when extracting top N records.
+
+## 2025-08-06 - Bypass generic S3 method dispatch overhead in high-frequency loops
+
+**Learning:** In high-frequency R loops accessing dataframe columns (like `df[[col_name]]`) and calling generic methods (`mean()`), the standard evaluation incurs significant S3 method dispatch overhead. Using `.subset2(df, col_name)` avoids the `[[.data.frame` method lookup, and `mean.default()` bypasses the `mean()` generic dispatcher.
+**Action:** When extracting dataframe columns and computing simple vectors inside performance-critical, highly-iterative loops, use `.subset2(df, col_name)` over `[[` and call the default underlying methods (like `mean.default()`) directly to achieve a measurable execution speedup without losing code readability.

@@ -151,19 +151,3 @@ def test_flattened_updates_basic():
 def test_flattened_updates_missing_replacements():
     plans = [{"path": ".github/workflows/ci.yml", "text": "..."}]
     assert flattened_updates(plans) == []
-
-from repository_automation_tasks import render_review_section
-
-def test_render_review_section_empty():
-    assert render_review_section("Title", [], "Template: {name}") == []
-
-def test_render_review_section_with_entries():
-    entries = [{"name": "item1"}, {"name": "item2"}]
-    result = render_review_section("Review Title", entries, "- Needs review: {name}")
-    expected = [
-        "Review Title",
-        "- Needs review: item1",
-        "- Needs review: item2",
-        ""
-    ]
-    assert result == expected

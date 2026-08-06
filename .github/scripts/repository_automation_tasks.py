@@ -95,7 +95,7 @@ def classify_entries(
     return failures, warnings
 
 
-def render_command_entry_section(title: str, entries: list[dict[str, Any]]) -> list[str]:
+def render_entry_section(title: str, entries: list[dict[str, Any]]) -> list[str]:
     if not entries:
         return []
     lines = [title]
@@ -104,7 +104,7 @@ def render_command_entry_section(title: str, entries: list[dict[str, Any]]) -> l
     return lines
 
 
-def render_command_review_section(
+def render_review_section(
     title: str, entries: list[dict[str, Any]], template: str
 ) -> list[str]:
     if not entries:
@@ -113,35 +113,6 @@ def render_command_review_section(
     lines.extend(template.format(name=entry["name"]) for entry in entries)
     lines.append("")
     return lines
-
-
-def render_entry_section(title: str, entries: list[dict[str, Any]]) -> list[str]:
-    if not entries:
-        return []
-    lines = [title]
-    for entry in entries:
-        # Assumes standard GH CLI json format for issues/PRs
-        num = entry.get("number", "?")
-        title_text = entry.get("title", "Untitled")
-        url = entry.get("url", "")
-        author = entry.get("author", {}).get("login", "unknown")
-
-        link = f"[#{num}]({url})" if url else f"#{num}"
-        lines.append(f"- {link} **{title_text}** (@{author})")
-
-    lines.append("")
-    return lines
-
-
-def render_review_section(
-    title: str, entries: list[dict[str, Any]], required_status: str
-) -> list[str]:
-    """Renders PRs requiring a specific review status."""
-    matching = [
-        e for e in entries
-        if e.get("reviewDecision") == required_status
-    ]
-    return render_entry_section(title, matching)
 
 
 def run_command_set(
@@ -158,10 +129,10 @@ def run_command_set(
         f"- Summary: {summary}",
         "",
     ]
-    body_parts.extend(render_command_entry_section("## Setup commands", setup_entries))
-    body_parts.extend(render_command_entry_section("## Validation commands", command_entries))
+    body_parts.extend(render_entry_section("## Setup commands", setup_entries))
+    body_parts.extend(render_entry_section("## Validation commands", command_entries))
     body_parts.extend(
-        render_command_review_section(
+        render_review_section(
             "## Human review required",
             failures,
             "- `{name}` failed and is not marked optional.",
@@ -169,7 +140,7 @@ def run_command_set(
     )
     if not failures:
         body_parts.extend(
-            render_command_review_section(
+            render_review_section(
                 "## Optional command warnings",
                 warnings,
                 "- `{name}` failed but is configured as optional.",

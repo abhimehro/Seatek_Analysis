@@ -81,6 +81,7 @@
 - ⚡ Bolt: Optimize top N data.table row subsetting [\#608](https://github.com/abhimehro/Seatek_Analysis/pull/608) ([abhimehro](https://github.com/abhimehro))
 - fix\(ci\): harden load\_config empty YAML \(salvages \#593\) [\#603](https://github.com/abhimehro/Seatek_Analysis/pull/603) ([abhimehro](https://github.com/abhimehro))
 - 🧪 Add missing tests for \_remove\_heuristic\_secrets [\#597](https://github.com/abhimehro/Seatek_Analysis/pull/597) ([abhimehro](https://github.com/abhimehro))
+- 🧪 Add tests for \_hotspot\_line\_count [\#596](https://github.com/abhimehro/Seatek_Analysis/pull/596) ([abhimehro](https://github.com/abhimehro))
 - 🧪 Add test for task\_dir [\#594](https://github.com/abhimehro/Seatek_Analysis/pull/594) ([abhimehro](https://github.com/abhimehro))
 - 🧪 \[testing improvement description\] Add tests for now\_utc function [\#592](https://github.com/abhimehro/Seatek_Analysis/pull/592) ([abhimehro](https://github.com/abhimehro))
 - fix\(env\): install R 4.3.3 from Posit r-builds CDN .deb [\#591](https://github.com/abhimehro/Seatek_Analysis/pull/591) ([abhimehro](https://github.com/abhimehro))

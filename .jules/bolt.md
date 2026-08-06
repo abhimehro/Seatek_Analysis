@@ -329,8 +329,3 @@ removing repeated calls and helper functions that hide the system call.
 
 **Learning:** In R, when using `unlist()` to flatten lists into vectors within high-frequency loops or grouped `data.table` aggregations, inherently constructing and assigning names causes significant memory and string manipulation overhead.
 **Action:** When the resulting names of an unlisted vector are not required for downstream logic, explicitly pass `use.names = FALSE` to `unlist()`. This significantly reduces memory allocation overhead.
-
-## 2025-05-06 - Optimize data.table top N row subsetting
-
-**Learning:** In `data.table`, when extracting the top N rows based on an ordered column, applying the row subsetting directly to the order index (e.g., `dt[order(-col)[1:N], ...]`) rather than subsetting the sorted data table (e.g., `dt[order(-col)][1:N, ...]`) prevents allocating memory for a full O(N) copy of the sorted dataset.
-**Action:** Always apply subset indices to the `order()` function's output rather than the sorted `data.table` object when extracting top N records.

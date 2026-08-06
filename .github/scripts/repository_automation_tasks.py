@@ -58,7 +58,7 @@ def configured_commands(section: dict[str, Any]) -> list[tuple[str, dict[str, An
 
 
 def execute_configured_commands(
-    section: dict[str, Any], context: str = ""
+    section: dict[str, Any],
 ) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
     setup_entries = []
     command_entries = []
@@ -115,7 +115,7 @@ def render_review_section(
     return lines
 
 
-def warn_on_failure_run_command_set(
+def run_command_set(
     task_name: str, section: dict[str, Any]
 ) -> tuple[str, str, dict[str, Any]]:
     setup_entries, command_entries = execute_configured_commands(section)
@@ -464,7 +464,7 @@ def run_workflow_updater(config: dict[str, Any]) -> dict[str, Any]:
 
 def run_performance_optimizer(config: dict[str, Any]) -> dict[str, Any]:
     section = config.get("performance_optimizer", {})
-    status, summary, details = warn_on_failure_run_command_set(
+    status, summary, details = run_command_set(
         "performance-optimizer",
         {
             "setup_commands": section.get("setup_commands", []),
@@ -495,7 +495,7 @@ def run_performance_optimizer(config: dict[str, Any]) -> dict[str, Any]:
 
 def run_quality_assurance(config: dict[str, Any]) -> dict[str, Any]:
     section = config.get("quality_assurance", {})
-    status, summary, details = warn_on_failure_run_command_set("quality-assurance", section)
+    status, summary, details = run_command_set("quality-assurance", section)
     return write_result(
         "quality-assurance",
         status,
@@ -1014,38 +1014,3 @@ def run_weekly_retrospective(config: dict[str, Any]) -> dict[str, Any]:
         body,
         {"issue_url": issue_url, "runs": runs, "safe_pr_url": safe_pr_url},
     )
-
-
-def run_command_set(
-    config: dict[str, Any], section_name: str, context: str
-) -> dict[str, Any]:
-    """Runs a set of commands and formats the result."""
-    import repository_automation_common as common
-    section_config = config.get(section_name, {})
-    if not section_config:
-        return common.build_result(
-            task=context,
-            status="skipped",
-            summary=f"No {section_name} configuration found.",
-        )
-
-    successes, failures = execute_configured_commands(section_config, context)
-
-    if len(successes) == 0 and len(failures) == 0:
-        return common.build_result(
-            task=context,
-            status="success",
-            summary="No commands configured.",
-        )
-    elif len(failures) > 0:
-        return common.build_result(
-            task=context,
-            status="failure",
-            summary=f"{len(failures)} commands failed.",
-        )
-    else:
-        return common.build_result(
-            task=context,
-            status="success",
-            summary=f"All {len(successes)} commands succeeded.",
-        )

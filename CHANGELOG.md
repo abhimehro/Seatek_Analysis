@@ -10,7 +10,6 @@
 
 **Closed issues:**
 
-- \[repo-automation\] Daily Status Report - 2026-08-03 [\#586](https://github.com/abhimehro/Seatek_Analysis/issues/586)
 - Daily QA & Agentic Review — 2026-08-02 [\#583](https://github.com/abhimehro/Seatek_Analysis/issues/583)
 - \[repo-automation\] Daily Status Report - 2026-08-02 [\#582](https://github.com/abhimehro/Seatek_Analysis/issues/582)
 - \[repo-automation\] Daily Status Report - 2026-08-01 [\#575](https://github.com/abhimehro/Seatek_Analysis/issues/575)
@@ -72,15 +71,8 @@
 
 **Merged pull requests:**
 
-- ⚡ Bolt: Optimize top N data.table row subsetting [\#608](https://github.com/abhimehro/Seatek_Analysis/pull/608) ([abhimehro](https://github.com/abhimehro))
-- fix\(ci\): harden load\_config empty YAML \(salvages \#593\) [\#603](https://github.com/abhimehro/Seatek_Analysis/pull/603) ([abhimehro](https://github.com/abhimehro))
-- 🧪 Add missing tests for \_remove\_heuristic\_secrets [\#597](https://github.com/abhimehro/Seatek_Analysis/pull/597) ([abhimehro](https://github.com/abhimehro))
-- 🧪 Add test for task\_dir [\#594](https://github.com/abhimehro/Seatek_Analysis/pull/594) ([abhimehro](https://github.com/abhimehro))
-- 🧪 \[testing improvement description\] Add tests for now\_utc function [\#592](https://github.com/abhimehro/Seatek_Analysis/pull/592) ([abhimehro](https://github.com/abhimehro))
 - fix\(env\): install R 4.3.3 from Posit r-builds CDN .deb [\#591](https://github.com/abhimehro/Seatek_Analysis/pull/591) ([abhimehro](https://github.com/abhimehro))
 - fix\(env\): install R 4.3.3 from Posit signed r-builds apt repo [\#589](https://github.com/abhimehro/Seatek_Analysis/pull/589) ([abhimehro](https://github.com/abhimehro))
-- chore: Daily QA Agentic Review complete [\#588](https://github.com/abhimehro/Seatek_Analysis/pull/588) ([abhimehro](https://github.com/abhimehro))
-- chore: Daily QA Review [\#584](https://github.com/abhimehro/Seatek_Analysis/pull/584) ([abhimehro](https://github.com/abhimehro))
 - ⚡ Bolt: \[performance improvement\] Optimize unlist overhead in data.table aggregation [\#581](https://github.com/abhimehro/Seatek_Analysis/pull/581) ([abhimehro](https://github.com/abhimehro))
 - chore\(devin\): add environment blueprint for R and Python setup [\#579](https://github.com/abhimehro/Seatek_Analysis/pull/579) ([abhimehro](https://github.com/abhimehro))
 - Jules Daily QA & Agentic Review Summary [\#578](https://github.com/abhimehro/Seatek_Analysis/pull/578) ([abhimehro](https://github.com/abhimehro))

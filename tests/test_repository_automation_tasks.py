@@ -156,36 +156,51 @@ from unittest.mock import patch
 from repository_automation_tasks import run_command_set
 
 @patch("repository_automation_tasks.execute_configured_commands")
-def test_run_command_set_skipped(mock_exec):
-    config = {}
-    result = run_command_set(config, "my_section", "my_context")
-    assert result["status"] == "skipped"
-    assert "No my_section configuration found" in result["summary"]
-    mock_exec.assert_not_called()
-
-@patch("repository_automation_tasks.execute_configured_commands")
-def test_run_command_set_no_commands(mock_exec):
-    config = {"my_section": {"some": "config"}}
-    mock_exec.return_value = ([], [])
-    result = run_command_set(config, "my_section", "my_context")
-    assert result["status"] == "success"
-    assert result["summary"] == "No commands configured."
-    mock_exec.assert_called_once_with({"some": "config"}, "my_context")
-
-@patch("repository_automation_tasks.execute_configured_commands")
 def test_run_command_set_success(mock_exec):
-    config = {"my_section": {"some": "config"}}
-    mock_exec.return_value = ([1,2,3], [])
-    result = run_command_set(config, "my_section", "my_context")
-    assert result["status"] == "success"
-    assert result["summary"] == "All 3 commands succeeded."
-    mock_exec.assert_called_once_with({"some": "config"}, "my_context")
+    config = {"setup_commands": [], "commands": []}
+
+    setup_entries = [{"name": "setup1", "exit_code": 0, "optional": False, "stdout": "", "stderr": ""}]
+    command_entries = [{"name": "cmd1", "exit_code": 0, "optional": False, "stdout": "", "stderr": ""}]
+    mock_exec.return_value = (setup_entries, command_entries)
+
+    status, summary, details = run_command_set("my-task", config)
+
+    assert status == "success"
+    assert "executed 1 setup commands and 1 validation commands" in summary
+    assert details["setup_results"] == setup_entries
+    assert details["command_results"] == command_entries
+    assert "Status: **success**" in details["body"]
+    mock_exec.assert_called_once_with(config)
+
+
+@patch("repository_automation_tasks.execute_configured_commands")
+def test_run_command_set_warning(mock_exec):
+    config = {"commands": []}
+
+    setup_entries = []
+    # A failure on an optional command results in a warning
+    command_entries = [{"name": "cmd1", "exit_code": 1, "optional": True, "stdout": "", "stderr": ""}]
+    mock_exec.return_value = (setup_entries, command_entries)
+
+    status, summary, details = run_command_set("my-task", config)
+
+    assert status == "warning"
+    assert "Status: **warning**" in details["body"]
+    assert "Optional command warnings" in details["body"]
+    mock_exec.assert_called_once_with(config)
+
 
 @patch("repository_automation_tasks.execute_configured_commands")
 def test_run_command_set_failure(mock_exec):
-    config = {"my_section": {"some": "config"}}
-    mock_exec.return_value = ([1], [1,2])
-    result = run_command_set(config, "my_section", "my_context")
-    assert result["status"] == "failure"
-    assert result["summary"] == "2 commands failed."
-    mock_exec.assert_called_once_with({"some": "config"}, "my_context")
+    config = {"commands": []}
+
+    setup_entries = [{"name": "setup1", "exit_code": 1, "optional": False, "stdout": "", "stderr": ""}]
+    command_entries = []
+    mock_exec.return_value = (setup_entries, command_entries)
+
+    status, summary, details = run_command_set("my-task", config)
+
+    assert status == "failure"
+    assert "Status: **failure**" in details["body"]
+    assert "Human review required" in details["body"]
+    mock_exec.assert_called_once_with(config)

@@ -339,3 +339,8 @@ removing repeated calls and helper functions that hide the system call.
 
 **Learning:** In high-frequency R loops accessing dataframe columns (like `df[[col_name]]`) and calling generic methods (`mean()`), the standard evaluation incurs significant S3 method dispatch overhead. Using `.subset2(df, col_name)` avoids the `[[.data.frame` method lookup, and `mean.default()` bypasses the `mean()` generic dispatcher.
 **Action:** When extracting dataframe columns and computing simple vectors inside performance-critical, highly-iterative loops, use `.subset2(df, col_name)` over `[[` and call the default underlying methods (like `mean.default()`) directly to achieve a measurable execution speedup without losing code readability.
+
+## 2025-05-06 - Prevent redundant POSIXct conversion in read_sensor_data
+
+**Learning:** When reading files, `fread` sometimes automatically parses datetime columns directly to `POSIXct` objects. Unconditionally running `as.numeric()` followed by `as.POSIXct()` on an already-parsed `POSIXct` column introduces a significant O(N) allocation and conversion overhead across all rows in high-frequency file reads.
+**Action:** Always extract the column quickly using `.subset2(dt, "Column")` and check `inherits(ts_col, "POSIXct")` before attempting numeric and date conversion to avoid redundant O(N) overhead.

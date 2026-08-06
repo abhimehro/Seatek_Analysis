@@ -412,12 +412,10 @@ export_top_sensors_summary <- function(wb, summary_df, output_file,
   if (is.data.table(summary_df)) {
     # use get or with=FALSE to avoid no visible binding warning for
     # ..cols_to_keep
-    # ⚡ Bolt: Apply row subsetting directly to the order index to prevent
-    # allocating memory for a full O(N) copy of the sorted dataset.
     top_sensors <-
-      summary_df[order(-abs_diff)[1:top_n], cols_to_keep, with = FALSE]
+      summary_df[order(-abs_diff)][1:top_n, cols_to_keep, with = FALSE]
   } else {
-    top_sensors <- summary_df[order(-abs_diff)[1:top_n], cols_to_keep]
+    top_sensors <- summary_df[order(-abs_diff), ][1:top_n, cols_to_keep]
   }
 
   csv_top <- sub("\\.xlsx$", "_top_sensors.csv", output_file)

@@ -212,3 +212,9 @@ that a file is a regular file using `os.path.isfile()` or
 `stat.S_ISREG(os.stat(path).st_mode)` before attempting to open and read its
 contents, especially in security wrappers designed to read untrusted files
 safely.
+
+## 2025-05-18 - Missing Timeout in Subprocess Execution
+
+**Vulnerability:** The script executed system commands via `subprocess.check_output` without specifying a `timeout` argument. If the external process hangs indefinitely (e.g., waiting for network IO, a lock file, or due to a bug), the calling Python process will block forever. This can lead to a Denial of Service (DoS) vulnerability, resource exhaustion, and pipeline stalling.
+**Learning:** External processes are untrusted dependencies in terms of execution time. Always defensively assume that a subprocess might hang.
+**Prevention:** Always provide a reasonable `timeout` argument (e.g., `timeout=15`) when using blocking functions like `subprocess.check_output`, `subprocess.run`, or `subprocess.call` to ensure the program can fail securely and recover.

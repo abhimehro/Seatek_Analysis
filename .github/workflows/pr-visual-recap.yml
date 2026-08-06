@@ -218,7 +218,7 @@ jobs:
       VISUAL_RECAP_SKILL_SOURCE: ${{ vars.VISUAL_RECAP_SKILL_SOURCE || 'auto' }}
       VISUAL_RECAP_SECRET_SCAN: ${{ vars.VISUAL_RECAP_SECRET_SCAN || 'high-confidence' }}
     steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
           # This job runs an agent over untrusted PR diff; don't leave the token
@@ -240,7 +240,7 @@ jobs:
             echo "local=false" >> "$GITHUB_OUTPUT"
           fi
 
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/checkout@v4
         if: steps.cli.outputs.local == 'true'
         with:
           ref: ${{ github.event.pull_request.base.sha }}
@@ -251,7 +251,7 @@ jobs:
       - uses: pnpm/action-setup@0ebf47130e4866e96fce0953f49152a61190b271 # v6.0.9
         if: steps.cli.outputs.local == 'true'
 
-      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+      - uses: actions/setup-node@v4
         with:
           node-version: "22"
           cache: ${{ steps.cli.outputs.local == 'true' && 'pnpm' || '' }}
@@ -675,7 +675,7 @@ jobs:
 
       - name: Upload recap screenshot artifact
         if: steps.shot.outputs.captured == 'true'
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        uses: actions/upload-artifact@v4
         with:
           name: pr-visual-recap-${{ github.event.pull_request.number }}
           path: |
@@ -686,7 +686,7 @@ jobs:
 
       - name: Upload recap source artifact
         if: always() && !cancelled()
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        uses: actions/upload-artifact@v4
         with:
           # recap-source.json + the agent transcript (claude-result.json /
           # codex-events.jsonl + stderr) are the only window into WHAT the agent

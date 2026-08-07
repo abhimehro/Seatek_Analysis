@@ -36,14 +36,12 @@ def get_repo_info():
             return "unknown", "unknown", "unknown"
 
         # Get origin URL
-        # SECURITY: Added timeout=15 to prevent DoS if git process hangs
         origin_url = subprocess.check_output(  # nosec B603
             [git_bin, "remote", "get-url", "origin"],
             stderr=subprocess.DEVNULL,
             env=env,
             text=True,
             shell=False,
-            timeout=15,
         ).strip()
 
         # Parse account and project from URL
@@ -54,14 +52,12 @@ def get_repo_info():
         account, project = match.groups()
 
         # Get current commit hash
-        # SECURITY: Added timeout=15 to prevent DoS if git process hangs
         commit_hash = subprocess.check_output(  # nosec B603
             [git_bin, "rev-parse", "HEAD"],
             stderr=subprocess.DEVNULL,
             env=env,
             text=True,
             shell=False,
-            timeout=15,
         ).strip()
 
         return account, project, commit_hash

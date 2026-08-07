@@ -212,3 +212,7 @@ that a file is a regular file using `os.path.isfile()` or
 `stat.S_ISREG(os.stat(path).st_mode)` before attempting to open and read its
 contents, especially in security wrappers designed to read untrusted files
 safely.
+## 2025-07-11 - [B607] Starting a process with a partial executable path (Path Hijacking Vulnerability)
+**Vulnerability:** The script executed system commands via `subprocess` by checking `shutil.which('binary')` but falling back to `"binary"` if it was not found (e.g., `GH_BIN = shutil.which("gh") or "gh"`). This makes the application vulnerable to path hijacking (where an attacker modifies the PATH environment variable to point to a malicious executable, or places one in the current working directory).
+**Learning:** Falling back to a bare executable name when `shutil.which` fails defeats the purpose of the security check and introduces unnecessary risk, especially on systems where the OS might search the current working directory first (e.g. Windows).
+**Prevention:** Always exclusively use `shutil.which("executable_name")` to resolve the absolute path of system binaries before passing them to `subprocess` functions, and raise a clear exception or fail gracefully if the absolute path cannot be resolved.

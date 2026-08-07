@@ -115,11 +115,15 @@ read_sensor_data <- function(file_path,
   # Convert timestamp if numeric
   # ⚡ Bolt: Prevent redundant memory allocations and full traversals
   # by using anyNA and reusing the parsed numeric timestamp vector
-  # instead of calling as.numeric twice
-  num_ts <- suppressWarnings(as.numeric(dt$Timestamp))
-  if (!anyNA(num_ts)) {
-    # ⚡ Bolt: Specifying tz="UTC" prevents the system timezone lookup overhead
-    dt[, "Timestamp" := as.POSIXct(num_ts, origin = "1970-01-01", tz = "UTC")] # nolint: object_name_linter
+  # instead of calling as.numeric twice. Also, check if it's already POSIXct
+  # because fread might auto-parse it.
+  ts_col <- .subset2(dt, "Timestamp")
+  if (!inherits(ts_col, "POSIXct")) {
+    num_ts <- suppressWarnings(as.numeric(ts_col))
+    if (!anyNA(num_ts)) {
+      # ⚡ Bolt: Specifying tz="UTC" prevents the system timezone lookup overhead
+      dt[, "Timestamp" := as.POSIXct(num_ts, origin = "1970-01-01", tz = "UTC")] # nolint: object_name_linter
+    }
   }
   dt
 }

@@ -339,3 +339,7 @@ removing repeated calls and helper functions that hide the system call.
 
 **Learning:** In high-frequency R loops accessing dataframe columns (like `df[[col_name]]`) and calling generic methods (`mean()`), the standard evaluation incurs significant S3 method dispatch overhead. Using `.subset2(df, col_name)` avoids the `[[.data.frame` method lookup, and `mean.default()` bypasses the `mean()` generic dispatcher.
 **Action:** When extracting dataframe columns and computing simple vectors inside performance-critical, highly-iterative loops, use `.subset2(df, col_name)` over `[[` and call the default underlying methods (like `mean.default()`) directly to achieve a measurable execution speedup without losing code readability.
+
+## 2025-05-06 - Avoid redundant datetime conversions after data.table::fread
+**Learning:** In R, when a function like `fread` might automatically parse datetime columns to `POSIXct` objects, unconditionally applying `as.numeric()` and `as.POSIXct()` introduces a significant O(N) allocation overhead for redundant conversions.
+**Action:** Use `.subset2(dt, "Column")` to quickly extract the column and check `inherits(col, "POSIXct")` before applying redundant type conversions.

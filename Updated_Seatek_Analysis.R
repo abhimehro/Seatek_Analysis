@@ -98,16 +98,14 @@ read_sensor_data <- function(file_path,
   total_cols <- ncol(dt)
   sensor_cols <- min(total_cols - 1, 32)
   # Name sensors and timestamp
-  # ⚡ Bolt: Avoid paste0 with sprintf, use sprintf directly for performance
-  setnames(dt, 1:sensor_cols, sprintf("Sensor%02d", 1:sensor_cols))
+  setnames(dt, 1:sensor_cols, paste0("Sensor", sprintf("%02d", 1:sensor_cols)))
   if (total_cols >= sensor_cols + 1) {
     setnames(dt, sensor_cols + 1, "Timestamp")
   }
   # Keep only sensor columns + Timestamp
   # ⚡ Bolt: Use by-reference deletion to prevent deep copy memory allocations
   cols_to_keep <- c(
-    # ⚡ Bolt: Avoid paste0 with sprintf, use sprintf directly for performance
-    sprintf("Sensor%02d", 1:sensor_cols),
+    paste0("Sensor", sprintf("%02d", 1:sensor_cols)),
     "Timestamp"
   )
   cols_to_drop <- setdiff(names(dt), cols_to_keep)

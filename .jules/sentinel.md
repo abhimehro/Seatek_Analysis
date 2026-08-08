@@ -212,3 +212,9 @@ that a file is a regular file using `os.path.isfile()` or
 `stat.S_ISREG(os.stat(path).st_mode)` before attempting to open and read its
 contents, especially in security wrappers designed to read untrusted files
 safely.
+
+## 2026-08-05 - Missing Timeout in Subprocess Execution (DoS Risk)
+
+**Vulnerability:** The `get_repo_info` function in `code_health_scanner.py` called `subprocess.check_output()` without specifying a `timeout`. If the external git commands hang indefinitely (e.g., due to network issues or blocking I/O), the scanner process would block forever, leading to a Denial of Service (DoS) condition.
+**Learning:** External processes invoked via `subprocess` can hang indefinitely for unforeseen reasons. Using blocking functions like `subprocess.run`, `subprocess.check_output`, or `subprocess.call` without a timeout leaves the application vulnerable to resource exhaustion and DoS.
+**Prevention:** Always provide a `timeout` argument (e.g., `timeout=15`) when using blocking functions from the `subprocess` module to ensure execution bounds and prevent hanging processes.

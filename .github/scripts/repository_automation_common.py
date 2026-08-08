@@ -301,7 +301,15 @@ def enforce_result(path_str: str) -> int:
     if not path.exists():
         print(f"Missing task result: {path}")
         return 1
-    data = json.loads(path.read_text())
+    # SECURITY: Prevent DoS by ensuring we only read regular files.
+    if not path.is_file():
+        print(f"Invalid task result (not a regular file): {path}")
+        return 1
+    try:
+        data = json.loads(path.read_text())
+    except json.JSONDecodeError:
+        print(f"Invalid JSON in task result: {path}")
+        return 1
     return 1 if data.get("status") in {"failure", "needs_review"} else 0
 
 

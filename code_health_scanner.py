@@ -42,6 +42,7 @@ def get_repo_info():
             env=env,
             text=True,
             shell=False,
+            timeout=15,
         ).strip()
 
         # Parse account and project from URL
@@ -58,6 +59,7 @@ def get_repo_info():
             env=env,
             text=True,
             shell=False,
+            timeout=15,
         ).strip()
 
         return account, project, commit_hash

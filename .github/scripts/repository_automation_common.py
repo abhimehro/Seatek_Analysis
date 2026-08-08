@@ -24,7 +24,8 @@ BASH_BIN = shutil.which("bash")
 if not BASH_BIN:
     raise RuntimeError("bash executable not found in PATH")
 
-GH_BIN = shutil.which("gh") or "gh"
+# SECURITY: Removed fallback to "gh" to prevent Bandit B607 path hijacking vulnerability
+GH_BIN = shutil.which("gh")
 if not GH_BIN:
     raise RuntimeError("gh executable not found in PATH")
 

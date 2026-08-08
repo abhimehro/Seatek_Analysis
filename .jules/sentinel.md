@@ -212,3 +212,7 @@ that a file is a regular file using `os.path.isfile()` or
 `stat.S_ISREG(os.stat(path).st_mode)` before attempting to open and read its
 contents, especially in security wrappers designed to read untrusted files
 safely.
+## 2025-08-07 - Insecure Subprocess Fallback (Bandit B607)
+**Vulnerability:** The GitHub CLI path resolution (`GH_BIN = shutil.which("gh") or "gh"`) fell back to a bare string literal if the executable was not found.
+**Learning:** This fallback re-introduces the Bandit B607 path hijacking vulnerability because it allows a downstream `subprocess` call to execute a partial path (`"gh"`) which can be manipulated via the local environment.
+**Prevention:** Always rely strictly on the absolute path returned by `shutil.which()`. If the executable is missing, fail securely and explicitly rather than falling back to a bare string.

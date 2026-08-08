@@ -343,3 +343,7 @@ removing repeated calls and helper functions that hide the system call.
 ## 2025-05-06 - Avoid redundant datetime conversions after data.table::fread
 **Learning:** In R, when a function like `fread` might automatically parse datetime columns to `POSIXct` objects, unconditionally applying `as.numeric()` and `as.POSIXct()` introduces a significant O(N) allocation overhead for redundant conversions.
 **Action:** Use `.subset2(dt, "Column")` to quickly extract the column and check `inherits(col, "POSIXct")` before applying redundant type conversions.
+
+## 2025-05-06 - Avoid intermediate string vectors in R string concatenation
+**Learning:** In R, using a single `sprintf()` (e.g., `sprintf("Sensor%02d", 1:32)`) is significantly faster and more memory-efficient than combining `paste0()` and `sprintf()` (e.g., `paste0("Sensor", sprintf("%02d", 1:32))`) because it avoids creating intermediate string vectors.
+**Action:** When concatenating a constant string with formatted numbers, use a single `sprintf` format string rather than combining `paste0` with `sprintf`.

@@ -347,3 +347,7 @@ removing repeated calls and helper functions that hide the system call.
 ## 2025-05-06 - Avoid intermediate string vectors in R string concatenation
 **Learning:** In R, using a single `sprintf()` (e.g., `sprintf("Sensor%02d", 1:32)`) is significantly faster and more memory-efficient than combining `paste0()` and `sprintf()` (e.g., `paste0("Sensor", sprintf("%02d", 1:32))`) because it avoids creating intermediate string vectors.
 **Action:** When concatenating a constant string with formatted numbers, use a single `sprintf` format string rather than combining `paste0` with `sprintf`.
+
+## 2025-05-06 - Timestamp Coercion and Unused Column Dropping
+**Learning:** In high-frequency parsing paths with `data.table` (e.g. `fread` where a timestamp may be numeric or `POSIXct`), blindly using `as.numeric()` and `:=` causes significant O(N) allocation and dispatch overhead. Using `set()` and an `is.numeric()` pre-check bypasses redundant copies.
+**Action:** Always check `is.numeric()` before applying `as.numeric()` to conditionally parsed columns in `data.table` and use `set(dt, j, value)` instead of `:=` inside functions for better performance.

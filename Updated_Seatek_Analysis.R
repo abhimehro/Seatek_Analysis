@@ -110,7 +110,8 @@ read_sensor_data <- function(file_path,
   )
   cols_to_drop <- setdiff(names(dt), cols_to_keep)
   if (length(cols_to_drop) > 0) {
-    dt[, (cols_to_drop) := NULL]
+    # ⚡ Bolt: Use set() for deleting columns to avoid data.table := dispatch overhead
+    set(dt, j = cols_to_drop, value = NULL)
   }
   # Convert timestamp if numeric
   # ⚡ Bolt: Prevent redundant memory allocations and full traversals
@@ -119,10 +120,15 @@ read_sensor_data <- function(file_path,
   # because fread might auto-parse it.
   ts_col <- .subset2(dt, "Timestamp")
   if (!inherits(ts_col, "POSIXct")) {
-    num_ts <- suppressWarnings(as.numeric(ts_col))
-    if (!anyNA(num_ts)) {
-      # ⚡ Bolt: Specifying tz="UTC" prevents the system timezone lookup overhead
-      dt[, "Timestamp" := as.POSIXct(num_ts, origin = "1970-01-01", tz = "UTC")] # nolint: object_name_linter
+    if (is.numeric(ts_col)) {
+      # ⚡ Bolt: Use set() to avoid := overhead and avoid redundant as.numeric coercion
+      set(dt, j = "Timestamp", value = as.POSIXct(ts_col, origin = "1970-01-01", tz = "UTC"))
+    } else {
+      num_ts <- suppressWarnings(as.numeric(ts_col))
+      if (!anyNA(num_ts)) {
+        # ⚡ Bolt: Specifying tz="UTC" prevents the system timezone lookup overhead
+        set(dt, j = "Timestamp", value = as.POSIXct(num_ts, origin = "1970-01-01", tz = "UTC"))
+      }
     }
   }
   dt

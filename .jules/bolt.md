@@ -347,3 +347,7 @@ removing repeated calls and helper functions that hide the system call.
 ## 2025-05-06 - Avoid intermediate string vectors in R string concatenation
 **Learning:** In R, using a single `sprintf()` (e.g., `sprintf("Sensor%02d", 1:32)`) is significantly faster and more memory-efficient than combining `paste0()` and `sprintf()` (e.g., `paste0("Sensor", sprintf("%02d", 1:32))`) because it avoids creating intermediate string vectors.
 **Action:** When concatenating a constant string with formatted numbers, use a single `sprintf` format string rather than combining `paste0` with `sprintf`.
+
+## 2025-05-06 - Avoid S3 method dispatch overhead by using data.table::set() instead of `:=` inside loops or functions
+**Learning:** In R's `data.table`, using `set(dt, j = col, value = ...)` is significantly faster than using the `:=` operator for column assignment and deletion (e.g., `set(dt, j = cols_to_drop, value = NULL)`) inside loops or functions because it avoids method dispatch overhead. Additionally, applying `is.numeric()` checks before `as.numeric()` prevents redundant O(N) memory allocations during conditional data parsing (e.g., when handling inputs from `fread`).
+**Action:** When inside loops or functions, always use `set()` instead of `:=` for data.table updates by reference. Always verify if a numeric coercion is necessary using `is.numeric()` before applying `as.numeric()` to avoid unneeded allocation overheads.

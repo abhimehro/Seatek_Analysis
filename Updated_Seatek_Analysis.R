@@ -104,13 +104,14 @@ read_sensor_data <- function(file_path,
   }
   # Keep only sensor columns + Timestamp
   # ⚡ Bolt: Use by-reference deletion to prevent deep copy memory allocations
+  # and use set() instead of := for faster updates in functions
   cols_to_keep <- c(
     sprintf("Sensor%02d", 1:sensor_cols),
     "Timestamp"
   )
   cols_to_drop <- setdiff(names(dt), cols_to_keep)
   if (length(cols_to_drop) > 0) {
-    dt[, (cols_to_drop) := NULL]
+    set(dt, j = cols_to_drop, value = NULL)
   }
   # Convert timestamp if numeric
   # ⚡ Bolt: Prevent redundant memory allocations and full traversals
@@ -119,10 +120,14 @@ read_sensor_data <- function(file_path,
   # because fread might auto-parse it.
   ts_col <- .subset2(dt, "Timestamp")
   if (!inherits(ts_col, "POSIXct")) {
-    num_ts <- suppressWarnings(as.numeric(ts_col))
+    if (is.numeric(ts_col)) {
+      num_ts <- ts_col
+    } else {
+      num_ts <- suppressWarnings(as.numeric(ts_col))
+    }
     if (!anyNA(num_ts)) {
       # ⚡ Bolt: Specifying tz="UTC" prevents the system timezone lookup overhead
-      dt[, "Timestamp" := as.POSIXct(num_ts, origin = "1970-01-01", tz = "UTC")] # nolint: object_name_linter
+      set(dt, j = "Timestamp", value = as.POSIXct(num_ts, origin = "1970-01-01", tz = "UTC")) # nolint: object_name_linter
     }
   }
   dt
@@ -376,9 +381,9 @@ calculate_summary_stats <- function(results) {
   # ⚡ Bolt: Direct unquoted column referencing is faster than standard
   # evaluation with get()
   if (is.data.table(summary_wide)) {
-    summary_wide[, "full_pct_nonmissing" :=
+    set(summary_wide, j = "full_pct_nonmissing", value =
                    # nolint next: object_usage_linter.
-                   100 * full_count / length(results)]
+                   100 * summary_wide$full_count / length(results))
   } else {
     summary_wide$full_pct_nonmissing <-
       100 * summary_wide$full_count / length(results)
@@ -516,7 +521,7 @@ write_summary_sheets <- function(wb, summary_df, output_file,
   # evaluation with get()
   if (is.data.table(summary_df)) {
     # nolint next: object_usage_linter.
-    summary_df[, "flag_high_variability" := full_sd > sd_threshold]
+    set(summary_df, j = "flag_high_variability", value = summary_df$full_sd > sd_threshold)
   } else {
     summary_df$flag_high_variability <- summary_df$full_sd > sd_threshold
   }

@@ -348,11 +348,14 @@ calculate_summary_stats <- function(results) {
         min = NA_real_, max = NA_real_, count = 0L, rollmean3 = NA_real_
       )
     } else {
+      # ⚡ Bolt: Pre-calculate the median to avoid calculating it twice
+      # (once for median and once internally as the default center in mad())
+      med <- median(v_val)
       list(
         mean      = mean(v_val),
         sd        = sd(v_val),
-        median    = median(v_val),
-        mad       = mad(v_val),
+        median    = med,
+        mad       = mad(v_val, center = med),
         min       = min(v_val),
         max       = max(v_val),
         count     = n,

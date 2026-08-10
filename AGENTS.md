@@ -12,7 +12,7 @@ sensor data. See `README.md` for full details.
 | Service                 | Purpose                                | How to run                                                                                              |
 | ----------------------- | -------------------------------------- | ------------------------------------------------------------------------------------------------------- |
 | R analysis script       | Core data processing                   | `Rscript Updated_Seatek_Analysis.R`                                                                     |
-| Python outlier analysis | Series 27 outlier detection (optional) | `source Series_27/Analysis/venv/bin/activate && python Series_27/Analysis/outlier_analysis_series27.py` |
+| Python outlier analysis | Series 27 outlier detection (optional) | `Series_27/Analysis/venv/bin/python Series_27/Analysis/outlier_analysis_series27.py -i <workbook.xlsx> -o <out_dir>` |
 
 ### Key Commands
 
@@ -52,14 +52,8 @@ sensor data. See `README.md` for full details.
   caused by `data.table` non-standard evaluation.
 - When running in CI (e.g., GitHub Actions) with manual `install.packages()`,
   set `RENV_CONFIG_AUTOLOADER_ENABLED=FALSE` to prevent renv from interfering.
-- Some existing tests have pre-existing failures due to mismatched error message
-  patterns; these are not environment issues.
-- The Python venv at `Series_27/Analysis/venv/` is for the optional Series 27
-  outlier analysis script only. It requires **Python 3.11 or 3.12** (the pinned
-  `numpy==1.26.0` only ships wheels for those versions); recreate it with a
-  3.11/3.12 interpreter if necessary:
-  `rm -rf Series_27/Analysis/venv && python3.11 -m venv Series_27/Analysis/venv && Series_27/Analysis/venv/bin/pip install -r Series_27/Analysis/requirements.txt`.
-  Recreating overwrites tracked files, so
-  `git checkout -- Series_27/Analysis/venv` afterward to keep the tree clean.
-  The script requires an input workbook via `-i`, e.g.
+- The optional Series 27 outlier script uses a **local** Python venv (gitignored;
+  do not commit). Prefer Python **3.11 or 3.12** (`numpy==1.26.0` wheels). Example:
+  `python3.11 -m venv Series_27/Analysis/venv && Series_27/Analysis/venv/bin/pip install -r Series_27/Analysis/requirements.txt`.
+  Run with `-i`, e.g.
   `Series_27/Analysis/venv/bin/python Series_27/Analysis/outlier_analysis_series27.py -i Series_27/Analysis/Seatek_Comprehensive_Analysis.xlsx -o <output_dir>`.

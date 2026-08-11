@@ -212,24 +212,6 @@ that a file is a regular file using `os.path.isfile()` or
 `stat.S_ISREG(os.stat(path).st_mode)` before attempting to open and read its
 contents, especially in security wrappers designed to read untrusted files
 safely.
-
-## 2026-08-10 - [B607] Starting a process with a partial executable path (Path Hijacking Vulnerability)
-
-**Vulnerability:** The script executed system commands via `subprocess` by
-checking `shutil.which('binary')` but falling back to `"binary"` if it was not
-found (e.g., `GH_BIN = shutil.which("gh") or "gh"`). This makes the application
-vulnerable to path hijacking (where an attacker modifies the PATH environment
-variable to point to a malicious executable, or places one in the current
-working directory).
-**Learning:** Falling back to a bare executable name when `shutil.which` fails
-defeats the purpose of the security check and introduces unnecessary risk,
-especially on systems where the OS might search the current working directory
-first (e.g. Windows).
-**Prevention:** Always exclusively use `shutil.which("executable_name")` to
-resolve the absolute path of system binaries before passing them to `subprocess`
-functions, and raise a clear exception or fail gracefully if the absolute path
-cannot be resolved.
-
 ## 2025-08-11 - [B607] Path Hijacking Vulnerability via Executable Fallback
 
 **Vulnerability:** The script resolved the path to the GitHub CLI using `GH_BIN = shutil.which("gh") or "gh"`. This approach meant that if the `gh` executable was not found in the environment's `PATH`, it would fall back to using the bare string `"gh"`. This defeats the security benefit of `shutil.which()`. If a subprocess is executed with a bare string like `"gh"`, it can be vulnerable to path hijacking (where an attacker modifies the PATH or places a malicious executable named `gh` in a searched directory). Furthermore, it rendered the subsequent check `if not GH_BIN: raise RuntimeError(...)` useless.

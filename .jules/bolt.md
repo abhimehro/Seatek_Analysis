@@ -356,3 +356,8 @@ removing repeated calls and helper functions that hide the system call.
 
 **Learning:** When extracting both `median()` and `mad()` sequentially, avoid redundant calculations by pre-calculating the median and passing it to `mad()` via the `center` argument.
 **Action:** When calculating `mad()`, pass the pre-calculated median as the `center` argument to avoid redundant calculations.
+
+## 2025-08-11 - Avoid redundant NA filtering
+
+**Learning:** In R, applying `v_val[!is.na(v_val)]` unconditionally on long vectors forces the allocation of an intermediate boolean vector and subsequent subsetting, even when no `NA` values exist. This results in significant O(N) memory allocation and processing overhead within high-frequency aggregation loops.
+**Action:** Always check `if (anyNA(x))` before applying `x <- x[!is.na(x)]`. The `anyNA()` function is implemented in C, halts at the first `NA`, and requires no memory allocation, drastically reducing overhead when filtering arrays where `NA`s are rare or non-existent.

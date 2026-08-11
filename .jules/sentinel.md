@@ -212,3 +212,8 @@ that a file is a regular file using `os.path.isfile()` or
 `stat.S_ISREG(os.stat(path).st_mode)` before attempting to open and read its
 contents, especially in security wrappers designed to read untrusted files
 safely.
+## 2025-08-11 - [B607] Path Hijacking Vulnerability via Executable Fallback
+
+**Vulnerability:** The script resolved the path to the GitHub CLI using `GH_BIN = shutil.which("gh") or "gh"`. This approach meant that if the `gh` executable was not found in the environment's `PATH`, it would fall back to using the bare string `"gh"`. This defeats the security benefit of `shutil.which()`. If a subprocess is executed with a bare string like `"gh"`, it can be vulnerable to path hijacking (where an attacker modifies the PATH or places a malicious executable named `gh` in a searched directory). Furthermore, it rendered the subsequent check `if not GH_BIN: raise RuntimeError(...)` useless.
+**Learning:** Never use a bare string fallback (e.g., `or "executable_name"`) when resolving paths to executables using `shutil.which()`. The purpose of `shutil.which()` is to retrieve a fully qualified absolute path to prevent hijacking. Falling back to a relative or partial name reintroduces the exact vulnerability `shutil.which()` is meant to mitigate.
+**Prevention:** Always use `shutil.which("executable_name")` without a string fallback, and explicitly handle the case where it returns `None` by failing fast and securely (e.g., raising an exception).

@@ -348,11 +348,14 @@ calculate_summary_stats <- function(results) {
         min = NA_real_, max = NA_real_, count = 0L, rollmean3 = NA_real_
       )
     } else {
+      # ⚡ Bolt: Pre-calculate the median and pass it to mad() via the `center`
+      # argument to avoid redundant median calculations for measurable speedup.
+      med <- median(v_val)
       list(
         mean      = mean(v_val),
         sd        = sd(v_val),
-        median    = median(v_val),
-        mad       = mad(v_val),
+        median    = med,
+        mad       = mad(v_val, center = med),
         min       = min(v_val),
         max       = max(v_val),
         count     = n,
@@ -382,8 +385,8 @@ calculate_summary_stats <- function(results) {
   # evaluation with get()
   if (is.data.table(summary_wide)) {
     set(summary_wide, j = "full_pct_nonmissing", value =
-                   # nolint next: object_usage_linter.
-                   100 * summary_wide$full_count / length(results))
+          # nolint next: object_usage_linter.
+          100 * summary_wide$full_count / length(results))
   } else {
     summary_wide$full_pct_nonmissing <-
       100 * summary_wide$full_count / length(results)

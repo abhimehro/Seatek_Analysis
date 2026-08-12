@@ -10,8 +10,11 @@
 
 **Closed issues:**
 
+- Jules Daily QA & Agentic Review - All Clear [\#656](https://github.com/abhimehro/Seatek_Analysis/issues/656)
+- Daily QA & Agentic Review — 2026-08-11 [\#654](https://github.com/abhimehro/Seatek_Analysis/issues/654)
 - \[repo-automation\] Daily Status Report - 2026-08-11 [\#651](https://github.com/abhimehro/Seatek_Analysis/issues/651)
 - Daily QA Check - 2026-08-10 [\#647](https://github.com/abhimehro/Seatek_Analysis/issues/647)
+- Daily QA & Agentic Review — 2026-08-10 [\#646](https://github.com/abhimehro/Seatek_Analysis/issues/646)
 - \[repo-automation\] Daily Status Report - 2026-08-10 [\#642](https://github.com/abhimehro/Seatek_Analysis/issues/642)
 - Daily QA & Agentic Review — 2026-08-09 [\#639](https://github.com/abhimehro/Seatek_Analysis/issues/639)
 - \[repo-automation\] Daily Status Report - 2026-08-09 [\#636](https://github.com/abhimehro/Seatek_Analysis/issues/636)
@@ -89,6 +92,7 @@
 
 **Merged pull requests:**
 
+- ⚡ Bolt: Optimize NA filtering with anyNA\(\) [\#658](https://github.com/abhimehro/Seatek_Analysis/pull/658) ([abhimehro](https://github.com/abhimehro))
 - 🛡️ Sentinel: \[CRITICAL\] Fix Path Hijacking Vulnerability [\#649](https://github.com/abhimehro/Seatek_Analysis/pull/649) ([abhimehro](https://github.com/abhimehro))
 - ⚡ Bolt: Optimize mad\(\) calculation [\#641](https://github.com/abhimehro/Seatek_Analysis/pull/641) ([abhimehro](https://github.com/abhimehro))
 - ⚡ Bolt: Optimize data.table column assignments in loops using set\(\) [\#635](https://github.com/abhimehro/Seatek_Analysis/pull/635) ([abhimehro](https://github.com/abhimehro))

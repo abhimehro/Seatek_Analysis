@@ -129,7 +129,10 @@ def iso_day(value: dt.datetime | None = None) -> str:
 
 
 def load_config() -> dict[str, Any]:
-    data = yaml.safe_load(CONFIG_PATH.read_text()) or {}
+    try:
+        data = yaml.safe_load(CONFIG_PATH.read_text(encoding="utf-8")) or {}
+    except OSError:
+        data = {}
     return data.get("automation", {})
 
 

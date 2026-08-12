@@ -340,7 +340,7 @@ calculate_summary_stats <- function(results) {
   # ⚡ Bolt: Use keyby = "Sensor" to ensure the output is sorted like dcast.
 
   calc_stats <- function(v_val) {
-    v_val <- v_val[!is.na(v_val)]
+    if (anyNA(v_val)) v_val <- v_val[!is.na(v_val)]
     n <- length(v_val)
     if (n == 0) {
       list(

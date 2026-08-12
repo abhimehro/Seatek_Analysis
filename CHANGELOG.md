@@ -93,6 +93,7 @@
 **Merged pull requests:**
 
 - ⚡ Bolt: Optimize NA filtering with anyNA\(\) [\#658](https://github.com/abhimehro/Seatek_Analysis/pull/658) ([abhimehro](https://github.com/abhimehro))
+- 🎨 Palette: Better progress bar visualization [\#655](https://github.com/abhimehro/Seatek_Analysis/pull/655) ([abhimehro](https://github.com/abhimehro))
 - 🛡️ Sentinel: \[CRITICAL\] Fix Path Hijacking Vulnerability [\#649](https://github.com/abhimehro/Seatek_Analysis/pull/649) ([abhimehro](https://github.com/abhimehro))
 - ⚡ Bolt: Optimize mad\(\) calculation [\#641](https://github.com/abhimehro/Seatek_Analysis/pull/641) ([abhimehro](https://github.com/abhimehro))
 - ⚡ Bolt: Optimize data.table column assignments in loops using set\(\) [\#635](https://github.com/abhimehro/Seatek_Analysis/pull/635) ([abhimehro](https://github.com/abhimehro))

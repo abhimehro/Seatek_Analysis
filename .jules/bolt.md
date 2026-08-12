@@ -356,3 +356,8 @@ removing repeated calls and helper functions that hide the system call.
 
 **Learning:** When extracting both `median()` and `mad()` sequentially, avoid redundant calculations by pre-calculating the median and passing it to `mad()` via the `center` argument.
 **Action:** When calculating `mad()`, pass the pre-calculated median as the `center` argument to avoid redundant calculations.
+
+## 2025-05-24 - Safe inline vector filtering
+
+**Learning:** To avoid redundant O(N) memory allocation and processing overhead when filtering missing values, check for the presence of NAs first using `anyNA()`. The `anyNA()` function is implemented in C and short-circuits, requiring no memory allocation.
+**Action:** When filtering missing values, use `if (anyNA(x)) x <- x[!is.na(x)]` instead of unconditionally subsetting with `!is.na(x)`.

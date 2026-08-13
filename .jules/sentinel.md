@@ -229,3 +229,9 @@ first (e.g. Windows).
 resolve the absolute path of system binaries before passing them to `subprocess`
 functions, and raise a clear exception or fail gracefully if the absolute path
 cannot be resolved.
+
+## 2026-08-13 - [UnicodeDecodeError DoS via Default File Encoding]
+
+**Vulnerability:** The script read configuration files using `Path.read_text()` without specifying an encoding (e.g., `CONFIG_PATH.read_text()`). On systems where the default locale encoding is not UTF-8 (like Windows with cp1252), reading files containing non-ASCII characters triggers a `UnicodeDecodeError`, causing the automation script to crash and resulting in a Denial of Service.
+**Learning:** Depending on the system's default encoding for file operations introduces brittle compatibility issues and crash vulnerabilities. Security scanners often miss this because it's technically a compatibility bug, but it functions as a DoS vector if an attacker can introduce multi-byte characters into configuration or input files.
+**Prevention:** Always explicitly define the encoding when performing file read or write operations (e.g., `read_text(encoding="utf-8")` or `open(path, encoding="utf-8")`).

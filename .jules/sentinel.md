@@ -229,3 +229,9 @@ first (e.g. Windows).
 resolve the absolute path of system binaries before passing them to `subprocess`
 functions, and raise a clear exception or fail gracefully if the absolute path
 cannot be resolved.
+
+## 2026-08-14 - [File Read DoS via Special Files in Automation Tasks]
+
+**Vulnerability:** The `_hotspot_line_count` function in `.github/scripts/repository_automation_tasks.py` attempted to read files using `open()` without first verifying that the file was a regular file and did not contain null bytes. If a path pointing to a special file, such as a FIFO (named pipe) or device file (e.g. `/dev/zero`), was passed to the function, the `open()` call or subsequent `read()` could block indefinitely, causing the scanner process to hang (Denial of Service). Furthermore, paths with embedded null bytes would cause an unhandled `ValueError` in Python 3.12+.
+**Learning:** Checking file sizes after opening is insufficient when interacting with untrusted file paths. Special file types can have blocking behaviors or infinite streams that circumvent size checks performed after opening the file.
+**Prevention:** Always verify that a file is a regular file using `os.path.isfile()` and check for null bytes (`if "\0" in path_str:`) before attempting to open and read its contents, especially in automation scripts designed to read untrusted files securely.

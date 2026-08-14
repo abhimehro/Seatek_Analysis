@@ -158,7 +158,8 @@ execute_tasks_parallel <- function(tasks, task_func) {
     out_files
   } else {
     out_files <- vector("list", length(tasks))
-    pb_write <- txtProgressBar(min = 0, max = length(tasks), style = 3, char = "█")
+    pb_write <- txtProgressBar(min = 0, max = length(tasks),
+                               style = 3, char = "█")
     tryCatch(
       {
         for (i in seq_along(tasks)) {
@@ -524,7 +525,8 @@ write_summary_sheets <- function(wb, summary_df, output_file,
   # evaluation with get()
   if (is.data.table(summary_df)) {
     # nolint next: object_usage_linter.
-    set(summary_df, j = "flag_high_variability", value = summary_df$full_sd > sd_threshold)
+    set(summary_df, j = "flag_high_variability",
+        value = summary_df$full_sd > sd_threshold)
   } else {
     summary_df$flag_high_variability <- summary_df$full_sd > sd_threshold
   }

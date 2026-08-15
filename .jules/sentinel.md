@@ -229,3 +229,8 @@ first (e.g. Windows).
 resolve the absolute path of system binaries before passing them to `subprocess`
 functions, and raise a clear exception or fail gracefully if the absolute path
 cannot be resolved.
+
+## 2025-02-28 - [DoS Protection for File Reads]
+**Vulnerability:** File reading utility lacked checks for embedded null bytes in paths and did not verify if the path pointed to a regular file.
+**Learning:** Python 3.12+ throws `ValueError` for null bytes in paths (unlike previous versions where it might be `OSError` or silenty fail). Reading special files (like `/dev/zero` or FIFOs) using standard size limits (e.g. `read(MAX_SIZE)`) can hang or cause unexpected behavior if not explicitly checked against `os.path.isfile()`.
+**Prevention:** Always validate paths for embedded null bytes `\0` and verify the file type using `os.path.isfile()` before attempting to open untrusted paths.

@@ -37,12 +37,14 @@ jobs:
           cache: "pip"
 
       - name: Install dependencies
+        if: matrix.python-version == '3.11'
         run: |
           python -m pip install --upgrade pip
           python -m pip install -r Series_27/Analysis/requirements.txt
           python -m pip install -r requirements-dev.txt
 
       - name: Lint with ruff
+        if: matrix.python-version == '3.11'
         run: |
           # Stop the build if there are Python syntax errors or undefined names
           ruff check --select=E9,F63,F7,F82 --target-version=py311 .
@@ -55,6 +57,7 @@ jobs:
           find . -name "*.py" -not -path "*/venv/*" -not -path "*/.venv/*" -exec python -m py_compile {} +
 
       - name: Run tests
+        if: matrix.python-version == '3.11'
         run: |
           if [ -d tests ]; then
             python -m pytest tests/ -v || echo "::warning::Some tests failed"

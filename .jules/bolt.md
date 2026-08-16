@@ -361,3 +361,6 @@ removing repeated calls and helper functions that hide the system call.
 
 **Learning:** To avoid redundant O(N) memory allocation and processing overhead when filtering missing values, check for the presence of NAs first using `anyNA()`. The `anyNA()` function is implemented in C and short-circuits, requiring no memory allocation.
 **Action:** When filtering missing values, use `if (anyNA(x)) x <- x[!is.na(x)]` instead of unconditionally subsetting with `!is.na(x)`.
+## 2025-05-06 - Bypassing S3 Dispatch in apply loops
+**Learning:** In high-frequency operations or internal loops (like `lapply(.SD)` in `data.table`), R's generic S3 dispatch for `mean()` introduces measurable overhead.
+**Action:** When the data type is known to be numeric and no custom class dispatch is needed, call the default method `mean.default()` directly to bypass dispatch and improve execution speed.

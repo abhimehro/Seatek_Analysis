@@ -10,7 +10,20 @@
 
 **Closed issues:**
 
+- Daily QA & Agentic Review — 2026-08-14 [\#672](https://github.com/abhimehro/Seatek_Analysis/issues/672)
+- Jules Daily QA & Agentic Review - Healthy Repository [\#669](https://github.com/abhimehro/Seatek_Analysis/issues/669)
+- Daily QA & Agentic Review — 2026-08-13 [\#668](https://github.com/abhimehro/Seatek_Analysis/issues/668)
+- Jules Daily QA & Agentic Review - Healthy Repository [\#663](https://github.com/abhimehro/Seatek_Analysis/issues/663)
+- Daily QA & Agentic Review — 2026-08-12 [\#660](https://github.com/abhimehro/Seatek_Analysis/issues/660)
+- Jules Daily QA & Agentic Review - All Clear [\#656](https://github.com/abhimehro/Seatek_Analysis/issues/656)
+- Daily QA & Agentic Review — 2026-08-11 [\#654](https://github.com/abhimehro/Seatek_Analysis/issues/654)
+- \[repo-automation\] Daily Status Report - 2026-08-11 [\#651](https://github.com/abhimehro/Seatek_Analysis/issues/651)
 - Daily QA Check - 2026-08-10 [\#647](https://github.com/abhimehro/Seatek_Analysis/issues/647)
+- Daily QA & Agentic Review — 2026-08-10 [\#646](https://github.com/abhimehro/Seatek_Analysis/issues/646)
+- \[repo-automation\] Daily Status Report - 2026-08-10 [\#642](https://github.com/abhimehro/Seatek_Analysis/issues/642)
+- Daily QA & Agentic Review — 2026-08-09 [\#639](https://github.com/abhimehro/Seatek_Analysis/issues/639)
+- \[repo-automation\] Daily Status Report - 2026-08-09 [\#636](https://github.com/abhimehro/Seatek_Analysis/issues/636)
+- Daily QA & Agentic Review — 2026-08-08 [\#631](https://github.com/abhimehro/Seatek_Analysis/issues/631)
 - \[repo-automation\] Daily Status Report - 2026-08-08 [\#629](https://github.com/abhimehro/Seatek_Analysis/issues/629)
 - Daily QA & Agentic Review — 2026-08-07 [\#625](https://github.com/abhimehro/Seatek_Analysis/issues/625)
 - \[repo-automation\] Daily Status Report - 2026-08-07 [\#622](https://github.com/abhimehro/Seatek_Analysis/issues/622)
@@ -84,6 +97,10 @@
 
 **Merged pull requests:**
 
+- 🎨 Palette: Improve CLI empty state UX [\#674](https://github.com/abhimehro/Seatek_Analysis/pull/674) ([abhimehro](https://github.com/abhimehro))
+- ⚡ Bolt: Optimize NA filtering with anyNA\(\) [\#658](https://github.com/abhimehro/Seatek_Analysis/pull/658) ([abhimehro](https://github.com/abhimehro))
+- 🎨 Palette: Better progress bar visualization [\#655](https://github.com/abhimehro/Seatek_Analysis/pull/655) ([abhimehro](https://github.com/abhimehro))
+- 🛡️ Sentinel: \[CRITICAL\] Fix Path Hijacking Vulnerability [\#649](https://github.com/abhimehro/Seatek_Analysis/pull/649) ([abhimehro](https://github.com/abhimehro))
 - ⚡ Bolt: Optimize mad\(\) calculation [\#641](https://github.com/abhimehro/Seatek_Analysis/pull/641) ([abhimehro](https://github.com/abhimehro))
 - ⚡ Bolt: Optimize data.table column assignments in loops using set\(\) [\#635](https://github.com/abhimehro/Seatek_Analysis/pull/635) ([abhimehro](https://github.com/abhimehro))
 - Jules Daily QA Run [\#633](https://github.com/abhimehro/Seatek_Analysis/pull/633) ([abhimehro](https://github.com/abhimehro))

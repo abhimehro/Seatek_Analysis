@@ -158,7 +158,7 @@ execute_tasks_parallel <- function(tasks, task_func) {
     out_files
   } else {
     out_files <- vector("list", length(tasks))
-    pb_write <- txtProgressBar(min = 0, max = length(tasks), style = 3)
+    pb_write <- txtProgressBar(min = 0, max = length(tasks), style = 3, char = "█")
     tryCatch(
       {
         for (i in seq_along(tasks)) {
@@ -261,7 +261,7 @@ process_all_data <- function(data_dir) {
   results <- vector("list", length(files))
   sheet_names <- character(length(files))
   raw_export_tasks <- vector("list", length(files))
-  pb <- txtProgressBar(min = 0, max = length(files), style = 3)
+  pb <- txtProgressBar(min = 0, max = length(files), style = 3, char = "█")
   on.exit(
     {
       if (!is.null(pb)) {
@@ -340,7 +340,7 @@ calculate_summary_stats <- function(results) {
   # ⚡ Bolt: Use keyby = "Sensor" to ensure the output is sorted like dcast.
 
   calc_stats <- function(v_val) {
-    v_val <- v_val[!is.na(v_val)]
+    if (anyNA(v_val)) v_val <- v_val[!is.na(v_val)]
     n <- length(v_val)
     if (n == 0) {
       list(
@@ -551,7 +551,7 @@ dump_summary_excel <- function(results, output_file, highlight_top_n = 5) {
   cat("\n📊 Generating yearly summary sheets...\n")
   message("Generating yearly summary sheets...")
   if (length(results) > 0) {
-    pb <- txtProgressBar(min = 0, max = length(results), style = 3)
+    pb <- txtProgressBar(min = 0, max = length(results), style = 3, char = "█")
     # 🎨 Palette: Add robust cleanup to prevent garbled console on error
     on.exit(
       {

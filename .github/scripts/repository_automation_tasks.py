@@ -162,6 +162,11 @@ MAX_FILE_SIZE = 10 * 1024 * 1024  # 10 MB
 
 def _hotspot_line_count(path_str: str) -> int | None:
     try:
+        # SECURITY: Prevent File Read DoS by only reading regular files.
+        # This prevents blocking behavior when reading special files like named pipes (FIFOs) or device files.
+        if not os.path.isfile(path_str):
+            return None
+
         with open(path_str, "rb") as file:
             content = file.read(MAX_FILE_SIZE + 1)
         if len(content) > MAX_FILE_SIZE:

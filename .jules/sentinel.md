@@ -229,3 +229,8 @@ first (e.g. Windows).
 resolve the absolute path of system binaries before passing them to `subprocess`
 functions, and raise a clear exception or fail gracefully if the absolute path
 cannot be resolved.
+
+## 2026-08-16 - [File Read DoS via Special Files in Background Tasks]
+**Vulnerability:** The `_hotspot_line_count` function in `.github/scripts/repository_automation_tasks.py` attempted to read files using `open()` without first verifying that the file was a regular file. This made it vulnerable to hanging or exhausting resources if pointed at a special file (like a named pipe/FIFO or device file) which could block indefinitely, causing a Denial of Service.
+**Learning:** Functions designed to read untrusted or dynamic file paths must explicitly check for file types. Standard length checks (e.g., checking `len(content)`) after opening or reading are insufficient to prevent blocking I/O behavior during the initial file read phase.
+**Prevention:** Always use `os.path.isfile(path)` or `stat.S_ISREG` to verify a file is a regular file before attempting to open and read its contents, even in internal automation scripts.

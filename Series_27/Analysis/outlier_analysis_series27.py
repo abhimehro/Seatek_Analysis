@@ -3,6 +3,7 @@ import argparse
 import logging
 import os
 import re
+import sys
 from io import BytesIO
 
 import matplotlib.pyplot as plt
@@ -13,8 +14,9 @@ MAX_FILE_SIZE = 50 * 1024 * 1024  # 50 MB
 
 def parse_args():
     parser = argparse.ArgumentParser(
-        description="Series 27 Outlier Analysis and Correction",
+        description="🌊 Series 27 Outlier Analysis and Correction",
         formatter_class=argparse.ArgumentDefaultsHelpFormatter,
+        epilog="Example: python outlier_analysis_series27.py -i data.xlsx -o output_dir"
     )
     parser.add_argument(
         "-i",
@@ -58,6 +60,11 @@ def parse_args():
         default="output",
         help="Directory to save corrected files and summaries",
     )
+
+    if len(sys.argv) == 1:
+        parser.print_help(sys.stderr)
+        sys.exit(1)
+
     return parser.parse_args()
 
 

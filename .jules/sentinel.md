@@ -229,8 +229,3 @@ first (e.g. Windows).
 resolve the absolute path of system binaries before passing them to `subprocess`
 functions, and raise a clear exception or fail gracefully if the absolute path
 cannot be resolved.
-## 2025-08-12 - [Unhandled YAML Load Result & Missing Encoding]
-
-**Vulnerability:** The script parsed YAML files using `yaml.safe_load(CONFIG_PATH.read_text())`. If the file was empty, `yaml.safe_load()` returned `None`, which could lead to unhandled `TypeError` exceptions if the resulting object was accessed like a dictionary. Additionally, `read_text()` lacked an explicit encoding, risking `UnicodeDecodeError`, and missing file checks weren't wrapped in a `try...except OSError` block, potentially exposing stack traces to logs upon failure.
-**Learning:** While `yaml.safe_load()` is secure against YAML injection, its return value must be sanitized when parsing empty files. Furthermore, reading files should consistently specify `encoding="utf-8"` and gracefully handle underlying I/O and OS errors.
-**Prevention:** Always provide a fallback (e.g., `yaml.safe_load(...) or {}`) when the expected return type is a dictionary. Always specify `encoding="utf-8"` on `read_text()` and wrap file read operations in a `try...except OSError` block to fail gracefully without crashing or leaking state.

@@ -361,3 +361,8 @@ removing repeated calls and helper functions that hide the system call.
 
 **Learning:** To avoid redundant O(N) memory allocation and processing overhead when filtering missing values, check for the presence of NAs first using `anyNA()`. The `anyNA()` function is implemented in C and short-circuits, requiring no memory allocation.
 **Action:** When filtering missing values, use `if (anyNA(x)) x <- x[!is.na(x)]` instead of unconditionally subsetting with `!is.na(x)`.
+
+## 2025-05-06 - Avoid POSIXct parsing overhead
+
+**Learning:** When parsing numeric timestamps to `POSIXct` in high-frequency loops or for large datasets, calling `as.POSIXct(num_ts, origin = "1970-01-01", tz = "UTC")` incurs massive generic dispatch and origin conversion overhead.
+**Action:** Use the internal `.POSIXct(num_ts, tz = "UTC")` function instead to bypass this overhead when the origin is the standard Unix epoch and the timezone is known.

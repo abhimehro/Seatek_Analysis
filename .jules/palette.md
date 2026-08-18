@@ -19,3 +19,7 @@ directories or creating file artifacts.
 
 **Learning:** When a CLI script requires arguments, the default `argparse` behavior of throwing a "missing arguments" error on a bare run provides a poor first impression and lacks guidance.
 **Action:** Always intercept a bare run (e.g., `len(sys.argv) == 1`) and print the full help menu (`parser.print_help()`) so users immediately see usage examples and available options without needing to guess the `--help` flag.
+
+## 2025-05-15 - Excel Export Color Contrast
+**Learning:** Default background highlights in generated Excel reports (like pure yellow or red) often lack sufficient contrast with default black text, making them hard to read and inaccessible.
+**Action:** Always pair background fill colors with explicit, high-contrast text colors (e.g., dark green text on light green background, or dark red text on light pink background) when styling Excel exports.

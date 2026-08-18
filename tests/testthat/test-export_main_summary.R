@@ -50,7 +50,8 @@ test_that("export_main_summary works correctly", {
   # Check Excel sheet names
   sheet_names <- openxlsx::getSheetNames(output_file)
   expect_true("Summary" %in% sheet_names,
-              label = "Summary sheet must be present.")
+    label = "Summary sheet must be present."
+  )
 
   # Check CSV files creation
   csv_base_name <- tools::file_path_sans_ext(output_file)
@@ -59,7 +60,8 @@ test_that("export_main_summary works correctly", {
 
   expect_true(file.exists(csv_out), info = "Expected Summary CSV not found")
   expect_true(file.exists(csv_robust),
-              info = "Expected Robust Summary CSV not found")
+    info = "Expected Robust Summary CSV not found"
+  )
 
   # 2. Execution without within_diff_mean
   wb2 <- createWorkbook()
@@ -78,10 +80,12 @@ test_that("export_main_summary works correctly", {
   })
 
   expect_true(file.exists(output_file2),
-              label = "Excel file must be created without diff mean.")
+    label = "Excel file must be created without diff mean."
+  )
   sheet_names2 <- openxlsx::getSheetNames(output_file2)
   expect_true("Summary" %in% sheet_names2,
-              label = "Summary sheet must be present even without diff mean.")
+    label = "Summary sheet must be present even without diff mean."
+  )
 
   # 3. Execution without highlight style
   wb3 <- createWorkbook()
@@ -99,10 +103,12 @@ test_that("export_main_summary works correctly", {
   })
 
   expect_true(file.exists(output_file3),
-              label = "Excel file must be created without highlight style.")
+    label = "Excel file must be created without highlight style."
+  )
   sheet_names3 <- openxlsx::getSheetNames(output_file3)
   expect_true("Summary" %in% sheet_names3,
-              label = "Summary sheet must be present without highlight style.")
+    label = "Summary sheet must be present without highlight style."
+  )
 
   # Cleanup
   unlink(temp_dir_path, recursive = TRUE, force = TRUE)

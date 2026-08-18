@@ -190,3 +190,17 @@ def test_hotspot_line_count_exceeds_max_size(monkeypatch):
         assert _hotspot_line_count(tf_path) is None
     finally:
         os.remove(tf_path)
+
+
+def test_hotspot_line_count_rejects_null_byte_path():
+    assert _hotspot_line_count("unsafe\0path.py") is None
+
+
+def test_hotspot_line_count_rejects_fifo_without_opening(tmp_path):
+    fifo_path = tmp_path / "hotspot.fifo"
+    os.mkfifo(fifo_path)
+
+    try:
+        assert _hotspot_line_count(str(fifo_path)) is None
+    finally:
+        fifo_path.unlink(missing_ok=True)

@@ -42,7 +42,6 @@ def test_run_shell_command_string_raises_value_error(mock_run_process):
     mock_run_process.assert_not_called()
 
 
-
 @patch("repository_automation_common.run_process")
 def test_run_shell_command_list(mock_run_process):
     setup_mock_process(mock_run_process)
@@ -153,7 +152,6 @@ def test_now_utc_mocked():
         mock_datetime.now.assert_called_once_with(dt.UTC)
 
 
-
 @patch("repository_automation_common.Path.read_text")
 def test_load_config_with_automation(mock_read_text):
     mock_read_text.return_value = "automation:\n  enabled: true\n  key: value\n"
@@ -185,6 +183,7 @@ def test_load_config_empty_file(mock_read_text):
 
     assert result == {}
     mock_read_text.assert_called_once()
+
 
 def test_iso_day_with_value():
     known_time = dt.datetime(2024, 10, 15, 12, 30, 45, tzinfo=dt.UTC)
@@ -275,7 +274,11 @@ import pytest
     "used_val, context, expected_err",
     [
         ("default_val", "", "Warning: Using default value 'default_val' for MY_VAR\n"),
-        ("default_val", "unit-test", "Warning: Using default value 'default_val' for MY_VAR in unit-test\n"),
+        (
+            "default_val",
+            "unit-test",
+            "Warning: Using default value 'default_val' for MY_VAR in unit-test\n",
+        ),
         ("other", "", ""),
     ],
 )
@@ -289,6 +292,7 @@ def test_warn_on_default_param(used_val, context, expected_err, capsys):
 
 def test_warn_on_failure_emits(capsys):
     from repository_automation_common import warn_on_failure
+
     # MagicMock imported at module scope
 
     proc = MagicMock()

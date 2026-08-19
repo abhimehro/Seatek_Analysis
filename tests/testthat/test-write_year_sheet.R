@@ -7,9 +7,9 @@ library(data.table)
 env <- globalenv()
 
 if (file.exists("../../Updated_Seatek_Analysis.R")) {
-  source("../../Updated_Seatek_Analysis.R", local=env)
+  source("../../Updated_Seatek_Analysis.R", local = env)
 } else if (file.exists("Updated_Seatek_Analysis.R")) {
-  source("Updated_Seatek_Analysis.R", local=env)
+  source("Updated_Seatek_Analysis.R", local = env)
 } else {
   stop("Main analysis script not found.")
 }
@@ -65,8 +65,8 @@ test_that("write_year_sheet works correctly", {
   found_highlight <- FALSE
   for (obj in style_objs) {
     if (obj$sheet == year && 3 %in% obj$rows && 5 %in% obj$cols) {
-       found_highlight <- TRUE
-       break
+      found_highlight <- TRUE
+      break
     }
   }
   expect_true(found_highlight, label = "Highlight style should be applied to correct cell (row 3, col 5).")

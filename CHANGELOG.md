@@ -111,6 +111,7 @@
 
 **Merged pull requests:**
 
+- 🎨 Palette: Improve Excel accessibility with explicit font colors [\#701](https://github.com/abhimehro/Seatek_Analysis/pull/701) ([abhimehro](https://github.com/abhimehro))
 - 🎨 Palette: Improve CLI empty state UX [\#674](https://github.com/abhimehro/Seatek_Analysis/pull/674) ([abhimehro](https://github.com/abhimehro))
 - ⚡ Bolt: Optimize NA filtering with anyNA\(\) [\#658](https://github.com/abhimehro/Seatek_Analysis/pull/658) ([abhimehro](https://github.com/abhimehro))
 - 🎨 Palette: Better progress bar visualization [\#655](https://github.com/abhimehro/Seatek_Analysis/pull/655) ([abhimehro](https://github.com/abhimehro))

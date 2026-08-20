@@ -126,8 +126,9 @@ read_sensor_data <- function(file_path,
       num_ts <- suppressWarnings(as.numeric(ts_col))
     }
     if (!anyNA(num_ts)) {
-      # ⚡ Bolt: Specifying tz="UTC" prevents the system timezone lookup overhead
-      set(dt, j = "Timestamp", value = as.POSIXct(num_ts, origin = "1970-01-01", tz = "UTC")) # nolint: object_name_linter
+      # ⚡ Bolt: Specifying tz="UTC" prevents timezone lookup overhead.
+      # Internal .POSIXct bypasses generic dispatch and origin conversion.
+      set(dt, j = "Timestamp", value = .POSIXct(num_ts, tz = "UTC")) # nolint: object_name_linter
     }
   }
   dt

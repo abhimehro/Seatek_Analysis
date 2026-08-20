@@ -4,13 +4,10 @@ permissions:
   contents: read
 
 on:
+  push:
+    branches: [main]
   pull_request:
     branches: [main]
-    paths:
-      - "**.py"
-      - "Series_27/Analysis/requirements.txt"
-      - "requirements*.txt"
-      - ".github/workflows/pr-validation.yml"
 
 jobs:
   validate:

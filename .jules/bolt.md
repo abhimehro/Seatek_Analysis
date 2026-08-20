@@ -415,3 +415,7 @@ when filtering missing values, check for the presence of NAs first using
 requiring no memory allocation. **Action:** When filtering missing values, use
 `if (anyNA(x)) x <- x[!is.na(x)]` instead of unconditionally subsetting with
 `!is.na(x)`.
+
+## 2025-05-06 - [Performance Improvement] Avoid redundant os.path.isfile checks
+**Learning:** Checking `os.path.isfile()` multiple times for the same path introduces unnecessary file system lookup overhead.
+**Action:** When validating a path, ensure that `os.path.isfile()` is called only once, storing or relying on the result, instead of redundantly querying the OS in immediate succession.

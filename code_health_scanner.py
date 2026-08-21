@@ -96,10 +96,7 @@ def read_file_safe(filepath):
         ):
             return []
 
-        # SECURITY: Prevent DoS by only reading regular files.
-        if not os.path.isfile(resolved_filepath):
-            return []
-
+        # ⚡ Bolt: Removed redundant os.path.isfile() check which introduced unnecessary file system lookup overhead.
         # SECURITY: Prevent DoS by only reading regular files.
         if not os.path.isfile(resolved_filepath):
             return []

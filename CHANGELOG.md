@@ -114,6 +114,7 @@
 
 - ⚡ Bolt: Remove redundant os.path.isfile check in code\_health\_scanner.py [\#713](https://github.com/abhimehro/Seatek_Analysis/pull/713) ([abhimehro](https://github.com/abhimehro))
 - 🎨 Palette: Improve Excel accessibility with explicit font colors [\#701](https://github.com/abhimehro/Seatek_Analysis/pull/701) ([abhimehro](https://github.com/abhimehro))
+- perf\(r\): parse unix-epoch timestamps via .POSIXct \(salvages \#690\) [\#693](https://github.com/abhimehro/Seatek_Analysis/pull/693) ([cursor[bot]](https://github.com/apps/cursor))
 - 🎨 Palette: Improve CLI empty state UX [\#674](https://github.com/abhimehro/Seatek_Analysis/pull/674) ([abhimehro](https://github.com/abhimehro))
 - Jules Daily QA & Agentic Review - Minor Lint Fixes [\#673](https://github.com/abhimehro/Seatek_Analysis/pull/673) ([abhimehro](https://github.com/abhimehro))
 - ⚡ Bolt: Optimize NA filtering with anyNA\(\) [\#658](https://github.com/abhimehro/Seatek_Analysis/pull/658) ([abhimehro](https://github.com/abhimehro))

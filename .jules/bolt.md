@@ -415,3 +415,8 @@ when filtering missing values, check for the presence of NAs first using
 requiring no memory allocation. **Action:** When filtering missing values, use
 `if (anyNA(x)) x <- x[!is.na(x)]` instead of unconditionally subsetting with
 `!is.na(x)`.
+
+## 2025-05-06 - Bypass generic S3 method dispatch overhead for mean
+
+**Learning:** In highly-iterative contexts within R, calling the generic `mean()` function introduces measurable S3 method dispatch overhead.
+**Action:** When calculating means of standard numeric vectors inside high-frequency loops or `lapply` calls (like inside `calc_stats`), use `mean.default(x)` instead to bypass the dispatch overhead and achieve a minor but consistent speedup.

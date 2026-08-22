@@ -63,16 +63,20 @@ validate_sensor_file <- function(file_path) {
   # ⚡ Bolt: file.size() is ~3-4x faster than file.info()$size
   file_size <- file.size(file_path)
   if (is.na(file_size) || file_size > max_file_size) {
-    stop(sprintf("File %s exceeds maximum allowed size of %d MB.",
-                 basename(file_path), max_file_size / (1024 * 1024)))
+    stop(sprintf(
+      "File %s exceeds maximum allowed size of %d MB.",
+      basename(file_path), max_file_size / (1024 * 1024)
+    ))
   }
 }
 
 # Read a single sensor data file
 read_sensor_data <- function(file_path,
                              sep = " ",
-                             verbose = getOption("seatek.read.verbose",
-                                                 interactive())) {
+                             verbose = getOption(
+                               "seatek.read.verbose",
+                               interactive()
+                             )) {
   file_path <- normalizePath(file_path)
   if (isTRUE(verbose)) {
     cat(sprintf("  📂 Reading: %s\n", basename(file_path)))
@@ -127,7 +131,7 @@ read_sensor_data <- function(file_path,
     }
     if (!anyNA(num_ts)) {
       # ⚡ Bolt: Specifying tz="UTC" prevents the system timezone lookup overhead
-      # NOTE: .POSIXct skips generic as.POSIXct origin conversion for unix-epoch UTC.
+      # NOTE: .POSIXct skips generic as.POSIXct origin conversion for UTC.
       set(dt, j = "Timestamp", value = .POSIXct(num_ts, tz = "UTC")) # nolint: object_name_linter
     }
   }
@@ -142,7 +146,8 @@ execute_tasks_parallel <- function(tasks, task_func) {
 
   if (requireNamespace("parallel", quietly = TRUE)) {
     cores_detected <- tryCatch(parallel::detectCores(),
-                               error = function(e) NA_real_)
+      error = function(e) NA_real_
+    )
     if (!is.numeric(cores_detected) || !is.finite(cores_detected) ||
           cores_detected < 1) {
       cores <- 1L
@@ -159,8 +164,10 @@ execute_tasks_parallel <- function(tasks, task_func) {
     out_files
   } else {
     out_files <- vector("list", length(tasks))
-    pb_write <- txtProgressBar(min = 0, max = length(tasks),
-                               style = 3, char = "█")
+    pb_write <- txtProgressBar(
+      min = 0, max = length(tasks),
+      style = 3, char = "█"
+    )
     tryCatch(
       {
         for (i in seq_along(tasks)) {
@@ -244,7 +251,8 @@ export_raw_data_parallel <- function(raw_export_tasks) {
 
     out_files <- execute_tasks_parallel(raw_export_tasks, write_task)
     message(paste0(sprintf("Raw data written to %s", out_files),
-                   collapse = "\n"))
+      collapse = "\n"
+    ))
   }
 }
 
@@ -256,8 +264,10 @@ process_all_data <- function(data_dir) {
   if (length(files) == 0) {
     stop(sprintf("No sensor files found matching %s in %s", pattern, data_dir))
   }
-  cat(sprintf("\n🚀 Found %d sensor files. Starting processing...\n",
-              length(files)))
+  cat(sprintf(
+    "\n🚀 Found %d sensor files. Starting processing...\n",
+    length(files)
+  ))
   # ⚡ Bolt: Pre-allocate lists to avoid O(N^2) memory reallocation overhead
   # in loops
   results <- vector("list", length(files))
@@ -291,8 +301,10 @@ process_all_data <- function(data_dir) {
   }
   close(pb)
   names(results) <- sheet_names
-  cat(paste("\nℹ Sensor files read and metrics computed;",
-            "starting raw Excel exports...\n"))
+  cat(paste(
+    "\nℹ Sensor files read and metrics computed;",
+    "starting raw Excel exports...\n"
+  ))
 
   # ⚡ Bolt: Parallelize raw Excel writes to remove serial I/O bottleneck
   cat("\n⚡ Writing raw Excel files in parallel...\n")
@@ -354,7 +366,8 @@ calculate_summary_stats <- function(results) {
       # argument to avoid redundant median calculations for measurable speedup.
       med <- median(v_val)
       list(
-        mean      = mean(v_val),
+        # ⚡ Bolt: Bypass generic mean() S3 dispatch with mean.default()
+        mean      = mean.default(v_val),
         sd        = sd(v_val),
         median    = med,
         mad       = mad(v_val, center = med),
@@ -375,20 +388,28 @@ calculate_summary_stats <- function(results) {
     keyby = "Sensor", .SDcols = metrics
   ]
 
-  stat_names <- c("mean", "sd", "median", "mad", "min", "max",
-                  "count", "rollmean3")
-  new_names <- c("Sensor",
-                 paste(rep(metrics, each = length(stat_names)),
-                       stat_names, sep = "_"))
+  stat_names <- c(
+    "mean", "sd", "median", "mad", "min", "max",
+    "count", "rollmean3"
+  )
+  new_names <- c(
+    "Sensor",
+    paste(rep(metrics, each = length(stat_names)),
+      stat_names,
+      sep = "_"
+    )
+  )
   setnames(summary_wide, new_names)
 
   # Calculate percent non-missing for 'full'
   # ⚡ Bolt: Direct unquoted column referencing is faster than standard
   # evaluation with get()
   if (is.data.table(summary_wide)) {
-    set(summary_wide, j = "full_pct_nonmissing", value =
-          # nolint next: object_usage_linter.
-          100 * summary_wide$full_count / length(results))
+    set(summary_wide,
+      j = "full_pct_nonmissing", value =
+        # nolint next: object_usage_linter.
+        100 * summary_wide$full_count / length(results)
+    )
   } else {
     summary_wide$full_pct_nonmissing <-
       100 * summary_wide$full_count / length(results)
@@ -526,8 +547,10 @@ write_summary_sheets <- function(wb, summary_df, output_file,
   # evaluation with get()
   if (is.data.table(summary_df)) {
     # nolint next: object_usage_linter.
-    set(summary_df, j = "flag_high_variability",
-        value = summary_df$full_sd > sd_threshold)
+    set(summary_df,
+      j = "flag_high_variability",
+      value = summary_df$full_sd > sd_threshold
+    )
   } else {
     summary_df$flag_high_variability <- summary_df$full_sd > sd_threshold
   }
@@ -571,8 +594,10 @@ dump_summary_excel <- function(results, output_file, highlight_top_n = 5) {
     )
     i <- 0
     for (year in names(results)) {
-      write_year_sheet(wb, year, results[[year]], header_style,
-                       highlight_style_yearly)
+      write_year_sheet(
+        wb, year, results[[year]], header_style,
+        highlight_style_yearly
+      )
       i <- i + 1
       setTxtProgressBar(pb, i)
     }
@@ -619,7 +644,9 @@ handle_pipeline_warning <- function(w) {
 handle_pipeline_error <- function(e) {
   error_message <- conditionMessage(e)
   if (grepl("could not find function|Error in library|there is no package called", # nolint: line_length_linter
-            error_message, ignore.case = TRUE)) {
+    error_message,
+    ignore.case = TRUE
+  )) {
     log_handler("DEPENDENCY_ERROR", error_message)
   } else {
     log_handler("PROCESSING_ERROR", error_message)

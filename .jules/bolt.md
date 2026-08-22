@@ -415,3 +415,8 @@ when filtering missing values, check for the presence of NAs first using
 requiring no memory allocation. **Action:** When filtering missing values, use
 `if (anyNA(x)) x <- x[!is.na(x)]` instead of unconditionally subsetting with
 `!is.na(x)`.
+
+## 2025-08-11 - Bypass POSIXct origin conversion overhead
+
+**Learning:** When parsing numeric timestamps to POSIXct in high-frequency loops or for large datasets, calling `as.POSIXct(num_ts, origin = "1970-01-01", tz = "UTC")` incurs massive generic dispatch and origin conversion overhead.
+**Action:** Use the internal `.POSIXct(num_ts, tz = "UTC")` function instead to bypass this overhead when the origin is the standard Unix epoch and the timezone is known.

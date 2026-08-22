@@ -199,3 +199,31 @@ def test_hotspot_line_count_exceeds_max_size(monkeypatch):
         assert _hotspot_line_count(tf_path) is None
     finally:
         os.remove(tf_path)
+
+
+def test_hotspot_line_count_rejects_null_byte_path():
+    assert _hotspot_line_count("unsafe\0path.py") is None
+
+
+def test_hotspot_line_count_rejects_fifo_without_opening(tmp_path):
+    fifo_path = tmp_path / "hotspot.fifo"
+    os.mkfifo(fifo_path)
+
+    try:
+        assert _hotspot_line_count(str(fifo_path)) is None
+    finally:
+        fifo_path.unlink(missing_ok=True)
+
+
+def test_hotspot_line_count_handles_value_error_after_regular_file_check(
+    monkeypatch, tmp_path
+):
+    path = tmp_path / "regular.py"
+    path.write_text("print('safe')\n", encoding="utf-8")
+
+    def raise_value_error(*_args, **_kwargs):
+        raise ValueError("unexpected invalid file operation")
+
+    monkeypatch.setattr("builtins.open", raise_value_error)
+
+    assert _hotspot_line_count(str(path)) is None

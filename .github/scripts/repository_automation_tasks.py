@@ -682,9 +682,9 @@ def status_icon(status: str) -> str:
 
 # ⚡ Bolt: Helper function extracted to avoid "Large Method" rule violations when
 # replacing sequential API calls with concurrent execution via ThreadPoolExecutor.
-def fetch_daily_report_data() -> (
-    tuple[list[dict[str, Any]], list[dict[str, Any]], list[dict[str, Any]]]
-):
+def fetch_daily_report_data() -> tuple[
+    list[dict[str, Any]], list[dict[str, Any]], list[dict[str, Any]]
+]:
     # ⚡ Bolt: Using ThreadPoolExecutor to run independent GitHub API calls concurrently
     # significantly reduces blocking I/O time in daily_report_lines.
     with concurrent.futures.ThreadPoolExecutor(max_workers=3) as executor:

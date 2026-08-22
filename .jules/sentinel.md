@@ -227,3 +227,9 @@ working directory first (e.g. Windows). **Prevention:** Always exclusively use
 `shutil.which("executable_name")` to resolve the absolute path of system
 binaries before passing them to `subprocess` functions, and raise a clear
 exception or fail gracefully if the absolute path cannot be resolved.
+
+## 2026-08-20 - [TypeError on Pathlib Null Byte Check]
+
+**Vulnerability:** The `read_file_safe` function contained a check `if "\0" in filepath:` intended to prevent a Python 3.12+ `ValueError` related to null bytes. However, when `filepath` was passed as a `pathlib.Path` object instead of a string, this check raised a `TypeError` because `Path` objects are not directly iterable as characters. This unintentional unhandled exception caused the scanner process to crash (Denial of Service).
+**Learning:** Security checks that rely on string operations (like checking for substring presence) can inadvertently cause crashes if they do not account for path-like objects (e.g., `pathlib.Path`). Type checking or coercion is necessary for robust path handling.
+**Prevention:** Always explicitly coerce variables intended for path analysis to strings (e.g., `str(filepath)`) before performing string-specific validation checks like substring searching, particularly in security wrappers that receive untrusted inputs.

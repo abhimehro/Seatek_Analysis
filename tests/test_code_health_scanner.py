@@ -1,3 +1,4 @@
+import tempfile
 import os
 import subprocess
 from unittest.mock import patch
@@ -117,3 +118,20 @@ def test_read_file_safe_restricted_permissions():
         if os.path.exists(test_file):
             os.chmod(test_file, 0o644)
             os.remove(test_file)
+
+from pathlib import Path
+
+def test_read_file_safe_pathlib_object():
+    """Test read_file_safe handles pathlib.Path objects without raising TypeError."""
+    # Create the temp file in the current directory (which is allowed by the security check)
+    with tempfile.NamedTemporaryFile(mode="w", delete=False, dir=os.getcwd()) as tf:
+        tf.write("pathlib test\n")
+        temp_path = tf.name
+
+    try:
+        p = Path(temp_path)
+        content = read_file_safe(p)
+        assert content == ["pathlib test\n"]
+    finally:
+        if os.path.exists(temp_path):
+            os.remove(temp_path)

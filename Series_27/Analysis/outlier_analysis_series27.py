@@ -16,7 +16,7 @@ def parse_args():
     parser = argparse.ArgumentParser(
         description="🌊 Series 27 Outlier Analysis and Correction",
         formatter_class=argparse.ArgumentDefaultsHelpFormatter,
-        epilog="Example: python outlier_analysis_series27.py -i data.xlsx -o output_dir"
+        epilog="Example: python outlier_analysis_series27.py -i data.xlsx -o output_dir",
     )
     parser.add_argument(
         "-i",

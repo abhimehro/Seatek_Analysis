@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import argparse
+import sys
 
 from repository_automation_common import enforce_result, load_config
 from repository_automation_tasks import (
@@ -29,6 +30,12 @@ def main() -> int:
     )
     parser.add_argument("task")
     parser.add_argument("result_path", nargs="?")
+
+    # 🎨 Palette: Intercept bare run and show help for better DX
+    if len(sys.argv) == 1:
+        parser.print_help()
+        return 1
+
     args = parser.parse_args()
 
     if args.task == "enforce":

@@ -83,8 +83,9 @@ def read_file_safe(filepath):
     """Safely reads a file, preventing path traversal and OOM issues."""
     try:
         # SECURITY: Handle null bytes in path which cause ValueError in Python 3.12+
-        # preventing unhandled exception DoS attacks.
-        if "\0" in filepath:
+        # preventing unhandled exception DoS attacks. Cast to string to prevent
+        # TypeError if a pathlib.Path object is passed.
+        if "\0" in str(filepath):
             return []
 
         # SECURITY: Prevent path traversal by ensuring file is within current directory.

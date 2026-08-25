@@ -227,3 +227,7 @@ working directory first (e.g. Windows). **Prevention:** Always exclusively use
 `shutil.which("executable_name")` to resolve the absolute path of system
 binaries before passing them to `subprocess` functions, and raise a clear
 exception or fail gracefully if the absolute path cannot be resolved.
+## 2025-02-28 - Unhandled Exception DoS via pathlib null-byte rejection
+**Vulnerability:** Path validation logic using `if "\0" in filepath:` crashes with a `TypeError` when given a `pathlib.Path` object instead of a string, bypassing the intended exception handling and potentially leading to a Denial of Service (DoS).
+**Learning:** `pathlib.Path` objects are not iterable in a way that allows checking for substrings with the `in` operator, meaning any defensive checks written expecting a string will throw a `TypeError` when duck-typed with `Path`.
+**Prevention:** When validating path-like objects, explicitly cast the variable to a string (`if "\0" in str(filepath):`) to ensure compatibility and prevent unhandled type errors.

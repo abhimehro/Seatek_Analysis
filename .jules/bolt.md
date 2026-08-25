@@ -415,3 +415,6 @@ when filtering missing values, check for the presence of NAs first using
 requiring no memory allocation. **Action:** When filtering missing values, use
 `if (anyNA(x)) x <- x[!is.na(x)]` instead of unconditionally subsetting with
 `!is.na(x)`.
+
+## 2025-05-24 - Bypass generic S3 method dispatch overhead in high-frequency loops
+**Learning:** In high-frequency R loops accessing dataframe columns (like `df[[col_name]]`) and calling generic methods (`mean()`), the standard evaluation incurs significant S3 method dispatch overhead. Using `.subset2(df, col_name)` avoids the `[[.data.frame` method lookup, and `mean.default()` bypasses the `mean()` generic dispatcher. **Action:** When extracting dataframe columns and computing simple vectors inside performance-critical, highly-iterative loops, use `.subset2(df, col_name)` over `[[` and call the default underlying methods (like `mean.default()`) directly to achieve a measurable execution speedup without losing code readability.

@@ -366,7 +366,7 @@ calculate_summary_stats <- function(results) {
       # argument to avoid redundant median calculations for measurable speedup.
       med <- median(v_val)
       list(
-        mean      = mean(v_val),
+        mean      = mean.default(v_val),
         sd        = sd(v_val),
         median    = med,
         mad       = mad(v_val, center = med),

@@ -227,3 +227,9 @@ working directory first (e.g. Windows). **Prevention:** Always exclusively use
 `shutil.which("executable_name")` to resolve the absolute path of system
 binaries before passing them to `subprocess` functions, and raise a clear
 exception or fail gracefully if the absolute path cannot be resolved.
+
+## 2026-08-25 - [DoS via Unhandled Exception]
+
+**Vulnerability:** The `read_file_safe` function checked for null bytes using `if "\0" in filepath:`. In Python 3.12+, passing a string with a null byte to path functions throws a ValueError. While this check intended to prevent that, if the `filepath` argument was passed as a `pathlib.Path` object instead of a string, the `in` operator threw a `TypeError` because `PosixPath` is not iterable.
+**Learning:** Security validation functions must handle various input types robustly, particularly when interacting with the standard library's evolving type requirements. Assuming an input is always a string can introduce unhandled exception DoS vulnerabilities when other valid types (like `Path`) are provided.
+**Prevention:** Always cast variables to strings before performing string-specific checks on them, especially when validating paths for null bytes (`if "\0" in str(filepath):`).

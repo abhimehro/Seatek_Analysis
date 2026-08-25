@@ -116,7 +116,7 @@ test_that("run_pipeline executes successfully with valid data", {
 
   # Mock the process and summary to do nothing but return empty
   assign("process_all_data", function(dir) {
-    return(list())
+    list()
   }, envir = environment(run_pipeline))
 
   assign("dump_summary_excel", function(res, out) {

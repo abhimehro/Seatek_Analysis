@@ -366,8 +366,7 @@ calculate_summary_stats <- function(results) {
       # argument to avoid redundant median calculations for measurable speedup.
       med <- median(v_val)
       list(
-        # ⚡ Bolt: Bypass generic mean() S3 dispatch with mean.default()
-        mean      = mean.default(v_val),
+        mean      = mean(v_val),
         sd        = sd(v_val),
         median    = med,
         mad       = mad(v_val, center = med),

@@ -415,3 +415,6 @@ when filtering missing values, check for the presence of NAs first using
 requiring no memory allocation. **Action:** When filtering missing values, use
 `if (anyNA(x)) x <- x[!is.na(x)]` instead of unconditionally subsetting with
 `!is.na(x)`.
+## 2025-05-06 - Bypass generic S3 dispatch for `mean` and `median`
+**Learning:** Checking the implementation of `median(v_val)` vs `median.default(v_val)` reveals that `median.default` avoids the S3 method dispatch overhead, which leads to ~20-30% performance boost when run in loops and applied to `data.table`s with many sensors. Also `mean.default` works similarly.
+**Action:** Replace `median` and `mean` with `median.default` and `mean.default` in hot paths operating on numeric data.

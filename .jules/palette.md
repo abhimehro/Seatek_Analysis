@@ -1,6 +1,13 @@
 ## 2025-05-06 - Excel Accessibility for Background Colors
 
-**Learning:** When generating Excel reports, using background fill colors (`bgFill`) without explicitly setting a text color (`fontColour`) can result in poor contrast and accessibility issues (e.g., black text on dark colored backgrounds). **Action:** Always explicitly pair `bgFill` with a high-contrast `fontColour` (like `fontColour = "#000000"` for light backgrounds or `fontColour = "#FFFFFF"` for dark ones) when creating styles in `openxlsx` to ensure proper readability and accessibility.
+**Learning:** When generating Excel reports, using background fill colors
+(`bgFill`) without explicitly setting a text color (`fontColour`) can result in
+poor contrast and accessibility issues (e.g., black text on dark colored
+backgrounds). **Action:** Always explicitly pair `bgFill` with a high-contrast
+`fontColour` (like `fontColour = "#000000"` for light backgrounds or
+`fontColour = "#FFFFFF"` for dark ones) when creating styles in `openxlsx` to
+ensure proper readability and accessibility.
+
 ## 2025-05-06 - CLI Input Validation Error UX
 
 **Learning:** Allowing standard library exceptions (like FileNotFoundError) to

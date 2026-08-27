@@ -347,7 +347,7 @@ def _load_and_validate_file(input_file):
     try:
         with open(input_file, "rb") as f:
             file_buffer = f.read(MAX_FILE_SIZE + 1)
-    except IOError as e:
+    except OSError as e:
         logging.error(f"Error reading input file {input_file}: {e}")
         return None
 

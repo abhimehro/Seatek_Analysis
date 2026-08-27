@@ -227,3 +227,7 @@ working directory first (e.g. Windows). **Prevention:** Always exclusively use
 `shutil.which("executable_name")` to resolve the absolute path of system
 binaries before passing them to `subprocess` functions, and raise a clear
 exception or fail gracefully if the absolute path cannot be resolved.
+## 2025-05-06 - Prevent TypeError on null-byte checks with Path objects
+**Vulnerability:** The null-byte check `if "\0" in filepath` causes an unhandled `TypeError` (resulting in potential DoS) if `filepath` is provided as a `pathlib.Path` or other non-string path-like object, as Path objects are not iterable in this context.
+**Learning:** File path validation must account for different types of path-like objects being passed into functions, as relying on implicit string coercion for operations like `in` can lead to runtime crashes.
+**Prevention:** When manually validating file paths for embedded null bytes or substrings, always cast the path variable to a string first (e.g., `str(filepath)`) before performing the check.

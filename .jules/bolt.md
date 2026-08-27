@@ -415,3 +415,8 @@ when filtering missing values, check for the presence of NAs first using
 requiring no memory allocation. **Action:** When filtering missing values, use
 `if (anyNA(x)) x <- x[!is.na(x)]` instead of unconditionally subsetting with
 `!is.na(x)`.
+
+## 2025-08-27 - Bypass generic S3 method dispatch for median()
+
+**Learning:** Similar to `mean()`, calling the generic `median()` method inside high-frequency `data.table` aggregations (like `lapply(.SD, ...)` over many groups) incurs measurable S3 method dispatch overhead.
+**Action:** When calculating medians on numeric vectors in performance-critical paths, call `median.default()` directly to bypass the `UseMethod()` lookup overhead.

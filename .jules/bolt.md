@@ -415,3 +415,6 @@ when filtering missing values, check for the presence of NAs first using
 requiring no memory allocation. **Action:** When filtering missing values, use
 `if (anyNA(x)) x <- x[!is.na(x)]` instead of unconditionally subsetting with
 `!is.na(x)`.
+## 2026-08-27 - [Optimize inner loop aggregate statistics]
+**Learning:** Using `mean()` on standard numeric vectors within high-frequency functions incurs unnecessary S3 generic method dispatch overhead.
+**Action:** Use `mean.default()` to bypass this dispatch overhead for numeric vectors, yielding a measurable execution speedup without sacrificing readability.

@@ -227,3 +227,9 @@ working directory first (e.g. Windows). **Prevention:** Always exclusively use
 `shutil.which("executable_name")` to resolve the absolute path of system
 binaries before passing them to `subprocess` functions, and raise a clear
 exception or fail gracefully if the absolute path cannot be resolved.
+
+## 2026-08-28 - [Path Handling TypeError DoS]
+
+**Vulnerability:** The `read_file_safe` function in `code_health_scanner.py` attempted to validate file paths for embedded null bytes using `if "\0" in filepath:`. However, if the `filepath` argument was provided as a `pathlib.Path` object instead of a string, this check raised an unhandled `TypeError` (as `PosixPath` is not iterable for substring checks), which could lead to an application crash or Denial of Service when processing untrusted inputs.
+**Learning:** Python 3 robustly types path objects, and implicit string conversions do not occur during substring checks. Security wrappers that accept generic file paths must be resilient against both standard strings and path-like objects to prevent unhandled exceptions.
+**Prevention:** Always explicitly cast path variables to strings (e.g., `str(filepath)`) before performing string-based security validations like null-byte checks, ensuring the validation logic operates safely regardless of the input type.

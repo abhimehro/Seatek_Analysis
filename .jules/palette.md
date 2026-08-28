@@ -33,3 +33,6 @@ first impression and lacks guidance. **Action:** Always intercept a bare run
 (e.g., `len(sys.argv) == 1`) and print the full help menu
 (`parser.print_help()`) so users immediately see usage examples and available
 options without needing to guess the `--help` flag.
+## 2025-07-11 - [CLI UX] Improved argparse help text and error messages
+**Learning:** The CLI runner was missing detailed help text and the error messages were unhelpful. Good Developer Experience (DX) starts with informative `-h` flags and actionable error outputs.
+**Action:** Used `RawDescriptionHelpFormatter` and `epilog` to format lists clearly in help text, and appended an actionable suggestion to the invalid task error output.

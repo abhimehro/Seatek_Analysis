@@ -13,6 +13,7 @@ def test_main_unknown_task(capsys):
     assert main() == 1
     captured = capsys.readouterr()
     assert "Unknown task: unknown-task" in captured.out
+    assert "Run with --help to see available tasks." in captured.out
 
 
 @patch("sys.argv", ["repository_automation.py", "enforce"])

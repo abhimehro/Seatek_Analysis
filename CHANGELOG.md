@@ -125,6 +125,8 @@
 
 **Merged pull requests:**
 
+- ⚡ Bolt: \[performance improvement\] Bypass mad\(\) and median\(\) generic dispatch overhead [\#769](https://github.com/abhimehro/Seatek_Analysis/pull/769) ([abhimehro](https://github.com/abhimehro))
+- 🎨 Palette: \[CLI DX improvement\] Add informative help text and actionable error [\#765](https://github.com/abhimehro/Seatek_Analysis/pull/765) ([abhimehro](https://github.com/abhimehro))
 - ⚡ Bolt: Optimize S3 method dispatch for mean and median [\#754](https://github.com/abhimehro/Seatek_Analysis/pull/754) ([abhimehro](https://github.com/abhimehro))
 - Jules Daily QA & Agentic Review - Fix implicit return in tests [\#751](https://github.com/abhimehro/Seatek_Analysis/pull/751) ([abhimehro](https://github.com/abhimehro))
 - Autofix\(\): Daily QA Review - Styler and Linter fixes [\#729](https://github.com/abhimehro/Seatek_Analysis/pull/729) ([abhimehro](https://github.com/abhimehro))

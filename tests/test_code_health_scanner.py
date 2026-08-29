@@ -104,6 +104,21 @@ def test_read_file_safe_null_byte():
     assert read_file_safe("test\0.txt") == []
 
 
+def test_read_file_safe_pathlib_path():
+    import pathlib
+
+    test_file = "test_pathlib.txt"
+    content = "line1\nline2\n"
+    with open(test_file, "w") as f:
+        f.write(content)
+    try:
+        read_lines = read_file_safe(pathlib.Path(test_file))
+        assert read_lines == ["line1\n", "line2\n"]
+    finally:
+        if os.path.exists(test_file):
+            os.remove(test_file)
+
+
 def test_read_file_safe_restricted_permissions():
     test_file = "test_restricted.txt"
     with open(test_file, "w") as f:

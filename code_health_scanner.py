@@ -84,7 +84,7 @@ def read_file_safe(filepath):
     try:
         # SECURITY: Handle null bytes in path which cause ValueError in Python 3.12+
         # preventing unhandled exception DoS attacks.
-        if "\0" in filepath:
+        if "\0" in str(filepath):
             return []
 
         # SECURITY: Prevent path traversal by ensuring file is within current directory.

@@ -227,3 +227,7 @@ working directory first (e.g. Windows). **Prevention:** Always exclusively use
 `shutil.which("executable_name")` to resolve the absolute path of system
 binaries before passing them to `subprocess` functions, and raise a clear
 exception or fail gracefully if the absolute path cannot be resolved.
+## 2025-10-24 - [Null Byte Handling Crash]
+**Vulnerability:** Unhandled exception (TypeError) in `code_health_scanner.py:read_file_safe` when evaluating `"\0" in filepath` where `filepath` is a `pathlib.Path` object.
+**Learning:** Checking for substrings inside path objects without converting them to strings can cause TypeErrors, acting as an unhandled exception DoS vector for routines relying on standard input types.
+**Prevention:** Cast the variable to a string (e.g., `str(filepath)`) before performing string-specific checks like null byte scanning.

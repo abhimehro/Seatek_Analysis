@@ -1,6 +1,9 @@
 import os
+import pathlib
 import subprocess
 from unittest.mock import patch
+
+import pytest
 
 from code_health_scanner import (
     MAX_FILE_SIZE,
@@ -45,17 +48,20 @@ def test_get_repo_info_failure():
         assert commit_hash == "unknown"
 
 
-def test_read_file_safe_happy_path():
-    test_file = "test_happy.txt"
+@pytest.mark.parametrize(
+    "path_converter,filename",
+    [(str, "test_happy.txt"), (pathlib.Path, "test_pathlib.txt")],
+)
+def test_read_file_safe_happy_path(path_converter, filename):
     content = "line1\nline2\n"
-    with open(test_file, "w") as f:
+    with open(filename, "w") as f:
         f.write(content)
     try:
-        read_lines = read_file_safe(test_file)
+        read_lines = read_file_safe(path_converter(filename))
         assert read_lines == ["line1\n", "line2\n"]
     finally:
-        if os.path.exists(test_file):
-            os.remove(test_file)
+        if os.path.exists(filename):
+            os.remove(filename)
 
 
 def test_read_file_safe_path_traversal():
@@ -102,21 +108,6 @@ def test_read_file_safe_null_byte():
     # Attempting to read a file with an embedded null character should return empty list
     # and not raise a ValueError (ValueError: lstat: embedded null character in path)
     assert read_file_safe("test\0.txt") == []
-
-
-def test_read_file_safe_pathlib_path():
-    import pathlib
-
-    test_file = "test_pathlib.txt"
-    content = "line1\nline2\n"
-    with open(test_file, "w") as f:
-        f.write(content)
-    try:
-        read_lines = read_file_safe(pathlib.Path(test_file))
-        assert read_lines == ["line1\n", "line2\n"]
-    finally:
-        if os.path.exists(test_file):
-            os.remove(test_file)
 
 
 def test_read_file_safe_restricted_permissions():

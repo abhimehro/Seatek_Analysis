@@ -369,7 +369,7 @@ calculate_summary_stats <- function(results) {
         mean      = mean.default(v_val),
         sd        = sd(v_val),
         median    = med,
-        mad       = mad(v_val, center = med),
+        mad       = 1.4826 * median.default(abs(v_val - med)),
         min       = min(v_val),
         max       = max(v_val),
         count     = n,

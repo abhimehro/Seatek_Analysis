@@ -131,7 +131,8 @@ read_sensor_data <- function(file_path,
     }
     if (!anyNA(num_ts)) {
       # ⚡ Bolt: Specifying tz="UTC" prevents the system timezone lookup overhead
-      # NOTE: .POSIXct skips generic as.POSIXct origin conversion for unix-epoch UTC.
+      # NOTE: .POSIXct skips generic as.POSIXct origin conversion for
+      # unix-epoch UTC.
       set(dt, j = "Timestamp", value = .POSIXct(num_ts, tz = "UTC")) # nolint: object_name_linter
     }
   }

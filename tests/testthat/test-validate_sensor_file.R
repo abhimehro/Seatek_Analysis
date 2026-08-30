@@ -33,9 +33,10 @@ test_that("validate_sensor_file errors on oversized file", {
   writeLines("test data", large_file)
   on.exit(unlink(large_file, force = TRUE))
 
-  # Temporarily override file.size in the global environment to simulate a large file
+  # Temporarily override file.size in the global environment to simulate
+  # a large file
   original_file_size <- base::file.size
-  assign("file.size", function(...) 60 * 1024 * 1024, envir = .GlobalEnv)
+  assign("file.size", function(...) 60 * 1024 * 1024, envir = .GlobalEnv) # nolint: object_name_linter
 
   # Ensure cleanup of the mock
   on.exit(

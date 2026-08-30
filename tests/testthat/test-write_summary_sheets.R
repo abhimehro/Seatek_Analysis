@@ -31,7 +31,9 @@ test_that("write_summary_sheets works correctly", {
 
   output_file <- file.path(temp_dir_path, "test_summary.xlsx")
   header_style <- createStyle(textDecoration = "Bold", border = "Bottom")
-  highlight_style_summary <- createStyle(fontColour = "#9C0006", bgFill = "#FFC7CE")
+  highlight_style_summary <- createStyle(
+    fontColour = "#9C0006", bgFill = "#FFC7CE"
+  )
 
   # Call the function
   suppressMessages({
@@ -50,8 +52,13 @@ test_that("write_summary_sheets works correctly", {
 
   # 2. Check Excel sheet names
   sheet_names <- openxlsx::getSheetNames(output_file)
-  expected_sheets <- c("Summary_All", "Summary_Sufficient", "Summary_Top_Sensors", "Summary")
-  expect_true(all(expected_sheets %in% sheet_names), label = "All specified Excel sheets must be present.")
+  expected_sheets <- c(
+    "Summary_All", "Summary_Sufficient", "Summary_Top_Sensors", "Summary"
+  )
+  expect_true(
+    all(expected_sheets %in% sheet_names),
+    label = "All specified Excel sheets must be present."
+  )
 
   # 3. Check CSV files creation
   csv_base_name <- tools::file_path_sans_ext(output_file)
@@ -64,17 +71,34 @@ test_that("write_summary_sheets works correctly", {
   )
 
   for (csv_file_path in csv_files_to_check) {
-    expect_true(file.exists(csv_file_path), info = paste("Expected CSV file not found:", csv_file_path))
+    expect_true(
+      file.exists(csv_file_path),
+      info = paste("Expected CSV file not found:", csv_file_path)
+    )
   }
 
   # 4. Check data filtering for sufficient data (full_count >= 5)
   sufficient_csv <- utils::read.csv(paste0(csv_base_name, "_sufficient.csv"))
-  expect_equal(nrow(sufficient_csv), 8, label = "Sensors with full_count >= 5 should be 8.")
+  expect_equal(
+    nrow(sufficient_csv), 8,
+    label = "Sensors with full_count >= 5 should be 8."
+  )
 
   # 5. Check data filtering for top sensors
   top_csv <- utils::read.csv(paste0(csv_base_name, "_top_sensors.csv"))
-  expect_equal(nrow(top_csv), 5, label = "Top sensors should be limited to 5.")
-  expect_true(all(c("Sensor", "within_diff_mean", "full_mean", "full_sd", "full_pct_nonmissing") %in% names(top_csv)), label = "Top sensors should have specific columns.")
+  expect_equal(
+    nrow(top_csv), 5,
+    label = "Top sensors should be limited to 5."
+  )
+  expect_true(
+    all(
+      c(
+        "Sensor", "within_diff_mean", "full_mean",
+        "full_sd", "full_pct_nonmissing"
+      ) %in% names(top_csv)
+    ),
+    label = "Top sensors should have specific columns."
+  )
 
   # 6. Test behavior without within_diff_mean
   wb2 <- createWorkbook()
@@ -93,9 +117,21 @@ test_that("write_summary_sheets works correctly", {
   })
 
   sheet_names2 <- openxlsx::getSheetNames(output_file2)
-  expect_false("Summary_Top_Sensors" %in% sheet_names2, label = "Summary_Top_Sensors should not be present if within_diff_mean is missing.")
-  expect_true(file.exists(paste0(tools::file_path_sans_ext(output_file2), "_all.csv")))
-  expect_false(file.exists(paste0(tools::file_path_sans_ext(output_file2), "_top_sensors.csv")))
+  expect_false(
+    "Summary_Top_Sensors" %in% sheet_names2,
+    label = paste(
+      "Summary_Top_Sensors should not be present if within_diff_mean",
+      "is missing."
+    )
+  )
+  expect_true(
+    file.exists(paste0(tools::file_path_sans_ext(output_file2), "_all.csv"))
+  )
+  expect_false(
+    file.exists(
+      paste0(tools::file_path_sans_ext(output_file2), "_top_sensors.csv")
+    )
+  )
 
   # Cleanup
   unlink(temp_dir_path, recursive = TRUE, force = TRUE)

@@ -12,6 +12,9 @@
 
 **Closed issues:**
 
+- Daily QA & Agentic Review — 2026-08-30 [\#779](https://github.com/abhimehro/Seatek_Analysis/issues/779)
+- Jules Daily QA & Agentic Review - All Checks Passed [\#771](https://github.com/abhimehro/Seatek_Analysis/issues/771)
+- Daily QA & Agentic Review — 2026-08-28 [\#766](https://github.com/abhimehro/Seatek_Analysis/issues/766)
 - Jules Daily QA & Agentic Review - 2026-08-27 [\#758](https://github.com/abhimehro/Seatek_Analysis/issues/758)
 - \[repo-automation\] Daily Status Report - 2026-08-26 [\#748](https://github.com/abhimehro/Seatek_Analysis/issues/748)
 - Daily QA & Agentic Review — 2026-08-25 [\#745](https://github.com/abhimehro/Seatek_Analysis/issues/745)
@@ -125,6 +128,7 @@
 
 **Merged pull requests:**
 
+- 🎨 Palette: \[CLI UX\] Improved outlier\_analysis\_series27.py help text and error messaging [\#778](https://github.com/abhimehro/Seatek_Analysis/pull/778) ([abhimehro](https://github.com/abhimehro))
 - ⚡ Bolt: \[performance improvement\] Bypass mad\(\) and median\(\) generic dispatch overhead [\#769](https://github.com/abhimehro/Seatek_Analysis/pull/769) ([abhimehro](https://github.com/abhimehro))
 - 🎨 Palette: \[CLI DX improvement\] Add informative help text and actionable error [\#765](https://github.com/abhimehro/Seatek_Analysis/pull/765) ([abhimehro](https://github.com/abhimehro))
 - ⚡ Bolt: Optimize S3 method dispatch for mean and median [\#754](https://github.com/abhimehro/Seatek_Analysis/pull/754) ([abhimehro](https://github.com/abhimehro))

@@ -39,6 +39,13 @@ def main() -> int:
         nargs="?",
         help="Path to result JSON file (required for 'enforce').",
     )
+
+    import sys
+
+    if len(sys.argv) == 1:
+        parser.print_help(sys.stderr)
+        return 1
+
     args = parser.parse_args()
 
     if args.task == "enforce":

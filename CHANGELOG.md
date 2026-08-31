@@ -129,6 +129,7 @@
 **Merged pull requests:**
 
 - 🎨 Palette: \[CLI UX\] Improved outlier\_analysis\_series27.py help text and error messaging [\#778](https://github.com/abhimehro/Seatek_Analysis/pull/778) ([abhimehro](https://github.com/abhimehro))
+- chore: QA review - fix lintr style warnings [\#777](https://github.com/abhimehro/Seatek_Analysis/pull/777) ([abhimehro](https://github.com/abhimehro))
 - ⚡ Bolt: \[performance improvement\] Bypass mad\(\) and median\(\) generic dispatch overhead [\#769](https://github.com/abhimehro/Seatek_Analysis/pull/769) ([abhimehro](https://github.com/abhimehro))
 - 🎨 Palette: \[CLI DX improvement\] Add informative help text and actionable error [\#765](https://github.com/abhimehro/Seatek_Analysis/pull/765) ([abhimehro](https://github.com/abhimehro))
 - ⚡ Bolt: Optimize S3 method dispatch for mean and median [\#754](https://github.com/abhimehro/Seatek_Analysis/pull/754) ([abhimehro](https://github.com/abhimehro))

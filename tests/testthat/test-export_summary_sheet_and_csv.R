@@ -5,9 +5,9 @@ library(data.table)
 env <- globalenv()
 
 if (file.exists("../../Updated_Seatek_Analysis.R")) {
-  source("../../Updated_Seatek_Analysis.R", local=env)
+  source("../../Updated_Seatek_Analysis.R", local = env)
 } else if (file.exists("Updated_Seatek_Analysis.R")) {
-  source("Updated_Seatek_Analysis.R", local=env)
+  source("Updated_Seatek_Analysis.R", local = env)
 } else {
   stop("Main analysis script not found.")
 }

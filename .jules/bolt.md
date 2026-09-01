@@ -317,42 +317,110 @@ outside the loop (e.g., `now = now_utc()`) and compare against it directly,
 removing repeated calls and helper functions that hide the system call.
 
 ## 2024-07-30 - Optimize data.table lapply anonymous functions
-**Learning:** Instantiating the same anonymous function inside multiple `lapply(.SD, ...)` calls within a high-frequency loop incurs unnecessary overhead due to R's function instantiation and garbage collection.
-**Action:** When a complex anonymous function is repeated across multiple subset operations on the same data frame (like `lapply(.SD, function(x) ...)`), extract it to a named function in the immediately enclosing scope before the calls. This ensures the function is parsed and instantiated only once.
+
+**Learning:** Instantiating the same anonymous function inside multiple
+`lapply(.SD, ...)` calls within a high-frequency loop incurs unnecessary
+overhead due to R's function instantiation and garbage collection. **Action:**
+When a complex anonymous function is repeated across multiple subset operations
+on the same data frame (like `lapply(.SD, function(x) ...)`), extract it to a
+named function in the immediately enclosing scope before the calls. This ensures
+the function is parsed and instantiated only once.
 
 ## 2025-05-06 - Optimize data.table multiple row-wise metrics calculation
 
-**Learning:** In R's `data.table`, when calculating multiple row-wise metrics (like subsets for first N or last N rows) across many columns, iterating over column names with a direct `for` loop and pre-calculated row indices is significantly faster (avoiding `.SD` closure and redundant subsetting overhead) than using multiple `lapply(.SD, ...)` calls.
-**Action:** Replace multiple `lapply(.SD, ...)` calls with a direct `for` loop over sensor columns using pre-calculated row indices to improve performance.
+**Learning:** In R's `data.table`, when calculating multiple row-wise metrics
+(like subsets for first N or last N rows) across many columns, iterating over
+column names with a direct `for` loop and pre-calculated row indices is
+significantly faster (avoiding `.SD` closure and redundant subsetting overhead)
+than using multiple `lapply(.SD, ...)` calls. **Action:** Replace multiple
+`lapply(.SD, ...)` calls with a direct `for` loop over sensor columns using
+pre-calculated row indices to improve performance.
 
 ## 2025-05-24 - Unlist overhead with names
 
-**Learning:** In R, when using `unlist()` to flatten lists into vectors within high-frequency loops or grouped `data.table` aggregations, inherently constructing and assigning names causes significant memory and string manipulation overhead.
-**Action:** When the resulting names of an unlisted vector are not required for downstream logic, explicitly pass `use.names = FALSE` to `unlist()`. This significantly reduces memory allocation overhead.
+**Learning:** In R, when using `unlist()` to flatten lists into vectors within
+high-frequency loops or grouped `data.table` aggregations, inherently
+constructing and assigning names causes significant memory and string
+manipulation overhead. **Action:** When the resulting names of an unlisted
+vector are not required for downstream logic, explicitly pass
+`use.names = FALSE` to `unlist()`. This significantly reduces memory allocation
+overhead.
 
 ## 2025-05-06 - Optimize data.table top N row subsetting
 
-**Learning:** In `data.table`, when extracting the top N rows based on an ordered column, applying the row subsetting directly to the order index (e.g., `dt[order(-col)[1:N], ...]`) rather than subsetting the sorted data table (e.g., `dt[order(-col)][1:N, ...]`) prevents allocating memory for a full O(N) copy of the sorted dataset.
-**Action:** Always apply subset indices to the `order()` function's output rather than the sorted `data.table` object when extracting top N records.
+**Learning:** In `data.table`, when extracting the top N rows based on an
+ordered column, applying the row subsetting directly to the order index (e.g.,
+`dt[order(-col)[1:N], ...]`) rather than subsetting the sorted data table (e.g.,
+`dt[order(-col)][1:N, ...]`) prevents allocating memory for a full O(N) copy of
+the sorted dataset. **Action:** Always apply subset indices to the `order()`
+function's output rather than the sorted `data.table` object when extracting top
+N records.
 
 ## 2025-08-06 - Bypass generic S3 method dispatch overhead in high-frequency loops
 
-**Learning:** In high-frequency R loops accessing dataframe columns (like `df[[col_name]]`) and calling generic methods (`mean()`), the standard evaluation incurs significant S3 method dispatch overhead. Using `.subset2(df, col_name)` avoids the `[[.data.frame` method lookup, and `mean.default()` bypasses the `mean()` generic dispatcher.
-**Action:** When extracting dataframe columns and computing simple vectors inside performance-critical, highly-iterative loops, use `.subset2(df, col_name)` over `[[` and call the default underlying methods (like `mean.default()`) directly to achieve a measurable execution speedup without losing code readability.
+**Learning:** In high-frequency R loops accessing dataframe columns (like
+`df[[col_name]]`) and calling generic methods (`mean()`), the standard
+evaluation incurs significant S3 method dispatch overhead. Using
+`.subset2(df, col_name)` avoids the `[[.data.frame` method lookup, and
+`mean.default()` bypasses the `mean()` generic dispatcher. **Action:** When
+extracting dataframe columns and computing simple vectors inside
+performance-critical, highly-iterative loops, use `.subset2(df, col_name)` over
+`[[` and call the default underlying methods (like `mean.default()`) directly to
+achieve a measurable execution speedup without losing code readability.
 
 ## 2025-05-06 - Avoid redundant datetime conversions after data.table::fread
-**Learning:** In R, when a function like `fread` might automatically parse datetime columns to `POSIXct` objects, unconditionally applying `as.numeric()` and `as.POSIXct()` introduces a significant O(N) allocation overhead for redundant conversions.
-**Action:** Use `.subset2(dt, "Column")` to quickly extract the column and check `inherits(col, "POSIXct")` before applying redundant type conversions.
+
+**Learning:** In R, when a function like `fread` might automatically parse
+datetime columns to `POSIXct` objects, unconditionally applying `as.numeric()`
+and `as.POSIXct()` introduces a significant O(N) allocation overhead for
+redundant conversions. **Action:** Use `.subset2(dt, "Column")` to quickly
+extract the column and check `inherits(col, "POSIXct")` before applying
+redundant type conversions.
 
 ## 2025-05-06 - Avoid intermediate string vectors in R string concatenation
-**Learning:** In R, using a single `sprintf()` (e.g., `sprintf("Sensor%02d", 1:32)`) is significantly faster and more memory-efficient than combining `paste0()` and `sprintf()` (e.g., `paste0("Sensor", sprintf("%02d", 1:32))`) because it avoids creating intermediate string vectors.
-**Action:** When concatenating a constant string with formatted numbers, use a single `sprintf` format string rather than combining `paste0` with `sprintf`.
+
+**Learning:** In R, using a single `sprintf()` (e.g.,
+`sprintf("Sensor%02d", 1:32)`) is significantly faster and more memory-efficient
+than combining `paste0()` and `sprintf()` (e.g.,
+`paste0("Sensor", sprintf("%02d", 1:32))`) because it avoids creating
+intermediate string vectors. **Action:** When concatenating a constant string
+with formatted numbers, use a single `sprintf` format string rather than
+combining `paste0` with `sprintf`.
 
 ## 2025-05-06 - Avoid S3 method dispatch overhead by using data.table::set() instead of `:=` inside loops or functions
-**Learning:** In R's `data.table`, using `set(dt, j = col, value = ...)` is significantly faster than using the `:=` operator for column assignment and deletion (e.g., `set(dt, j = cols_to_drop, value = NULL)`) inside loops or functions because it avoids method dispatch overhead. Additionally, applying `is.numeric()` checks before `as.numeric()` prevents redundant O(N) memory allocations during conditional data parsing (e.g., when handling inputs from `fread`).
-**Action:** When inside loops or functions, always use `set()` instead of `:=` for data.table updates by reference. Always verify if a numeric coercion is necessary using `is.numeric()` before applying `as.numeric()` to avoid unneeded allocation overheads.
+
+**Learning:** In R's `data.table`, using `set(dt, j = col, value = ...)` is
+significantly faster than using the `:=` operator for column assignment and
+deletion (e.g., `set(dt, j = cols_to_drop, value = NULL)`) inside loops or
+functions because it avoids method dispatch overhead. Additionally, applying
+`is.numeric()` checks before `as.numeric()` prevents redundant O(N) memory
+allocations during conditional data parsing (e.g., when handling inputs from
+`fread`). **Action:** When inside loops or functions, always use `set()` instead
+of `:=` for data.table updates by reference. Always verify if a numeric coercion
+is necessary using `is.numeric()` before applying `as.numeric()` to avoid
+unneeded allocation overheads.
 
 ## 2026-08-10 - Optimize mad() calculation
 
-**Learning:** When extracting both `median()` and `mad()` sequentially, avoid redundant calculations by pre-calculating the median and passing it to `mad()` via the `center` argument.
-**Action:** When calculating `mad()`, pass the pre-calculated median as the `center` argument to avoid redundant calculations.
+**Learning:** When extracting both `median()` and `mad()` sequentially, avoid
+redundant calculations by pre-calculating the median and passing it to `mad()`
+via the `center` argument. **Action:** When calculating `mad()`, pass the
+pre-calculated median as the `center` argument to avoid redundant calculations.
+
+## 2025-05-24 - Safe inline vector filtering
+
+**Learning:** To avoid redundant O(N) memory allocation and processing overhead
+when filtering missing values, check for the presence of NAs first using
+`anyNA()`. The `anyNA()` function is implemented in C and short-circuits,
+requiring no memory allocation. **Action:** When filtering missing values, use
+`if (anyNA(x)) x <- x[!is.na(x)]` instead of unconditionally subsetting with
+`!is.na(x)`.
+
+## 2025-08-27 - Bypass generic S3 method dispatch for median()
+
+**Learning:** Similar to `mean()`, calling the generic `median()` method inside high-frequency `data.table` aggregations (like `lapply(.SD, ...)` over many groups) incurs measurable S3 method dispatch overhead.
+**Action:** When calculating medians on numeric vectors in performance-critical paths, call `median.default()` directly to bypass the `UseMethod()` lookup overhead.
+
+## 2026-08-11 - Bypass mad() function overhead and generic median dispatch
+**Learning:** R's `mad()` internally calls `median(abs(x - center))`, which triggers S3 method dispatch. In high-frequency calculations (like `lapply(.SD, ...)`), this causes performance overhead even if `center` is pre-calculated.
+**Action:** Instead of `mad(x, center = med)`, use `1.4826 * median.default(abs(x - med))` directly to bypass the function call and generic dispatch overhead.

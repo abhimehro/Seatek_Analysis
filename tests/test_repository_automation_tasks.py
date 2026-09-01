@@ -198,3 +198,8 @@ def test_hotspot_line_count_exceeds_max_size(monkeypatch):
         assert _hotspot_line_count(tf_path) is None
     finally:
         os.remove(tf_path)
+
+
+def test_hotspot_line_count_special_file():
+    # Attempting to read a non-regular file should return None safely
+    assert _hotspot_line_count("/dev/null") is None

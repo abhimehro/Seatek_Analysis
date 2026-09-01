@@ -47,6 +47,9 @@ sensor data. See `README.md` for full details.
 - Running `Rscript Updated_Seatek_Analysis.R` regenerates outputs under `Data/`
   (`*.xlsx`, `Seatek_Summary*.csv/.xlsx`). These outputs are gitignored;
   regenerate them locally instead of committing.
+- `Seatek_Analysis_project_code.txt` concatenates repository code for external
+  review or LLM context. It is untracked and ignored, safe to delete locally,
+  and regenerable from the source tree; neither the application nor CI reads it.
 - The `lintr` `object_usage_linter` warnings for `Timestamp` and
   `..sensor_names` in `Updated_Seatek_Analysis.R` are known false positives
   caused by `data.table` non-standard evaluation.

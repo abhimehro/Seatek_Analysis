@@ -47,6 +47,12 @@ This script will:
 Sensor text-file layout and canonical input locations are documented in
 [docs/data-format.md](docs/data-format.md).
 
+### Regenerable local artifacts
+
+`Seatek_Analysis_project_code.txt` concatenates repository code for external
+review or LLM context. It is untracked and ignored, safe to delete locally, and
+regenerable from the source tree; neither the application nor CI reads it.
+
 ---
 
 ## Repository Structure

@@ -1,3 +1,13 @@
+## 2025-05-06 - Excel Accessibility for Background Colors
+
+**Learning:** When generating Excel reports, using background fill colors
+(`bgFill`) without explicitly setting a text color (`fontColour`) can result in
+poor contrast and accessibility issues (e.g., black text on dark colored
+backgrounds). **Action:** Always explicitly pair `bgFill` with a high-contrast
+`fontColour` (like `fontColour = "#000000"` for light backgrounds or
+`fontColour = "#FFFFFF"` for dark ones) when creating styles in `openxlsx` to
+ensure proper readability and accessibility.
+
 ## 2025-05-06 - CLI Input Validation Error UX
 
 **Learning:** Allowing standard library exceptions (like FileNotFoundError) to
@@ -17,5 +27,22 @@ directories or creating file artifacts.
 
 ## 2025-05-06 - CLI Empty State UX
 
-**Learning:** When a CLI script requires arguments, the default `argparse` behavior of throwing a "missing arguments" error on a bare run provides a poor first impression and lacks guidance.
-**Action:** Always intercept a bare run (e.g., `len(sys.argv) == 1`) and print the full help menu (`parser.print_help()`) so users immediately see usage examples and available options without needing to guess the `--help` flag.
+**Learning:** When a CLI script requires arguments, the default `argparse`
+behavior of throwing a "missing arguments" error on a bare run provides a poor
+first impression and lacks guidance. **Action:** Always intercept a bare run
+(e.g., `len(sys.argv) == 1`) and print the full help menu
+(`parser.print_help()`) so users immediately see usage examples and available
+options without needing to guess the `--help` flag.
+## 2025-07-11 - [CLI UX] Improved argparse help text and error messages
+**Learning:** The CLI runner was missing detailed help text and the error messages were unhelpful. Good Developer Experience (DX) starts with informative `-h` flags and actionable error outputs.
+**Action:** Used `RawDescriptionHelpFormatter` and `epilog` to format lists clearly in help text, and appended an actionable suggestion to the invalid task error output.
+
+## 2025-05-06 - CLI Input Validation Error UX
+
+**Learning:** Allowing standard library exceptions (like FileNotFoundError) to bubble up directly to the user creates a poor CLI experience. When scripts require multiple inputs or specific sheet names, generic errors are unhelpful.
+**Action:** Explicitly validate inputs and provide actionable suggestions in the error messages (e.g., "Action: Verify the file path" or "Action: Verify that the summary sheet exists and contains valid data.").
+
+## 2025-05-06 - CLI Missing Argument UX
+
+**Learning:** When a CLI script requires arguments, failing with a generic error code without explanation provides a poor first impression and lacks guidance.
+**Action:** When early validation fails, use `sys.exit(1)` instead of a silent `return` to ensure error codes bubble up to the CLI. Additionally, combine `ArgumentDefaultsHelpFormatter` and `RawDescriptionHelpFormatter` in `argparse` to provide clean, detailed help text with explicit examples.

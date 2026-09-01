@@ -12,6 +12,7 @@ test_*.csv
 test_out_*.xlsx
 renv_restore.log
 processing_warnings.log
+*.log
 __pycache__/
 *.pyc
 test_venv/

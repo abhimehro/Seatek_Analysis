@@ -5,9 +5,13 @@ from typing import Any
 sys.path.insert(
     0, os.path.abspath(os.path.join(os.path.dirname(__file__), "../.github/scripts"))
 )
-from repository_automation_tasks import configured_commands, flattened_updates, _hotspot_line_count
-from pathlib import Path
 import tempfile
+
+from repository_automation_tasks import (
+    _hotspot_line_count,
+    configured_commands,
+    flattened_updates,
+)
 
 
 def test_configured_commands_all_keys():
@@ -155,7 +159,6 @@ def test_flattened_updates_missing_replacements():
     assert flattened_updates(plans) == []
 
 
-
 def test_hotspot_line_count_valid_file():
     with tempfile.NamedTemporaryFile(mode="w", delete=False, encoding="utf-8") as tf:
         tf.write("line 1\nline 2\nline 3")
@@ -166,21 +169,26 @@ def test_hotspot_line_count_valid_file():
     finally:
         os.remove(tf_path)
 
+
 def test_hotspot_line_count_non_existent():
     assert _hotspot_line_count("/path/that/does/not/exist.txt") is None
+
 
 def test_hotspot_line_count_not_a_file(tmp_path):
     dir_path = tmp_path / "test_dir"
     dir_path.mkdir()
     assert _hotspot_line_count(str(dir_path)) is None
 
+
 def test_hotspot_line_count_unreadable(tmp_path):
     dir_path = tmp_path / "test_dir2"
     dir_path.mkdir()
     assert _hotspot_line_count(str(dir_path)) is None
 
+
 def test_hotspot_line_count_exceeds_max_size(monkeypatch):
     import repository_automation_tasks
+
     monkeypatch.setattr(repository_automation_tasks, "MAX_FILE_SIZE", 10)
     with tempfile.NamedTemporaryFile(mode="wb", delete=False) as tf:
         tf.write(b"123456789012345")

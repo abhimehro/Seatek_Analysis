@@ -17,7 +17,7 @@ test_that("calculate_summary_stats correctly aggregates multi-year data", {
   }
 
   years <- c("1995", "1996", "1997", "1998")
-  mock_results <- stats::setNames(lapply(1:length(years), function(i) mock_sensor_data(i)), years)
+  mock_results <- stats::setNames(lapply(seq_along(years), function(i) mock_sensor_data(i)), years)
 
   # Call the function being tested
   # Suppress the data.table::melt coercion warning for clean test output

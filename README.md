@@ -44,8 +44,8 @@ This script will:
 - Create a Python virtual environment (if it doesn't exist) and install required
   Python packages.
 
-Sensor text-file layout (columns, `Data/` vs `Series_28/` copies) is documented
-in [docs/data-format.md](docs/data-format.md).
+Sensor text-file layout and canonical input locations are documented in
+[docs/data-format.md](docs/data-format.md).
 
 ---
 
@@ -91,18 +91,16 @@ in [docs/data-format.md](docs/data-format.md).
 │       ├── processing_log.txt
 │       ├── requirements.txt          # Python requirements for outlier_analysis_series27.py
 │       └── validation_log.txt
-├── Series_28/                        # Data and analysis specific to Series 28 sensors (primary input for SS_Yxx files)
-│   ├── Raw_Data/
-│   │   └── SS_Yxx.txt                # Raw Series 28 text files (chronologically organized, primary input for Updated_Seatek_Analysis.R)
+├── Series_28/                        # Processed data and analysis for Series 28; raw SS inputs live in Data/
 │   ├── Processed_Data/
-│   │   └── SS_Yxx.xlsx               # Processed Series 28 data per year (can be an output of Updated_Seatek_Analysis.R if configured, or manual)
+│   │   └── SS_Yxx.xlsx               # Processed Series 28 data per year
 │   └── Analysis/                     # Summary outputs specific to Series 28 processing (often mirrors content of top-level Data/ for SS_Yxx files)
 │       ├── Seatek_Summary.xlsx
 │       ├── Seatek_Summary.csv
 │       └── (other Seatek_Summary*.csv files like _all, _robust, _sufficient, _top_sensors)
 ├── Updated_Seatek_Analysis.R   # Primary R analysis script.
 │                                     # Processes S26_Yxx.txt (from Series_26/Raw_Data/Text_Files/) and
-│                                     # SS_Yxx.txt (from Data/ or Series_28/Raw_Data/).
+│                                     # SS_Yxx.txt from Data/.
 │                                     # Key outputs are generated in the top-level Data/ directory:
 │                                     #   - Individual year Excel files: Data/SS_Yxx.xlsx, Data/S26_Yxx.xlsx
 │                                     #   - Main summary workbook: Data/Seatek_Summary.xlsx

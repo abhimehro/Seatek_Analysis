@@ -7,7 +7,6 @@ sys.path.insert(
     0, os.path.abspath(os.path.join(os.path.dirname(__file__), "../.github/scripts"))
 )
 from repository_automation_common import (
-    BASH_BIN,
     _remove_heuristic_secrets,
     command_env,
     filter_env_securely,

@@ -208,9 +208,9 @@ def test_apply_corrections_path_traversal(tmp_path):
         assert "outside_traversal_target" in filename
 
         # Defense-in-depth: resolved path must remain within output_dir
-        assert os.path.realpath(out_file).startswith(
-            os.path.realpath(output_dir)
-        ), f"Output path {out_file} escapes {output_dir}"
+        assert os.path.realpath(out_file).startswith(os.path.realpath(output_dir)), (
+            f"Output path {out_file} escapes {output_dir}"
+        )
 
         # The corrections summary should also reference the safe path
         assert not result.empty

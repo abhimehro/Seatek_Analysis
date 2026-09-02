@@ -237,9 +237,3 @@ exception or fail gracefully if the absolute path cannot be resolved.
 **Vulnerability:** The `read_file_safe` function in `code_health_scanner.py` implemented a security check for embedded null bytes using `if "\0" in filepath:`. If a user or automated system passed a non-string object, such as a `pathlib.Path`, this line caused a `TypeError` because `Path` objects are not iterable in a way that supports string containment checks. This led to an unhandled exception DoS anytime a `Path` was passed to the scanner.
 **Learning:** Security checks that assume input types (like string containment) will fail insecurely when Python's dynamic typing allows valid, alternative object types (like `Path`) to reach them.
 **Prevention:** When validating untrusted string data that might arrive as an alternative object type (such as `Path`), coerce the variable to a string (`str(filepath)`) before applying string-based security checks or regexes.
-
-## 2026-08-14 - [Pathlib TypeError DoS]
-
-**Vulnerability:** The `read_file_safe` function in `code_health_scanner.py` implemented a security check for embedded null bytes using `if "\0" in filepath:`. If a user or automated system passed a non-string object, such as a `pathlib.Path`, this line caused a `TypeError` because `Path` objects are not iterable in a way that supports string containment checks. This led to an unhandled exception DoS anytime a `Path` was passed to the scanner.
-**Learning:** Security checks that assume input types (like string containment) will fail insecurely when Python's dynamic typing allows valid, alternative object types (like `Path`) to reach them.
-**Prevention:** When validating untrusted string data that might arrive as an alternative object type (such as `Path`), coerce the variable to a string (`str(filepath)`) before applying string-based security checks or regexes.

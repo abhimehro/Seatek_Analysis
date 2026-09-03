@@ -104,6 +104,16 @@ def test_read_file_safe_null_byte():
     assert read_file_safe("test\0.txt") == []
 
 
+def test_read_file_safe_null_byte_pathlib():
+    # Validates that path-like objects (e.g. pathlib.Path) are cast to strings
+    # correctly during the null byte check, preventing TypeErrors in Python 3.12+
+    class MockPath:
+        def __str__(self):
+            return "test\0.txt"
+
+    assert read_file_safe(MockPath()) == []
+
+
 def test_read_file_safe_restricted_permissions():
     test_file = "test_restricted.txt"
     with open(test_file, "w") as f:

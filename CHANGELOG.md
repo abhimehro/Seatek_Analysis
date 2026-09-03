@@ -13,6 +13,8 @@
 **Closed issues:**
 
 - Daily QA & Agentic Review — 2026-09-03 [\#798](https://github.com/abhimehro/Seatek_Analysis/issues/798)
+- \[repo-automation\] Daily Status Report - 2026-09-03 [\#797](https://github.com/abhimehro/Seatek_Analysis/issues/797)
+- \[repo-automation\] Daily Status Report - 2026-09-02 [\#795](https://github.com/abhimehro/Seatek_Analysis/issues/795)
 - Daily QA & Agentic Review — 2026-09-01 [\#793](https://github.com/abhimehro/Seatek_Analysis/issues/793)
 - \[repo-automation\] Daily Status Report - 2026-09-01 [\#792](https://github.com/abhimehro/Seatek_Analysis/issues/792)
 - \[repo-health\] Consolidate overlapping Python CI workflows \(ci.yml / pr.yml / pr-validation.yml\) [\#790](https://github.com/abhimehro/Seatek_Analysis/issues/790)
@@ -140,6 +142,7 @@
 
 **Merged pull requests:**
 
+- salvage\(\#689\): NUL + isfile-before-open + FIFO/ValueError hotspot coverage [\#801](https://github.com/abhimehro/Seatek_Analysis/pull/801) ([abhimehro](https://github.com/abhimehro))
 - salvage\(\): Data/-canonical Series 28 + untrack phase0 backup inputs [\#800](https://github.com/abhimehro/Seatek_Analysis/pull/800) ([abhimehro](https://github.com/abhimehro))
 - salvage\(\): unique remaining R wrap + testthat lintr wraps [\#799](https://github.com/abhimehro/Seatek_Analysis/pull/799) ([abhimehro](https://github.com/abhimehro))
 - 🛡️ Sentinel: \[MEDIUM\] Fix DoS vulnerability via special file read in automation scripts [\#794](https://github.com/abhimehro/Seatek_Analysis/pull/794) ([abhimehro](https://github.com/abhimehro))

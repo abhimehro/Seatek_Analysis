@@ -227,7 +227,3 @@ working directory first (e.g. Windows). **Prevention:** Always exclusively use
 `shutil.which("executable_name")` to resolve the absolute path of system
 binaries before passing them to `subprocess` functions, and raise a clear
 exception or fail gracefully if the absolute path cannot be resolved.
-## 2025-09-02 - Securely handling path variables with null bytes
-**Vulnerability:** A file scanning utility (`read_file_safe`) checked for null bytes in the provided file path using `if "\0" in filepath:`. If `filepath` was passed as a `pathlib.Path` object instead of a string, this operation would raise a `TypeError: argument of type 'PosixPath' is not iterable`, leading to an unhandled exception DoS risk.
-**Learning:** Checking for substrings or specific characters in variables that might be objects rather than strings can cause unhandled exceptions. Path handling code often receives paths as both strings and `pathlib.Path` objects.
-**Prevention:** Always cast path variables to strings (`str(filepath)`) before performing string-specific operations like substring checks, especially for security validation logic like null byte checks.

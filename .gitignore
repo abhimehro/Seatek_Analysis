@@ -16,3 +16,9 @@ processing_warnings.log
 __pycache__/
 *.pyc
 test_venv/
+Seatek_Analysis_project_code.txt
+
+# Phase-0 backup Series 28 inputs (canonical live inputs are Data/SS_Y*.txt)
+backups/phase0_20250711_064229/Data/SS_Y*.txt
+backups/phase0_20250711_064229/Data/SS_Y*.xlsx
+backups/phase0_20250711_064229/Series_28/Raw_Data/SS_Y*.txt

@@ -20,11 +20,11 @@ test_that("lapply(.SD) optimization produces exact same results as sapply baseli
     h <- head(x, 10)
     mean(h[which(h > 0)])
   })
-  baseline_last5 <- sapply(df[, ..sensor_names], function(x) {
+  baseline_last5   <- sapply(df[, ..sensor_names], function(x) {
     t <- tail(x, 5)
     mean(t[which(t > 0)])
   })
-  baseline_full <- sapply(df[, ..sensor_names], function(x) {
+  baseline_full    <- sapply(df[, ..sensor_names], function(x) {
     mean(x[which(x > 0)])
   })
 
@@ -33,11 +33,11 @@ test_that("lapply(.SD) optimization produces exact same results as sapply baseli
     mean(x[which(x > 0)])
   }), .SDcols = sensor_names])
 
-  optimized_last5 <- unlist(df[max(1, .N - 4):.N, lapply(.SD, function(x) {
+  optimized_last5   <- unlist(df[max(1, .N - 4):.N, lapply(.SD, function(x) {
     mean(x[which(x > 0)])
   }), .SDcols = sensor_names])
 
-  optimized_full <- unlist(df[, lapply(.SD, function(x) {
+  optimized_full    <- unlist(df[, lapply(.SD, function(x) {
     mean(x[which(x > 0)])
   }), .SDcols = sensor_names])
 

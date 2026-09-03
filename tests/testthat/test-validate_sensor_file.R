@@ -38,13 +38,10 @@ test_that("validate_sensor_file errors on oversized file", {
   assign("file.size", function(...) 60 * 1024 * 1024, envir = .GlobalEnv)
 
   # Ensure cleanup of the mock
-  on.exit(
-    {
-      rm(list = "file.size", envir = .GlobalEnv)
-      unlink(large_file, force = TRUE)
-    },
-    add = TRUE
-  )
+  on.exit({
+    rm(list = "file.size", envir = .GlobalEnv)
+    unlink(large_file, force = TRUE)
+  }, add = TRUE)
 
   expect_error(validate_sensor_file(large_file), "exceeds maximum allowed size")
 })

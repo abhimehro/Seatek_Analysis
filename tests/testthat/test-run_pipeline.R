@@ -17,13 +17,10 @@ test_that("run_pipeline handles missing data directory correctly", {
   # Inject the mock
   assign("log_handler", mock_log_handler, envir = environment(run_pipeline))
 
-  on.exit(
-    {
-      # Reset log handler to its original state (if we saved it, but source() does it on load anyway)
-      # However we're in local=TRUE so it modifies the current env.
-    },
-    add = TRUE
-  )
+  on.exit({
+    # Reset log handler to its original state (if we saved it, but source() does it on load anyway)
+    # However we're in local=TRUE so it modifies the current env.
+  }, add = TRUE)
 
   # Run pipeline from a temp dir where 'Data' does not exist
   temp_dir <- tempdir()

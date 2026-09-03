@@ -13,17 +13,14 @@ test_that("log_handler writes formatted messages to log_file", {
   # Temporarily override log_file
   assign("log_file", temp_log, envir = environment(log_handler))
 
-  on.exit(
-    {
-      # Restore the original log_file value
-      assign("log_file", original_log_file, envir = environment(log_handler))
-      # Cleanup temporary file
-      if (file.exists(temp_log)) {
-        suppressWarnings(file.remove(temp_log))
-      }
-    },
-    add = TRUE
-  )
+  on.exit({
+    # Restore the original log_file value
+    assign("log_file", original_log_file, envir = environment(log_handler))
+    # Cleanup temporary file
+    if (file.exists(temp_log)) {
+      suppressWarnings(file.remove(temp_log))
+    }
+  }, add = TRUE)
 
   # Execute log_handler
   log_handler("INFO", "This is a test info message")

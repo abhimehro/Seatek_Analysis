@@ -10,10 +10,9 @@ files and writes Excel/CSV summaries under `Data/` (outputs are gitignored).
 | `Data/SS_Yxx.txt` | 28 | `SS_Y01.txt` … `SS_Y14.txt` |
 | `Data/S26_Yxx.txt` | 26 | `S26_Y*.txt` |
 
-The same Series 28 `SS_Y*.txt` bytes also exist under
-`Series_28/Raw_Data/` (and inside `backups/phase0_*` while that tree is still
-tracked). Prefer `Data/` as the canonical working copy; consolidating the
-duplicates is a judgment call, not a mechanical delete.
+`Data/` is the only tracked source for Series 28 `SS_Y*.txt` inputs. Keep raw
+Series 28 inputs there so the production pipeline and repository documentation
+share one canonical location.
 
 ## Columns
 

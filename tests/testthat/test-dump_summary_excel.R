@@ -32,7 +32,7 @@ test_that("dump_summary_excel creates correct Excel and CSV files", {
   }
   # Create a list of such data.frames, named by year (5 years for Summary_Sufficient test)
   years <- as.character(1995:1999)
-  mock_results <- stats::setNames(lapply(seq_along(years), function(i) mock_sensor_data(i)), years)
+  mock_results <- stats::setNames(lapply(1:length(years), function(i) mock_sensor_data(i)), years)
 
   output_excel_file <- file.path(temp_dir_path, "test_summary_output.xlsx")
 

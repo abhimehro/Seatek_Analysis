@@ -130,9 +130,8 @@ read_sensor_data <- function(file_path,
       num_ts <- suppressWarnings(as.numeric(ts_col))
     }
     if (!anyNA(num_ts)) {
-      # ⚡ Bolt: Specifying tz="UTC" prevents the system timezone lookup overhead
-      # NOTE: .POSIXct skips generic as.POSIXct origin conversion for
-      # unix-epoch UTC.
+      # ⚡ Bolt: Bypass generic dispatch and origin conversion overhead
+      # for numeric Unix timestamps
       set(dt, j = "Timestamp", value = .POSIXct(num_ts, tz = "UTC")) # nolint: object_name_linter
     }
   }
@@ -165,10 +164,7 @@ execute_tasks_parallel <- function(tasks, task_func) {
     out_files
   } else {
     out_files <- vector("list", length(tasks))
-    pb_write <- txtProgressBar(
-      min = 0, max = length(tasks),
-      style = 3, char = "█"
-    )
+    pb_write <- txtProgressBar(min = 0, max = length(tasks), style = 3, char = "█")
     tryCatch(
       {
         for (i in seq_along(tasks)) {
@@ -365,12 +361,12 @@ calculate_summary_stats <- function(results) {
     } else {
       # ⚡ Bolt: Pre-calculate the median and pass it to mad() via the `center`
       # argument to avoid redundant median calculations for measurable speedup.
-      med <- median.default(v_val)
+      med <- median(v_val)
       list(
-        mean      = mean.default(v_val),
+        mean      = mean(v_val),
         sd        = sd(v_val),
         median    = med,
-        mad       = 1.4826 * median.default(abs(v_val - med)),
+        mad       = mad(v_val, center = med),
         min       = min(v_val),
         max       = max(v_val),
         count     = n,
@@ -547,10 +543,7 @@ write_summary_sheets <- function(wb, summary_df, output_file,
   # evaluation with get()
   if (is.data.table(summary_df)) {
     # nolint next: object_usage_linter.
-    set(summary_df,
-      j = "flag_high_variability",
-      value = summary_df$full_sd > sd_threshold
-    )
+    set(summary_df, j = "flag_high_variability", value = summary_df$full_sd > sd_threshold)
   } else {
     summary_df$flag_high_variability <- summary_df$full_sd > sd_threshold
   }
@@ -570,12 +563,8 @@ dump_summary_excel <- function(results, output_file, highlight_top_n = 5) {
   # ⚡ Bolt: Hoisted style definitions out of inner functions/loops
   # to avoid recreating styles redundantly on every sheet generation.
   header_style <- createStyle(textDecoration = "bold")
-  highlight_style_yearly <- createStyle(
-    bgFill = "#FFD700", fontColour = "#000000"
-  )
-  highlight_style_summary <- createStyle(
-    bgFill = "#FF9999", fontColour = "#000000"
-  )
+  highlight_style_yearly <- createStyle(bgFill = "#FFD700")
+  highlight_style_summary <- createStyle(bgFill = "#FF9999")
 
   # Write each year's sheet
   cat("\n📊 Generating yearly summary sheets...\n")

@@ -140,6 +140,7 @@
 
 **Merged pull requests:**
 
+- salvage\(\): Data/-canonical Series 28 + untrack phase0 backup inputs [\#800](https://github.com/abhimehro/Seatek_Analysis/pull/800) ([abhimehro](https://github.com/abhimehro))
 - salvage\(\): unique remaining R wrap + testthat lintr wraps [\#799](https://github.com/abhimehro/Seatek_Analysis/pull/799) ([abhimehro](https://github.com/abhimehro))
 - 🛡️ Sentinel: \[MEDIUM\] Fix DoS vulnerability via special file read in automation scripts [\#794](https://github.com/abhimehro/Seatek_Analysis/pull/794) ([abhimehro](https://github.com/abhimehro))
 - chore\(repo-health\): add Code of Conduct and data-format docs [\#781](https://github.com/abhimehro/Seatek_Analysis/pull/781) ([cursor[bot]](https://github.com/apps/cursor))

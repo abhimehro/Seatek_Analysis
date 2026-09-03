@@ -227,8 +227,3 @@ working directory first (e.g. Windows). **Prevention:** Always exclusively use
 `shutil.which("executable_name")` to resolve the absolute path of system
 binaries before passing them to `subprocess` functions, and raise a clear
 exception or fail gracefully if the absolute path cannot be resolved.
-
-## 2026-08-26 - [Uncaught TypeError for Non-String Paths in Null Byte Validation]
-**Vulnerability:** The `read_file_safe` function attempted to prevent unhandled exception DoS attacks by checking for embedded null bytes in `filepath` (`if '\0' in filepath:`). However, if `filepath` was provided as a `pathlib.Path` or another `os.PathLike` object rather than a string, this check raised a `TypeError: argument of type 'PosixPath' is not iterable`, undermining the DoS protection.
-**Learning:** Checking for substrings directly on variables that represent file paths assumes they are standard strings. Python 3's `pathlib.Path` objects do not support `in` for substring checks, causing exceptions that the validation routine was specifically designed to prevent.
-**Prevention:** Always cast path variables to standard strings (e.g., `str(filepath)`) before performing manual substring validation like null byte checks (`if '\0' in str(filepath):`).

@@ -16,3 +16,8 @@ processing_warnings.log
 __pycache__/
 *.pyc
 test_venv/
+Seatek_Analysis_project_code.txt
+lint_*.txt
+renv_snapshot*.txt
+processing_log.txt
+last_run.log

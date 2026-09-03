@@ -17,8 +17,8 @@ This repository contains the R-based analysis tier for processing Seatek sensor
 data and generating Excel workbooks. It is part of a three-tier analysis system:
 
 1. **R-Tier (This Repository):** Ingests, validates, and processes raw Seatek
-   sensor data (primarily `SS_Yxx.txt` for Series 28, and `S26_Yxx.txt` for
-   Series 26), exports cleaned data and summary metrics (first 10, last 5, full,
+   sensor data (primarily `SS_Yxx.txt` for Series 28; Series 26 lives under
+   `Series_26/` and is not matched by the current `Updated_Seatek_Analysis.R` glob), exports cleaned data and summary metrics (first 10, last 5, full,
    and within_diff for each sensor) to Excel, and generates a combined summary
    workbook. Robust logging and error handling are included.
 2. **Excel-Tier:** Manages intermediate data processing and basic
@@ -282,4 +282,4 @@ changes during the recent linter upgrade (February 2025):
 When running CI workflows where packages are installed manually (such as GitHub
 Actions), disable renv's autoloader to avoid interfering with `install.packages`
 by setting the environment variable `RENV_CONFIG_AUTOLOADER_ENABLED=FALSE`. The
-provided `lintr` workflow already sets this variable.
+set this variable in any workflow that installs packages outside `renv::restore()`.

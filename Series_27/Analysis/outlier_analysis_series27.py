@@ -12,17 +12,11 @@ import pandas as pd
 MAX_FILE_SIZE = 50 * 1024 * 1024  # 50 MB
 
 
-class CustomHelpFormatter(
-    argparse.ArgumentDefaultsHelpFormatter, argparse.RawDescriptionHelpFormatter
-):
-    pass
-
-
 def parse_args():
     parser = argparse.ArgumentParser(
-        description="🌊 Series 27 Outlier Analysis and Correction\n\nAnalyzes Seatek sensor data for outliers across year-to-year differences.",
-        formatter_class=CustomHelpFormatter,
-        epilog="Examples:\n  python outlier_analysis_series27.py -i data.xlsx -o output_dir\n  python outlier_analysis_series27.py -i data.xlsx -m zscore -z 2.5",
+        description="🌊 Series 27 Outlier Analysis and Correction",
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
+        epilog="Example: python outlier_analysis_series27.py -i data.xlsx -o output_dir",
     )
     parser.add_argument(
         "-i",
@@ -346,14 +340,14 @@ def _load_and_validate_file(input_file):
     if not os.path.isfile(input_file):
         logging.error(
             f"Input file not found or is not a file: '{input_file}'. "
-            "Action: Verify the file path and ensure it points to a valid Excel file."
+            "Please provide a valid Excel file."
         )
         return None
 
     try:
         with open(input_file, "rb") as f:
             file_buffer = f.read(MAX_FILE_SIZE + 1)
-    except OSError as e:
+    except IOError as e:
         logging.error(f"Error reading input file {input_file}: {e}")
         return None
 
@@ -370,8 +364,7 @@ def _read_excel_summary(file_buffer, sheet_summary):
         return pd.read_excel(BytesIO(file_buffer), sheet_name=sheet_summary)
     except Exception as e:
         logging.error(
-            f"Failed to read the Excel file: Internal error occurred ({type(e).__name__}).\n"
-            "Action: Verify that the summary sheet exists and contains valid data."
+            f"Failed to read the Excel file: Internal error occurred ({type(e).__name__})."
         )
         return None
 
@@ -382,14 +375,14 @@ def main():
 
     file_buffer = _load_and_validate_file(args.input)
     if not file_buffer:
-        sys.exit(1)
+        return
 
     os.makedirs(args.output, exist_ok=True)
     logging.info("Loading year-to-year differences")
 
     diff_df = _read_excel_summary(file_buffer, args.sheet_summary)
     if diff_df is None:
-        sys.exit(1)
+        return
 
     long_df = diff_df.melt(
         id_vars="Year_Pair", var_name="Sensor", value_name="Difference"

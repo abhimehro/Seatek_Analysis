@@ -11,22 +11,16 @@ test_that("run_pipeline handles missing data directory correctly", {
   log_env$logs <- list()
 
   mock_log_handler <- function(level, message) {
-    log_env$logs[[length(log_env$logs) + 1]] <- list(
-      level = level,
-      message = message
-    )
+    log_env$logs[[length(log_env$logs) + 1]] <- list(level = level, message = message)
   }
 
   # Inject the mock
   assign("log_handler", mock_log_handler, envir = environment(run_pipeline))
 
-  on.exit(
-    {
-      # Reset log handler to its original state (if we saved it, but source() does it on load anyway)
-      # However we're in local=TRUE so it modifies the current env.
-    },
-    add = TRUE
-  )
+  on.exit({
+    # Reset log handler to its original state (if we saved it, but source() does it on load anyway)
+    # However we're in local=TRUE so it modifies the current env.
+  }, add = TRUE)
 
   # Run pipeline from a temp dir where 'Data' does not exist
   temp_dir <- tempdir()
@@ -66,10 +60,7 @@ test_that("run_pipeline captures warnings and dependency errors", {
   log_env$logs <- list()
 
   mock_log_handler <- function(level, message) {
-    log_env$logs[[length(log_env$logs) + 1]] <- list(
-      level = level,
-      message = message
-    )
+    log_env$logs[[length(log_env$logs) + 1]] <- list(level = level, message = message)
   }
 
   assign("log_handler", mock_log_handler, envir = environment(run_pipeline))
@@ -108,10 +99,7 @@ test_that("run_pipeline executes successfully with valid data", {
   log_env$logs <- list()
 
   mock_log_handler <- function(level, message) {
-    log_env$logs[[length(log_env$logs) + 1]] <- list(
-      level = level,
-      message = message
-    )
+    log_env$logs[[length(log_env$logs) + 1]] <- list(level = level, message = message)
   }
   assign("log_handler", mock_log_handler, envir = environment(run_pipeline))
 
@@ -125,7 +113,7 @@ test_that("run_pipeline executes successfully with valid data", {
 
   # Mock the process and summary to do nothing but return empty
   assign("process_all_data", function(dir) {
-    list()
+    return(list())
   }, envir = environment(run_pipeline))
 
   assign("dump_summary_excel", function(res, out) {

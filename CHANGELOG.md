@@ -157,6 +157,7 @@
 - ⚡ Bolt: Bypass as.POSIXct overhead with internal .POSIXct [\#715](https://github.com/abhimehro/Seatek_Analysis/pull/715) ([abhimehro](https://github.com/abhimehro))
 - ⚡ Bolt: Remove redundant os.path.isfile check in code\_health\_scanner.py [\#713](https://github.com/abhimehro/Seatek_Analysis/pull/713) ([abhimehro](https://github.com/abhimehro))
 - refactor\(ci\): consolidate Python workflows and rename clean-stale-branches [\#711](https://github.com/abhimehro/Seatek_Analysis/pull/711) ([abhimehro](https://github.com/abhimehro))
+- 🛡️ Sentinel: \[MEDIUM\] Fix null byte DoS in \_load\_and\_validate\_file [\#709](https://github.com/abhimehro/Seatek_Analysis/pull/709) ([abhimehro](https://github.com/abhimehro))
 - 🎨 Palette: Improve Excel accessibility with explicit font colors [\#701](https://github.com/abhimehro/Seatek_Analysis/pull/701) ([abhimehro](https://github.com/abhimehro))
 - Jules Daily QA & Agentic Review: Auto-format Code with styler [\#695](https://github.com/abhimehro/Seatek_Analysis/pull/695) ([abhimehro](https://github.com/abhimehro))
 - perf\(r\): parse unix-epoch timestamps via .POSIXct \(salvages \#690\) [\#693](https://github.com/abhimehro/Seatek_Analysis/pull/693) ([cursor[bot]](https://github.com/apps/cursor))

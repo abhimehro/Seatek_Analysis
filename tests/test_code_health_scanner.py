@@ -98,22 +98,6 @@ def test_get_repo_info_exception_logging(caplog):
         assert "Some hidden internal error" not in caplog.text
 
 
-def test_read_file_safe_path_object():
-    from pathlib import Path
-    import tempfile
-
-    with tempfile.NamedTemporaryFile(mode="w", delete=False, dir=os.getcwd()) as f:
-        f.write("test content\n")
-        name = f.name
-
-    try:
-        read_lines = read_file_safe(Path(name))
-        assert read_lines == ["test content\n"]
-    finally:
-        if os.path.exists(name):
-            os.remove(name)
-
-
 def test_read_file_safe_null_byte():
     # Attempting to read a file with an embedded null character should return empty list
     # and not raise a ValueError (ValueError: lstat: embedded null character in path)

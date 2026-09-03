@@ -227,8 +227,3 @@ working directory first (e.g. Windows). **Prevention:** Always exclusively use
 `shutil.which("executable_name")` to resolve the absolute path of system
 binaries before passing them to `subprocess` functions, and raise a clear
 exception or fail gracefully if the absolute path cannot be resolved.
-
-## 2024-08-29 - [Unhandled Exception DoS via Path-Like Objects]
-**Vulnerability:** The `read_file_safe` function performed a null byte check (`if "\0" in filepath`) directly on the input argument without coercing it to a string. If a non-string iterable or non-iterable path-like object (e.g. `pathlib.Path`) was passed, this check could raise a `TypeError` (e.g. `TypeError: argument of type 'PosixPath' is not iterable`), crashing the scanner and creating an unhandled exception Denial of Service condition.
-**Learning:** Security checks that perform string operations (like `in`) on variables expected to be file paths must account for Python's duck typing and the common use of `pathlib.Path` or other path-like objects. Failing to do so can transform a security check into a DoS vector.
-**Prevention:** Always cast variables representing paths to strings (e.g., `str(filepath)`) before performing manual string-based security validation like null byte or substring checks.

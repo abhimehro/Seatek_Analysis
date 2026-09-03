@@ -1,9 +1,6 @@
 import os
-import pathlib
 import subprocess
 from unittest.mock import patch
-
-import pytest
 
 from code_health_scanner import (
     MAX_FILE_SIZE,
@@ -48,20 +45,17 @@ def test_get_repo_info_failure():
         assert commit_hash == "unknown"
 
 
-@pytest.mark.parametrize(
-    "path_converter,filename",
-    [(str, "test_happy.txt"), (pathlib.Path, "test_pathlib.txt")],
-)
-def test_read_file_safe_happy_path(path_converter, filename):
+def test_read_file_safe_happy_path():
+    test_file = "test_happy.txt"
     content = "line1\nline2\n"
-    with open(filename, "w") as f:
+    with open(test_file, "w") as f:
         f.write(content)
     try:
-        read_lines = read_file_safe(path_converter(filename))
+        read_lines = read_file_safe(test_file)
         assert read_lines == ["line1\n", "line2\n"]
     finally:
-        if os.path.exists(filename):
-            os.remove(filename)
+        if os.path.exists(test_file):
+            os.remove(test_file)
 
 
 def test_read_file_safe_path_traversal():

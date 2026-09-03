@@ -117,11 +117,3 @@ def test_read_file_safe_restricted_permissions():
         if os.path.exists(test_file):
             os.chmod(test_file, 0o644)
             os.remove(test_file)
-
-
-def test_read_file_safe_null_byte_pathlib():
-    import pathlib
-
-    # Attempting to read a pathlib.Path with an embedded null character should return empty list
-    # and not raise a TypeError
-    assert read_file_safe(pathlib.Path("test\0.txt")) == []

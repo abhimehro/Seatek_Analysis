@@ -25,27 +25,10 @@ TASK_RUNNERS = {
 
 def main() -> int:
     parser = argparse.ArgumentParser(
-        description="Consolidated repository automation runner",
-        formatter_class=argparse.RawDescriptionHelpFormatter,
-        epilog="Available tasks:\n  "
-        + "\n  ".join(TASK_RUNNERS.keys())
-        + "\n  enforce",
+        description="Consolidated repository automation runner"
     )
-    parser.add_argument(
-        "task", help="The automation task to run, or 'enforce' to evaluate results."
-    )
-    parser.add_argument(
-        "result_path",
-        nargs="?",
-        help="Path to result JSON file (required for 'enforce').",
-    )
-
-    import sys
-
-    if len(sys.argv) == 1:
-        parser.print_help(sys.stderr)
-        return 1
-
+    parser.add_argument("task")
+    parser.add_argument("result_path", nargs="?")
     args = parser.parse_args()
 
     if args.task == "enforce":
@@ -56,7 +39,7 @@ def main() -> int:
 
     runner = TASK_RUNNERS.get(args.task)
     if runner is None:
-        print(f"Unknown task: {args.task}. Run with --help to see available tasks.")
+        print(f"Unknown task: {args.task}")
         return 1
 
     runner(load_config())

@@ -43,7 +43,9 @@ def _remove_heuristic_secrets(env_dict: dict[str, str]) -> None:
     """Mutates env_dict in place to remove keys matching secret heuristic."""
     sensitive_substrings = ("TOKEN", "SECRET", "KEY", "PASSWORD", "AUTH", "CRED")
     keys_to_remove = [
-        k for k in env_dict if any(sub in k.upper() for sub in sensitive_substrings)
+        k
+        for k in env_dict.keys()
+        if any(sub in k.upper() for sub in sensitive_substrings)
     ]
     for k in keys_to_remove:
         env_dict.pop(k, None)

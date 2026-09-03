@@ -93,7 +93,7 @@ def test_prepare_command_extracts_first_cs_agent_line_from_multiline_comment(tmp
     )  # nosec B101
     assert "second-command-should-be-ignored" not in result.stdout  # nosec B101
     assert github_output.read_text(encoding="utf-8") == (  # nosec B101
-        "command<<EOF\n/cs-agent skill:fix-code-health-degradations\nEOF\n"
+        "command<<EOF\n" "/cs-agent skill:fix-code-health-degradations\n" "EOF\n"
     )
 
 

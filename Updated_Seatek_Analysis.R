@@ -131,8 +131,7 @@ read_sensor_data <- function(file_path,
     }
     if (!anyNA(num_ts)) {
       # ⚡ Bolt: Specifying tz="UTC" prevents the system timezone lookup overhead
-      # NOTE: .POSIXct skips generic as.POSIXct origin conversion for
-      # unix-epoch UTC.
+      # NOTE: .POSIXct skips generic as.POSIXct origin conversion for unix-epoch UTC.
       set(dt, j = "Timestamp", value = .POSIXct(num_ts, tz = "UTC")) # nolint: object_name_linter
     }
   }
@@ -365,12 +364,12 @@ calculate_summary_stats <- function(results) {
     } else {
       # ⚡ Bolt: Pre-calculate the median and pass it to mad() via the `center`
       # argument to avoid redundant median calculations for measurable speedup.
-      med <- median.default(v_val)
+      med <- median(v_val)
       list(
-        mean      = mean.default(v_val),
+        mean      = mean(v_val),
         sd        = sd(v_val),
         median    = med,
-        mad       = 1.4826 * median.default(abs(v_val - med)),
+        mad       = mad(v_val, center = med),
         min       = min(v_val),
         max       = max(v_val),
         count     = n,

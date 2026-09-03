@@ -44,9 +44,6 @@ This script will:
 - Create a Python virtual environment (if it doesn't exist) and install required
   Python packages.
 
-Sensor text-file layout (columns, `Data/` vs `Series_28/` copies) is documented
-in [docs/data-format.md](docs/data-format.md).
-
 ---
 
 ## Repository Structure

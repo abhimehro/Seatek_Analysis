@@ -149,6 +149,7 @@
 - 🛡️ Sentinel: \[MEDIUM\] Fix null byte path validation for pathlib objects [\#788](https://github.com/abhimehro/Seatek_Analysis/pull/788) ([abhimehro](https://github.com/abhimehro))
 - chore\(deps\): bump r-lib/actions/setup-renv from 2.12.1 to 2.13.0 [\#786](https://github.com/abhimehro/Seatek_Analysis/pull/786) ([dependabot[bot]](https://github.com/apps/dependabot))
 - chore\(deps\): bump codescene-oss/pr-refactoring-agent from 1.0.8 to 1.1.1 [\#785](https://github.com/abhimehro/Seatek_Analysis/pull/785) ([dependabot[bot]](https://github.com/apps/dependabot))
+- chore\(deps\): bump r-lib/actions/setup-r from 2.12.1 to 2.13.0 [\#784](https://github.com/abhimehro/Seatek_Analysis/pull/784) ([dependabot[bot]](https://github.com/apps/dependabot))
 - chore\(repo-health\): add Code of Conduct and data-format docs [\#781](https://github.com/abhimehro/Seatek_Analysis/pull/781) ([cursor[bot]](https://github.com/apps/cursor))
 - 🎨 Palette: \[CLI UX\] Improved outlier\_analysis\_series27.py help text and error messaging [\#778](https://github.com/abhimehro/Seatek_Analysis/pull/778) ([abhimehro](https://github.com/abhimehro))
 - chore: QA review - fix lintr style warnings [\#777](https://github.com/abhimehro/Seatek_Analysis/pull/777) ([abhimehro](https://github.com/abhimehro))

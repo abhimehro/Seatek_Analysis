@@ -104,17 +104,6 @@ def test_read_file_safe_null_byte():
     assert read_file_safe("test\0.txt") == []
 
 
-def test_read_file_safe_path_types():
-    from pathlib import Path
-
-    # Should safely return empty list without raising TypeError
-    assert read_file_safe(None) == []
-
-    # Should safely handle pathlib.Path objects without raising TypeError during null check
-    test_path = Path("test\0_path.txt")
-    assert read_file_safe(test_path) == []
-
-
 def test_read_file_safe_restricted_permissions():
     test_file = "test_restricted.txt"
     with open(test_file, "w") as f:

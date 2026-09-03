@@ -147,6 +147,7 @@
 - salvage\(\): unique remaining R wrap + testthat lintr wraps [\#799](https://github.com/abhimehro/Seatek_Analysis/pull/799) ([abhimehro](https://github.com/abhimehro))
 - 🛡️ Sentinel: \[MEDIUM\] Fix DoS vulnerability via special file read in automation scripts [\#794](https://github.com/abhimehro/Seatek_Analysis/pull/794) ([abhimehro](https://github.com/abhimehro))
 - 🛡️ Sentinel: \[MEDIUM\] Fix null byte path validation for pathlib objects [\#788](https://github.com/abhimehro/Seatek_Analysis/pull/788) ([abhimehro](https://github.com/abhimehro))
+- chore\(deps\): bump r-lib/actions/setup-renv from 2.12.1 to 2.13.0 [\#786](https://github.com/abhimehro/Seatek_Analysis/pull/786) ([dependabot[bot]](https://github.com/apps/dependabot))
 - chore\(repo-health\): add Code of Conduct and data-format docs [\#781](https://github.com/abhimehro/Seatek_Analysis/pull/781) ([cursor[bot]](https://github.com/apps/cursor))
 - 🎨 Palette: \[CLI UX\] Improved outlier\_analysis\_series27.py help text and error messaging [\#778](https://github.com/abhimehro/Seatek_Analysis/pull/778) ([abhimehro](https://github.com/abhimehro))
 - chore: QA review - fix lintr style warnings [\#777](https://github.com/abhimehro/Seatek_Analysis/pull/777) ([abhimehro](https://github.com/abhimehro))

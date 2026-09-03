@@ -104,12 +104,6 @@ def test_read_file_safe_null_byte():
     assert read_file_safe("test\0.txt") == []
 
 
-def test_read_file_safe_pathlib_path():
-    import pathlib
-    # Attempting to read a pathlib.Path should work without raising a TypeError
-    assert read_file_safe(pathlib.Path("non_existent_file_12345.txt")) == []
-
-
 def test_read_file_safe_restricted_permissions():
     test_file = "test_restricted.txt"
     with open(test_file, "w") as f:

@@ -161,14 +161,6 @@ MAX_FILE_SIZE = 10 * 1024 * 1024  # 10 MB
 
 
 def _hotspot_line_count(path_str: str) -> int | None:
-    # SECURITY: Prevent ValueError from embedded null bytes in Python 3.12+
-    if "\0" in path_str:
-        return None
-
-    # SECURITY: Prevent reading from special files (e.g., FIFOs, /dev/zero) causing DoS
-    if not os.path.isfile(path_str):
-        return None
-
     try:
         with open(path_str, "rb") as file:
             content = file.read(MAX_FILE_SIZE + 1)

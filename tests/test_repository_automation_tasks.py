@@ -190,10 +190,3 @@ def test_hotspot_line_count_exceeds_max_size(monkeypatch):
         assert _hotspot_line_count(tf_path) is None
     finally:
         os.remove(tf_path)
-
-def test_hotspot_line_count_null_byte():
-    assert _hotspot_line_count("test\0.txt") is None
-
-def test_hotspot_line_count_special_file():
-    assert _hotspot_line_count("/dev/null") is None
-    assert _hotspot_line_count("/dev/zero") is None

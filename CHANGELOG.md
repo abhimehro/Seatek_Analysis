@@ -12,6 +12,7 @@
 
 **Closed issues:**
 
+- Daily QA & Agentic Review — 2026-09-03 [\#798](https://github.com/abhimehro/Seatek_Analysis/issues/798)
 - Daily QA & Agentic Review — 2026-09-01 [\#793](https://github.com/abhimehro/Seatek_Analysis/issues/793)
 - \[repo-automation\] Daily Status Report - 2026-09-01 [\#792](https://github.com/abhimehro/Seatek_Analysis/issues/792)
 - \[repo-health\] Consolidate overlapping Python CI workflows \(ci.yml / pr.yml / pr-validation.yml\) [\#790](https://github.com/abhimehro/Seatek_Analysis/issues/790)
@@ -139,6 +140,7 @@
 
 **Merged pull requests:**
 
+- salvage\(\): unique remaining R wrap + testthat lintr wraps [\#799](https://github.com/abhimehro/Seatek_Analysis/pull/799) ([abhimehro](https://github.com/abhimehro))
 - 🛡️ Sentinel: \[MEDIUM\] Fix DoS vulnerability via special file read in automation scripts [\#794](https://github.com/abhimehro/Seatek_Analysis/pull/794) ([abhimehro](https://github.com/abhimehro))
 - chore\(repo-health\): add Code of Conduct and data-format docs [\#781](https://github.com/abhimehro/Seatek_Analysis/pull/781) ([cursor[bot]](https://github.com/apps/cursor))
 - 🎨 Palette: \[CLI UX\] Improved outlier\_analysis\_series27.py help text and error messaging [\#778](https://github.com/abhimehro/Seatek_Analysis/pull/778) ([abhimehro](https://github.com/abhimehro))

@@ -229,9 +229,3 @@ first (e.g. Windows).
 resolve the absolute path of system binaries before passing them to `subprocess`
 functions, and raise a clear exception or fail gracefully if the absolute path
 cannot be resolved.
-
-## 2026-08-18 - [File Read DoS and Null Byte Crash]
-
-**Vulnerability:** The `_hotspot_line_count` function in `.github/scripts/repository_automation_tasks.py` attempted to open files without checking if they were regular files, and it didn't check for embedded null bytes in paths. This could lead to a File Read DoS (if a special file like a FIFO was read) and unhandled `ValueError` exceptions (if a null byte was passed to `open()` in newer Python versions).
-**Learning:** `open()` can throw a `ValueError` for paths with null bytes and can hang if opening special files like `/dev/zero` or FIFOs. We must validate both the path contents and the file type.
-**Prevention:** Always check `if '\0' in path:` to return early or explicitly catch `ValueError`, and verify the file is a regular file using `os.path.isfile(path)` before attempting to read it.

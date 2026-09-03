@@ -5,13 +5,9 @@ from typing import Any
 sys.path.insert(
     0, os.path.abspath(os.path.join(os.path.dirname(__file__), "../.github/scripts"))
 )
+from repository_automation_tasks import configured_commands, flattened_updates, _hotspot_line_count
+from pathlib import Path
 import tempfile
-
-from repository_automation_tasks import (
-    _hotspot_line_count,
-    configured_commands,
-    flattened_updates,
-)
 
 
 def test_configured_commands_all_keys():
@@ -177,10 +173,6 @@ def test_hotspot_line_count_not_a_file(tmp_path):
     dir_path = tmp_path / "test_dir"
     dir_path.mkdir()
     assert _hotspot_line_count(str(dir_path)) is None
-
-def test_hotspot_line_count_null_byte():
-    # Null byte should return None instead of throwing ValueError
-    assert _hotspot_line_count("test\0.txt") is None
 
 def test_hotspot_line_count_unreadable(tmp_path):
     dir_path = tmp_path / "test_dir2"

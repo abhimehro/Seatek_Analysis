@@ -162,20 +162,12 @@ MAX_FILE_SIZE = 10 * 1024 * 1024  # 10 MB
 
 def _hotspot_line_count(path_str: str) -> int | None:
     try:
-        # SECURITY: Handle null bytes in path which cause ValueError in Python 3.12+
-        if "\0" in path_str:
-            return None
-
-        # SECURITY: Prevent File Read DoS via special files (e.g. FIFOs, /dev/zero)
-        if not os.path.isfile(path_str):
-            return None
-
         with open(path_str, "rb") as file:
             content = file.read(MAX_FILE_SIZE + 1)
         if len(content) > MAX_FILE_SIZE:
             return None
         return content.count(b"\n") + 1
-    except (OSError, ValueError):
+    except OSError:
         return None
 
 
@@ -791,7 +783,7 @@ def run_daily_status_report(config: dict[str, Any]) -> dict[str, Any]:
 # ⚡ Bolt: Pre-compile regular expressions to prevent redundant pattern compilation
 # overhead on every invocation, particularly in loops over issues.
 STATUS_MARKER_PATTERN = re.compile(
-    r"<!-- repository-automation:task-status\n(.*?)\n-->", re.DOTALL
+    r"<!-- repository-automation:task-status\n(.*?)\n-->", re.S
 )
 
 

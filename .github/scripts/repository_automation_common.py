@@ -44,7 +44,7 @@ def _remove_heuristic_secrets(env_dict: dict[str, str]) -> None:
     sensitive_substrings = ("TOKEN", "SECRET", "KEY", "PASSWORD", "AUTH", "CRED")
     keys_to_remove = [
         k
-        for k in env_dict
+        for k in env_dict.keys()
         if any(sub in k.upper() for sub in sensitive_substrings)
     ]
     for k in keys_to_remove:

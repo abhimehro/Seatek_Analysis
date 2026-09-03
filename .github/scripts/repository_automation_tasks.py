@@ -161,16 +161,17 @@ MAX_FILE_SIZE = 10 * 1024 * 1024  # 10 MB
 
 
 def _hotspot_line_count(path_str: str) -> int | None:
+    """Return a bounded line count for a regular file, or ``None`` when unsafe."""
+    if "\0" in path_str or not os.path.isfile(path_str):
+        return None
+
     try:
-        # SECURITY: Prevent DoS by verifying file is a regular file before opening
-        if not os.path.isfile(path_str):
-            return None
         with open(path_str, "rb") as file:
             content = file.read(MAX_FILE_SIZE + 1)
         if len(content) > MAX_FILE_SIZE:
             return None
         return content.count(b"\n") + 1
-    except OSError:
+    except (OSError, ValueError):
         return None
 
 

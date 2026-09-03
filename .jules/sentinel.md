@@ -227,7 +227,3 @@ working directory first (e.g. Windows). **Prevention:** Always exclusively use
 `shutil.which("executable_name")` to resolve the absolute path of system
 binaries before passing them to `subprocess` functions, and raise a clear
 exception or fail gracefully if the absolute path cannot be resolved.
-## 2026-08-26 - Fix TypeError DoS vulnerability in file path validation
-**Vulnerability:** Unhandled TypeError when checking for null bytes in pathlib.Path objects.
-**Learning:** Security checks using string operations like 'in' will crash if the input is a Path object instead of a string.
-**Prevention:** Always explicitly cast path-like objects to strings (e.g., str(filepath)) before performing string-based security validations.

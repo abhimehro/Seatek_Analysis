@@ -343,6 +343,12 @@ def plot_outliers(outliers, method, threshold, output_dir):
 
 
 def _load_and_validate_file(input_file):
+    # SECURITY: Handle null bytes in path which cause ValueError in Python 3.12+
+    # preventing unhandled exception DoS attacks.
+    if "\0" in str(input_file):
+        logging.error("Invalid input file path: contains null byte.")
+        return None
+
     if not os.path.isfile(input_file):
         logging.error(
             f"Input file not found or is not a file: '{input_file}'. "

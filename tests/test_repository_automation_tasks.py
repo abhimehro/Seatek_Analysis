@@ -6,6 +6,7 @@ sys.path.insert(
     0, os.path.abspath(os.path.join(os.path.dirname(__file__), "../.github/scripts"))
 )
 import tempfile
+from pathlib import Path
 
 from repository_automation_tasks import (
     _hotspot_line_count,

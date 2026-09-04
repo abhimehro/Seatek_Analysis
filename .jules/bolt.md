@@ -418,8 +418,11 @@ requiring no memory allocation. **Action:** When filtering missing values, use
 
 ## 2025-08-27 - Bypass generic S3 method dispatch for median()
 
-**Learning:** Similar to `mean()`, calling the generic `median()` method inside high-frequency `data.table` aggregations (like `lapply(.SD, ...)` over many groups) incurs measurable S3 method dispatch overhead.
-**Action:** When calculating medians on numeric vectors in performance-critical paths, call `median.default()` directly to bypass the `UseMethod()` lookup overhead.
+**Learning:** Similar to `mean()`, calling the generic `median()` method inside
+high-frequency `data.table` aggregations (like `lapply(.SD, ...)` over many
+groups) incurs measurable S3 method dispatch overhead. **Action:** When
+calculating medians on numeric vectors in performance-critical paths, call
+`median.default()` directly to bypass the `UseMethod()` lookup overhead.
 
 ## 2026-08-11 - Bypass mad() function overhead and generic median dispatch
 **Learning:** R's `mad()` internally calls `median(abs(x - center))`, which triggers S3 method dispatch. In high-frequency calculations (like `lapply(.SD, ...)`), this causes performance overhead even if `center` is pre-calculated.

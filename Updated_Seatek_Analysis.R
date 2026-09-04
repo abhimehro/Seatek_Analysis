@@ -361,12 +361,14 @@ calculate_summary_stats <- function(results) {
     } else {
       # ⚡ Bolt: Pre-calculate the median and pass it to mad() via the `center`
       # argument to avoid redundant median calculations for measurable speedup.
-      med <- median(v_val)
+      # ⚡ Bolt: Bypass S3 method dispatch overhead by using median.default()
+      med <- median.default(v_val)
       list(
-        mean      = mean(v_val),
+        mean      = mean.default(v_val),
         sd        = sd(v_val),
         median    = med,
-        mad       = mad(v_val, center = med),
+        # ⚡ Bolt: Inline mad calculation to bypass function call overhead
+        mad       = 1.4826 * median.default(abs(v_val - med)),
         min       = min(v_val),
         max       = max(v_val),
         count     = n,

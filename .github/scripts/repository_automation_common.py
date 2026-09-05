@@ -295,10 +295,12 @@ def write_result(
 
 
 def enforce_result(path_str: str) -> int:
-    path = Path(path_str)
-    if not path.exists():
-        print(f"Missing task result: {path}")
+    # SECURITY: Prevent DoS via special files (e.g. FIFOs, /dev/zero) by ensuring
+    # the untrusted path belongs to a regular file before attempting to read it.
+    if "\0" in str(path_str) or not os.path.isfile(path_str):
+        print(f"Missing task result: {path_str}")
         return 1
+    path = Path(path_str)
     data = json.loads(path.read_text())
     return 1 if data.get("status") in {"failure", "needs_review"} else 0
 

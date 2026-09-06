@@ -55,10 +55,7 @@ test_that("write_summary_sheets works correctly", {
   expected_sheets <- c(
     "Summary_All", "Summary_Sufficient", "Summary_Top_Sensors", "Summary"
   )
-  expect_true(
-    all(expected_sheets %in% sheet_names),
-    label = "All specified Excel sheets must be present."
-  )
+  expect_setequal(sheet_names, expected_sheets)
 
   # 3. Check CSV files creation
   csv_base_name <- tools::file_path_sans_ext(output_file)

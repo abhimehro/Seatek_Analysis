@@ -143,6 +143,7 @@
 
 **Merged pull requests:**
 
+- perf: streamline positive sensor averages [\#809](https://github.com/abhimehro/Seatek_Analysis/pull/809) ([abhimehro](https://github.com/abhimehro))
 - ⚡ Bolt: \[performance improvement\] Bypass mad\(\) function call and S3 dispatch overhead [\#802](https://github.com/abhimehro/Seatek_Analysis/pull/802) ([abhimehro](https://github.com/abhimehro))
 - salvage\(\#689\): NUL + isfile-before-open + FIFO/ValueError hotspot coverage [\#801](https://github.com/abhimehro/Seatek_Analysis/pull/801) ([abhimehro](https://github.com/abhimehro))
 - salvage\(\): Data/-canonical Series 28 + untrack phase0 backup inputs [\#800](https://github.com/abhimehro/Seatek_Analysis/pull/800) ([abhimehro](https://github.com/abhimehro))

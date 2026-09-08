@@ -1,5 +1,6 @@
 # Seatek Analysis (R-Tier)
 
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/4004218d1d334392bc33037c6bc99997)](https://app.codacy.com/gh/abhimehro/Seatek_Analysis?utm_source=github.com&utm_medium=referral&utm_content=abhimehro/Seatek_Analysis&utm_campaign=Badge_Grade)
 [![CodeScene general](https://codescene.io/images/analyzed-by-codescene-badge.svg)](https://codescene.io/projects/80826)
 [![renv Reproducibility](https://img.shields.io/badge/reproducible%20environment-renv-blue?logo=R)](https://rstudio.github.io/renv/)
 [![Changelog Status](https://github.com/abhimehro/Seatek_Analysis/actions/workflows/changelog.yml/badge.svg)](https://github.com/abhimehro/Seatek_Analysis/actions/workflows/changelog.yml)

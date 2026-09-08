@@ -82,7 +82,7 @@ regenerable from the source tree; neither the application nor CI reads it.
 │       ├── Seatek_Summary.xlsx
 │       ├── Seatek_Comprehensive_Analysis.xlsx
 │       ├── analysis_report_log.txt
-│       └── processing_log.txt
+│       └── processing_log.txt        # Optional local artifact (gitignored; regenerate on run)
 ├── Series_27/                        # Data and analysis specific to Series 27 sensors
 │   └── Analysis/                     # Main working directory for Series 27
 │       ├── Raw_Data/                 # Raw data for Series 27 (organized by year within Text_Files/ and Excel_Files/)
@@ -95,7 +95,7 @@ regenerable from the source tree; neither the application nor CI reads it.
 │       ├── Seatek_Summary.xlsx
 │       ├── Seatek_Comprehensive_Analysis.xlsx
 │       ├── analysis_report_log.txt
-│       ├── processing_log.txt
+│       ├── processing_log.txt        # Optional local artifact (gitignored; regenerate on run)
 │       ├── requirements.txt          # Python requirements for outlier_analysis_series27.py
 │       └── validation_log.txt
 ├── Series_28/                        # Processed data and analysis for Series 28; raw SS inputs live in Data/

@@ -57,7 +57,7 @@ jobs:
       - name: Run tests
         run: |
           if [ -d tests ]; then
-            python -m pytest tests/ -v || echo "::warning::Some tests failed"
+            python -m pytest tests/ -v
           else
             echo "::notice::No tests directory found, skipping pytest"
           fi

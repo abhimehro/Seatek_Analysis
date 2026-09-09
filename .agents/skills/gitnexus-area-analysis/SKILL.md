@@ -26,7 +26,7 @@ description: "Skill for the Analysis area of Seatek_Analysis. 24 symbols across 
 Start here when exploring this area:
 
 - **`detect_outliers`** (Function) —
-  `Series_27/Analysis/outlier_analysis_series27.py:94`
+  `Series_27/Analysis/outlier_analysis_series27.py:100`
 - **`test_detect_outliers_abs_mock`** (Function) —
   `Series_27/Analysis/test_outlier_analysis_series27.py:81`
 - **`test_detect_outliers_abs_real`** (Function) —
@@ -40,7 +40,7 @@ Start here when exploring this area:
 
 | Symbol                                  | Type     | File                                                   | Line |
 | --------------------------------------- | -------- | ------------------------------------------------------ | ---- |
-| `detect_outliers`                       | Function | `Series_27/Analysis/outlier_analysis_series27.py`      | 94   |
+| `detect_outliers`                       | Function | `Series_27/Analysis/outlier_analysis_series27.py`      | 100  |
 | `test_detect_outliers_abs_mock`         | Function | `Series_27/Analysis/test_outlier_analysis_series27.py` | 81   |
 | `test_detect_outliers_abs_real`         | Function | `Series_27/Analysis/test_outlier_analysis_series27.py` | 36   |
 | `test_detect_outliers_invalid_method`   | Function | `Series_27/Analysis/test_outlier_analysis_series27.py` | 71   |
@@ -48,18 +48,18 @@ Start here when exploring this area:
 | `test_detect_outliers_iqr_real`         | Function | `Series_27/Analysis/test_outlier_analysis_series27.py` | 61   |
 | `test_detect_outliers_zscore_mock`      | Function | `Series_27/Analysis/test_outlier_analysis_series27.py` | 102  |
 | `test_detect_outliers_zscore_real`      | Function | `Series_27/Analysis/test_outlier_analysis_series27.py` | 47   |
-| `secure_filename`                       | Function | `Series_27/Analysis/outlier_analysis_series27.py`      | 76   |
+| `secure_filename`                       | Function | `Series_27/Analysis/outlier_analysis_series27.py`      | 82   |
 | `test_secure_filename`                  | Function | `Series_27/Analysis/test_outlier_analysis_series27.py` | 161  |
-| `main`                                  | Function | `Series_27/Analysis/outlier_analysis_series27.py`      | 371  |
-| `parse_args`                            | Function | `Series_27/Analysis/outlier_analysis_series27.py`      | 14   |
-| `plot_outliers`                         | Function | `Series_27/Analysis/outlier_analysis_series27.py`      | 313  |
-| `prepare_outliers_df`                   | Function | `Series_27/Analysis/outlier_analysis_series27.py`      | 126  |
-| `apply_corrections`                     | Function | `Series_27/Analysis/outlier_analysis_series27.py`      | 289  |
+| `main`                                  | Function | `Series_27/Analysis/outlier_analysis_series27.py`      | 384  |
+| `parse_args`                            | Function | `Series_27/Analysis/outlier_analysis_series27.py`      | 20   |
+| `plot_outliers`                         | Function | `Series_27/Analysis/outlier_analysis_series27.py`      | 319  |
+| `prepare_outliers_df`                   | Function | `Series_27/Analysis/outlier_analysis_series27.py`      | 132  |
+| `apply_corrections`                     | Function | `Series_27/Analysis/outlier_analysis_series27.py`      | 295  |
 | `test_apply_corrections_path_traversal` | Function | `Series_27/Analysis/test_outlier_analysis_series27.py` | 175  |
-| `_apply_corrections_to_sheets`          | Function | `Series_27/Analysis/outlier_analysis_series27.py`      | 239  |
-| `_get_safe_output_path`                 | Function | `Series_27/Analysis/outlier_analysis_series27.py`      | 181  |
-| `_is_safe_path`                         | Function | `Series_27/Analysis/outlier_analysis_series27.py`      | 159  |
-| `_process_single_sheet`                 | Function | `Series_27/Analysis/outlier_analysis_series27.py`      | 197  |
+| `_apply_corrections_to_sheets`          | Function | `Series_27/Analysis/outlier_analysis_series27.py`      | 245  |
+| `_get_safe_output_path`                 | Function | `Series_27/Analysis/outlier_analysis_series27.py`      | 187  |
+| `_is_safe_path`                         | Function | `Series_27/Analysis/outlier_analysis_series27.py`      | 165  |
+| `_process_single_sheet`                 | Function | `Series_27/Analysis/outlier_analysis_series27.py`      | 203  |
 
 ## Execution Flows
 

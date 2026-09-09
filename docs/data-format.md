@@ -1,14 +1,14 @@
 # Seatek sensor data format
 
-`Updated_Seatek_Analysis.R` reads **headerless** whitespace-separated text
-files and writes Excel/CSV summaries under `Data/` (outputs are gitignored).
+`Updated_Seatek_Analysis.R` reads **headerless** whitespace-separated text files
+and writes Excel/CSV summaries under `Data/` (outputs are gitignored).
 
 ## Primary inputs (tracked)
 
-| Path | Series | Filename pattern |
-|------|--------|------------------|
-| `Data/SS_Yxx.txt` | 28 | `SS_Y01.txt` … `SS_Y14.txt` |
-| `Data/S26_Yxx.txt` | 26 | `S26_Y*.txt` |
+| Path               | Series | Filename pattern            |
+| ------------------ | ------ | --------------------------- |
+| `Data/SS_Yxx.txt`  | 28     | `SS_Y01.txt` … `SS_Y14.txt` |
+| `Data/S26_Yxx.txt` | 26     | `S26_Y*.txt`                |
 
 `Data/` is the only tracked source for Series 28 `SS_Y*.txt` inputs. Keep raw
 Series 28 inputs there so the production pipeline and repository documentation

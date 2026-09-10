@@ -162,11 +162,21 @@ MAX_FILE_SIZE = 10 * 1024 * 1024  # 10 MB
 
 def _hotspot_line_count(path_str: str) -> int | None:
     """Return a bounded line count for a regular file, or ``None`` when unsafe."""
-    if "\0" in path_str or not os.path.isfile(path_str):
+    if "\0" in path_str:
+        return None
+
+    # SECURITY: Prevent path traversal by ensuring the resolved path is within the workspace
+    resolved_path = os.path.realpath(path_str)
+    root_path = os.path.realpath(str(ROOT))
+    root_path_plus_sep = os.path.join(root_path, "")
+    if not resolved_path.startswith(root_path_plus_sep) and resolved_path != root_path:
+        return None
+
+    if not os.path.isfile(resolved_path):
         return None
 
     try:
-        with open(path_str, "rb") as file:
+        with open(resolved_path, "rb") as file:
             content = file.read(MAX_FILE_SIZE + 1)
         if len(content) > MAX_FILE_SIZE:
             return None

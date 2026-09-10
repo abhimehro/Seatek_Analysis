@@ -160,7 +160,7 @@ def test_flattened_updates_missing_replacements():
 
 
 def test_hotspot_line_count_valid_file():
-    with tempfile.NamedTemporaryFile(mode="w", delete=False, encoding="utf-8") as tf:
+    with tempfile.NamedTemporaryFile(mode="w", delete=False, encoding="utf-8", dir=os.getcwd()) as tf:
         tf.write("line 1\nline 2\nline 3")
         tf_path = tf.name
 

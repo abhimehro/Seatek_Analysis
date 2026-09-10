@@ -5,8 +5,6 @@ from typing import Any
 sys.path.insert(
     0, os.path.abspath(os.path.join(os.path.dirname(__file__), "../.github/scripts"))
 )
-import tempfile
-
 from repository_automation_tasks import (
     _hotspot_line_count,
     configured_commands,
@@ -159,15 +157,30 @@ def test_flattened_updates_missing_replacements():
     assert flattened_updates(plans) == []
 
 
-def test_hotspot_line_count_valid_file():
-    with tempfile.NamedTemporaryFile(mode="w", delete=False, encoding="utf-8", dir=os.getcwd()) as tf:
-        tf.write("line 1\nline 2\nline 3")
-        tf_path = tf.name
+def test_hotspot_line_count_valid_file(monkeypatch, tmp_path):
+    import repository_automation_tasks
 
-    try:
-        assert _hotspot_line_count(tf_path) == 3
-    finally:
-        os.remove(tf_path)
+    root = tmp_path / "root"
+    root.mkdir()
+    monkeypatch.setattr(repository_automation_tasks, "ROOT", root)
+    file_path = root / "hotspot.py"
+    file_path.write_text("line 1\nline 2\nline 3", encoding="utf-8")
+
+    assert _hotspot_line_count(str(file_path)) == 3
+
+
+def test_hotspot_line_count_rejects_symlink_escape(monkeypatch, tmp_path):
+    import repository_automation_tasks
+
+    root = tmp_path / "root"
+    root.mkdir()
+    outside_file = tmp_path / "outside.py"
+    outside_file.write_text("external\n", encoding="utf-8")
+    link_path = root / "link.py"
+    link_path.symlink_to(outside_file)
+    monkeypatch.setattr(repository_automation_tasks, "ROOT", root)
+
+    assert _hotspot_line_count(str(link_path)) is None
 
 
 def test_hotspot_line_count_non_existent():
@@ -186,18 +199,17 @@ def test_hotspot_line_count_unreadable(tmp_path):
     assert _hotspot_line_count(str(dir_path)) is None
 
 
-def test_hotspot_line_count_exceeds_max_size(monkeypatch):
+def test_hotspot_line_count_exceeds_max_size(monkeypatch, tmp_path):
     import repository_automation_tasks
 
+    root = tmp_path / "root"
+    root.mkdir()
+    monkeypatch.setattr(repository_automation_tasks, "ROOT", root)
     monkeypatch.setattr(repository_automation_tasks, "MAX_FILE_SIZE", 10)
-    with tempfile.NamedTemporaryFile(mode="wb", delete=False) as tf:
-        tf.write(b"123456789012345")
-        tf_path = tf.name
+    file_path = root / "large.py"
+    file_path.write_bytes(b"123456789012345")
 
-    try:
-        assert _hotspot_line_count(tf_path) is None
-    finally:
-        os.remove(tf_path)
+    assert _hotspot_line_count(str(file_path)) is None
 
 
 def test_hotspot_line_count_special_file():
@@ -222,8 +234,13 @@ def test_hotspot_line_count_rejects_fifo_without_opening(tmp_path):
 def test_hotspot_line_count_handles_value_error_after_regular_file_check(
     monkeypatch, tmp_path
 ):
-    path = tmp_path / "regular.py"
+    import repository_automation_tasks
+
+    root = tmp_path / "root"
+    root.mkdir()
+    path = root / "regular.py"
     path.write_text("print('safe')\n", encoding="utf-8")
+    monkeypatch.setattr(repository_automation_tasks, "ROOT", root)
 
     def raise_value_error(*_args, **_kwargs):
         raise ValueError("unexpected invalid file operation")

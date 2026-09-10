@@ -367,7 +367,8 @@ calculate_summary_stats <- function(results) {
       med <- median.default(v_val)
       list(
         mean      = mean.default(v_val),
-        sd        = sd(v_val),
+        # ⚡ Bolt: Inline sd calculation to bypass function call and type checking overhead
+        sd        = sqrt(var(v_val)),
         median    = med,
         # ⚡ Bolt: Inline mad calculation to bypass function call overhead
         mad       = 1.4826 * median.default(abs(v_val - med)),

@@ -245,3 +245,15 @@ is a regular file using `os.path.isfile()` or
 `stat.S_ISREG(os.stat(path).st_mode)` before attempting to open and read its
 contents, especially in security wrappers designed to read untrusted files
 safely.
+
+## 2026-09-12 - [IsADirectoryError crash via path.exists()]
+
+**Vulnerability:** In `.github/scripts/repository_automation_common.py`, the `enforce_result` function verified an untrusted path string using `Path(path_str).exists()` before calling `path.read_text()`. If an attacker provided a path to an existing directory instead of a file, `exists()` evaluated to `True`, but `read_text()` subsequently crashed with an `IsADirectoryError`.
+**Learning:** `Path.exists()` does not guarantee a path is safe to read as text. Unhandled exceptions from directories can crash automation scripts, theoretically leading to denial-of-service.
+**Prevention:** Always use `path.is_file()` (or `os.path.isfile()`) to validate that an untrusted path points to a regular file before attempting to read its contents.
+
+## 2026-09-12 - [Functional Regression via existence checks on append mode]
+
+**Vulnerability:** A previous attempt to secure the `GITHUB_STEP_SUMMARY` file write added an `os.path.isfile(summary_path)` check before opening the file in append mode (`"a"`). This broke the script locally because `open(..., "a")` safely creates the file if it doesn't exist, but the strict `isfile` check blocked creation entirely.
+**Learning:** Checking for file existence before opening in append mode creates functional regressions if the file is expected to be dynamically created.
+**Prevention:** Do not use `os.path.isfile()` as a prerequisite for `open(..., "a")` unless the file is explicitly guaranteed to have been pre-created.

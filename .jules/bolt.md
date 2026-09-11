@@ -432,3 +432,8 @@ triggers S3 method dispatch. In high-frequency calculations (like
 pre-calculated. **Action:** Instead of `mad(x, center = med)`, use
 `1.4826 * median.default(abs(x - med))` directly to bypass the function call and
 generic dispatch overhead.
+
+## 2025-05-06 - Bypass sd() function overhead
+
+**Learning:** R's `sd()` function incurs overhead from both S3 generic method dispatch and a wrapper call around `var()`. In high-frequency calculations (like `lapply(.SD, ...)`), calculating standard deviation via `sd()` adds unnecessary overhead.
+**Action:** Instead of `sd(x)`, calculate standard deviation inline using `sqrt(var(x))` to bypass the function call and generic dispatch overhead in performance-critical paths.

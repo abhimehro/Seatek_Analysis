@@ -435,5 +435,5 @@ generic dispatch overhead.
 
 ## 2025-05-06 - Bypass sd() function overhead
 
-**Learning:** R's `sd()` function incurs overhead from both S3 generic method dispatch and a wrapper call around `var()`. In high-frequency calculations (like `lapply(.SD, ...)`), calculating standard deviation via `sd()` adds unnecessary overhead.
-**Action:** Instead of `sd(x)`, calculate standard deviation inline using `sqrt(var(x))` to bypass the function call and generic dispatch overhead in performance-critical paths.
+**Learning:** In high-frequency calculations (like `lapply(.SD, ...)`), calculating standard deviation via `sd()` adds the overhead of its wrapper call around `var()`.
+**Action:** In performance-critical paths where numeric input equivalence has been established, calculate standard deviation inline using `sqrt(var(x))` to eliminate the `sd()` wrapper call.

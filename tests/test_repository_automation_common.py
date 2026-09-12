@@ -9,6 +9,7 @@ sys.path.insert(
 from repository_automation_common import (
     _remove_heuristic_secrets,
     command_env,
+    enforce_result,
     filter_env_securely,
     is_commit_sha,
     iso_day,
@@ -26,6 +27,29 @@ def setup_mock_process(mock_run_process):
     mock_proc.stdout = "output"
     mock_proc.stderr = ""
     mock_run_process.return_value = mock_proc
+
+
+def test_enforce_result_directory_and_missing_paths_return_failure(tmp_path):
+    assert enforce_result(str(tmp_path)) == 1
+    assert enforce_result(str(tmp_path / "missing.json")) == 1
+
+
+def test_enforce_result_statuses(tmp_path):
+    result_path = tmp_path / "result.json"
+    result_path.write_text('{"status": "success"}')
+    assert enforce_result(str(result_path)) == 0
+    result_path.write_text('{"status": "failure"}')
+    assert enforce_result(str(result_path)) == 1
+    result_path.write_text('{"status": "needs_review"}')
+    assert enforce_result(str(result_path)) == 1
+
+
+@patch("repository_automation_common.Path.read_text", side_effect=IsADirectoryError)
+def test_enforce_result_handles_directory_swap(mock_read_text, tmp_path):
+    result_path = tmp_path / "result.json"
+    result_path.write_text('{"status": "success"}')
+    assert enforce_result(str(result_path)) == 1
+    mock_read_text.assert_called_once()
 
 
 @patch("repository_automation_common.run_process")

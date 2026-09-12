@@ -246,7 +246,7 @@ is a regular file using `os.path.isfile()` or
 contents, especially in security wrappers designed to read untrusted files
 safely.
 
-## 2026-10-24 - [DoS / Unhandled Exception via Directory Path]
+## 2026-09-12 - [DoS / Unhandled Exception via Directory Path]
 **Vulnerability:** The `enforce_result` function in `.github/scripts/repository_automation_common.py` used `path.exists()` to check if a file existed before reading its contents with `path.read_text()`. If the provided path was a directory instead of a regular file, the `exists()` check would pass, but the subsequent `read_text()` call would crash with an `IsADirectoryError`, causing the script to fail.
 **Learning:** `path.exists()` returns `True` for directories as well as files. Relying on it before reading file contents exposes the application to unhandled exception Denial of Service (DoS) risks if untrusted or dynamic paths resolve to directories.
 **Prevention:** When validating a path before reading its contents with `pathlib.Path` (e.g., `path.read_text()`), use `path.is_file()` instead of `path.exists()` to safely verify it is a regular file.

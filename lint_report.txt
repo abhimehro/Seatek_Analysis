@@ -1,0 +1,763 @@
+- The project is out-of-sync -- use `renv::status()` for details.
+backups/phase0_20250711_064229/Updated_Seatek_Analysis.R:22:1: warning: [object_usage_linter] Could not find exported symbols for package "dplyr" in libraries '/app/renv/library/R-4.3/x86_64-pc-linux-gnu', '/home/jules/.cache/R/renv/sandbox/R-4.3/x86_64-pc-linux-gnu/9a444a72' (there is no package called ‘dplyr’). This may lead to false positives.
+library(dplyr)
+^~~~~~~~~~~~~~
+backups/phase0_20250711_064229/Updated_Seatek_Analysis.R:22:1: warning: [object_usage_linter] Could not find exported symbols for package "dplyr" in libraries '/app/renv/library/R-4.3/x86_64-pc-linux-gnu', '/home/jules/.cache/R/renv/sandbox/R-4.3/x86_64-pc-linux-gnu/9a444a72' (there is no package called ‘dplyr’). This may lead to false positives.
+library(dplyr)
+^~~~~~~~~~~~~~
+backups/phase0_20250711_064229/Updated_Seatek_Analysis.R:22:1: warning: [object_usage_linter] Could not find exported symbols for package "dplyr" in libraries '/app/renv/library/R-4.3/x86_64-pc-linux-gnu', '/home/jules/.cache/R/renv/sandbox/R-4.3/x86_64-pc-linux-gnu/9a444a72' (there is no package called ‘dplyr’). This may lead to false positives.
+library(dplyr)
+^~~~~~~~~~~~~~
+backups/phase0_20250711_064229/Updated_Seatek_Analysis.R:22:1: warning: [object_usage_linter] Could not find exported symbols for package "dplyr" in libraries '/app/renv/library/R-4.3/x86_64-pc-linux-gnu', '/home/jules/.cache/R/renv/sandbox/R-4.3/x86_64-pc-linux-gnu/9a444a72' (there is no package called ‘dplyr’). This may lead to false positives.
+library(dplyr)
+^~~~~~~~~~~~~~
+backups/phase0_20250711_064229/Updated_Seatek_Analysis.R:22:1: warning: [object_usage_linter] Could not find exported symbols for package "dplyr" in libraries '/app/renv/library/R-4.3/x86_64-pc-linux-gnu', '/home/jules/.cache/R/renv/sandbox/R-4.3/x86_64-pc-linux-gnu/9a444a72' (there is no package called ‘dplyr’). This may lead to false positives.
+library(dplyr)
+^~~~~~~~~~~~~~
+backups/phase0_20250711_064229/Updated_Seatek_Analysis.R:22:1: warning: [object_usage_linter] Could not find exported symbols for package "dplyr" in libraries '/app/renv/library/R-4.3/x86_64-pc-linux-gnu', '/home/jules/.cache/R/renv/sandbox/R-4.3/x86_64-pc-linux-gnu/9a444a72' (there is no package called ‘dplyr’). This may lead to false positives.
+library(dplyr)
+^~~~~~~~~~~~~~
+backups/phase0_20250711_064229/Updated_Seatek_Analysis.R:22:1: warning: [object_usage_linter] Could not find exported symbols for package "dplyr" in libraries '/app/renv/library/R-4.3/x86_64-pc-linux-gnu', '/home/jules/.cache/R/renv/sandbox/R-4.3/x86_64-pc-linux-gnu/9a444a72' (there is no package called ‘dplyr’). This may lead to false positives.
+library(dplyr)
+^~~~~~~~~~~~~~
+backups/phase0_20250711_064229/Updated_Seatek_Analysis.R:22:1: warning: [object_usage_linter] Could not find exported symbols for package "dplyr" in libraries '/app/renv/library/R-4.3/x86_64-pc-linux-gnu', '/home/jules/.cache/R/renv/sandbox/R-4.3/x86_64-pc-linux-gnu/9a444a72' (there is no package called ‘dplyr’). This may lead to false positives.
+library(dplyr)
+^~~~~~~~~~~~~~
+backups/phase0_20250711_064229/Updated_Seatek_Analysis.R:23:1: warning: [object_usage_linter] Could not find exported symbols for package "tidyr" in libraries '/app/renv/library/R-4.3/x86_64-pc-linux-gnu', '/home/jules/.cache/R/renv/sandbox/R-4.3/x86_64-pc-linux-gnu/9a444a72' (there is no package called ‘tidyr’). This may lead to false positives.
+library(tidyr)
+^~~~~~~~~~~~~~
+backups/phase0_20250711_064229/Updated_Seatek_Analysis.R:23:1: warning: [object_usage_linter] Could not find exported symbols for package "tidyr" in libraries '/app/renv/library/R-4.3/x86_64-pc-linux-gnu', '/home/jules/.cache/R/renv/sandbox/R-4.3/x86_64-pc-linux-gnu/9a444a72' (there is no package called ‘tidyr’). This may lead to false positives.
+library(tidyr)
+^~~~~~~~~~~~~~
+backups/phase0_20250711_064229/Updated_Seatek_Analysis.R:23:1: warning: [object_usage_linter] Could not find exported symbols for package "tidyr" in libraries '/app/renv/library/R-4.3/x86_64-pc-linux-gnu', '/home/jules/.cache/R/renv/sandbox/R-4.3/x86_64-pc-linux-gnu/9a444a72' (there is no package called ‘tidyr’). This may lead to false positives.
+library(tidyr)
+^~~~~~~~~~~~~~
+backups/phase0_20250711_064229/Updated_Seatek_Analysis.R:23:1: warning: [object_usage_linter] Could not find exported symbols for package "tidyr" in libraries '/app/renv/library/R-4.3/x86_64-pc-linux-gnu', '/home/jules/.cache/R/renv/sandbox/R-4.3/x86_64-pc-linux-gnu/9a444a72' (there is no package called ‘tidyr’). This may lead to false positives.
+library(tidyr)
+^~~~~~~~~~~~~~
+backups/phase0_20250711_064229/Updated_Seatek_Analysis.R:23:1: warning: [object_usage_linter] Could not find exported symbols for package "tidyr" in libraries '/app/renv/library/R-4.3/x86_64-pc-linux-gnu', '/home/jules/.cache/R/renv/sandbox/R-4.3/x86_64-pc-linux-gnu/9a444a72' (there is no package called ‘tidyr’). This may lead to false positives.
+library(tidyr)
+^~~~~~~~~~~~~~
+backups/phase0_20250711_064229/Updated_Seatek_Analysis.R:23:1: warning: [object_usage_linter] Could not find exported symbols for package "tidyr" in libraries '/app/renv/library/R-4.3/x86_64-pc-linux-gnu', '/home/jules/.cache/R/renv/sandbox/R-4.3/x86_64-pc-linux-gnu/9a444a72' (there is no package called ‘tidyr’). This may lead to false positives.
+library(tidyr)
+^~~~~~~~~~~~~~
+backups/phase0_20250711_064229/Updated_Seatek_Analysis.R:23:1: warning: [object_usage_linter] Could not find exported symbols for package "tidyr" in libraries '/app/renv/library/R-4.3/x86_64-pc-linux-gnu', '/home/jules/.cache/R/renv/sandbox/R-4.3/x86_64-pc-linux-gnu/9a444a72' (there is no package called ‘tidyr’). This may lead to false positives.
+library(tidyr)
+^~~~~~~~~~~~~~
+backups/phase0_20250711_064229/Updated_Seatek_Analysis.R:23:1: warning: [object_usage_linter] Could not find exported symbols for package "tidyr" in libraries '/app/renv/library/R-4.3/x86_64-pc-linux-gnu', '/home/jules/.cache/R/renv/sandbox/R-4.3/x86_64-pc-linux-gnu/9a444a72' (there is no package called ‘tidyr’). This may lead to false positives.
+library(tidyr)
+^~~~~~~~~~~~~~
+backups/phase0_20250711_064229/Updated_Seatek_Analysis.R:70:10: warning: [object_usage_linter] no visible binding for global variable 'Timestamp'
+    dt[, Timestamp := as.POSIXct(as.numeric(Timestamp), origin = "1970-01-01")]
+         ^~~~~~~~~
+backups/phase0_20250711_064229/Updated_Seatek_Analysis.R:70:10: warning: [object_usage_linter] no visible binding for global variable 'Timestamp'
+    dt[, Timestamp := as.POSIXct(as.numeric(Timestamp), origin = "1970-01-01")]
+         ^~~~~~~~~
+backups/phase0_20250711_064229/Updated_Seatek_Analysis.R:95:28: warning: [object_usage_linter] no visible binding for global variable '..sensor_names'
+    first10 <- sapply(df[, ..sensor_names],
+                           ^~~~~~~~~~~~~~
+backups/phase0_20250711_064229/Updated_Seatek_Analysis.R:97:27: warning: [object_usage_linter] no visible binding for global variable '..sensor_names'
+    last5  <- sapply(df[, ..sensor_names],
+                          ^~~~~~~~~~~~~~
+backups/phase0_20250711_064229/Updated_Seatek_Analysis.R:99:27: warning: [object_usage_linter] no visible binding for global variable '..sensor_names'
+    full   <- sapply(df[, ..sensor_names], function(x) mean(clean_vals(x)))
+                          ^~~~~~~~~~~~~~
+backups/phase0_20250711_064229/Updated_Seatek_Analysis.R:244:60: warning: [seq_linter] Use seq_len(ncol(...)) instead of 1:ncol(...), which is likely to be wrong in the empty edge case.
+    setColWidths(wb, sheet = "Summary_Top_Sensors", cols = 1:ncol(top_sensors), widths = "auto")
+                                                           ^~~~~~~~~~~~~~~~~~~
+backups/phase0_20250711_064229/Updated_Seatek_Analysis.R:244:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 96 characters.
+    setColWidths(wb, sheet = "Summary_Top_Sensors", cols = 1:ncol(top_sensors), widths = "auto")
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~
+backups/phase0_20250711_064229/Updated_Seatek_Analysis.R:254:19: warning: [object_usage_linter] no visible binding for global variable 'highlight_top_n'
+      seq_len(min(highlight_top_n, length(abs_diff)))
+                  ^~~~~~~~~~~~~~~
+backups/phase0_20250711_064229/Updated_Seatek_Analysis.R:312:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 122 characters.
+    if (grepl("could not find function|Error in library|there is no package called", error_message, ignore.case = TRUE)) {
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+backups/phase0_20250711_064229/Updated_Seatek_Analysis.R:318:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 108 characters.
+      message(sprintf("An error occurred: %s. Check 'processing_warnings.log' for details.", error_message))
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+implementation/scripts/02_backup_system.R:6:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 89 characters.
+# This script provides robust backup and restore functionality for the Seatek repository.
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~
+implementation/scripts/02_backup_system.R:7:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 101 characters.
+# It supports timestamp-based backup naming, listing, restoration, and cleanup with retention policy.
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~
+implementation/scripts/02_backup_system.R:25:1: style: [trailing_whitespace_linter] Remove trailing whitespace.
+
+^~~~
+implementation/scripts/02_backup_system.R:27:5: warning: [object_usage_linter] local variable 'tar_result' assigned but may not be used
+    tar_result <- utils::tar(backup_path, files = target_path, compression = "gzip", tar = "internal")
+    ^~~~~~~~~~
+implementation/scripts/02_backup_system.R:27:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 102 characters.
+    tar_result <- utils::tar(backup_path, files = target_path, compression = "gzip", tar = "internal")
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~
+implementation/scripts/02_backup_system.R:35:5: style: [return_linter] Use implicit return behavior; explicit return() is not needed.
+    return(NULL)
+    ^~~~~~
+implementation/scripts/02_backup_system.R:41:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 84 characters.
+#' @param restore_dir Directory to restore into (default: current working directory)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~
+implementation/scripts/02_backup_system.R:52:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 84 characters.
+    # SECURITY: Verify contents for path traversal vulnerabilities before extraction
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~
+implementation/scripts/02_backup_system.R:63:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 96 characters.
+      stop("Security Error: Backup archive contains absolute paths or path traversal patterns.")
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~
+implementation/scripts/02_backup_system.R:76:5: style: [return_linter] Use implicit return behavior; explicit return() is not needed.
+    return(FALSE)
+    ^~~~~~
+implementation/scripts/02_backup_system.R:105:5: style: [return_linter] Use implicit return behavior; explicit return() is not needed.
+    return(data.frame())
+    ^~~~~~
+implementation/scripts/02_backup_system.R:134:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 84 characters.
+          message("[WARNING] cleanup_old_backups: Some files could not be deleted.")
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~
+implementation/scripts/02_backup_system.R:148:5: style: [return_linter] Use implicit return behavior; explicit return() is not needed.
+    return(character(0))
+    ^~~~~~
+implementation/scripts/02_backup_system.R:153:3: style: [commented_code_linter] Remove commented code.
+# create_backup("Data")
+  ^~~~~~~~~~~~~~~~~~~~~
+implementation/scripts/02_backup_system.R:154:3: style: [commented_code_linter] Remove commented code.
+# list_backups()
+  ^~~~~~~~~~~~~~
+implementation/scripts/02_backup_system.R:155:3: style: [commented_code_linter] Remove commented code.
+# restore_backup("backups/Data_20250711_120000.tar.gz", "Data_restored")
+  ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+implementation/scripts/02_backup_system.R:156:3: style: [commented_code_linter] Remove commented code.
+# cleanup_old_backups()
+  ^~~~~~~~~~~~~~~~~~~~~
+implementation/scripts/02_backup_system.R:156:24: style: [trailing_blank_lines_linter] Add a terminal newline.
+# cleanup_old_backups()
+                       ^
+implementation/test_setup_structure.R:27:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 133 characters.
+required_functions <- c("install_and_verify", "check_r_version", "load_and_verify_packages", "check_write_permissions", "main_setup")
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+implementation/test_setup_structure.R:94:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 97 characters.
+overall_success <- all_setup_functions && all_verify_functions && all_dirs_exist && scripts_exist
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~
+implementation/test_setup_structure.R:97:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 86 characters.
+cat("Setup script functions: ", ifelse(all_setup_functions, "✓ PASS", "✗ FAIL"), "\n")
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~
+implementation/test_setup_structure.R:98:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 94 characters.
+cat("Verification script functions: ", ifelse(all_verify_functions, "✓ PASS", "✗ FAIL"), "\n")
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~
+implementation/test_setup_structure.R:113:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 96 characters.
+  installed_packages = c("data.table", "openxlsx", "tidyverse", "testthat", "logger", "config"),
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~
+implementation/test_setup_structure.R:142:77: style: [trailing_blank_lines_linter] Add a terminal newline.
+cat("When R is available, run the actual setup and verification scripts.\n")
+                                                                            ^
+implementation/tests/test_backup_system.R:7:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 83 characters.
+# It covers backup creation, restore, missing file handling, and permission issues.
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~
+implementation/tests/test_backup_system.R:69:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 89 characters.
+  result <- restore_backup("nonexistent_backup.tar.gz", restore_dir = "should_not_exist")
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~
+implementation/tests/test_backup_system.R:70:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 88 characters.
+  expect_false(result, info = "Restore should fail gracefully for missing backup file.")
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~
+implementation/tests/test_backup_system.R:74:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 82 characters.
+# Test 5: Directory permission issues (simulate by using a non-writable directory)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~
+implementation/tests/test_backup_system.R:80:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 81 characters.
+  backup_path <- create_backup(test_file, backup_dir = "/root/forbidden_backups")
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+implementation/tests/test_backup_system.R:81:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 89 characters.
+  expect_true(is.null(backup_path), info = "Should fail gracefully on permission error.")
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~
+implementation/tests/test_backup_system.R:90:47: style: [infix_spaces_linter] Put spaces around all infix operators.
+  Sys.setFileTime(backup_path, Sys.time() - 40*24*3600)
+                                              ^
+implementation/tests/test_backup_system.R:90:50: style: [infix_spaces_linter] Put spaces around all infix operators.
+  Sys.setFileTime(backup_path, Sys.time() - 40*24*3600)
+                                                 ^
+implementation/tests/test_backup_system.R:111:41: style: [trailing_blank_lines_linter] Add a terminal newline.
+unlink("test_backups", recursive = TRUE)
+                                        ^
+implementation/tests/verify_environment.R:6:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 90 characters.
+# This script verifies that the R environment is properly set up for the Seatek repository
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~
+implementation/tests/verify_environment.R:7:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 87 characters.
+# It loads all packages, checks R version compatibility, and verifies write permissions
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~
+implementation/tests/verify_environment.R:14:22: warning: [object_usage_linter] no visible global function definition for 'check_r_version'
+  r_version_check <- check_r_version()
+                     ^~~~~~~~~~~~~~~
+implementation/tests/verify_environment.R:16:1: style: [trailing_whitespace_linter] Remove trailing whitespace.
+
+^~
+implementation/tests/verify_environment.R:22:1: style: [trailing_whitespace_linter] Remove trailing whitespace.
+
+^~
+implementation/tests/verify_environment.R:23:3: style: [return_linter] Use implicit return behavior; explicit return() is not needed.
+  return(verification_results)
+  ^~~~~~
+implementation/tests/verify_environment.R:28:22: warning: [object_usage_linter] no visible global function definition for 'load_and_verify_packages'
+  package_loading <- load_and_verify_packages()
+                     ^~~~~~~~~~~~~~~~~~~~~~~~
+implementation/tests/verify_environment.R:30:1: style: [trailing_whitespace_linter] Remove trailing whitespace.
+
+^~
+implementation/tests/verify_environment.R:34:1: style: [trailing_whitespace_linter] Remove trailing whitespace.
+
+^~
+implementation/tests/verify_environment.R:35:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 92 characters.
+  cat("  Package loading summary: ", successful_loads, "/", total_packages, " successful\n")
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~
+implementation/tests/verify_environment.R:36:1: style: [trailing_whitespace_linter] Remove trailing whitespace.
+
+^~
+implementation/tests/verify_environment.R:40:3: style: [return_linter] Use implicit return behavior; explicit return() is not needed.
+  return(verification_results)
+  ^~~~~~
+implementation/tests/verify_environment.R:45:24: warning: [object_usage_linter] no visible global function definition for 'check_write_permissions'
+  write_permissions <- check_write_permissions()
+                       ^~~~~~~~~~~~~~~~~~~~~~~
+implementation/tests/verify_environment.R:47:1: style: [trailing_whitespace_linter] Remove trailing whitespace.
+
+^~
+implementation/tests/verify_environment.R:49:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 81 characters.
+  successful_permissions <- sum(sapply(write_permissions, function(x) x$success))
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+implementation/tests/verify_environment.R:51:1: style: [trailing_whitespace_linter] Remove trailing whitespace.
+
+^~
+implementation/tests/verify_environment.R:52:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 102 characters.
+  cat("  Permission check summary: ", successful_permissions, "/", total_directories, " successful\n")
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~
+implementation/tests/verify_environment.R:53:1: style: [trailing_whitespace_linter] Remove trailing whitespace.
+
+^~
+implementation/tests/verify_environment.R:57:3: style: [return_linter] Use implicit return behavior; explicit return() is not needed.
+  return(verification_results)
+  ^~~~~~
+implementation/tests/verify_environment.R:64:20: warning: [object_usage_linter] no visible binding for global variable 'PACKAGE_MANIFEST_PATH'
+  manifest_path <- PACKAGE_MANIFEST_PATH
+                   ^~~~~~~~~~~~~~~~~~~~~
+implementation/tests/verify_environment.R:66:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 84 characters.
+  cat("  Package manifest exists: ", ifelse(manifest_exists, "✓ YES", "✗ NO"), "\n")
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~
+implementation/tests/verify_environment.R:80:15: warning: [object_usage_linter] no visible binding for global variable 'KEY_DIRECTORIES'
+  key_dirs <- KEY_DIRECTORIES
+              ^~~~~~~~~~~~~~~
+implementation/tests/verify_environment.R:82:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 87 characters.
+  cat("  Key directories exist: ", sum(dir_check_results), "/", length(key_dirs), "\n")
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~
+implementation/tests/verify_environment.R:86:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 91 characters.
+  cat("  Main analysis script exists: ", ifelse(main_script_exists, "✓ YES", "✗ NO"), "\n")
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~
+implementation/tests/verify_environment.R:87:1: style: [trailing_whitespace_linter] Remove trailing whitespace.
+
+^~
+implementation/tests/verify_environment.R:91:3: style: [return_linter] Use implicit return behavior; explicit return() is not needed.
+  return(verification_results)
+  ^~~~~~
+implementation/tests/verify_environment.R:96:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 113 characters.
+  all_packages_loaded <- verification_results$stats$successful_loads == verification_results$stats$total_packages
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+implementation/tests/verify_environment.R:97:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 121 characters.
+  all_permissions_ok <- verification_results$stats$successful_permissions == verification_results$stats$total_directories
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+implementation/tests/verify_environment.R:98:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 117 characters.
+  key_components_exist <- verification_results$stats$manifest_exists && verification_results$stats$main_script_exists
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+implementation/tests/verify_environment.R:99:1: style: [trailing_whitespace_linter] Remove trailing whitespace.
+
+^~
+implementation/tests/verify_environment.R:100:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 102 characters.
+  overall_success <- r_version_ok && all_packages_loaded && all_permissions_ok && key_components_exist
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~
+implementation/tests/verify_environment.R:101:1: style: [trailing_whitespace_linter] Remove trailing whitespace.
+
+^~
+implementation/tests/verify_environment.R:103:1: style: [trailing_whitespace_linter] Remove trailing whitespace.
+
+^~
+implementation/tests/verify_environment.R:104:3: style: [return_linter] Use implicit return behavior; explicit return() is not needed.
+  return(verification_results)
+  ^~~~~~
+implementation/tests/verify_environment.R:109:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 113 characters.
+  all_packages_loaded <- verification_results$stats$successful_loads == verification_results$stats$total_packages
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+implementation/tests/verify_environment.R:110:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 121 characters.
+  all_permissions_ok <- verification_results$stats$successful_permissions == verification_results$stats$total_directories
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+implementation/tests/verify_environment.R:111:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 117 characters.
+  key_components_exist <- verification_results$stats$manifest_exists && verification_results$stats$main_script_exists
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+implementation/tests/verify_environment.R:115:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 82 characters.
+  cat("R Version Compatibility: ", ifelse(r_version_ok, "✓ PASS", "✗ FAIL"), "\n")
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~
+implementation/tests/verify_environment.R:116:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 181 characters.
+  cat("Package Loading: ", ifelse(all_packages_loaded, "✓ PASS", "✗ FAIL"), " (", verification_results$stats$successful_loads, "/", verification_results$stats$total_packages, ")\n")
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+implementation/tests/verify_environment.R:117:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 191 characters.
+  cat("Write Permissions: ", ifelse(all_permissions_ok, "✓ PASS", "✗ FAIL"), " (", verification_results$stats$successful_permissions, "/", verification_results$stats$total_directories, ")\n")
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+implementation/tests/verify_environment.R:118:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 81 characters.
+  cat("Key Components: ", ifelse(key_components_exist, "✓ PASS", "✗ FAIL"), "\n")
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+implementation/tests/verify_environment.R:131:24: warning: [object_usage_linter] no visible binding for global variable 'VERIFICATION_RESULTS_PATH'
+  verification_path <- VERIFICATION_RESULTS_PATH
+                       ^~~~~~~~~~~~~~~~~~~~~~~~~
+implementation/tests/verify_environment.R:170:1: style: [trailing_whitespace_linter] Remove trailing whitespace.
+
+^~
+implementation/tests/verify_environment.R:173:3: style: [return_linter] Use implicit return behavior; explicit return() is not needed.
+  return(verification_results)
+  ^~~~~~
+implementation/tests/verify_environment.R:177:3: style: [trailing_whitespace_linter] Remove trailing whitespace.
+#'
+  ^
+implementation/tests/verify_environment.R:180:1: style: [trailing_whitespace_linter] Remove trailing whitespace.
+
+^~
+implementation/tests/verify_environment.R:182:1: style: [trailing_whitespace_linter] Remove trailing whitespace.
+
+^~
+implementation/tests/verify_environment.R:184:11: warning: [object_usage_linter] no visible global function definition for 'check_r_version'
+  r_ok <- check_r_version()$success
+          ^~~~~~~~~~~~~~~
+implementation/tests/verify_environment.R:186:1: style: [trailing_whitespace_linter] Remove trailing whitespace.
+
+^~
+implementation/tests/verify_environment.R:195:1: style: [trailing_whitespace_linter] Remove trailing whitespace.
+
+^~
+implementation/tests/verify_environment.R:204:1: style: [trailing_whitespace_linter] Remove trailing whitespace.
+
+^~
+implementation/tests/verify_environment.R:206:1: style: [trailing_whitespace_linter] Remove trailing whitespace.
+
+^~
+implementation/tests/verify_environment.R:208:1: style: [trailing_whitespace_linter] Remove trailing whitespace.
+
+^~
+implementation/tests/verify_environment.R:209:3: style: [return_linter] Use implicit return behavior; explicit return() is not needed.
+  return(overall_ok)
+  ^~~~~~
+implementation/tests/verify_environment.R:213:3: style: [trailing_whitespace_linter] Remove trailing whitespace.
+#'
+  ^
+implementation/tests/verify_environment.R:217:1: style: [trailing_whitespace_linter] Remove trailing whitespace.
+
+^~
+implementation/tests/verify_environment.R:219:1: style: [trailing_whitespace_linter] Remove trailing whitespace.
+
+^~
+implementation/tests/verify_environment.R:222:15: warning: [object_usage_linter] no visible global function definition for 'check_r_version'
+    result <- check_r_version()
+              ^~~~~~~~~~~~~~~
+implementation/tests/verify_environment.R:226:1: style: [trailing_whitespace_linter] Remove trailing whitespace.
+
+^~
+implementation/tests/verify_environment.R:229:15: warning: [object_usage_linter] no visible global function definition for 'load_and_verify_packages'
+    result <- load_and_verify_packages()
+              ^~~~~~~~~~~~~~~~~~~~~~~~
+implementation/tests/verify_environment.R:230:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 97 characters.
+    cat("Result: ", ifelse(all(sapply(result, function(x) x$success)), "✓ PASS", "✗ FAIL"), "\n")
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~
+implementation/tests/verify_environment.R:233:1: style: [trailing_whitespace_linter] Remove trailing whitespace.
+
+^~
+implementation/tests/verify_environment.R:236:15: warning: [object_usage_linter] no visible global function definition for 'check_write_permissions'
+    result <- check_write_permissions()
+              ^~~~~~~~~~~~~~~~~~~~~~~
+implementation/tests/verify_environment.R:237:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 97 characters.
+    cat("Result: ", ifelse(all(sapply(result, function(x) x$success)), "✓ PASS", "✗ FAIL"), "\n")
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~
+implementation/tests/verify_environment.R:240:1: style: [trailing_whitespace_linter] Remove trailing whitespace.
+
+^~
+implementation/tests/verify_environment.R:242:3: style: [return_linter] Use implicit return behavior; explicit return() is not needed.
+  return(NULL)
+  ^~~~~~
+implementation/tests/verify_environment.R:257:2: style: [trailing_blank_lines_linter] Add a terminal newline.
+}
+ ^
+tests/test_perf_sapply_vs_lapply.R:17:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 82 characters.
+    "  install.packages(\"data.table\", repos = \"https://cloud.r-project.org\")",
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~
+tests/test_perf_sapply_vs_lapply.R:25:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 86 characters.
+    "  install.packages(\"microbenchmark\", repos = \"https://cloud.r-project.org\")",
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~
+tests/test_perf_sapply_vs_lapply.R:46:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 85 characters.
+message(sprintf("Benchmarking with dataset size: %d rows x %d cols", n_rows, n_cols))
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~
+tests/testthat/test-auto_detect_data_dir.R:24:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 83 characters.
+  expect_error(auto_detect_data_dir(non_existent_dir), "Data directory not found:")
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~
+tests/testthat/test-auto_detect_data_dir.R:34:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 81 characters.
+  resolved_outside_dir <- paste0(normalizePath(outside_dir, winslash = "/"), "/")
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+tests/testthat/test-auto_detect_data_dir.R:37:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 89 characters.
+    expect_error(auto_detect_data_dir(outside_dir), "SECURITY: Path traversal detected.")
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~
+tests/testthat/test-auto_detect_data_dir.R:41:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 98 characters.
+    skip("tempdir() is inside the current working directory, cannot test path traversal securely")
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~
+tests/testthat/test-calculate_summary_stats.R:20:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 99 characters.
+  mock_results <- stats::setNames(lapply(seq_along(years), function(i) mock_sensor_data(i)), years)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~
+tests/testthat/test-calculate_summary_stats.R:32:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 116 characters.
+  expected_cols <- c("Sensor", "first10_mean", "first10_count", "last5_median", "full_count", "full_pct_nonmissing")
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+tests/testthat/test-calculate_summary_stats.R:63:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 84 characters.
+  # calculate_summary_stats will likely fail when trying to find 'Sensor' and 'Year'
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~
+tests/testthat/test-dump_summary_excel.R:12:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 97 characters.
+  # testthat runs tests with the working directory set to the directory containing the test file.
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~
+tests/testthat/test-dump_summary_excel.R:13:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 85 characters.
+  # So getwd() inside tests/testthat/test-dump_summary_excel.R will be tests/testthat
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~
+tests/testthat/test-dump_summary_excel.R:23:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 85 characters.
+  # Generates a data.table for one year with some offset to make data unique per year
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~
+tests/testthat/test-dump_summary_excel.R:33:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 90 characters.
+  # Create a list of such data.frames, named by year (5 years for Summary_Sufficient test)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~
+tests/testthat/test-dump_summary_excel.R:35:42: warning: [seq_linter] Use seq_along(...) instead of 1:length(...), which is likely to be wrong in the empty edge case.
+  mock_results <- stats::setNames(lapply(1:length(years), function(i) mock_sensor_data(i)), years)
+                                         ^~~~~~~~~~~~~~~
+tests/testthat/test-dump_summary_excel.R:35:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 98 characters.
+  mock_results <- stats::setNames(lapply(1:length(years), function(i) mock_sensor_data(i)), years)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~
+tests/testthat/test-dump_summary_excel.R:46:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 84 characters.
+  expect_true(file.exists(output_excel_file), label = "Excel file must be created.")
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~
+tests/testthat/test-dump_summary_excel.R:53:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 107 characters.
+  expect_true(all(expected_sheets %in% sheet_names), label = "All specified Excel sheets must be present.")
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~
+tests/testthat/test-dump_summary_excel.R:54:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 83 characters.
+  # Also check if "Summary_Top_Sensors" is present as dump_summary_excel creates it
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~
+tests/testthat/test-dump_summary_excel.R:55:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 107 characters.
+  expect_true("Summary_Top_Sensors" %in% sheet_names, label = "Summary_Top_Sensors sheet must be present.")
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~
+tests/testthat/test-dump_summary_excel.R:59:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 84 characters.
+  csv_base_name <- tools::file_path_sans_ext(output_excel_file) # From tools package
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~
+tests/testthat/test-dump_summary_excel.R:66:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 93 characters.
+    paste0(csv_base_name, "_robust.csv") # Corresponds to "Summary_Robust" sheet (if created)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~
+tests/testthat/test-dump_summary_excel.R:71:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 104 characters.
+    expect_true(file.exists(csv_file_path), info = paste("Expected CSV file not found:", csv_file_path))
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~
+tests/testthat/test-dump_summary_excel.R:75:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 95 characters.
+      expect_gt(nrow(df_sufficient_csv), 0, label = "The _sufficient.csv should not be empty.")
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~
+tests/testthat/test-dump_summary_excel.R:76:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 95 characters.
+      # Given 5 years of mock data and min_count=5 (default), all 32 sensors should be present.
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~
+tests/testthat/test-dump_summary_excel.R:77:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 109 characters.
+      expect_equal(nrow(df_sufficient_csv), 32, label = "The _sufficient.csv should contain 32 sensor rows.")
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+tests/testthat/test-dump_summary_excel.R:87:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 96 characters.
+  value_from_excel <- data_from_1995_sheet[data_from_1995_sheet$Sensor == "Sensor01", "first10"]
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~
+tests/testthat/test-dump_summary_excel.R:96:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 102 characters.
+  value_from_excel_s32_full <- data_from_1999_sheet[data_from_1999_sheet$Sensor == "Sensor32", "full"]
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~
+tests/testthat/test-dump_summary_excel.R:104:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 102 characters.
+  expect_false(dir.exists(temp_dir_path), label = "Temporary directory should be deleted after test.")
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~
+tests/testthat/test-execute_tasks_parallel.R:8:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 88 characters.
+test_that("execute_tasks_parallel executes tasks successfully using parallel backend", {
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~
+tests/testthat/test-execute_tasks_parallel.R:15:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 87 characters.
+  # Redefine the function body in our local env so we can control its execution context
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~
+tests/testthat/test-execute_tasks_parallel.R:34:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 93 characters.
+  # txtProgressBar writes to the terminal, we can capture or suppress it using capture.output
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~
+tests/testthat/test-execute_tasks_parallel.R:45:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 87 characters.
+  # Redefine the function body in our local env so we can control its execution context
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~
+tests/testthat/test-execute_tasks_parallel.R:50:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 110 characters.
+  # Since tryCatch evaluates detectCores() in baseenv, masking detectCores in the function environment is hard
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+tests/testthat/test-execute_tasks_parallel.R:52:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 107 characters.
+  # To mock a namespaced call without a mocking framework, we can redefine the function's source code text.
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~
+tests/testthat/test-execute_tasks_parallel.R:55:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 93 characters.
+  func_text <- gsub("parallel::detectCores()", "stop('Mock Error')", func_text, fixed = TRUE)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~
+tests/testthat/test-execute_tasks_parallel.R:57:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 98 characters.
+  local_env$execute_tasks_parallel_mocked <- eval(parse(text = paste(func_text, collapse = "\n")))
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~
+tests/testthat/test-execute_tasks_parallel.R:70:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 86 characters.
+  func_text <- gsub(".Platform$OS.type == \"unix\"", "FALSE", func_text, fixed = TRUE)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~
+tests/testthat/test-execute_tasks_parallel.R:72:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 98 characters.
+  local_env$execute_tasks_parallel_mocked <- eval(parse(text = paste(func_text, collapse = "\n")))
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~
+tests/testthat/test-execute_tasks_parallel.R:79:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 83 characters.
+test_that("execute_tasks_parallel serial fallback bubbles errors from task_func", {
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~
+tests/testthat/test-execute_tasks_parallel.R:96:5: style: [return_linter] Use implicit return behavior; explicit return() is not needed.
+    return(x)
+    ^~~~~~
+tests/testthat/test-execute_tasks_parallel.R:123:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 82 characters.
+  # A simple way to do this is to mock close() or txtProgressBar in the local env.
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~
+tests/testthat/test-execute_tasks_parallel.R:148:5: style: [return_linter] Use implicit return behavior; explicit return() is not needed.
+    return(x)
+    ^~~~~~
+tests/testthat/test-execute_tasks_parallel.R:160:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 83 characters.
+test_that("execute_tasks_parallel serial fallback handles empty list gracefully", {
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~
+tests/testthat/test-execute_tasks_parallel.R:173:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 90 characters.
+  # An empty list should be returned immediately before the txtProgressBar throws an error
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~
+tests/testthat/test-execute_tasks_parallel.R:174:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 82 characters.
+  # since max (length of tasks) would be 0, violating max > min in txtProgressBar.
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~
+tests/testthat/test-export_summary_sheet_and_csv.R:51:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 107 characters.
+  expect_true("Summary_Test" %in% names(wb), label = "Summary_Test sheet should be added to the workbook.")
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~
+tests/testthat/test-export_summary_sheet_and_csv.R:54:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 95 characters.
+  expect_true(file.exists(csv_file), label = "CSV file should be created with correct suffix.")
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~
+tests/testthat/test-export_top_sensors_summary.R:31:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 97 characters.
+    within_diff_mean = c(10, -9, 8, -7, 6, -5, 4, -3), # Absolute values: 10, 9, 8, 7, 6, 5, 4, 3
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~
+tests/testthat/test-export_top_sensors_summary.R:47:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 121 characters.
+  expect_true("Summary_Top_Sensors" %in% names(wb), label = "Summary_Top_Sensors sheet should be added to the workbook.")
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+tests/testthat/test-export_top_sensors_summary.R:56:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 102 characters.
+  expect_equal(nrow(top_csv), 5, label = "There should be exactly 5 rows in the top sensors summary.")
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~
+tests/testthat/test-export_top_sensors_summary.R:59:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 97 characters.
+  expected_cols <- c("Sensor", "within_diff_mean", "full_mean", "full_sd", "full_pct_nonmissing")
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~
+tests/testthat/test-export_top_sensors_summary.R:60:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 125 characters.
+  expect_equal(colnames(top_csv), expected_cols, label = "The columns in top sensors summary should match expected columns.")
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+tests/testthat/test-export_top_sensors_summary.R:63:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 83 characters.
+  expected_sensors <- c("Sensor01", "Sensor02", "Sensor03", "Sensor04", "Sensor05")
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~
+tests/testthat/test-export_top_sensors_summary.R:64:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 115 characters.
+  expect_equal(top_csv$Sensor, expected_sensors, label = "Sensors should be ordered by absolute within_diff_mean.")
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+tests/testthat/test-export_top_sensors_summary.R:75:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 85 characters.
+    export_top_sensors_summary(wb2, mock_summary_no_diff, output_file2, header_style)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~
+tests/testthat/test-export_top_sensors_summary.R:79:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 122 characters.
+  expect_false("Summary_Top_Sensors" %in% names(wb2), label = "Sheet should not be added if within_diff_mean is missing.")
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+tests/testthat/test-export_top_sensors_summary.R:80:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 107 characters.
+  expect_false(file.exists(csv_file2), label = "CSV should not be created if within_diff_mean is missing.")
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~
+tests/testthat/test-process_all_data.R:2:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 93 characters.
+library(data.table) # process_all_data likely uses data.table indirectly via read_sensor_data
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~
+tests/testthat/test-process_all_data.R:10:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 97 characters.
+  # testthat runs tests with the working directory set to the directory containing the test file.
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~
+tests/testthat/test-process_all_data.R:11:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 83 characters.
+  # So getwd() inside tests/testthat/test-process_all_data.R will be tests/testthat
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~
+tests/testthat/test-process_all_data.R:24:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 84 characters.
+    stop(paste("Test setup error: Source data file not found at", source_data_file))
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~
+tests/testthat/test-process_all_data.R:32:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 94 characters.
+  expect_equal(length(results), 1, info = "Results list should have 1 element for SS_Y01.txt")
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~
+tests/testthat/test-process_all_data.R:33:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 100 characters.
+  expect_true("1995" %in% names(results), info = "Year '1995' should be a name in the results list")
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~
+tests/testthat/test-process_all_data.R:36:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 91 characters.
+  expect_true(is.data.frame(year_data), info = "Element for '1995' should be a data.frame")
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~
+tests/testthat/test-process_all_data.R:37:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 99 characters.
+  expect_equal(nrow(year_data), 32, info = "Data.frame should have 32 rows (Sensor01 to Sensor32)")
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~
+tests/testthat/test-process_all_data.R:39:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 123 characters.
+  expect_equal(colnames(year_data), c("Sensor", "first10", "last5", "full", "within_diff"), info = "Column names mismatch")
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+tests/testthat/test-process_all_data.R:40:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 93 characters.
+  expect_equal(year_data$Sensor[1], "Sensor01", info = "First row name should be 'Sensor01'")
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~
+tests/testthat/test-process_all_data.R:51:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 95 characters.
+  expect_equal(s01_row$first10, expected_mean_val, info = "Mismatch in 'first10' for Sensor01")
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~
+tests/testthat/test-process_all_data.R:52:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 91 characters.
+  expect_equal(s01_row$last5, expected_mean_val, info = "Mismatch in 'last5' for Sensor01")
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~
+tests/testthat/test-process_all_data.R:53:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 89 characters.
+  expect_equal(s01_row$full, expected_mean_val, info = "Mismatch in 'full' for Sensor01")
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~
+tests/testthat/test-process_all_data.R:54:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 137 characters.
+  expect_equal(s01_row$within_diff, expected_mean_val - expected_mean_val, info = "Mismatch in 'within_diff' for Sensor01") # Should be 0
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+tests/testthat/test-process_all_data.R:58:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 110 characters.
+  expect_true(file.exists(expected_excel_file), info = paste("Excel file not found at:", expected_excel_file))
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+tests/testthat/test-process_all_data.R:74:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 90 characters.
+  expect_error(process_all_data(temp_dir_path), regexp = "No sensor files found matching")
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~
+tests/testthat/test-process_all_data.R:80:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 82 characters.
+  non_existent_dir_path <- file.path(getwd(), "non_existent_dir_for_process_test")
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~
+tests/testthat/test-process_all_data.R:87:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 93 characters.
+  expect_error(process_all_data(non_existent_dir_path), regexp = "Data directory not found:")
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~
+tests/testthat/test-read_sensor_data.R:12:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 89 characters.
+  expect_equal(ncol(dt), 33, info = "Should have 32 sensor columns + 1 Timestamp column")
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~
+tests/testthat/test-read_sensor_data.R:17:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 93 characters.
+  expect_equal(names(dt), expected_names, info = "Column names should match expected format")
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~
+tests/testthat/test-read_sensor_data.R:19:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 94 characters.
+  expect_true("POSIXct" %in% class(dt$Timestamp), info = "Timestamp column should be POSIXct")
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~
+tests/testthat/test-read_sensor_data.R:32:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 88 characters.
+  invalid_cols_file <- "data/SS_Y02_invalid_cols.txt" # Path relative to tests/testthat/
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~
+tests/testthat/test-read_sensor_data.R:35:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 92 characters.
+  expected_warning_msg <- "File SS_Y02_invalid_cols.txt has only 11 columns; expected >=33."
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~
+tests/testthat/test-read_sensor_data.R:41:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 99 characters.
+  expect_true(is.data.table(dt), info = "Return type should be data.table even with fewer columns")
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~
+tests/testthat/test-read_sensor_data.R:44:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 86 characters.
+  expect_equal(ncol(dt), 11, info = "Number of columns should match detected columns")
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~
+tests/testthat/test-read_sensor_data.R:49:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 103 characters.
+  expect_equal(names(dt), expected_names, info = "Column names should be Sensor01-Sensor10, Timestamp")
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~
+tests/testthat/test-read_sensor_data.R:50:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 94 characters.
+  expect_true("POSIXct" %in% class(dt$Timestamp), info = "Timestamp column should be POSIXct")
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~
+tests/testthat/test-read_sensor_data.R:51:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 97 characters.
+  expect_false(any(is.na(dt$Timestamp)), info = "Timestamps should not be NA with fewer columns")
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~
+tests/testthat/test-read_sensor_data.R:56:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 103 characters.
+  expect_error(read_sensor_data(empty_file), regexp = "only 0's may be mixed with negative subscripts")
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~
+tests/testthat/test-read_sensor_data.R:63:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 94 characters.
+  expect_true("POSIXct" %in% class(dt$Timestamp), info = "Timestamp column should be POSIXct")
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~
+tests/testthat/test-read_sensor_data.R:64:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 95 characters.
+  expect_false(any(is.na(dt$Timestamp)), info = "Timestamps should not be NA after conversion")
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~
+tests/testthat/test-read_sensor_data.R:71:3: style: [object_length_linter] Variable and function names should not be longer than 30 characters.
+  expected_first_timestamp_numeric <- 1609459200
+  ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+tests/testthat/test-read_sensor_data.R:85:5: style: [commented_code_linter] Remove commented code.
+#   valid_file <- "data/SS_Y01_valid.txt"
+    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+tests/testthat/test-read_sensor_data.R:86:5: style: [commented_code_linter] Remove commented code.
+#   dt <- read_sensor_data(valid_file)
+    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+tests/testthat/test-read_sensor_data.R:87:5: style: [commented_code_linter] Remove commented code.
+#   expect_true("Timestamp" %in% names(dt))
+    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+tests/testthat/test-read_sensor_data.R:88:5: style: [commented_code_linter] Remove commented code.
+#   expect_equal(names(dt)[33], "Timestamp")
+    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+tests/testthat/test-read_sensor_data.R:120:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 81 characters.
+  # Ensure file is cleaned up and permissions restored so tempfile can delete it,
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+tests/testthat/test-read_sensor_data.R:134:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 96 characters.
+  skip_if(file.access(test_file, 4) == 0, "File still readable; permission test not applicable")
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~
+tests/testthat/test-run_pipeline.R:14:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 86 characters.
+    log_env$logs[[length(log_env$logs) + 1]] <- list(level = level, message = message)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~
+tests/testthat/test-run_pipeline.R:22:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 101 characters.
+      # Reset log handler to its original state (if we saved it, but source() does it on load anyway)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~
+tests/testthat/test-run_pipeline.R:39:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 86 characters.
+  # Since run_pipeline stops when the data dir doesn't exist, we must catch the error.
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~
+tests/testthat/test-run_pipeline.R:40:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 84 characters.
+  # Our error handler in run_pipeline logs it, but then the stop() propagates unless
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~
+tests/testthat/test-run_pipeline.R:41:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 98 characters.
+  # handled. Actually wait, withCallingHandlers doesn't stop propagation, so we need expect_error.
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~
+tests/testthat/test-run_pipeline.R:51:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 82 characters.
+  # Should have a MESSAGE about running main, and an ERROR about missing directory
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~
+tests/testthat/test-run_pipeline.R:66:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 86 characters.
+    log_env$logs[[length(log_env$logs) + 1]] <- list(level = level, message = message)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~
+tests/testthat/test-run_pipeline.R:105:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 86 characters.
+    log_env$logs[[length(log_env$logs) + 1]] <- list(level = level, message = message)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~
+tests/testthat/test-run_pipeline.R:119:5: style: [return_linter] Use implicit return behavior; explicit return() is not needed.
+    return(list())
+    ^~~~~~
+tests/testthat/test-sapply_vs_lapply_equivalence.R:2:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 86 characters.
+test_that("lapply(.SD) optimization produces exact same results as sapply baseline", {
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~
+tests/testthat/test-sapply_vs_lapply_equivalence.R:10:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 97 characters.
+  # Done on the matrix before converting to data.table to ensure correct element-wise replacement
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~
+tests/testthat/test-validate_sensor_file.R:36:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 85 characters.
+  # Temporarily override file.size in the global environment to simulate a large file
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~
+tests/testthat/test-validate_sensor_file.R:38:10: style: [object_name_linter] Variable and function name style should match snake_case or symbols.
+  assign("file.size", function(...) 60 * 1024 * 1024, envir = .GlobalEnv)
+         ^~~~~~~~~~~
+tests/testthat/test-write_summary_sheets.R:114:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 87 characters.
+    label = "Summary_Top_Sensors should not be present if within_diff_mean is missing."
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~
+tests/testthat/test-write_year_sheet.R:5:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 84 characters.
+# Use the global variables if needed, assuming the testthat.R setup has loaded them.
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~
+tests/testthat/test-write_year_sheet.R:32:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 83 characters.
+  highlight_style_yearly <- createStyle(fontColour = "#006100", bgFill = "#C6EFCE")
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~
+tests/testthat/test-write_year_sheet.R:39:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 84 characters.
+  expect_true(year %in% names(wb), label = "Sheet should be added to the workbook.")
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~
+tests/testthat/test-write_year_sheet.R:48:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 88 characters.
+  expect_equal(nrow(read_data), nrow(mock_data), label = "Number of rows should match.")
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~
+tests/testthat/test-write_year_sheet.R:49:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 91 characters.
+  expect_equal(ncol(read_data), ncol(mock_data), label = "Number of columns should match.")
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~
+tests/testthat/test-write_year_sheet.R:52:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 89 characters.
+  expect_equal(read_data$Sensor, mock_data$Sensor, label = "Sensor column should match.")
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~
+tests/testthat/test-write_year_sheet.R:53:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 104 characters.
+  expect_equal(read_data$within_diff, mock_data$within_diff, label = "within_diff column should match.")
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~
+tests/testthat/test-write_year_sheet.R:72:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 107 characters.
+  expect_true(found_highlight, label = "Highlight style should be applied to correct cell (row 3, col 5).")
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~
+tests/testthat/test-write_year_sheet.R:77:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 100 characters.
+  expect_true("2024" %in% names(wb2), label = "Sheet should be added even without highlight style.")
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~
+tests/testthat/test-write_year_sheet.R:79:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 89 characters.
+  # 4. Test without 'within_diff' column (should not fail and shouldn't try to highlight)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~
+tests/testthat/test-write_year_sheet.R:82:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 88 characters.
+  write_year_sheet(wb3, "2025", mock_data_no_diff, header_style, highlight_style_yearly)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~
+tests/testthat/test-write_year_sheet.R:83:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 103 characters.
+  expect_true("2025" %in% names(wb3), label = "Sheet should be added even without within_diff column.")
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~
+Updated_Seatek_Analysis.R:152:6: style: [indentation_linter] Indentation should be 10 spaces but is 6 spaces.
+      cores_detected < 1) {
+     ^~~~~
+Updated_Seatek_Analysis.R:167:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 83 characters.
+    pb_write <- txtProgressBar(min = 0, max = length(tasks), style = 3, char = "█")
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~
+Updated_Seatek_Analysis.R:327:4: style: [indentation_linter] Indentation should be 8 spaces but is 4 spaces.
+    nrow(data) > 0 && is.numeric(data$within_diff)) {
+   ^~~~~
+Updated_Seatek_Analysis.R:411:6: style: [indentation_linter] Indentation should be 8 spaces but is 6 spaces.
+      # nolint next: object_usage_linter.
+     ^~~
+Updated_Seatek_Analysis.R:489:4: style: [indentation_linter] Indentation should be 8 spaces but is 4 spaces.
+    !is.null(highlight_style_summary)) {
+   ^~~~~
+Updated_Seatek_Analysis.R:551:81: style: [line_length_linter] Lines should not be more than 80 characters. This line is 91 characters.
+    set(summary_df, j = "flag_high_variability", value = summary_df$full_sd > sd_threshold)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~

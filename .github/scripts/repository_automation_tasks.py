@@ -25,6 +25,7 @@ from repository_automation_common import (
     matches_any,
     now_utc,
     release_url,
+    _safe_read_text,
     run_shell_command,
     safe_pr_body,
     target_ref,
@@ -638,10 +639,11 @@ def run_backlog_manager(config: dict[str, Any]) -> dict[str, Any]:
 
 
 def _read_result(path: pathlib.Path) -> dict[str, Any] | None:
-    if not path.is_file():
+    text = _safe_read_text(path)
+    if text is None:
         return None
     try:
-        return json.loads(path.read_text())
+        return json.loads(text)
     except json.JSONDecodeError:
         return None
 

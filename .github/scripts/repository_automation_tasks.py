@@ -241,7 +241,7 @@ def _parse_workflow_files() -> tuple[set[str], list[dict[str, Any]]]:
         matches = []
         for match in WORKFLOW_PATTERN.finditer(text):
             action_ref = match.group(2)
-            if action_ref.startswith("./") or action_ref.startswith("docker://"):
+            if action_ref.startswith(("./", "docker://")):
                 continue
             parts = action_ref.split("/")
             if len(parts) < 2:
@@ -638,6 +638,8 @@ def run_backlog_manager(config: dict[str, Any]) -> dict[str, Any]:
 
 
 def _read_result(path: pathlib.Path) -> dict[str, Any] | None:
+    if not path.is_file():
+        return None
     try:
         return json.loads(path.read_text())
     except json.JSONDecodeError:
@@ -686,9 +688,9 @@ def status_icon(status: str) -> str:
 
 # ⚡ Bolt: Helper function extracted to avoid "Large Method" rule violations when
 # replacing sequential API calls with concurrent execution via ThreadPoolExecutor.
-def fetch_daily_report_data() -> (
-    tuple[list[dict[str, Any]], list[dict[str, Any]], list[dict[str, Any]]]
-):
+def fetch_daily_report_data() -> tuple[
+    list[dict[str, Any]], list[dict[str, Any]], list[dict[str, Any]]
+]:
     # ⚡ Bolt: Using ThreadPoolExecutor to run independent GitHub API calls concurrently
     # significantly reduces blocking I/O time in daily_report_lines.
     with concurrent.futures.ThreadPoolExecutor(max_workers=3) as executor:

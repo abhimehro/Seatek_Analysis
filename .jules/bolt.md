@@ -432,3 +432,7 @@ triggers S3 method dispatch. In high-frequency calculations (like
 pre-calculated. **Action:** Instead of `mad(x, center = med)`, use
 `1.4826 * median.default(abs(x - med))` directly to bypass the function call and
 generic dispatch overhead.
+
+## 2023-10-27 - Inline standard deviation calculation
+**Learning:** In high-frequency loops or performance-critical paths, calculating the standard deviation inline using `sqrt(var(x))` bypasses the type-checking and function call overhead of the standard `sd()` function on guaranteed numeric vectors.
+**Action:** Always use `sqrt(var(x))` instead of `sd(x)` for guaranteed numeric vectors in performance-critical paths to improve speed.

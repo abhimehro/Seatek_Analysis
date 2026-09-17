@@ -59,3 +59,7 @@ code without explanation provides a poor first impression and lacks guidance.
 `return` to ensure error codes bubble up to the CLI. Additionally, combine
 `ArgumentDefaultsHelpFormatter` and `RawDescriptionHelpFormatter` in `argparse`
 to provide clean, detailed help text with explicit examples.
+## 2025-05-06 - CLI Unknown Task Error UX
+
+**Learning:** When users provide an invalid task argument, failing with a generic exit status without guidance reduces discoverability.
+**Action:** Enhance the error message to include an actionable suggestion, such as "Action: Run with --help to see available tasks."

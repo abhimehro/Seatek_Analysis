@@ -22,7 +22,7 @@ if (!requireNamespace("microbenchmark", quietly = TRUE)) {
   stop(
     "The 'microbenchmark' package is required to run this benchmark.\n",
     "Please install it before running this script, e.g.:\n",
-    "  install.packages(\"microbenchmark\",\n        repos=\"http://cran.rstudio.com\")",
+    "  install.packages(\"microbenchmark\",\n        repos=\"https://cloud.r-project.org\")",
     call. = FALSE
   )
 }

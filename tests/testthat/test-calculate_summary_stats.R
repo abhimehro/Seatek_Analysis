@@ -1,6 +1,11 @@
 library(testthat)
 
-source("../../Updated_Seatek_Analysis.R", local = TRUE)
+analysis_script <- if (file.exists("Updated_Seatek_Analysis.R")) {
+  "Updated_Seatek_Analysis.R"
+} else {
+  "../../Updated_Seatek_Analysis.R"
+}
+source(analysis_script, local = TRUE)
 
 # Note: The test will produce a warning from data.table::melt:
 # 'measure.vars' [mean, sd, median, mad, ...] are not all of the same type.

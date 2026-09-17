@@ -1,4 +1,6 @@
 library(testthat)
+
+source("../../Updated_Seatek_Analysis.R", local = TRUE)
 library(openxlsx)
 library(data.table)
 
@@ -111,7 +113,10 @@ test_that("write_summary_sheets works correctly", {
 
   sheet_names2 <- openxlsx::getSheetNames(output_file2)
   expect_false("Summary_Top_Sensors" %in% sheet_names2,
-    label = "Summary_Top_Sensors should not be present if within_diff_mean is missing."
+    label = paste(
+      "Summary_Top_Sensors should not be present",
+      "if within_diff_mean is missing."
+    )
   )
   expect_true(
     file.exists(paste0(tools::file_path_sans_ext(output_file2), "_all.csv"))

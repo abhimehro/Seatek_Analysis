@@ -20,7 +20,7 @@ verify_step_r_version <- function(verification_results) {
     cat("  ✗ R version incompatible: ", r_version_check$message, "\n")
   }
   
-  return(verification_results)
+  verification_results
 }
 
 verify_step_packages <- function(verification_results) {
@@ -37,7 +37,7 @@ verify_step_packages <- function(verification_results) {
   verification_results$stats$successful_loads <- successful_loads
   verification_results$stats$total_packages <- total_packages
 
-  return(verification_results)
+  verification_results
 }
 
 verify_step_permissions <- function(verification_results) {
@@ -54,7 +54,7 @@ verify_step_permissions <- function(verification_results) {
   verification_results$stats$successful_permissions <- successful_permissions
   verification_results$stats$total_directories <- total_directories
 
-  return(verification_results)
+  verification_results
 }
 
 verify_step_additional <- function(verification_results) {
@@ -79,42 +79,60 @@ verify_step_additional <- function(verification_results) {
   # Check key directories exist
   key_dirs <- KEY_DIRECTORIES
   dir_check_results <- sapply(key_dirs, dir.exists)
-  cat("  Key directories exist: ", sum(dir_check_results), "/", length(key_dirs), "\n")
+  cat("  Key directories exist: ", sum(dir_check_results), "/",
+      length(key_dirs), "\n")
 
   # Check if main analysis script exists
   main_script_exists <- file.exists("Updated_Seatek_Analysis.R")
-  cat("  Main analysis script exists: ", ifelse(main_script_exists, "✓ YES", "✗ NO"), "\n")
+  cat(
+    "  Main analysis script exists: ", ifelse(main_script_exists, "✓ YES", "✗ NO"), "\n"
+  )
   
   verification_results$stats$manifest_exists <- manifest_exists
   verification_results$stats$main_script_exists <- main_script_exists
 
-  return(verification_results)
+  verification_results
 }
 
 determine_overall_success <- function(verification_results) {
   r_version_ok <- verification_results$r_version_check$success
-  all_packages_loaded <- verification_results$stats$successful_loads == verification_results$stats$total_packages
-  all_permissions_ok <- verification_results$stats$successful_permissions == verification_results$stats$total_directories
-  key_components_exist <- verification_results$stats$manifest_exists && verification_results$stats$main_script_exists
+  all_packages_loaded <- verification_results$stats$successful_loads ==
+    verification_results$stats$total_packages
+  all_permissions_ok <- verification_results$stats$successful_permissions ==
+    verification_results$stats$total_directories
+  key_components_exist <- verification_results$stats$manifest_exists &&
+    verification_results$stats$main_script_exists
   
-  overall_success <- r_version_ok && all_packages_loaded && all_permissions_ok && key_components_exist
+  overall_success <- r_version_ok && all_packages_loaded &&
+    all_permissions_ok && key_components_exist
   
   verification_results$overall_success <- overall_success
   
-  return(verification_results)
+  verification_results
 }
 
 print_verification_summary <- function(verification_results) {
   r_version_ok <- verification_results$r_version_check$success
-  all_packages_loaded <- verification_results$stats$successful_loads == verification_results$stats$total_packages
-  all_permissions_ok <- verification_results$stats$successful_permissions == verification_results$stats$total_directories
-  key_components_exist <- verification_results$stats$manifest_exists && verification_results$stats$main_script_exists
+  all_packages_loaded <- verification_results$stats$successful_loads ==
+    verification_results$stats$total_packages
+  all_permissions_ok <- verification_results$stats$successful_permissions ==
+    verification_results$stats$total_directories
+  key_components_exist <- verification_results$stats$manifest_exists &&
+    verification_results$stats$main_script_exists
   overall_success <- verification_results$overall_success
 
   cat("\n=== Verification Summary ===\n")
   cat("R Version Compatibility: ", ifelse(r_version_ok, "✓ PASS", "✗ FAIL"), "\n")
-  cat("Package Loading: ", ifelse(all_packages_loaded, "✓ PASS", "✗ FAIL"), " (", verification_results$stats$successful_loads, "/", verification_results$stats$total_packages, ")\n")
-  cat("Write Permissions: ", ifelse(all_permissions_ok, "✓ PASS", "✗ FAIL"), " (", verification_results$stats$successful_permissions, "/", verification_results$stats$total_directories, ")\n")
+  cat(
+    "Package Loading: ", ifelse(all_packages_loaded, "✓ PASS", "✗ FAIL"),
+    " (", verification_results$stats$successful_loads, "/",
+    verification_results$stats$total_packages, ")\n"
+  )
+  cat(
+    "Write Permissions: ", ifelse(all_permissions_ok, "✓ PASS", "✗ FAIL"),
+    " (", verification_results$stats$successful_permissions, "/",
+    verification_results$stats$total_directories, ")\n"
+  )
   cat("Key Components: ", ifelse(key_components_exist, "✓ PASS", "✗ FAIL"), "\n")
   cat("Overall Status: ", ifelse(overall_success, "✓ PASS", "✗ FAIL"), "\n")
 
@@ -128,6 +146,7 @@ print_verification_summary <- function(verification_results) {
 }
 
 save_verification_results <- function(verification_results) {
+  # nolint next: object_usage_linter.
   verification_path <- VERIFICATION_RESULTS_PATH
   # Remove stats from the final saved results for backward compatibility
   final_results <- verification_results
@@ -170,7 +189,7 @@ verify_environment <- function() {
   
   # Remove stats before returning to match previous return value structure
   verification_results$stats <- NULL
-  return(verification_results)
+  verification_results
 }
 
 #' Quick environment check
@@ -181,6 +200,7 @@ quick_check <- function() {
   cat("=== Quick Environment Check ===\n")
   
   # Check R version
+  # nolint next: object_usage_linter.
   r_ok <- check_r_version()$success
   cat("R Version: ", ifelse(r_ok, "✓ OK", "✗ FAIL"), "\n")
   
@@ -206,7 +226,7 @@ quick_check <- function() {
   
   cat("Overall Status: ", ifelse(overall_ok, "✓ READY", "✗ NOT READY"), "\n")
   
-  return(overall_ok)
+  overall_ok
 }
 
 #' Test specific functionality
@@ -219,6 +239,7 @@ run_specific_test <- function(test_name = "all") {
   
   if (test_name == "r_version" || test_name == "all") {
     cat("Testing R version compatibility...\n")
+    # nolint next: object_usage_linter.
     result <- check_r_version()
     cat("Result: ", ifelse(result$success, "✓ PASS", "✗ FAIL"), "\n")
     return(result)
@@ -226,20 +247,30 @@ run_specific_test <- function(test_name = "all") {
   
   if (test_name == "packages" || test_name == "all") {
     cat("Testing package loading...\n")
+    # nolint next: object_usage_linter.
     result <- load_and_verify_packages()
-    cat("Result: ", ifelse(all(sapply(result, function(x) x$success)), "✓ PASS", "✗ FAIL"), "\n")
+    cat(
+      "Result: ",
+      ifelse(all(sapply(result, function(x) x$success)), "✓ PASS", "✗ FAIL"),
+      "\n"
+    )
     return(result)
   }
   
   if (test_name == "permissions" || test_name == "all") {
     cat("Testing write permissions...\n")
+    # nolint next: object_usage_linter.
     result <- check_write_permissions()
-    cat("Result: ", ifelse(all(sapply(result, function(x) x$success)), "✓ PASS", "✗ FAIL"), "\n")
+    cat(
+      "Result: ",
+      ifelse(all(sapply(result, function(x) x$success)), "✓ PASS", "✗ FAIL"),
+      "\n"
+    )
     return(result)
   }
   
   cat("Unknown test: ", test_name, "\n")
-  return(NULL)
+  NULL
 }
 
 # Main verification function

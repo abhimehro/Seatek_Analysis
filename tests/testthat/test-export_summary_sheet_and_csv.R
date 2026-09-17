@@ -1,4 +1,6 @@
 library(testthat)
+
+source("../../Updated_Seatek_Analysis.R", local = TRUE)
 library(openxlsx)
 library(data.table)
 
@@ -48,10 +50,16 @@ test_that("export_summary_sheet_and_csv works correctly", {
   })
 
   # 1. Check if sheet was added
-  expect_true("Summary_Test" %in% names(wb), label = "Summary_Test sheet should be added to the workbook.")
+  expect_true(
+    "Summary_Test" %in% names(wb),
+    label = "Summary_Test sheet should be added to the workbook."
+  )
 
   # 2. Check if CSV file was created
-  expect_true(file.exists(csv_file), label = "CSV file should be created with correct suffix.")
+  expect_true(
+    file.exists(csv_file),
+    label = "CSV file should be created with correct suffix."
+  )
 
   # 3. Verify the CSV data
   saved_csv <- read.csv(csv_file)

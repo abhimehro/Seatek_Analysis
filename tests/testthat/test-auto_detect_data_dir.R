@@ -1,5 +1,7 @@
 library(testthat)
 
+source("../../Updated_Seatek_Analysis.R", local = TRUE)
+
 # The auto_detect_data_dir function is expected to be in the global environment
 # as Updated_Seatek_Analysis.R is sourced by the testthat.R helper.
 
@@ -21,7 +23,10 @@ test_that("auto_detect_data_dir errors on missing directory argument", {
 
 test_that("auto_detect_data_dir errors on non-existent directory", {
   non_existent_dir <- file.path(getwd(), "this_dir_should_not_exist_12345")
-  expect_error(auto_detect_data_dir(non_existent_dir), "Data directory not found:")
+  expect_error(
+    auto_detect_data_dir(non_existent_dir),
+    "Data directory not found:"
+  )
 })
 
 test_that("auto_detect_data_dir errors on path traversal attempt", {
@@ -31,13 +36,18 @@ test_that("auto_detect_data_dir errors on path traversal attempt", {
   # Ensure the test only proceeds if tempdir is actually outside getwd()
   # In most test environments, it is. But just to be sure:
   cwd <- paste0(normalizePath(getwd(), winslash = "/"), "/")
-  resolved_outside_dir <- paste0(normalizePath(outside_dir, winslash = "/"), "/")
+  resolved_outside_dir <- paste0(
+    normalizePath(outside_dir, winslash = "/"), "/"
+  )
 
   if (!startsWith(resolved_outside_dir, cwd)) {
-    expect_error(auto_detect_data_dir(outside_dir), "SECURITY: Path traversal detected.")
+    expect_error(
+      auto_detect_data_dir(outside_dir),
+      "SECURITY: Path traversal detected."
+    )
   } else {
     # If tempdir() happens to be inside getwd(), we simulate an outside dir
     # This shouldn't normally happen but provides robustness.
-    skip("tempdir() is inside the current working directory, cannot test path traversal securely")
+    skip("tempdir() is inside the cwd, cannot test path traversal securely")
   }
 })

@@ -1,5 +1,7 @@
 library(testthat)
 
+source("../../Updated_Seatek_Analysis.R", local = TRUE)
+
 # Note: The test will produce a warning from data.table::melt:
 # 'measure.vars' [mean, sd, median, mad, ...] are not all of the same type.
 # By order of hierarchy, the molten data value column will be of type 'double'.
@@ -17,7 +19,9 @@ test_that("calculate_summary_stats correctly aggregates multi-year data", {
   }
 
   years <- c("1995", "1996", "1997", "1998")
-  mock_results <- stats::setNames(lapply(seq_along(years), function(i) mock_sensor_data(i)), years)
+  mock_results <- stats::setNames(
+    lapply(seq_along(years), function(i) mock_sensor_data(i)), years
+  )
 
   # Call the function being tested
   # Suppress the data.table::melt coercion warning for clean test output
@@ -29,7 +33,10 @@ test_that("calculate_summary_stats correctly aggregates multi-year data", {
   expect_true(is.data.frame(summary_df))
 
   # Check expected columns
-  expected_cols <- c("Sensor", "first10_mean", "first10_count", "last5_median", "full_count", "full_pct_nonmissing")
+  expected_cols <- c(
+    "Sensor", "first10_mean", "first10_count", "last5_median",
+    "full_count", "full_pct_nonmissing"
+  )
   for (col in expected_cols) {
     expect_true(col %in% names(summary_df))
   }
@@ -60,7 +67,7 @@ test_that("calculate_summary_stats handles empty input", {
   mock_results <- list()
 
   # rbindlist on empty list returns empty data.table with no columns
-  # calculate_summary_stats will likely fail when trying to find 'Sensor' and 'Year'
+  # calculate_summary_stats will likely fail when trying to find 'Sensor'
   # or handle it and return empty.
   expect_error(calculate_summary_stats(mock_results))
 })

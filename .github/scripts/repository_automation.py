@@ -54,7 +54,10 @@ def main() -> int:
 
     if args.task == "enforce":
         if not args.result_path:
-            print("enforce requires a result path. Action: Verify the file path.")
+            print(
+                "enforce requires a result path. Action: Provide the result JSON path "
+                "(for example, enforce path/to/result.json)."
+            )
             return 1
         return enforce_result(args.result_path)
 

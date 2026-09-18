@@ -161,6 +161,7 @@
 
 - chore\(deps\): bump ruby/setup-ruby from 1.321.0 to 1.322.0 [\#856](https://github.com/abhimehro/Seatek_Analysis/pull/856) ([dependabot[bot]](https://github.com/apps/dependabot))
 - chore\(deps\): bump codescene-oss/pr-refactoring-agent from 1.1.1 to 1.1.3 [\#850](https://github.com/abhimehro/Seatek_Analysis/pull/850) ([dependabot[bot]](https://github.com/apps/dependabot))
+- chore\(deps\): bump matplotlib from 3.11.1 to 3.11.2 in /Series\_27/Analysis [\#846](https://github.com/abhimehro/Seatek_Analysis/pull/846) ([dependabot[bot]](https://github.com/apps/dependabot))
 - docs\(repo-health\): Series 26 is not an R pipeline input [\#841](https://github.com/abhimehro/Seatek_Analysis/pull/841) ([cursor[bot]](https://github.com/apps/cursor))
 - chore\(deps\): bump pnpm/action-setup from 6.0.10 to 6.1.0 [\#816](https://github.com/abhimehro/Seatek_Analysis/pull/816) ([dependabot[bot]](https://github.com/apps/dependabot))
 - perf: streamline positive sensor averages [\#809](https://github.com/abhimehro/Seatek_Analysis/pull/809) ([abhimehro](https://github.com/abhimehro))

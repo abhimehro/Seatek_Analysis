@@ -9,6 +9,7 @@ sys.path.insert(
 from repository_automation_common import (
     _remove_heuristic_secrets,
     command_env,
+    enforce_result,
     filter_env_securely,
     is_commit_sha,
     iso_day,
@@ -132,6 +133,14 @@ def test_command_env() -> None:
         env = command_env()
         assert env.get("MY_TEST_VAR") == "hello"
         assert env.get("GH_PAGER") == "cat"
+
+
+def test_enforce_result_rejects_directory(tmp_path, capsys) -> None:
+    result_dir = tmp_path / "result"
+    result_dir.mkdir()
+
+    assert enforce_result(str(result_dir)) == 1
+    assert f"Missing task result: {result_dir}" in capsys.readouterr().out
 
 
 # --- Salvaged from CONFLICTING #551 / #553 / #557 (adapted to main APIs) ---

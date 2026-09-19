@@ -20,15 +20,17 @@ def test_main_empty_state(capsys):
 def test_main_unknown_task(capsys):
     assert main() == 1
     captured = capsys.readouterr()
-    assert "Unknown task: unknown-task" in captured.out
-    assert "Run with --help to see available tasks." in captured.out
+    assert "Unknown task: unknown-task. Action: Run with --help to see available tasks." in captured.out
 
 
 @patch("sys.argv", ["repository_automation.py", "enforce"])
 def test_main_enforce_no_result_path(capsys):
     assert main() == 1
     captured = capsys.readouterr()
-    assert "enforce requires a result path" in captured.out
+    assert (
+        "enforce requires a result path. Action: Provide the result JSON path "
+        "(for example, enforce path/to/result.json)."
+    ) in captured.out
 
 
 @patch("sys.argv", ["repository_automation.py", "enforce", "path/to/result.json"])

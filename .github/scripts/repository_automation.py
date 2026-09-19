@@ -23,10 +23,14 @@ TASK_RUNNERS = {
 }
 
 
+class CustomHelpFormatter(argparse.ArgumentDefaultsHelpFormatter, argparse.RawDescriptionHelpFormatter):
+    pass
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(
         description="Consolidated repository automation runner",
-        formatter_class=argparse.RawDescriptionHelpFormatter,
+        formatter_class=CustomHelpFormatter,
         epilog="Available tasks:\n  "
         + "\n  ".join(TASK_RUNNERS.keys())
         + "\n  enforce",
@@ -50,13 +54,16 @@ def main() -> int:
 
     if args.task == "enforce":
         if not args.result_path:
-            print("enforce requires a result path")
+            print(
+                "enforce requires a result path. Action: Provide the result JSON path "
+                "(for example, enforce path/to/result.json)."
+            )
             return 1
         return enforce_result(args.result_path)
 
     runner = TASK_RUNNERS.get(args.task)
     if runner is None:
-        print(f"Unknown task: {args.task}. Run with --help to see available tasks.")
+        print(f"Unknown task: {args.task}. Action: Run with --help to see available tasks.")
         return 1
 
     runner(load_config())

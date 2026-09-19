@@ -15,7 +15,7 @@ WORKFLOW_PATH = (
 
 
 def load_workflow():
-    return yaml.safe_load(WORKFLOW_PATH.read_text(encoding="utf-8"))
+    return yaml.safe_load(WORKFLOW_PATH.read_text(encoding="utf-8")) or {}
 
 
 def test_refactoring_agent_enforces_concurrency_per_pr():

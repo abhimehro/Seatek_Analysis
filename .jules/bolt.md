@@ -432,3 +432,8 @@ triggers S3 method dispatch. In high-frequency calculations (like
 pre-calculated. **Action:** Instead of `mad(x, center = med)`, use
 `1.4826 * median.default(abs(x - med))` directly to bypass the function call and
 generic dispatch overhead.
+
+## 2026-09-17 - Optimize sd() calculation
+
+**Learning:** R's `sd()` function includes type-checking overhead which can be slow in high-frequency loops when the vector is guaranteed to be numeric.
+**Action:** Use `sqrt(var(x))` directly to compute the standard deviation instead of calling `sd(x)`.

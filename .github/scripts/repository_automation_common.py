@@ -8,6 +8,7 @@ import logging
 import os
 import re
 import shutil
+import stat
 import subprocess  # nosec B404
 import sys
 from pathlib import Path
@@ -296,10 +297,21 @@ def write_result(
 
 def enforce_result(path_str: str) -> int:
     path = Path(path_str)
-    if not path.exists():
+    fd: int | None = None
+    try:
+        fd = os.open(path, os.O_RDONLY | os.O_NONBLOCK)
+        if not stat.S_ISREG(os.fstat(fd).st_mode):
+            print(f"Missing task result: {path}")
+            return 1
+        with os.fdopen(fd, "r", encoding="utf-8") as handle:
+            fd = None
+            data = json.load(handle)
+    except OSError:
         print(f"Missing task result: {path}")
         return 1
-    data = json.loads(path.read_text())
+    finally:
+        if fd is not None:
+            os.close(fd)
     return 1 if data.get("status") in {"failure", "needs_review"} else 0
 
 

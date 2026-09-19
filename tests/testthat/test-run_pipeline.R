@@ -11,7 +11,9 @@ test_that("run_pipeline handles missing data directory correctly", {
   log_env$logs <- list()
 
   mock_log_handler <- function(level, message) {
-    log_env$logs[[length(log_env$logs) + 1]] <- list(level = level, message = message)
+    log_env$logs[[length(log_env$logs) + 1]] <- list(
+      level = level, message = message
+    )
   }
 
   # Inject the mock
@@ -19,7 +21,8 @@ test_that("run_pipeline handles missing data directory correctly", {
 
   on.exit(
     {
-      # Reset log handler to its original state (if we saved it, but source() does it on load anyway)
+      # Reset log handler to its original state (if saved, but source() does
+      # it on load anyway)
       # However we're in local=TRUE so it modifies the current env.
     },
     add = TRUE
@@ -36,9 +39,11 @@ test_that("run_pipeline handles missing data directory correctly", {
     unlink(data_dir, recursive = TRUE)
   }
 
-  # Since run_pipeline stops when the data dir doesn't exist, we must catch the error.
-  # Our error handler in run_pipeline logs it, but then the stop() propagates unless
-  # handled. Actually wait, withCallingHandlers doesn't stop propagation, so we need expect_error.
+  # Since run_pipeline stops when the data dir doesn't exist, we must catch
+  # the error.
+  # Our error handler in run_pipeline logs it, but then the stop() propagates
+  # unless handled. Actually wait, withCallingHandlers doesn't stop
+  # propagation, so we need expect_error.
   expect_error(run_pipeline(), "Data directory does not exist")
 
   # Verify our mock log handler was called
@@ -48,7 +53,7 @@ test_that("run_pipeline handles missing data directory correctly", {
   levels <- sapply(log_env$logs, function(x) x$level)
   messages <- sapply(log_env$logs, function(x) x$message)
 
-  # Should have a MESSAGE about running main, and an ERROR about missing directory
+  # Should have a MESSAGE about running main, and an ERROR about missing dir
   expect_true("MESSAGE" %in% levels)
   expect_true(any(grepl("Running main", messages)))
 
@@ -63,7 +68,9 @@ test_that("run_pipeline captures warnings and dependency errors", {
   log_env$logs <- list()
 
   mock_log_handler <- function(level, message) {
-    log_env$logs[[length(log_env$logs) + 1]] <- list(level = level, message = message)
+    log_env$logs[[length(log_env$logs) + 1]] <- list(
+      level = level, message = message
+    )
   }
 
   assign("log_handler", mock_log_handler, envir = environment(run_pipeline))
@@ -102,7 +109,9 @@ test_that("run_pipeline executes successfully with valid data", {
   log_env$logs <- list()
 
   mock_log_handler <- function(level, message) {
-    log_env$logs[[length(log_env$logs) + 1]] <- list(level = level, message = message)
+    log_env$logs[[length(log_env$logs) + 1]] <- list(
+      level = level, message = message
+    )
   }
   assign("log_handler", mock_log_handler, envir = environment(run_pipeline))
 
@@ -116,7 +125,7 @@ test_that("run_pipeline executes successfully with valid data", {
 
   # Mock the process and summary to do nothing but return empty
   assign("process_all_data", function(dir) {
-    return(list())
+    list()
   }, envir = environment(run_pipeline))
 
   assign("dump_summary_excel", function(res, out) {

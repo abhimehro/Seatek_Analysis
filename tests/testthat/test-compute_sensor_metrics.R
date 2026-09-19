@@ -1,3 +1,5 @@
+source("../../Updated_Seatek_Analysis.R", local = TRUE)
+
 test_that("compute_sensor_metrics computes correctly on > 10 rows", {
   library(data.table)
   df <- data.table(

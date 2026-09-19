@@ -164,7 +164,9 @@ execute_tasks_parallel <- function(tasks, task_func) {
     out_files
   } else {
     out_files <- vector("list", length(tasks))
-    pb_write <- txtProgressBar(min = 0, max = length(tasks), style = 3, char = "█")
+    pb_write <- txtProgressBar(
+      min = 0, max = length(tasks), style = 3, char = "█"
+    )
     tryCatch(
       {
         for (i in seq_along(tasks)) {
@@ -324,7 +326,7 @@ write_year_sheet <- function(wb, year, data, header_style,
   freezePane(wb, sheet = year, firstRow = TRUE)
   # Optional: highlight largest within_diff in each year
   if ("within_diff" %in% colnames(data) && !is.null(highlight_style_yearly) &&
-    nrow(data) > 0 && is.numeric(data$within_diff)) {
+        nrow(data) > 0 && is.numeric(data$within_diff)) {
     max_idx <- which.max(abs(data$within_diff))
     if (length(max_idx) == 1L) {
       addStyle(wb,
@@ -407,7 +409,7 @@ calculate_summary_stats <- function(results) {
   if (is.data.table(summary_wide)) {
     set(summary_wide,
       j = "full_pct_nonmissing", value =
-      # nolint next: object_usage_linter.
+        # nolint next: object_usage_linter.
         100 * summary_wide$full_count / length(results)
     )
   } else {
@@ -485,7 +487,7 @@ export_main_summary <- function(wb, summary_df, output_file,
 
   # Highlight top N sensors with largest absolute within_diff_mean
   if ("within_diff_mean" %in% colnames(summary_df) &&
-    !is.null(highlight_style_summary)) {
+        !is.null(highlight_style_summary)) {
     abs_diff <- abs(summary_df$within_diff_mean)
     top_idx <- order(abs_diff, decreasing = TRUE)[
       seq_len(min(highlight_top_n, length(abs_diff)))
@@ -547,7 +549,8 @@ write_summary_sheets <- function(wb, summary_df, output_file,
   # evaluation with get()
   if (is.data.table(summary_df)) {
     # nolint next: object_usage_linter.
-    set(summary_df, j = "flag_high_variability", value = summary_df$full_sd > sd_threshold)
+    set(summary_df, j = "flag_high_variability",
+        value = summary_df$full_sd > sd_threshold)
   } else {
     summary_df$flag_high_variability <- summary_df$full_sd > sd_threshold
   }
@@ -673,7 +676,7 @@ run_pipeline <- function() {
 }
 
 # Main execution block
-if (sys.nframe() == 0 || interactive()) {
+if (sys.nframe() == 0) {
   cat("\n🌊 Seatek Analysis Pipeline 🌊\n=============================\n")
   run_pipeline()
 }

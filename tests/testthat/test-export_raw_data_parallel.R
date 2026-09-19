@@ -1,5 +1,7 @@
 library(testthat)
 
+source("../../Updated_Seatek_Analysis.R", local = TRUE)
+
 test_that("export_raw_data_parallel handles empty task list", {
   # It should just return NULL or nothing and not throw an error
   expect_silent(export_raw_data_parallel(list()))

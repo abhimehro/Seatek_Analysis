@@ -245,3 +245,8 @@ is a regular file using `os.path.isfile()` or
 `stat.S_ISREG(os.stat(path).st_mode)` before attempting to open and read its
 contents, especially in security wrappers designed to read untrusted files
 safely.
+
+## 2026-08-15 - [Path Traversal in Line Counter]
+**Vulnerability:** The `_hotspot_line_count` function in `.github/scripts/repository_automation_tasks.py` failed to properly validate if the resolved file path was located inside the repository workspace (`ROOT`).
+**Learning:** If `os.walk` or a similar crawler identifies a symbolic link in the directory structure, the default behavior of `open()` will implicitly resolve and follow the symlink. Without an explicit bounds-check using `os.path.realpath`, an attacker could place a symlink pointing to `/etc/passwd` or an external `.env` file within the repo, which would then be read by the script.
+**Prevention:** Always use `os.path.realpath` to resolve absolute, canonical paths and verify that the target starts with the expected base directory prefix (e.g. `resolved.startswith(base_dir + os.sep)`) before attempting to open any dynamically discovered file.

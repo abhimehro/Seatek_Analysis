@@ -245,3 +245,8 @@ is a regular file using `os.path.isfile()` or
 `stat.S_ISREG(os.stat(path).st_mode)` before attempting to open and read its
 contents, especially in security wrappers designed to read untrusted files
 safely.
+
+## 2026-09-13 - [IsADirectoryError crash via Path.exists()]
+**Vulnerability:** The script checked for file existence using `path.exists()` before calling `path.read_text()`. `path.exists()` returns True for directories, allowing a directory path to bypass the check and cause `read_text()` to crash with an `IsADirectoryError` (Denial of Service).
+**Learning:** Checking `path.exists()` is insufficient before reading file contents if the path might point to a directory.
+**Prevention:** Use `path.is_file()` when validating a path before reading its contents with `pathlib.Path`.

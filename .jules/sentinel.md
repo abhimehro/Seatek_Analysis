@@ -245,3 +245,8 @@ is a regular file using `os.path.isfile()` or
 `stat.S_ISREG(os.stat(path).st_mode)` before attempting to open and read its
 contents, especially in security wrappers designed to read untrusted files
 safely.
+
+## YYYY-MM-DD - [File Read DoS via IsADirectoryError]
+**Vulnerability:** Using `path.exists()` before `path.read_text()` allows directories to pass the check, which then causes `read_text()` to crash with an `IsADirectoryError`. This can be exploited as a Denial of Service if user input dictates the path.
+**Learning:** `exists()` only validates presence, not file type, meaning directories are treated as valid targets for file read operations.
+**Prevention:** Always use `path.is_file()` when validating paths meant for file reading operations with `pathlib.Path`.

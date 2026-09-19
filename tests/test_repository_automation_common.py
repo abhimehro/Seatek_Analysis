@@ -9,6 +9,7 @@ sys.path.insert(
 from repository_automation_common import (
     _remove_heuristic_secrets,
     command_env,
+    enforce_result,
     filter_env_securely,
     is_commit_sha,
     iso_day,
@@ -311,3 +312,28 @@ def test_task_dir(tmp_path):
         result = task_dir("test_task")
         assert result == tmp_path / "test_task"
         assert result.is_dir()
+
+
+def test_enforce_result_regular_file(tmp_path):
+    import json
+
+    path = tmp_path / "result.json"
+    path.write_text(json.dumps({"status": "success"}))
+    assert enforce_result(str(path)) == 0
+
+
+def test_enforce_result_non_existent():
+    assert enforce_result("/path/that/does/not/exist.json") == 1
+
+
+def test_enforce_result_null_byte():
+    assert enforce_result("unsafe\0path.json") == 1
+
+
+def test_enforce_result_fifo(tmp_path):
+    fifo_path = tmp_path / "result.fifo"
+    os.mkfifo(fifo_path)
+    try:
+        assert enforce_result(str(fifo_path)) == 1
+    finally:
+        fifo_path.unlink(missing_ok=True)

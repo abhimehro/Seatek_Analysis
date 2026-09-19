@@ -296,11 +296,16 @@ def write_result(
 
 def enforce_result(path_str: str) -> int:
     path = Path(path_str)
-    if not path.exists():
+    if not path.is_file():
         print(f"Missing task result: {path}")
         return 1
-    data = json.loads(path.read_text())
+    try:
+        data = json.loads(path.read_text())
+    except OSError:
+        print(f"Missing task result: {path}")
+        return 1
     return 1 if data.get("status") in {"failure", "needs_review"} else 0
+
 
 
 def command_block(entry: dict[str, Any]) -> str:

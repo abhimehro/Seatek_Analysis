@@ -5,6 +5,7 @@ import datetime as dt
 import fnmatch
 import json
 import logging
+import stat
 import os
 import re
 import shutil
@@ -126,8 +127,38 @@ def iso_day(value: dt.datetime | None = None) -> str:
     return (value or now_utc()).date().isoformat()
 
 
+_MAX_INPUT_SIZE = 1 * 1024 * 1024
+
+
+def _safe_read_text(path: Path, max_size: int = _MAX_INPUT_SIZE) -> str | None:
+    """Read a bounded regular file from one validated, non-blocking descriptor."""
+    flags = os.O_RDONLY | getattr(os, "O_CLOEXEC", 0) | getattr(os, "O_NONBLOCK", 0)
+    if hasattr(os, "O_NOFOLLOW"):
+        flags |= os.O_NOFOLLOW
+    try:
+        fd = os.open(path, flags)
+        try:
+            if not stat.S_ISREG(os.fstat(fd).st_mode):
+                return None
+            with os.fdopen(fd, "r", encoding="utf-8") as handle:
+                fd = -1
+                value = handle.read(max_size + 1)
+                return value if len(value) <= max_size else None
+        finally:
+            if fd != -1:
+                os.close(fd)
+    except (OSError, UnicodeDecodeError):
+        return None
+
+
 def load_config() -> dict[str, Any]:
-    data = yaml.safe_load(CONFIG_PATH.read_text()) or {}
+    text = _safe_read_text(CONFIG_PATH)
+    if text is None:
+        return {}
+    try:
+        data = yaml.safe_load(text) or {}
+    except yaml.YAMLError:
+        return {}
     return data.get("automation", {})
 
 
@@ -296,10 +327,11 @@ def write_result(
 
 def enforce_result(path_str: str) -> int:
     path = Path(path_str)
-    if not path.exists():
+    text = _safe_read_text(path)
+    if text is None:
         print(f"Missing task result: {path}")
         return 1
-    data = json.loads(path.read_text())
+    data = json.loads(text)
     return 1 if data.get("status") in {"failure", "needs_review"} else 0
 
 

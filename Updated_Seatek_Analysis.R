@@ -205,16 +205,13 @@ compute_sensor_metrics <- function(df, filename) {
     v <- .subset2(df, sensor_names[j])
 
     v_first <- v[idx_first]
-    # ⚡ Bolt: Replace mean.default() with sum()/length() for faster inline avg.
-    w_first <- which(v_first > 0)
-    first10[j] <- sum(v_first[w_first]) / length(w_first)
+    # ⚡ Bolt: Bypass generic mean() S3 dispatch with mean.default() for speed
+    first10[j] <- mean.default(v_first[which(v_first > 0)])
 
     v_last <- v[idx_last]
-    w_last <- which(v_last > 0)
-    last5[j] <- sum(v_last[w_last]) / length(w_last)
+    last5[j] <- mean.default(v_last[which(v_last > 0)])
 
-    w_full <- which(v > 0)
-    full[j] <- sum(v[w_full]) / length(w_full)
+    full[j] <- mean.default(v[which(v > 0)])
   }
   diff <- full - first10
   # Derive sheet/year name

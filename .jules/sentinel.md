@@ -245,3 +245,9 @@ is a regular file using `os.path.isfile()` or
 `stat.S_ISREG(os.stat(path).st_mode)` before attempting to open and read its
 contents, especially in security wrappers designed to read untrusted files
 safely.
+
+## YYYY-MM-DD - [File Read DoS / IsADirectoryError via path.exists()]
+
+**Vulnerability:** The `enforce_result` function in `.github/scripts/repository_automation_common.py` used `path.exists()` before calling `path.read_text()`. If a directory was passed instead of a file, `path.exists()` returned True, causing `read_text()` to crash with an `IsADirectoryError`.
+**Learning:** `path.exists()` is insufficient for validating a file path before reading its contents, as it returns True for directories.
+**Prevention:** Always use `path.is_file()` instead of `path.exists()` when verifying a path before reading its contents using `pathlib.Path`.

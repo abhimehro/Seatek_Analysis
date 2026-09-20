@@ -9,6 +9,7 @@ sys.path.insert(
 from repository_automation_common import (
     _remove_heuristic_secrets,
     command_env,
+    enforce_result,
     filter_env_securely,
     is_commit_sha,
     iso_day,
@@ -26,6 +27,31 @@ def setup_mock_process(mock_run_process):
     mock_proc.stdout = "output"
     mock_proc.stderr = ""
     mock_run_process.return_value = mock_proc
+
+
+def test_enforce_result_rejects_directory(tmp_path, capsys):
+    directory = tmp_path / "result"
+    directory.mkdir()
+
+    with patch("repository_automation_common.Path.read_text") as mock_read_text:
+        assert enforce_result(str(directory)) == 1
+
+    assert f"Missing task result: {directory}" in capsys.readouterr().out
+    mock_read_text.assert_not_called()
+
+
+def test_enforce_result_accepts_success_file(tmp_path):
+    result = tmp_path / "result.json"
+    result.write_text('{"status": "success"}')
+
+    assert enforce_result(str(result)) == 0
+
+
+def test_enforce_result_rejects_failure_file(tmp_path):
+    result = tmp_path / "result.json"
+    result.write_text('{"status": "failure"}')
+
+    assert enforce_result(str(result)) == 1
 
 
 @patch("repository_automation_common.run_process")

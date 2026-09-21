@@ -245,3 +245,8 @@ is a regular file using `os.path.isfile()` or
 `stat.S_ISREG(os.stat(path).st_mode)` before attempting to open and read its
 contents, especially in security wrappers designed to read untrusted files
 safely.
+
+## 2026-09-21 - [Pathlib read_text DoS via Directory]
+**Vulnerability:** The `enforce_result` function in `repository_automation_common.py` called `path.read_text()` after only checking `path.exists()`. If a directory was provided instead of a regular file, this would raise an `IsADirectoryError` and cause the script to crash.
+**Learning:** `path.exists()` returns True for directories, making it unsafe to use before `path.read_text()` which expects a file.
+**Prevention:** Use `path.is_file()` instead of `path.exists()` to safely verify it is a regular file before attempting to read its contents.

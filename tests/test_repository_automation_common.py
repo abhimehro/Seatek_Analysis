@@ -9,6 +9,7 @@ sys.path.insert(
 from repository_automation_common import (
     _remove_heuristic_secrets,
     command_env,
+    enforce_result,
     filter_env_securely,
     is_commit_sha,
     iso_day,
@@ -311,3 +312,17 @@ def test_task_dir(tmp_path):
         result = task_dir("test_task")
         assert result == tmp_path / "test_task"
         assert result.is_dir()
+
+
+def test_enforce_result_rejects_directory(tmp_path, capsys):
+    result = enforce_result(str(tmp_path))
+
+    assert result == 1
+    assert f"Missing task result: {tmp_path}" in capsys.readouterr().out
+
+
+def test_enforce_result_accepts_result_file(tmp_path):
+    result_file = tmp_path / "result.json"
+    result_file.write_text('{"status": "success"}')
+
+    assert enforce_result(str(result_file)) == 0

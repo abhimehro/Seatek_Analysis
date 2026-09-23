@@ -25,7 +25,7 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           fail_on: never
           block_on: high
-          min_severity_to_report: warning
+          min_severity_to_report: info
           strictness: chill
           skip_drafts: true
           skip_forks: true

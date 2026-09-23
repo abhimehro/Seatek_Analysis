@@ -96,7 +96,7 @@ test_that("write_year_sheet skips highlighting all-NA within_diff", {
     within_diff = c(NA_real_, NA_real_)
   )
   header_style <- createStyle(textDecoration = "Bold")
-  highlight_style_yearly <- createStyle(bgFill = "#C6EFCE")
+  highlight_style_yearly <- createStyle(fontColour = "#000000", bgFill = "#C6EFCE")
 
   expect_no_error(
     write_year_sheet(wb, "2030", d, header_style, highlight_style_yearly)
@@ -121,7 +121,7 @@ test_that("write_year_sheet handles empty data", {
     within_diff = numeric()
   )
   header_style <- createStyle(textDecoration = "Bold")
-  highlight_style_yearly <- createStyle(bgFill = "#C6EFCE")
+  highlight_style_yearly <- createStyle(fontColour = "#000000", bgFill = "#C6EFCE")
 
   expect_no_error(
     write_year_sheet(wb, "2031", d, header_style, highlight_style_yearly)
@@ -139,7 +139,7 @@ test_that("write_year_sheet skips malformed within_diff", {
     within_diff = c("a", "b")
   )
   header_style <- createStyle(textDecoration = "Bold")
-  highlight_style_yearly <- createStyle(bgFill = "#C6EFCE")
+  highlight_style_yearly <- createStyle(fontColour = "#000000", bgFill = "#C6EFCE")
 
   expect_no_error(
     write_year_sheet(wb, "2032", d, header_style, highlight_style_yearly)
@@ -156,7 +156,7 @@ test_that("write_year_sheet skips highlighting without within_diff", {
     full = c(1, 2)
   )
   header_style <- createStyle(textDecoration = "Bold")
-  highlight_style_yearly <- createStyle(bgFill = "#C6EFCE")
+  highlight_style_yearly <- createStyle(fontColour = "#000000", bgFill = "#C6EFCE")
 
   expect_no_error(
     write_year_sheet(wb, "2033", d, header_style, highlight_style_yearly)

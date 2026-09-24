@@ -127,6 +127,8 @@ def iso_day(value: dt.datetime | None = None) -> str:
 
 
 def load_config() -> dict[str, Any]:
+    if not CONFIG_PATH.is_file():
+        return {}
     data = yaml.safe_load(CONFIG_PATH.read_text()) or {}
     return data.get("automation", {})
 
@@ -296,7 +298,7 @@ def write_result(
 
 def enforce_result(path_str: str) -> int:
     path = Path(path_str)
-    if not path.exists():
+    if not path.is_file():
         print(f"Missing task result: {path}")
         return 1
     data = json.loads(path.read_text())

@@ -229,7 +229,7 @@ def fetch_latest_tags(repo_ids: set[str]) -> dict[str, str]:
 def _parse_workflow_files() -> tuple[set[str], list[dict[str, Any]]]:
     repo_ids_to_fetch = set()
     file_data = []
-    paths = sorted((ROOT / ".github" / "workflows").glob("*.y*ml"))
+    paths = [p for p in sorted((ROOT / ".github" / "workflows").glob("*.y*ml")) if p.is_file()]
 
     async def read_workflow_files() -> list[str]:
         return await asyncio.gather(
@@ -638,6 +638,8 @@ def run_backlog_manager(config: dict[str, Any]) -> dict[str, Any]:
 
 
 def _read_result(path: pathlib.Path) -> dict[str, Any] | None:
+    if not path.is_file():
+        return None
     try:
         return json.loads(path.read_text())
     except json.JSONDecodeError:

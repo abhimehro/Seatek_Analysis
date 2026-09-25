@@ -29,7 +29,7 @@ test_that("write_year_sheet works correctly", {
 
   # Create mock styles
   header_style <- createStyle(textDecoration = "Bold", border = "Bottom")
-  highlight_style_yearly <- createStyle(fontColour = "#006100", bgFill = "#C6EFCE")
+  highlight_style_yearly <- createStyle(fontColour = "#000000", bgFill = "#C6EFCE")
 
   # Call the function
   year <- "2023"

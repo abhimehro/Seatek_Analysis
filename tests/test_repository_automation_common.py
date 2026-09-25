@@ -311,3 +311,8 @@ def test_task_dir(tmp_path):
         result = task_dir("test_task")
         assert result == tmp_path / "test_task"
         assert result.is_dir()
+def test_enforce_result_directory(tmp_path):
+    from repository_automation_common import enforce_result
+
+    # Passing a directory instead of a file
+    assert enforce_result(str(tmp_path)) == 1

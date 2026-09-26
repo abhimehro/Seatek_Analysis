@@ -1,9 +1,8 @@
 library(microbenchmark)
-num_ts <- as.numeric(Sys.time()) + 1:100000
-
-mb <- microbenchmark(
-  as_posixct = as.POSIXct(num_ts, origin = "1970-01-01", tz = "UTC"),
-  dot_posixct = .POSIXct(num_ts, tz = "UTC"),
-  times = 100
+set.seed(123)
+x <- rnorm(1000)
+microbenchmark(
+  sd = sd(x),
+  sqrt_var = sqrt(var(x)),
+  times = 1000
 )
-print(mb)

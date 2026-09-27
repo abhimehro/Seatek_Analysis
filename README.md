@@ -10,6 +10,8 @@
 [![CodeScene Missed Goals](https://codescene.io/projects/80826/status-badges/missed-goals)](https://codescene.io/projects/80826)
 ![CodeRabbit Pull Request Reviews](https://img.shields.io/coderabbit/prs/github/abhimehro/Seatek_Analysis?utm_source=oss&utm_medium=github&utm_campaign=abhimehro%2FSeatek_Analysis&labelColor=171717&color=FF570A&link=https%3A%2F%2Fcoderabbit.ai&label=CodeRabbit+Reviews)
 
+[![SonarQube Cloud](https://sonarcloud.io/images/project_badges/sonarcloud-highlight.svg)](https://sonarcloud.io/summary/new_code?id=abhimehro_Seatek_Analysis)
+
 ---
 
 ## Project Overview

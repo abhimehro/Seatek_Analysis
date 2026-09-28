@@ -245,3 +245,9 @@ is a regular file using `os.path.isfile()` or
 `stat.S_ISREG(os.stat(path).st_mode)` before attempting to open and read its
 contents, especially in security wrappers designed to read untrusted files
 safely.
+
+## YYYY-MM-DD - [File Read DoS via Special Files in Task Runners]
+
+**Vulnerability:** The `enforce_result` function in `.github/scripts/repository_automation_common.py` and `_read_result` function in `.github/scripts/repository_automation_tasks.py` attempted to read files using `path.read_text()` after only verifying existence with `path.exists()`, or without checking type at all. If a path pointing to a special file, such as a FIFO (named pipe) or device file (or a directory which would raise `IsADirectoryError`), was passed to the function, the subsequent read could block indefinitely or raise unexpected errors, causing the process to hang or crash (Denial of Service).
+**Learning:** Checking for file existence is insufficient when interacting with untrusted file paths. Special file types can have blocking behaviors or cause unexpected exceptions that circumvent simple existence checks.
+**Prevention:** Always verify that a file is a regular file using `path.is_file()` before attempting to read its contents with `path.read_text()`, especially in security wrappers designed to read untrusted files safely.

@@ -638,6 +638,9 @@ def run_backlog_manager(config: dict[str, Any]) -> dict[str, Any]:
 
 
 def _read_result(path: pathlib.Path) -> dict[str, Any] | None:
+    # SECURITY: Verify it's a regular file before reading to prevent DoS via special files or directories.
+    if not path.is_file():
+        return None
     try:
         return json.loads(path.read_text())
     except json.JSONDecodeError:

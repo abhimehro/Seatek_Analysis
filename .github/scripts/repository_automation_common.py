@@ -296,8 +296,9 @@ def write_result(
 
 def enforce_result(path_str: str) -> int:
     path = Path(path_str)
-    if not path.exists():
-        print(f"Missing task result: {path}")
+    # SECURITY: Verify it's a regular file before reading to prevent DoS via special files or directories.
+    if not path.is_file():
+        print(f"Missing or invalid task result file: {path}")
         return 1
     data = json.loads(path.read_text())
     return 1 if data.get("status") in {"failure", "needs_review"} else 0

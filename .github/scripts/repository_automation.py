@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import argparse
+import os
 
 from repository_automation_common import enforce_result, load_config
 from repository_automation_tasks import (
@@ -23,10 +24,16 @@ TASK_RUNNERS = {
 }
 
 
+class _HelpFormatter(
+    argparse.ArgumentDefaultsHelpFormatter, argparse.RawDescriptionHelpFormatter
+):
+    pass
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(
         description="Consolidated repository automation runner",
-        formatter_class=argparse.RawDescriptionHelpFormatter,
+        formatter_class=_HelpFormatter,
         epilog="Available tasks:\n  "
         + "\n  ".join(TASK_RUNNERS.keys())
         + "\n  enforce",
@@ -50,13 +57,16 @@ def main() -> int:
 
     if args.task == "enforce":
         if not args.result_path:
-            print("enforce requires a result path")
+            print("enforce requires a result path. Action: Verify the file path.")
+            return 1
+        if not os.path.isfile(args.result_path):
+            print(f"Error: The file '{args.result_path}' does not exist. Action: Verify the file path.")
             return 1
         return enforce_result(args.result_path)
 
     runner = TASK_RUNNERS.get(args.task)
     if runner is None:
-        print(f"Unknown task: {args.task}. Run with --help to see available tasks.")
+        print(f"Unknown task: {args.task}. Run with --help to see available tasks. Action: Verify the task name.")
         return 1
 
     runner(load_config())

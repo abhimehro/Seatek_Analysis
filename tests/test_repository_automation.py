@@ -22,18 +22,20 @@ def test_main_unknown_task(capsys):
     captured = capsys.readouterr()
     assert "Unknown task: unknown-task" in captured.out
     assert "Run with --help to see available tasks." in captured.out
+    assert "Action: Verify the task name." in captured.out
 
 
 @patch("sys.argv", ["repository_automation.py", "enforce"])
 def test_main_enforce_no_result_path(capsys):
     assert main() == 1
     captured = capsys.readouterr()
-    assert "enforce requires a result path" in captured.out
+    assert "enforce requires a result path. Action: Verify the file path." in captured.out
 
 
 @patch("sys.argv", ["repository_automation.py", "enforce", "path/to/result.json"])
+@patch("os.path.isfile", return_value=True)
 @patch("repository_automation.enforce_result")
-def test_main_enforce_with_result_path(mock_enforce_result):
+def test_main_enforce_with_result_path(mock_enforce_result, mock_isfile):
     mock_enforce_result.return_value = 0
     assert main() == 0
     mock_enforce_result.assert_called_once_with("path/to/result.json")

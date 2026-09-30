@@ -1,0 +1,1 @@
+This is an explicit file to give Octopus Review something to process and avoid empty/invalid assessment errors when triggering CI manually.

@@ -566,7 +566,7 @@ dump_summary_excel <- function(results, output_file, highlight_top_n = 5) {
 
   # ⚡ Bolt: Hoisted style definitions out of inner functions/loops
   # to avoid recreating styles redundantly on every sheet generation.
-  header_style <- createStyle(textDecoration = "bold")
+  header_style <- createStyle(textDecoration = "bold", fontColour = "#FFFFFF", bgFill = "#4F81BD")
   highlight_style_yearly <- createStyle(fontColour = "#000000", bgFill = "#FFD700")
   highlight_style_summary <- createStyle(fontColour = "#000000", bgFill = "#FF9999")
 

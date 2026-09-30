@@ -65,6 +65,3 @@ def main() -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
-
-
-# This comment is intentionally added to trigger external PR review bots

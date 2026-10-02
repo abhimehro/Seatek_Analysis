@@ -436,3 +436,8 @@ generic dispatch overhead.
 ## 2023-10-27 - Inline sd() as sqrt(var())
 **Learning:** Using sqrt(var(x)) avoids the type-checking and function call overhead of the sd() function on guaranteed numeric vectors in high-frequency loops.
 **Action:** Replace sd() with sqrt(var()) for guaranteed numeric vectors in performance-critical paths.
+
+## YYYY-MM-DD - Hoist helper functions out of looping structures
+
+**Learning:** Defining helper functions (`calc_stats`, `write_task`) inside another function incurs unnecessary memory allocation and closure instantiation overhead when the parent function is called repeatedly or in parallel processes. In R, functions capture the environment in which they are defined (lexical scoping). By defining `write_task` inside `export_raw_data_parallel`, the closure captures the parent function's environment, which includes the `raw_export_tasks` object (likely a very large list of data frames). When `write_task` is passed to `execute_tasks_parallel` for parallel execution, R's parallel backends serialize the function *along with its environment* to send to worker nodes. This leads to massive, redundant memory overhead and slows down parallel dispatch significantly.
+**Action:** Always hoist static function definitions to the module/top-level scope.

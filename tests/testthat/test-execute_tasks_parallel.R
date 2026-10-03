@@ -1,18 +1,20 @@
 library(testthat)
 
+source("../../Updated_Seatek_Analysis.R", local = TRUE)
+
 test_that("execute_tasks_parallel handles empty task list", {
   res <- execute_tasks_parallel(list(), function(x) x)
   expect_equal(res, list())
 })
 
-test_that("execute_tasks_parallel executes tasks successfully using parallel backend", {
+test_that("parallel backend success", {
   tasks <- list(1, 2, 3)
   res <- execute_tasks_parallel(tasks, function(x) x * 2)
   expect_equal(res, list(2, 4, 6))
 })
 
 test_that("execute_tasks_parallel falls back to serial execution gracefully", {
-  # Redefine the function body in our local env so we can control its execution context
+  # Redefine function body locally to control its execution context
   local_env <- new.env(parent = globalenv())
   local_env$execute_tasks_parallel <- execute_tasks_parallel
 
@@ -31,7 +33,7 @@ test_that("execute_tasks_parallel falls back to serial execution gracefully", {
   res <- NULL
 
   # Run the function in the mocked environment
-  # txtProgressBar writes to the terminal, we can capture or suppress it using capture.output
+  # txtProgressBar writes to terminal, suppress it using capture.output
   suppressMessages(
     capture.output({
       res <- local_env$execute_tasks_parallel(tasks, function(x) x * 3)
@@ -42,19 +44,23 @@ test_that("execute_tasks_parallel falls back to serial execution gracefully", {
 })
 
 test_that("execute_tasks_parallel handles detectCores errors gracefully", {
-  # Redefine the function body in our local env so we can control its execution context
+  # Redefine function body locally to control its execution context
   local_env <- new.env(parent = globalenv())
   local_env$execute_tasks_parallel <- execute_tasks_parallel
 
   # We want it to use parallel namespace but intercept tryCatch or detectCores.
-  # Since tryCatch evaluates detectCores() in baseenv, masking detectCores in the function environment is hard
+  # Since tryCatch evaluates detectCores() in baseenv, masking is hard
   # because it specifically calls `parallel::detectCores()`.
-  # To mock a namespaced call without a mocking framework, we can redefine the function's source code text.
+  # To mock a namespaced call, we can redefine the function's source text.
 
   func_text <- deparse(execute_tasks_parallel)
-  func_text <- gsub("parallel::detectCores()", "stop('Mock Error')", func_text, fixed = TRUE)
+  func_text <- gsub(
+    "parallel::detectCores()", "stop('Mock Error')", func_text, fixed = TRUE
+  )
 
-  local_env$execute_tasks_parallel_mocked <- eval(parse(text = paste(func_text, collapse = "\n")))
+  local_env$execute_tasks_parallel_mocked <- eval(
+    parse(text = paste(func_text, collapse = "\n"))
+  )
 
   # Now it should fall back to cores=1L
   tasks <- list(1, 2)
@@ -67,16 +73,20 @@ test_that("execute_tasks_parallel executes gracefully on non-unix platforms", {
 
   # We want to force the non-unix branch: .Platform$OS.type != "unix"
   func_text <- deparse(execute_tasks_parallel)
-  func_text <- gsub(".Platform$OS.type == \"unix\"", "FALSE", func_text, fixed = TRUE)
+  func_text <- gsub(
+    ".Platform$OS.type == \"unix\"", "FALSE", func_text, fixed = TRUE
+  )
 
-  local_env$execute_tasks_parallel_mocked <- eval(parse(text = paste(func_text, collapse = "\n")))
+  local_env$execute_tasks_parallel_mocked <- eval(
+    parse(text = paste(func_text, collapse = "\n"))
+  )
 
   tasks <- list(1, 2)
   res <- local_env$execute_tasks_parallel_mocked(tasks, function(x) x * 5)
   expect_equal(res, list(5, 10))
 })
 
-test_that("execute_tasks_parallel serial fallback bubbles errors from task_func", {
+test_that("execute_tasks_parallel serial fallback bubbles errors from task", {
   local_env <- new.env(parent = globalenv())
   local_env$execute_tasks_parallel <- execute_tasks_parallel
 
@@ -93,7 +103,7 @@ test_that("execute_tasks_parallel serial fallback bubbles errors from task_func"
 
   failing_task <- function(x) {
     if (x == 2) stop("Task failed")
-    return(x)
+    x
   }
 
   suppressMessages(
@@ -120,7 +130,7 @@ test_that("execute_tasks_parallel progress bar is closed on error", {
   environment(local_env$execute_tasks_parallel) <- local_env
 
   # We need to capture the fact that close() was called on the progress bar.
-  # A simple way to do this is to mock close() or txtProgressBar in the local env.
+  # A simple way to do this is to mock close() or txtProgressBar locally.
 
   pb_created <- FALSE
   pb_closed <- FALSE
@@ -145,7 +155,7 @@ test_that("execute_tasks_parallel progress bar is closed on error", {
   tasks <- list(1, 2)
   failing_task <- function(x) {
     if (x == 2) stop("Task 2 failed")
-    return(x)
+    x
   }
 
   expect_error(
@@ -157,7 +167,7 @@ test_that("execute_tasks_parallel progress bar is closed on error", {
   expect_true(pb_closed)
 })
 
-test_that("execute_tasks_parallel serial fallback handles empty list gracefully", {
+test_that("serial fallback handles empty list gracefully", {
   local_env <- new.env(parent = globalenv())
   local_env$execute_tasks_parallel <- execute_tasks_parallel
 
@@ -170,8 +180,8 @@ test_that("execute_tasks_parallel serial fallback handles empty list gracefully"
 
   environment(local_env$execute_tasks_parallel) <- local_env
 
-  # An empty list should be returned immediately before the txtProgressBar throws an error
-  # since max (length of tasks) would be 0, violating max > min in txtProgressBar.
+  # An empty list should be returned immediately before txtProgressBar errors
+  # since max (length of tasks) would be 0, violating max > min in progress.
   res <- local_env$execute_tasks_parallel(list(), function(x) x)
   expect_equal(res, list())
 })

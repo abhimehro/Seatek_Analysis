@@ -1,4 +1,6 @@
 library(testthat)
+
+source("../../Updated_Seatek_Analysis.R", local = TRUE)
 library(openxlsx)
 library(data.table)
 

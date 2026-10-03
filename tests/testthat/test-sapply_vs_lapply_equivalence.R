@@ -1,5 +1,7 @@
+source("../../Updated_Seatek_Analysis.R", local = TRUE)
+
 library(data.table)
-test_that("lapply(.SD) optimization produces exact same results as sapply baseline", {
+test_that("lapply(.SD) optimization equals sapply baseline", {
   # Setup synthetic data.table mimicking the benchmark data
   set.seed(42)
   n_rows <- 50
@@ -7,7 +9,8 @@ test_that("lapply(.SD) optimization produces exact same results as sapply baseli
   sensor_names <- paste0("Sensor", sprintf("%02d", 1:n_cols))
 
   # Introduce some NAs and negatives to simulate real-world data and edge cases
-  # Done on the matrix before converting to data.table to ensure correct element-wise replacement
+  # Done on the matrix before converting to data.table to ensure correct
+  # element-wise replacement
   mat <- matrix(runif(n_rows * n_cols, -5, 15), nrow = n_rows)
   mat[sample(1:(n_rows * n_cols), 20)] <- NA
   mat[sample(1:(n_rows * n_cols), 20)] <- -1

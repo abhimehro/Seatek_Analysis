@@ -35,7 +35,7 @@ test_that("export_comprehensive_summary creates sheet and writes CSV", {
   expected_csv <- file.path(temp_dir_path, "test_output_all.csv")
 
   # Mock style
-  header_style <- createStyle(textDecoration = "Bold", border = "Bottom")
+  header_style <- createStyle(textDecoration = "Bold", border = "Bottom", fontColour = "#FFFFFF", bgFill = "#4F81BD")
 
   # Call the function, suppressing messages
   suppressMessages({

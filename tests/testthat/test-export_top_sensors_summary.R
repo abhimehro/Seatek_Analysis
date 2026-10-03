@@ -36,7 +36,7 @@ test_that("export_top_sensors_summary works correctly", {
   )
 
   # Create mock styles
-  header_style <- createStyle(textDecoration = "Bold", border = "Bottom")
+  header_style <- createStyle(textDecoration = "Bold", border = "Bottom", fontColour = "#FFFFFF", bgFill = "#4F81BD")
 
   # Call the function
   suppressMessages({

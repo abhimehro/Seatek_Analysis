@@ -28,7 +28,7 @@ test_that("write_year_sheet works correctly", {
   )
 
   # Create mock styles
-  header_style <- createStyle(textDecoration = "Bold", border = "Bottom")
+  header_style <- createStyle(textDecoration = "Bold", border = "Bottom", fontColour = "#FFFFFF", bgFill = "#4F81BD")
   highlight_style_yearly <- createStyle(fontColour = "#006100", bgFill = "#C6EFCE")
 
   # Call the function
@@ -95,7 +95,7 @@ test_that("write_year_sheet skips highlighting all-NA within_diff", {
     full = c(1, 2),
     within_diff = c(NA_real_, NA_real_)
   )
-  header_style <- createStyle(textDecoration = "Bold")
+  header_style <- createStyle(textDecoration = "Bold", fontColour = "#FFFFFF", bgFill = "#4F81BD")
   highlight_style_yearly <- createStyle(fontColour = "#006100", bgFill = "#C6EFCE")
 
   expect_no_error(
@@ -120,7 +120,7 @@ test_that("write_year_sheet handles empty data", {
     full = numeric(),
     within_diff = numeric()
   )
-  header_style <- createStyle(textDecoration = "Bold")
+  header_style <- createStyle(textDecoration = "Bold", fontColour = "#FFFFFF", bgFill = "#4F81BD")
   highlight_style_yearly <- createStyle(fontColour = "#006100", bgFill = "#C6EFCE")
 
   expect_no_error(
@@ -138,7 +138,7 @@ test_that("write_year_sheet skips malformed within_diff", {
     full = c(1, 2),
     within_diff = c("a", "b")
   )
-  header_style <- createStyle(textDecoration = "Bold")
+  header_style <- createStyle(textDecoration = "Bold", fontColour = "#FFFFFF", bgFill = "#4F81BD")
   highlight_style_yearly <- createStyle(fontColour = "#006100", bgFill = "#C6EFCE")
 
   expect_no_error(
@@ -155,7 +155,7 @@ test_that("write_year_sheet skips highlighting without within_diff", {
     last5 = c(1, 2),
     full = c(1, 2)
   )
-  header_style <- createStyle(textDecoration = "Bold")
+  header_style <- createStyle(textDecoration = "Bold", fontColour = "#FFFFFF", bgFill = "#4F81BD")
   highlight_style_yearly <- createStyle(fontColour = "#006100", bgFill = "#C6EFCE")
 
   expect_no_error(

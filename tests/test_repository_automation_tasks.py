@@ -1,6 +1,7 @@
 import os
 import sys
 import tempfile
+from pathlib import Path
 from typing import Any
 
 import pytest
@@ -239,13 +240,15 @@ def test_hotspot_line_count_handles_value_error_after_regular_file_check(
     not (hasattr(os, "O_NOFOLLOW") and hasattr(os, "O_NONBLOCK")),
     reason="needs O_NOFOLLOW and O_NONBLOCK",
 )
-def test_hotspot_line_count_fails_closed_without_open_flags(monkeypatch, tmp_path):
+def test_hotspot_line_count_fails_closed_without_open_flags(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
     """Without O_NOFOLLOW/O_NONBLOCK the function must refuse to open."""
     path = tmp_path / "regular.py"
     path.write_text("x\n", encoding="utf-8")
-    opened = []
+    opened: list[Any] = []
 
-    def recording_open(*args, **_kwargs):
+    def recording_open(*args: Any, **_kwargs: Any) -> int:
         opened.append(args)
         return -1
 
@@ -257,7 +260,7 @@ def test_hotspot_line_count_fails_closed_without_open_flags(monkeypatch, tmp_pat
 
 
 @pytest.mark.skipif(not hasattr(os, "O_NOFOLLOW"), reason="needs O_NOFOLLOW")
-def test_hotspot_line_count_rejects_symlink(tmp_path):
+def test_hotspot_line_count_rejects_symlink(tmp_path: Path) -> None:
     """A symlink to a regular file must be refused (O_NOFOLLOW)."""
     target = tmp_path / "real.py"
     target.write_text("x\n", encoding="utf-8")

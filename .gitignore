@@ -2,6 +2,12 @@
 .Rhistory
 .RData
 .Ruserdata
+
+# Environments
+.env
+.env.*
+!.env.pr-recap.template
+
 # Python venv at Series_27/Analysis/venv/ is local-only (gitignored). Recreate
 # with Python 3.11 or 3.12 because pinned numpy==1.26.0 does not ship cp313
 # wheels. Do not commit the venv or backups/.

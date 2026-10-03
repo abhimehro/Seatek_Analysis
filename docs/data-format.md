@@ -5,9 +5,9 @@ and writes Excel/CSV summaries under `Data/` (outputs are gitignored).
 
 ## Pipeline inputs (tracked)
 
-| Path | Series | Filename pattern |
-| --- | --- | --- |
-| `Data/SS_Yxx.txt` | 28 | `SS_Y01.txt` … `SS_Y14.txt` |
+| Path              | Series | Filename pattern            |
+| ----------------- | ------ | --------------------------- |
+| `Data/SS_Yxx.txt` | 28     | `SS_Y01.txt` … `SS_Y14.txt` |
 
 `Updated_Seatek_Analysis.R` matches only `^SS_Y[0-9]{2}\\.txt$` under `Data/`.
 It does **not** load Series 26 files.
@@ -18,9 +18,9 @@ share one canonical location.
 
 ## Related tracked data (not read by this R pipeline)
 
-| Path | Series | Filename pattern |
-| --- | --- | --- |
-| `Series_26/Raw_Data/Text_Files/S26_Yxx.txt` | 26 | `S26_Y*.txt` |
+| Path                                        | Series | Filename pattern |
+| ------------------------------------------- | ------ | ---------------- |
+| `Series_26/Raw_Data/Text_Files/S26_Yxx.txt` | 26     | `S26_Y*.txt`     |
 
 ## Columns
 

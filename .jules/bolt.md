@@ -434,5 +434,8 @@ pre-calculated. **Action:** Instead of `mad(x, center = med)`, use
 generic dispatch overhead.
 
 ## 2023-10-27 - Inline sd() as sqrt(var())
-**Learning:** Using sqrt(var(x)) avoids the type-checking and function call overhead of the sd() function on guaranteed numeric vectors in high-frequency loops.
-**Action:** Replace sd() with sqrt(var()) for guaranteed numeric vectors in performance-critical paths.
+
+**Learning:** Using sqrt(var(x)) avoids the type-checking and function call
+overhead of the sd() function on guaranteed numeric vectors in high-frequency
+loops. **Action:** Replace sd() with sqrt(var()) for guaranteed numeric vectors
+in performance-critical paths.

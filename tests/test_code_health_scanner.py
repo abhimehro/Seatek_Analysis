@@ -76,10 +76,12 @@ def test_read_file_safe_too_large():
 
 
 def test_read_file_safe_non_existent():
+    """Return an empty list when the requested file does not exist."""
     assert read_file_safe("non_existent_file_12345.txt") == []
 
 
 def test_read_file_safe_non_regular_file():
+    """Reject non-regular files without attempting to open them."""
     with (
         patch("code_health_scanner.os.path.isfile", return_value=False),
         patch("builtins.open") as mock_open,
@@ -89,6 +91,7 @@ def test_read_file_safe_non_regular_file():
 
 
 def test_get_repo_info_exception_logging(caplog):
+    """Return unknown metadata and log errors without exposing exception details."""
     import logging
 
     with patch("subprocess.check_output") as mock_run:

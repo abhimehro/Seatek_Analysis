@@ -243,9 +243,17 @@ def test_hotspot_line_count_fails_closed_without_open_flags(monkeypatch, tmp_pat
     """Without O_NOFOLLOW/O_NONBLOCK the function must refuse to open."""
     path = tmp_path / "regular.py"
     path.write_text("x\n", encoding="utf-8")
+    opened = []
+
+    def recording_open(*args, **kwargs):
+        opened.append(args)
+        return -1
+
+    monkeypatch.setattr("os.open", recording_open)
     monkeypatch.delattr("os.O_NOFOLLOW")
     monkeypatch.delattr("os.O_NONBLOCK")
     assert _hotspot_line_count(str(path)) is None
+    assert opened == []
 
 
 @pytest.mark.skipif(not hasattr(os, "O_NOFOLLOW"), reason="needs O_NOFOLLOW")
@@ -253,5 +261,8 @@ def test_hotspot_line_count_rejects_symlink(tmp_path):
     target = tmp_path / "real.py"
     target.write_text("x\n", encoding="utf-8")
     link = tmp_path / "link.py"
-    link.symlink_to(target)
+    try:
+        link.symlink_to(target)
+    except OSError:
+        pytest.skip("symlink creation not permitted")
     assert _hotspot_line_count(str(link)) is None

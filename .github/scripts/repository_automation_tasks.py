@@ -160,15 +160,24 @@ def run_command_set(
 
 MAX_FILE_SIZE = 10 * 1024 * 1024  # 10 MB
 
+_missing_open_flags_logged = False
+
 
 def _hotspot_line_count(path_str: str) -> int | None:
     """Return a bounded line count for a regular file, or ``None`` when unsafe."""
+    global _missing_open_flags_logged
     if "\0" in path_str:
         return None
 
     try:
         flags = os.O_RDONLY | os.O_NONBLOCK | os.O_NOFOLLOW
     except AttributeError:
+        if not _missing_open_flags_logged:
+            _missing_open_flags_logged = True
+            logging.warning(
+                "hotspot line counting disabled: O_NOFOLLOW/O_NONBLOCK "
+                "unavailable on this platform"
+            )
         return None
 
     try:

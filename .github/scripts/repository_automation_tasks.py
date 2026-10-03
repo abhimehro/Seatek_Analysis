@@ -8,6 +8,7 @@ import logging
 import os
 import pathlib
 import re
+import stat
 from typing import Any
 
 from repository_automation_common import (
@@ -159,18 +160,41 @@ def run_command_set(
 
 MAX_FILE_SIZE = 10 * 1024 * 1024  # 10 MB
 
+_missing_open_flags_logged = False
+
 
 def _hotspot_line_count(path_str: str) -> int | None:
     """Return a bounded line count for a regular file, or ``None`` when unsafe."""
-    if "\0" in path_str or not os.path.isfile(path_str):
+    global _missing_open_flags_logged
+    if "\0" in path_str:
         return None
 
     try:
-        with open(path_str, "rb") as file:
-            content = file.read(MAX_FILE_SIZE + 1)
-        if len(content) > MAX_FILE_SIZE:
-            return None
-        return content.count(b"\n") + 1
+        flags = os.O_RDONLY | os.O_NONBLOCK | os.O_NOFOLLOW
+    except AttributeError:
+        if not _missing_open_flags_logged:
+            _missing_open_flags_logged = True
+            logging.warning(
+                "hotspot line counting disabled: O_NOFOLLOW/O_NONBLOCK "
+                "unavailable on this platform"
+            )
+        return None
+
+    try:
+        file_descriptor = os.open(path_str, flags)
+        try:
+            file_stat = os.fstat(file_descriptor)
+            if not stat.S_ISREG(file_stat.st_mode):
+                return None
+            with os.fdopen(file_descriptor, "rb") as file:
+                file_descriptor = -1
+                content = file.read(MAX_FILE_SIZE + 1)
+            if len(content) > MAX_FILE_SIZE:
+                return None
+            return content.count(b"\n") + 1
+        finally:
+            if file_descriptor != -1:
+                os.close(file_descriptor)
     except (OSError, ValueError):
         return None
 

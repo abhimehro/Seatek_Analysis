@@ -1,11 +1,14 @@
 import os
 import sys
+import tempfile
+from pathlib import Path
 from typing import Any
+
+import pytest
 
 sys.path.insert(
     0, os.path.abspath(os.path.join(os.path.dirname(__file__), "../.github/scripts"))
 )
-import tempfile
 
 from repository_automation_tasks import (
     _hotspot_line_count,
@@ -228,6 +231,42 @@ def test_hotspot_line_count_handles_value_error_after_regular_file_check(
     def raise_value_error(*_args, **_kwargs):
         raise ValueError("unexpected invalid file operation")
 
-    monkeypatch.setattr("builtins.open", raise_value_error)
+    monkeypatch.setattr("os.fdopen", raise_value_error)
 
     assert _hotspot_line_count(str(path)) is None
+
+
+@pytest.mark.skipif(
+    not (hasattr(os, "O_NOFOLLOW") and hasattr(os, "O_NONBLOCK")),
+    reason="needs O_NOFOLLOW and O_NONBLOCK",
+)
+def test_hotspot_line_count_fails_closed_without_open_flags(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    """Without O_NOFOLLOW/O_NONBLOCK the function must refuse to open."""
+    path = tmp_path / "regular.py"
+    path.write_text("x\n", encoding="utf-8")
+    opened: list[Any] = []
+
+    def recording_open(*args: Any, **_kwargs: Any) -> int:
+        opened.append(args)
+        return -1
+
+    monkeypatch.setattr("os.open", recording_open)
+    monkeypatch.delattr("os.O_NOFOLLOW")
+    monkeypatch.delattr("os.O_NONBLOCK")
+    assert _hotspot_line_count(str(path)) is None
+    assert not opened
+
+
+@pytest.mark.skipif(not hasattr(os, "O_NOFOLLOW"), reason="needs O_NOFOLLOW")
+def test_hotspot_line_count_rejects_symlink(tmp_path: Path) -> None:
+    """A symlink to a regular file must be refused (O_NOFOLLOW)."""
+    target = tmp_path / "real.py"
+    target.write_text("x\n", encoding="utf-8")
+    link = tmp_path / "link.py"
+    try:
+        link.symlink_to(target)
+    except OSError:
+        pytest.skip("symlink creation not permitted")
+    assert _hotspot_line_count(str(link)) is None

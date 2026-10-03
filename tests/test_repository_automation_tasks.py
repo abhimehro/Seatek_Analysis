@@ -228,6 +228,6 @@ def test_hotspot_line_count_handles_value_error_after_regular_file_check(
     def raise_value_error(*_args, **_kwargs):
         raise ValueError("unexpected invalid file operation")
 
-    monkeypatch.setattr("builtins.open", raise_value_error)
+    monkeypatch.setattr("os.open", raise_value_error)
 
     assert _hotspot_line_count(str(path)) is None

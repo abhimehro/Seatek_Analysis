@@ -59,3 +59,8 @@ code without explanation provides a poor first impression and lacks guidance.
 `return` to ensure error codes bubble up to the CLI. Additionally, combine
 `ArgumentDefaultsHelpFormatter` and `RawDescriptionHelpFormatter` in `argparse`
 to provide clean, detailed help text with explicit examples.
+
+## 2025-07-11 - [CLI UX] Add actionable suggestion to invalid task error
+
+**Learning:** The CLI runner's error message for unknown tasks was unhelpful and lacked clear direction. Good Developer Experience (DX) requires actionable error outputs.
+**Action:** Appended an actionable suggestion ("Action: Run with --help to see available tasks.") to the invalid task error output in `repository_automation.py`.

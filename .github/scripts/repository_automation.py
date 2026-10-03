@@ -56,7 +56,7 @@ def main() -> int:
 
     runner = TASK_RUNNERS.get(args.task)
     if runner is None:
-        print(f"Unknown task: {args.task}. Run with --help to see available tasks.")
+        print(f"Unknown task: {args.task}. Action: Run with --help to see available tasks.")
         return 1
 
     runner(load_config())

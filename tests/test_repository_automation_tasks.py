@@ -230,8 +230,21 @@ def test_hotspot_line_count_handles_value_error_after_regular_file_check(
     def raise_value_error(*_args, **_kwargs):
         raise ValueError("unexpected invalid file operation")
 
-    monkeypatch.setattr("os.open", raise_value_error)
+    monkeypatch.setattr("os.fdopen", raise_value_error)
 
+    assert _hotspot_line_count(str(path)) is None
+
+
+@pytest.mark.skipif(
+    not (hasattr(os, "O_NOFOLLOW") and hasattr(os, "O_NONBLOCK")),
+    reason="needs O_NOFOLLOW and O_NONBLOCK",
+)
+def test_hotspot_line_count_fails_closed_without_open_flags(monkeypatch, tmp_path):
+    """Without O_NOFOLLOW/O_NONBLOCK the function must refuse to open."""
+    path = tmp_path / "regular.py"
+    path.write_text("x\n", encoding="utf-8")
+    monkeypatch.delattr("os.O_NOFOLLOW")
+    monkeypatch.delattr("os.O_NONBLOCK")
     assert _hotspot_line_count(str(path)) is None
 
 

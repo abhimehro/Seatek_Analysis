@@ -167,9 +167,11 @@ def _hotspot_line_count(path_str: str) -> int | None:
         return None
 
     try:
-        flags = os.O_RDONLY
-        flags |= getattr(os, "O_NONBLOCK", 0)
-        flags |= getattr(os, "O_NOFOLLOW", 0)
+        flags = os.O_RDONLY | os.O_NONBLOCK | os.O_NOFOLLOW
+    except AttributeError:
+        return None
+
+    try:
         file_descriptor = os.open(path_str, flags)
         try:
             file_stat = os.fstat(file_descriptor)

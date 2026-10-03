@@ -79,6 +79,15 @@ def test_read_file_safe_non_existent():
     assert read_file_safe("non_existent_file_12345.txt") == []
 
 
+def test_read_file_safe_non_regular_file():
+    with (
+        patch("code_health_scanner.os.path.isfile", return_value=False),
+        patch("builtins.open") as mock_open,
+    ):
+        assert read_file_safe("non_regular_file") == []
+        mock_open.assert_not_called()
+
+
 def test_get_repo_info_exception_logging(caplog):
     import logging
 

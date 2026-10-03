@@ -90,6 +90,7 @@ def test_read_file_safe_non_regular_file(filepath):
 
 
 def test_get_repo_info_exception_logging(caplog):
+    """Return unknown metadata and log errors without exposing exception details."""
     import logging
 
     with patch("subprocess.check_output") as mock_run:

@@ -127,8 +127,13 @@ def iso_day(value: dt.datetime | None = None) -> str:
 
 
 def load_config() -> dict[str, Any]:
-    data = yaml.safe_load(CONFIG_PATH.read_text()) or {}
-    return data.get("automation", {})
+    try:
+        if not CONFIG_PATH.is_file():
+            return {}
+        data = yaml.safe_load(CONFIG_PATH.read_text()) or {}
+        return data.get("automation", {})
+    except (OSError, ValueError):
+        return {}
 
 
 def task_dir(task: str) -> Path:
@@ -296,11 +301,15 @@ def write_result(
 
 def enforce_result(path_str: str) -> int:
     path = Path(path_str)
-    if not path.exists():
-        print(f"Missing task result: {path}")
+    try:
+        if not path.is_file():
+            print(f"Missing task result: {path}")
+            return 1
+        data = json.loads(path.read_text())
+        return 1 if data.get("status") in {"failure", "needs_review"} else 0
+    except (OSError, ValueError, json.JSONDecodeError):
+        print(f"Failed to read task result: {path}")
         return 1
-    data = json.loads(path.read_text())
-    return 1 if data.get("status") in {"failure", "needs_review"} else 0
 
 
 def command_block(entry: dict[str, Any]) -> str:

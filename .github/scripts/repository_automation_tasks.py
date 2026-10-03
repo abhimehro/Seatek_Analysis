@@ -639,8 +639,10 @@ def run_backlog_manager(config: dict[str, Any]) -> dict[str, Any]:
 
 def _read_result(path: pathlib.Path) -> dict[str, Any] | None:
     try:
+        if not path.is_file():
+            return None
         return json.loads(path.read_text())
-    except json.JSONDecodeError:
+    except (OSError, ValueError, json.JSONDecodeError):
         return None
 
 

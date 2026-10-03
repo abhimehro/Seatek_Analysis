@@ -245,3 +245,9 @@ is a regular file using `os.path.isfile()` or
 `stat.S_ISREG(os.stat(path).st_mode)` before attempting to open and read its
 contents, especially in security wrappers designed to read untrusted files
 safely.
+
+## 2025-02-28 - File Read DoS via Special Files in `read_text()`
+
+**Vulnerability:** The script used `path.read_text()` on user-supplied or external paths in `.github/scripts/repository_automation_common.py` and `.github/scripts/repository_automation_tasks.py` without verifying if the path pointed to a regular file. If the path pointed to a special file like a FIFO (named pipe), the read call could block indefinitely, causing a Denial of Service.
+**Learning:** `pathlib.Path.read_text()` is just as vulnerable to blocking on special files as `open()`. Checking for existence with `path.exists()` is insufficient.
+**Prevention:** Always verify that a path points to a regular file using `path.is_file()` before reading its contents, and handle potential path-related `OSError` or `ValueError` exceptions gracefully.

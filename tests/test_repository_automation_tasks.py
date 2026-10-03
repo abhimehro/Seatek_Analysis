@@ -7,6 +7,8 @@ sys.path.insert(
 )
 import tempfile
 
+import pytest
+
 from repository_automation_tasks import (
     _hotspot_line_count,
     configured_commands,
@@ -231,3 +233,12 @@ def test_hotspot_line_count_handles_value_error_after_regular_file_check(
     monkeypatch.setattr("os.open", raise_value_error)
 
     assert _hotspot_line_count(str(path)) is None
+
+
+@pytest.mark.skipif(not hasattr(os, "O_NOFOLLOW"), reason="needs O_NOFOLLOW")
+def test_hotspot_line_count_rejects_symlink(tmp_path):
+    target = tmp_path / "real.py"
+    target.write_text("x\n", encoding="utf-8")
+    link = tmp_path / "link.py"
+    link.symlink_to(target)
+    assert _hotspot_line_count(str(link)) is None

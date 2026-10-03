@@ -19,6 +19,7 @@
 - Jules Daily QA & Agentic Review - Healthy Repository [\#972](https://github.com/abhimehro/Seatek_Analysis/issues/972)
 - Daily QA & Agentic Review — 2026-09-30 [\#970](https://github.com/abhimehro/Seatek_Analysis/issues/970)
 - Jules Daily QA & Agentic Review - Healthy Repository [\#968](https://github.com/abhimehro/Seatek_Analysis/issues/968)
+- \[PR sweep\] \#821: Qodo remediation stacked on \#819 [\#962](https://github.com/abhimehro/Seatek_Analysis/issues/962)
 - \[PR sweep\] \#902: Dependabot: ruby/setup-ruby 1.323.0 -\> 1.325.0 [\#954](https://github.com/abhimehro/Seatek_Analysis/issues/954)
 - Daily QA & Agentic Review — 2026-09-29 [\#939](https://github.com/abhimehro/Seatek_Analysis/issues/939)
 - Jules Daily QA & Agentic Review - Status Update [\#937](https://github.com/abhimehro/Seatek_Analysis/issues/937)
@@ -185,6 +186,7 @@
 
 **Merged pull requests:**
 
+- fix: atomic hotspot file open + enforce pytest in CI \(salvage \#819/\#821\) [\#978](https://github.com/abhimehro/Seatek_Analysis/pull/978) ([abhimehro](https://github.com/abhimehro))
 - 🎨 Palette: Add explicit font color for Excel accessibility [\#927](https://github.com/abhimehro/Seatek_Analysis/pull/927) ([abhimehro](https://github.com/abhimehro))
 - ⚡ Bolt: Optimize standard deviation calculation [\#923](https://github.com/abhimehro/Seatek_Analysis/pull/923) ([abhimehro](https://github.com/abhimehro))
 - chore\(deps\): bump ruby/setup-ruby from 1.322.0 to 1.323.0 [\#863](https://github.com/abhimehro/Seatek_Analysis/pull/863) ([dependabot[bot]](https://github.com/apps/dependabot))

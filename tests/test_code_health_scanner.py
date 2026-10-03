@@ -81,12 +81,9 @@ def test_read_file_safe_non_existent():
 
 
 def test_read_file_safe_non_regular_file():
-    """Reject non-regular files without attempting to open them."""
-    with (
-        patch("code_health_scanner.os.path.isfile", return_value=False),
-        patch("builtins.open") as mock_open,
-    ):
-        assert read_file_safe("non_regular_file") == []
+    """Reject a directory without attempting to open it."""
+    with patch("builtins.open") as mock_open:
+        assert read_file_safe(".") == []
         mock_open.assert_not_called()
 
 

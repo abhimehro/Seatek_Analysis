@@ -1,13 +1,13 @@
 import os
 import sys
+import tempfile
 from typing import Any
+
+import pytest
 
 sys.path.insert(
     0, os.path.abspath(os.path.join(os.path.dirname(__file__), "../.github/scripts"))
 )
-import tempfile
-
-import pytest
 
 from repository_automation_tasks import (
     _hotspot_line_count,
@@ -245,7 +245,7 @@ def test_hotspot_line_count_fails_closed_without_open_flags(monkeypatch, tmp_pat
     path.write_text("x\n", encoding="utf-8")
     opened = []
 
-    def recording_open(*args, **kwargs):
+    def recording_open(*args, **_kwargs):
         opened.append(args)
         return -1
 
@@ -253,11 +253,12 @@ def test_hotspot_line_count_fails_closed_without_open_flags(monkeypatch, tmp_pat
     monkeypatch.delattr("os.O_NOFOLLOW")
     monkeypatch.delattr("os.O_NONBLOCK")
     assert _hotspot_line_count(str(path)) is None
-    assert opened == []
+    assert not opened
 
 
 @pytest.mark.skipif(not hasattr(os, "O_NOFOLLOW"), reason="needs O_NOFOLLOW")
 def test_hotspot_line_count_rejects_symlink(tmp_path):
+    """A symlink to a regular file must be refused (O_NOFOLLOW)."""
     target = tmp_path / "real.py"
     target.write_text("x\n", encoding="utf-8")
     link = tmp_path / "link.py"

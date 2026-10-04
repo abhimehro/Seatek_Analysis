@@ -22,6 +22,15 @@ def test_main_unknown_task(capsys):
     captured = capsys.readouterr()
     assert "Unknown task: unknown-task" in captured.out
     assert "Run with --help to see available tasks." in captured.out
+    assert "Action: Verify the task name." in captured.out
+
+
+@patch("sys.argv", ["repository_automation.py", "workflow-pdate"])
+def test_main_unknown_task_with_suggestion(capsys):
+    assert main() == 1
+    captured = capsys.readouterr()
+    assert "Unknown task: workflow-pdate" in captured.out
+    assert "Action: Did you mean 'workflow-updater'?" in captured.out
 
 
 @patch("sys.argv", ["repository_automation.py", "enforce"])
@@ -29,6 +38,7 @@ def test_main_enforce_no_result_path(capsys):
     assert main() == 1
     captured = capsys.readouterr()
     assert "enforce requires a result path" in captured.out
+    assert "Action: Provide the path to the result JSON file." in captured.out
 
 
 @patch("sys.argv", ["repository_automation.py", "enforce", "path/to/result.json"])

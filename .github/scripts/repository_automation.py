@@ -2,6 +2,8 @@
 from __future__ import annotations
 
 import argparse
+import difflib
+import sys
 
 from repository_automation_common import enforce_result, load_config
 from repository_automation_tasks import (
@@ -46,8 +48,6 @@ def main() -> int:
         help="Path to result JSON file (required for 'enforce').",
     )
 
-    import sys
-
     if len(sys.argv) == 1:
         parser.print_help(sys.stderr)
         return 1
@@ -64,8 +64,6 @@ def main() -> int:
     runner = TASK_RUNNERS.get(args.task)
     if runner is None:
         print(f"Unknown task: {args.task}. Run with --help to see available tasks.")
-        import difflib
-
         matches = difflib.get_close_matches(args.task, TASK_RUNNERS.keys())
         if matches:
             print(f"Action: Did you mean '{matches[0]}'? Verify the task name.")

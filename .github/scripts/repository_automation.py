@@ -31,6 +31,24 @@ TASK_RUNNERS = {
 }
 
 
+def _handle_enforce(result_path: str | None) -> int:
+    if not result_path:
+        print("enforce requires a result path")
+        print("Action: Provide the path to the result JSON file.")
+        return 1
+    return enforce_result(result_path)
+
+
+def _handle_unknown_task(task: str) -> int:
+    print(f"Unknown task: {task}. Run with --help to see available tasks.")
+    matches = difflib.get_close_matches(task, TASK_RUNNERS.keys())
+    if matches:
+        print(f"Action: Did you mean '{matches[0]}'? Verify the task name.")
+    else:
+        print("Action: Verify the task name.")
+    return 1
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(
         description="Consolidated repository automation runner",
@@ -55,21 +73,11 @@ def main() -> int:
     args = parser.parse_args()
 
     if args.task == "enforce":
-        if not args.result_path:
-            print("enforce requires a result path")
-            print("Action: Provide the path to the result JSON file.")
-            return 1
-        return enforce_result(args.result_path)
+        return _handle_enforce(args.result_path)
 
     runner = TASK_RUNNERS.get(args.task)
     if runner is None:
-        print(f"Unknown task: {args.task}. Run with --help to see available tasks.")
-        matches = difflib.get_close_matches(args.task, TASK_RUNNERS.keys())
-        if matches:
-            print(f"Action: Did you mean '{matches[0]}'? Verify the task name.")
-        else:
-            print("Action: Verify the task name.")
-        return 1
+        return _handle_unknown_task(args.task)
 
     runner(load_config())
     return 0

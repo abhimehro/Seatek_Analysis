@@ -1,5 +1,7 @@
 library(testthat)
 
+source("../../Updated_Seatek_Analysis.R", local = TRUE)
+
 # Source the script containing the function
 # We assume the test is run with the working directory as 'tests/testthat'
 # or that we can find the file relative to the project root.

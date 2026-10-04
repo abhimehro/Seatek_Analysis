@@ -14,7 +14,7 @@ if (!requireNamespace("data.table", quietly = TRUE)) {
   stop(
     "The 'data.table' package is required to run this benchmark.\n",
     "Please install it before running this script, e.g.:\n",
-    "  install.packages(\"data.table\", repos = \"https://cloud.r-project.org\")",
+    "  install.packages(\"data.table\", repos=\"https://cloud.r-project.org\")",
     call. = FALSE
   )
 }
@@ -22,7 +22,7 @@ if (!requireNamespace("microbenchmark", quietly = TRUE)) {
   stop(
     "The 'microbenchmark' package is required to run this benchmark.\n",
     "Please install it before running this script, e.g.:\n",
-    "  install.packages(\"microbenchmark\", repos = \"https://cloud.r-project.org\")",
+    "  install.packages(\"microbenchmark\",\n        repos=\"https://cloud.r-project.org\")",
     call. = FALSE
   )
 }
@@ -43,7 +43,9 @@ setnames(df, sensor_names)
 df[sample(1:(n_rows * n_cols), 100000)] <- NA
 df[sample(1:(n_rows * n_cols), 100000)] <- -1
 
-message(sprintf("Benchmarking with dataset size: %d rows x %d cols", n_rows, n_cols))
+message(sprintf(
+  "Benchmarking with dataset size: %d rows x %d cols", n_rows, n_cols
+))
 
 # Run the benchmark
 mb <- microbenchmark(

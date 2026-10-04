@@ -1,5 +1,7 @@
 library(testthat)
 
+source("../../Updated_Seatek_Analysis.R", local = TRUE)
+
 # The validate_sensor_file function is expected to be in the global environment
 # as Updated_Seatek_Analysis.R is sourced by the testthat.R helper.
 
@@ -33,8 +35,9 @@ test_that("validate_sensor_file errors on oversized file", {
   writeLines("test data", large_file)
   on.exit(unlink(large_file, force = TRUE))
 
-  # Temporarily override file.size in the global environment to simulate a large file
-  original_file_size <- base::file.size
+  # Temporarily override file.size in global env to simulate a large file
+  # Suppress linter for file.size mocking
+  # nolint next: object_name_linter.
   assign("file.size", function(...) 60 * 1024 * 1024, envir = .GlobalEnv)
 
   # Ensure cleanup of the mock

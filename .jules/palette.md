@@ -59,3 +59,8 @@ code without explanation provides a poor first impression and lacks guidance.
 `return` to ensure error codes bubble up to the CLI. Additionally, combine
 `ArgumentDefaultsHelpFormatter` and `RawDescriptionHelpFormatter` in `argparse`
 to provide clean, detailed help text with explicit examples.
+
+## 2025-05-06 - CLI Unknown Task Typo UX
+
+**Learning:** When a user mistypes a task name (e.g., "quality-asurance" instead of "quality-assurance"), a generic "Unknown task" error leaves them scanning the help text manually to spot the typo. Good DX anticipates mistakes.
+**Action:** Use Python's built-in `difflib.get_close_matches` when an unknown task is provided to suggest the closest valid task name, saving the user time and frustration.

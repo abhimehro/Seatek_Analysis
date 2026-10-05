@@ -32,6 +32,7 @@ TASK_RUNNERS = {
 
 
 def _handle_enforce(result_path: str | None) -> int:
+    """Return the result's enforcement status, or 1 with guidance if no path is given."""
     if not result_path:
         print("enforce requires a result path")
         print("Action: Provide the path to the result JSON file.")
@@ -40,6 +41,7 @@ def _handle_enforce(result_path: str | None) -> int:
 
 
 def _handle_unknown_task(task: str) -> int:
+    """Print guidance with a close task-name match when available and return 1."""
     print(f"Unknown task: {task}. Run with --help to see available tasks.")
     matches = difflib.get_close_matches(task, TASK_RUNNERS.keys())
     if matches:
@@ -50,6 +52,7 @@ def _handle_unknown_task(task: str) -> int:
 
 
 def main() -> int:
+    """Parse CLI arguments, dispatch the selected task, and return a CLI exit status."""
     parser = argparse.ArgumentParser(
         description="Consolidated repository automation runner",
         formatter_class=CustomHelpFormatter,

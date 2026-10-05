@@ -102,7 +102,7 @@ regenerable from the source tree; neither the application nor CI reads it.
 │       └── validation_log.txt
 ├── Series_28/                        # Processed data and analysis for Series 28; raw SS inputs live in Data/
 │   ├── Processed_Data/
-│   │   └── SS_Yxx.xlsx               # Processed Series 28 data per year
+│   │   └── SS_Yxx.xlsx               # Tracked Series 28 outputs (archival; current pipeline writes Data/SS_Yxx.xlsx)
 │   └── Analysis/                     # Summary outputs specific to Series 28 processing (often mirrors content of top-level Data/ for SS_Yxx files)
 │       ├── Seatek_Summary.xlsx
 │       ├── Seatek_Summary.csv

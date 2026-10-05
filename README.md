@@ -19,11 +19,13 @@
 This repository contains the R-based analysis tier for processing Seatek sensor
 data and generating Excel workbooks. It is part of a three-tier analysis system:
 
-1. **R-Tier (This Repository):** Ingests, validates, and processes raw Seatek
-   sensor data (primarily `SS_Yxx.txt` for Series 28, and `S26_Yxx.txt` for
-   Series 26), exports cleaned data and summary metrics (first 10, last 5, full,
-   and within_diff for each sensor) to Excel, and generates a combined summary
-   workbook. Robust logging and error handling are included.
+1. **R-Tier (This Repository):** Ingests, validates, and processes raw Series 28
+   sensor data from tracked `Data/SS_Yxx.txt` files, exports cleaned data and
+   summary metrics (first 10, last 5, full, and within_diff for each sensor) to
+   Excel, and generates a combined summary workbook. Series 26 text stays under
+   `Series_26/Raw_Data/Text_Files/` for older manual processing. File layout is
+   in [docs/data-format.md](docs/data-format.md). Robust logging and error
+   handling are included.
 2. **Excel-Tier:** Manages intermediate data processing and basic
    visualizations.
 3. **Python-Tier:** Handles advanced data visualization and large-scale data
@@ -63,9 +65,7 @@ regenerable from the source tree; neither the application nor CI reads it.
 ```Markdown
 ├── Data/                             # Primary working directory for Updated_Seatek_Analysis.R
 │   ├── SS_Yxx.txt                    # Raw Series 28 data files (input, tracked)
-│   ├── S26_Yxx.txt                   # Raw Series 26 data files (input, tracked)
 │   ├── SS_Yxx.xlsx                   # Processed Series 28 data per year (output, gitignored / regenerable)
-│   ├── S26_Yxx.xlsx                  # Processed Series 26 data per year (output, gitignored / regenerable)
 │   ├── Seatek_Summary.xlsx           # Main summary Excel workbook (output, gitignored / regenerable)
 │   ├── Seatek_Summary.csv            # Main summary CSV (output, gitignored / regenerable)
 │   ├── Seatek_Summary_all.csv        # Comprehensive summary CSV (output, gitignored / regenerable)
@@ -75,7 +75,7 @@ regenerable from the source tree; neither the application nor CI reads it.
 ├── Series_26/                        # Data and analysis specific to Series 26 sensors
 │   ├── Raw_Data/
 │   │   ├── Text_Files/
-│   │   │   └── S26_Yxx.txt           # Raw Series 26 text files (input to Updated_Seatek_Analysis.R)
+│   │   │   └── S26_Yxx.txt           # Raw Series 26 text for older manual processing (see docs/data-format.md)
 │   │   └── Excel_Files/
 │   │       └── Raw_Data_Year_*.xlsx  # Raw Series 26 data in Excel format (often manually curated or from other processes)
 │   ├── Processed_Data/
@@ -108,10 +108,9 @@ regenerable from the source tree; neither the application nor CI reads it.
 │       ├── Seatek_Summary.csv
 │       └── (other Seatek_Summary*.csv files like _all, _robust, _sufficient, _top_sensors)
 ├── Updated_Seatek_Analysis.R   # Primary R analysis script.
-│                                     # Processes S26_Yxx.txt (from Series_26/Raw_Data/Text_Files/) and
-│                                     # SS_Yxx.txt from Data/.
+│                                     # Reads Data/SS_Yxx.txt (Series 28).
 │                                     # Key outputs are generated in the top-level Data/ directory:
-│                                     #   - Individual year Excel files: Data/SS_Yxx.xlsx, Data/S26_Yxx.xlsx
+│                                     #   - Individual year Excel files: Data/SS_Yxx.xlsx
 │                                     #   - Main summary workbook: Data/Seatek_Summary.xlsx
 │                                     #   - Summary CSVs: Data/Seatek_Summary.csv, Data/Seatek_Summary_all.csv,
 │                                     #     Data/Seatek_Summary_robust.csv, Data/Seatek_Summary_sufficient.csv,

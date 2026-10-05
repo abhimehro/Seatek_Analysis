@@ -59,3 +59,11 @@ code without explanation provides a poor first impression and lacks guidance.
 `return` to ensure error codes bubble up to the CLI. Additionally, combine
 `ArgumentDefaultsHelpFormatter` and `RawDescriptionHelpFormatter` in `argparse`
 to provide clean, detailed help text with explicit examples.
+
+## 2025-05-06 - Accessible Header Contrast
+
+**Learning:** Adding explicit high-contrast background and font colors to
+headers improves visual hierarchy and ensures accessibility for screen readers
+and users with visual impairments. **Action:** When using `createStyle` for
+headers, pair dark backgrounds with white text (e.g., `#FFFFFF` text on
+`#4F81BD` background).

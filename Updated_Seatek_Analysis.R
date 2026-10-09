@@ -676,7 +676,7 @@ run_pipeline <- function() {
 }
 
 # Main execution block
-if (sys.nframe() == 0) {
+if (sys.nframe() == 0 || interactive()) {
   cat("\n🌊 Seatek Analysis Pipeline 🌊\n=============================\n")
   run_pipeline()
 }

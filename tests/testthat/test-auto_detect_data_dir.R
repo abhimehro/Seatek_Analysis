@@ -1,11 +1,6 @@
 library(testthat)
 
-analysis_script <- if (file.exists("Updated_Seatek_Analysis.R")) {
-  "Updated_Seatek_Analysis.R"
-} else {
-  "../../Updated_Seatek_Analysis.R"
-}
-source(analysis_script, local = TRUE)
+source("../../Updated_Seatek_Analysis.R", local = TRUE)
 
 # The auto_detect_data_dir function is expected to be in the global environment
 # as Updated_Seatek_Analysis.R is sourced by the testthat.R helper.

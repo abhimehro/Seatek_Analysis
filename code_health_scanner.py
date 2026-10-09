@@ -80,7 +80,16 @@ CWD_REALPATH_PLUS_SEP = os.path.join(CWD_REALPATH, "")
 
 
 def read_file_safe(filepath):
-    """Safely reads a file, preventing path traversal and OOM issues."""
+    """Read UTF-8 text as lines, retaining normalized line endings.
+
+    The resolved path must be a regular file within the working directory
+    captured at module import. Relative paths use the current working directory
+    at call time. Accept at most MAX_FILE_SIZE decoded characters, not bytes.
+
+    Return an empty list for empty files, null-byte paths, rejected paths,
+    oversized content, or OSError, UnicodeDecodeError, or ValueError during
+    path handling or reading. TypeError from unsupported path types propagates.
+    """
     try:
         # SECURITY: Handle null bytes in path which cause ValueError in Python 3.12+
         # preventing unhandled exception DoS attacks.
@@ -96,7 +105,6 @@ def read_file_safe(filepath):
         ):
             return []
 
-        # ⚡ Bolt: Removed redundant os.path.isfile() check which introduced unnecessary file system lookup overhead.
         # SECURITY: Prevent DoS by only reading regular files.
         if not os.path.isfile(resolved_filepath):
             return []

@@ -18,7 +18,6 @@ def test_main_empty_state(capsys):
 
 @patch("sys.argv", ["repository_automation.py", "unknown-task"])
 def test_main_unknown_task(capsys):
-    """Verify an unknown task fails with help and task-name verification guidance."""
     assert main() == 1
     captured = capsys.readouterr()
     assert "Unknown task: unknown-task" in captured.out
@@ -28,7 +27,6 @@ def test_main_unknown_task(capsys):
 
 @patch("sys.argv", ["repository_automation.py", "workflow-pdate"])
 def test_main_unknown_task_with_suggestion(capsys):
-    """Verify a mistyped task fails with a suggestion for the closest task name."""
     assert main() == 1
     captured = capsys.readouterr()
     assert "Unknown task: workflow-pdate" in captured.out
@@ -37,7 +35,6 @@ def test_main_unknown_task_with_suggestion(capsys):
 
 @patch("sys.argv", ["repository_automation.py", "enforce"])
 def test_main_enforce_no_result_path(capsys):
-    """Verify enforce fails with actionable guidance when its result path is missing."""
     assert main() == 1
     captured = capsys.readouterr()
     assert "enforce requires a result path" in captured.out

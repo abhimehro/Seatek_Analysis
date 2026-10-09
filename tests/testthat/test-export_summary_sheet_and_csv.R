@@ -30,7 +30,7 @@ test_that("export_summary_sheet_and_csv works correctly", {
   )
 
   # Create mock styles
-  header_style <- createStyle(textDecoration = "Bold", border = "Bottom")
+  header_style <- createStyle(textDecoration = "Bold", border = "Bottom", fontColour = "#FFFFFF", bgFill = "#4F81BD")
 
   # Capture output messages
   out <- capture.output({

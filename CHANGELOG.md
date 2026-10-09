@@ -13,6 +13,10 @@
 
 **Closed issues:**
 
+- Daily QA & Agentic Review — 2026-10-04 [\#987](https://github.com/abhimehro/Seatek_Analysis/issues/987)
+- Jules Daily QA & Agentic Review - 2026-10-04 [\#985](https://github.com/abhimehro/Seatek_Analysis/issues/985)
+- Daily QA & Agentic Review — 2026-10-03 [\#983](https://github.com/abhimehro/Seatek_Analysis/issues/983)
+- Jules Daily QA & Agentic Review - All Checks Passed [\#980](https://github.com/abhimehro/Seatek_Analysis/issues/980)
 - Daily QA & Agentic Review — 2026-10-02 [\#976](https://github.com/abhimehro/Seatek_Analysis/issues/976)
 - Jules Daily QA & Agentic Review - Healthy [\#975](https://github.com/abhimehro/Seatek_Analysis/issues/975)
 - Daily QA & Agentic Review — 2026-10-01 [\#973](https://github.com/abhimehro/Seatek_Analysis/issues/973)
@@ -186,7 +190,9 @@
 
 **Merged pull requests:**
 
+- docs\(readme\): match the R pipeline to Series 28 SS\_Y inputs [\#988](https://github.com/abhimehro/Seatek_Analysis/pull/988) ([cursor[bot]](https://github.com/apps/cursor))
 - fix: atomic hotspot file open + enforce pytest in CI \(salvage \#819/\#821\) [\#978](https://github.com/abhimehro/Seatek_Analysis/pull/978) ([abhimehro](https://github.com/abhimehro))
+- 🎨 Palette: Improve color contrast for Excel headers [\#969](https://github.com/abhimehro/Seatek_Analysis/pull/969) ([abhimehro](https://github.com/abhimehro))
 - 🎨 Palette: Add explicit font color for Excel accessibility [\#927](https://github.com/abhimehro/Seatek_Analysis/pull/927) ([abhimehro](https://github.com/abhimehro))
 - ⚡ Bolt: Optimize standard deviation calculation [\#923](https://github.com/abhimehro/Seatek_Analysis/pull/923) ([abhimehro](https://github.com/abhimehro))
 - chore\(deps\): bump ruby/setup-ruby from 1.322.0 to 1.323.0 [\#863](https://github.com/abhimehro/Seatek_Analysis/pull/863) ([dependabot[bot]](https://github.com/apps/dependabot))

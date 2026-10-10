@@ -28,7 +28,11 @@ except ImportError:
     sys.modules["matplotlib.pyplot"] = MagicMock()
 
 import pytest
-from outlier_analysis_series27 import detect_outliers
+from outlier_analysis_series27 import (
+    apply_corrections,
+    detect_outliers,
+    secure_filename,
+)
 
 
 @pytest.mark.skipif(
@@ -156,9 +160,6 @@ def test_detect_outliers_iqr_mock():
     mock_df.__getitem__.assert_any_call(mock_or_mask)
 
 
-from outlier_analysis_series27 import apply_corrections, secure_filename
-
-
 def test_secure_filename():
     assert (
         secure_filename("../../../outside/traversal_target")
@@ -208,9 +209,9 @@ def test_apply_corrections_path_traversal(tmp_path):
         assert "outside_traversal_target" in filename
 
         # Defense-in-depth: resolved path must remain within output_dir
-        assert os.path.realpath(out_file).startswith(
-            os.path.realpath(output_dir)
-        ), f"Output path {out_file} escapes {output_dir}"
+        assert os.path.realpath(out_file).startswith(os.path.realpath(output_dir)), (
+            f"Output path {out_file} escapes {output_dir}"
+        )
 
         # The corrections summary should also reference the safe path
         assert not result.empty

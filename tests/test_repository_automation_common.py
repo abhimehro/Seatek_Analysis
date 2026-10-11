@@ -6,6 +6,8 @@ from unittest.mock import MagicMock, patch
 sys.path.insert(
     0, os.path.abspath(os.path.join(os.path.dirname(__file__), "../.github/scripts"))
 )
+
+import pytest
 from repository_automation_common import (
     _remove_heuristic_secrets,
     command_env,
@@ -264,9 +266,6 @@ def test_filter_env_securely():
     assert result.get("MY_CUSTOM_VAR") == "custom_value"
     assert "GH_TOKEN" not in result
     assert "GITHUB_TOKEN" not in result
-
-
-import pytest
 
 
 @pytest.mark.parametrize(

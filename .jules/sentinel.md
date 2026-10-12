@@ -245,3 +245,7 @@ is a regular file using `os.path.isfile()` or
 `stat.S_ISREG(os.stat(path).st_mode)` before attempting to open and read its
 contents, especially in security wrappers designed to read untrusted files
 safely.
+## 2026-09-16 - File Read DoS via Special Files fixed in scripts
+**Vulnerability:** The automation scripts `enforce_result`, `load_config`, and `_read_result` attempted to read files using `open()` or `.read_text()` without first verifying that the file was a regular file. If a path pointing to a special file, such as a FIFO (named pipe) or device file, was passed to the function, the `open()` call or subsequent `read()` could block indefinitely, causing the process to hang (Denial of Service).
+**Learning:** Checking for file existence or catching DecodeErrors is insufficient when interacting with untrusted file paths. Special file types can have blocking behaviors or infinite streams (e.g., `/dev/zero`) that circumvent these checks.
+**Prevention:** Always verify that a file is a regular file using `os.path.isfile()`, `stat.S_ISREG(os.stat(path).st_mode)`, or `path.is_file()` before attempting to open and read its contents, especially in automation scripts designed to read external or untested files.

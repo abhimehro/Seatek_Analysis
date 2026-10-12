@@ -245,3 +245,8 @@ is a regular file using `os.path.isfile()` or
 `stat.S_ISREG(os.stat(path).st_mode)` before attempting to open and read its
 contents, especially in security wrappers designed to read untrusted files
 safely.
+
+## YYYY-MM-DD - [File Read DoS via Special Files in enforce_result]
+**Vulnerability:** The `enforce_result` function in `repository_automation_common.py` attempted to read file contents using `path.read_text()` after only checking `path.exists()`. If a path pointing to a special file or device file (e.g., `/dev/zero`) was passed, `exists()` would return True, and the subsequent read operation would block indefinitely reading an infinite stream, causing a Denial of Service.
+**Learning:** `path.exists()` is insufficient when verifying untrusted file paths before reading. Special file types can have blocking behaviors or infinite streams that circumvent basic existence checks.
+**Prevention:** Always use `path.is_file()` (or `os.path.isfile()`) to explicitly verify that a path points to a regular file before attempting to read its contents.

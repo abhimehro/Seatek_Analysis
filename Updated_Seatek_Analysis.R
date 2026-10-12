@@ -239,15 +239,16 @@ compute_sensor_metrics <- function(df, filename) {
   list(dt = dt, sheet_name = sheet_name)
 }
 
+# Top-level helper function for parallel export
+write_task <- function(task) {
+  # Use full namespace just to be safe
+  openxlsx::write.xlsx(task$df, task$out_raw, overwrite = TRUE)
+  task$out_raw
+}
+
 # Helper for parallel export
 export_raw_data_parallel <- function(raw_export_tasks) {
   if (length(raw_export_tasks) > 0) {
-    write_task <- function(task) {
-      # Use full namespace just to be safe
-      openxlsx::write.xlsx(task$df, task$out_raw, overwrite = TRUE)
-      task$out_raw
-    }
-
     out_files <- execute_tasks_parallel(raw_export_tasks, write_task)
     message(paste0(sprintf("Raw data written to %s", out_files),
       collapse = "\n"
@@ -337,6 +338,36 @@ write_year_sheet <- function(wb, year, data, header_style,
   }
 }
 
+# ⚡ Bolt: Use lapply(.SD) natively grouped by Sensor to bypass the expensive
+# melt -> aggregate -> melt -> dcast pipeline, reducing memory allocation.
+# ⚡ Bolt: Use keyby = "Sensor" to ensure the output is sorted like dcast.
+calc_stats <- function(v_val) {
+  if (anyNA(v_val)) v_val <- v_val[!is.na(v_val)]
+  n <- length(v_val)
+  if (n == 0) {
+    list(
+      mean = NA_real_, sd = NA_real_, median = NA_real_, mad = NA_real_,
+      min = NA_real_, max = NA_real_, count = 0L, rollmean3 = NA_real_
+    )
+  } else {
+    # ⚡ Bolt: Pre-calculate the median and pass it to mad() via the `center`
+    # argument to avoid redundant median calculations for measurable speedup.
+    # ⚡ Bolt: Bypass S3 method dispatch overhead by using median.default()
+    med <- median.default(v_val)
+    list(
+      mean      = mean.default(v_val),
+      sd        = sqrt(var(v_val)),
+      median    = med,
+      # ⚡ Bolt: Inline mad calculation to bypass function call overhead
+      mad       = 1.4826 * median.default(abs(v_val - med)),
+      min       = min(v_val),
+      max       = max(v_val),
+      count     = n,
+      rollmean3 = if (n < 3) NA_real_ else sum(v_val[(n - 2):n]) / 3
+    )
+  }
+}
+
 # Compute summary statistics across all years
 calculate_summary_stats <- function(results) {
   # Add summary sheet with overall stats
@@ -346,38 +377,6 @@ calculate_summary_stats <- function(results) {
 
   # Identify metric columns (numeric columns excluding ID columns)
   metrics <- setdiff(names(all_stats_dt), c("Sensor", "Year"))
-
-
-  # ⚡ Bolt: Use lapply(.SD) natively grouped by Sensor to bypass the expensive
-  # melt -> aggregate -> melt -> dcast pipeline, reducing memory allocation.
-  # ⚡ Bolt: Use keyby = "Sensor" to ensure the output is sorted like dcast.
-
-  calc_stats <- function(v_val) {
-    if (anyNA(v_val)) v_val <- v_val[!is.na(v_val)]
-    n <- length(v_val)
-    if (n == 0) {
-      list(
-        mean = NA_real_, sd = NA_real_, median = NA_real_, mad = NA_real_,
-        min = NA_real_, max = NA_real_, count = 0L, rollmean3 = NA_real_
-      )
-    } else {
-      # ⚡ Bolt: Pre-calculate the median and pass it to mad() via the `center`
-      # argument to avoid redundant median calculations for measurable speedup.
-      # ⚡ Bolt: Bypass S3 method dispatch overhead by using median.default()
-      med <- median.default(v_val)
-      list(
-        mean      = mean.default(v_val),
-        sd        = sqrt(var(v_val)),
-        median    = med,
-        # ⚡ Bolt: Inline mad calculation to bypass function call overhead
-        mad       = 1.4826 * median.default(abs(v_val - med)),
-        min       = min(v_val),
-        max       = max(v_val),
-        count     = n,
-        rollmean3 = if (n < 3) NA_real_ else sum(v_val[(n - 2):n]) / 3
-      )
-    }
-  }
 
   summary_wide <- all_stats_dt[,
     unlist(

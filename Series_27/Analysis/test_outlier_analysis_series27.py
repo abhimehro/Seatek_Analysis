@@ -28,7 +28,7 @@ except ImportError:
     sys.modules["matplotlib.pyplot"] = MagicMock()
 
 import pytest
-from outlier_analysis_series27 import detect_outliers
+from outlier_analysis_series27 import apply_corrections, detect_outliers, secure_filename
 
 
 @pytest.mark.skipif(
@@ -154,9 +154,6 @@ def test_detect_outliers_iqr_mock():
     mock_col.__gt__.assert_called()
     mock_lower_mask.__or__.assert_called_with(mock_upper_mask)
     mock_df.__getitem__.assert_any_call(mock_or_mask)
-
-
-from outlier_analysis_series27 import apply_corrections, secure_filename
 
 
 def test_secure_filename():

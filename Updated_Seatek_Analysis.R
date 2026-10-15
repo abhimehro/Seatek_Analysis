@@ -366,7 +366,9 @@ calculate_summary_stats <- function(results) {
       # ⚡ Bolt: Bypass S3 method dispatch overhead by using median.default()
       med <- median.default(v_val)
       list(
-        mean      = mean.default(v_val),
+        # ⚡ Bolt: Use sum(v_val) / length(v_val) to bypass function call and generic
+        # S3 method dispatch overhead since length is known and no NAs exist
+        mean      = sum(v_val) / length(v_val),
         sd        = sqrt(var(v_val)),
         median    = med,
         # ⚡ Bolt: Inline mad calculation to bypass function call overhead

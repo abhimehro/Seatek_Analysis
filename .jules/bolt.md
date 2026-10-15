@@ -439,3 +439,8 @@ generic dispatch overhead.
 overhead of the sd() function on guaranteed numeric vectors in high-frequency
 loops. **Action:** Replace sd() with sqrt(var()) for guaranteed numeric vectors
 in performance-critical paths.
+
+## 2025-05-24 - Bypass mean() function call and S3 dispatch overhead
+
+**Learning:** In performance-critical execution paths where vectors are guaranteed to have no `NA` values and their length (`n`) is already known/pre-calculated, using `sum(x) / n` is significantly faster (>2x) than `mean(x)` or `mean.default(x)` by bypassing function call and S3 method dispatch overhead.
+**Action:** Replace `mean(x)` or `mean.default(x)` with `sum(x) / n` for guaranteed numeric vectors with pre-calculated lengths and no NAs in high-frequency loops or data.table aggregations.

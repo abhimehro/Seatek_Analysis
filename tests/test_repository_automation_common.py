@@ -142,12 +142,12 @@ def test_command_env() -> None:
 def test_now_utc():
     now = now_utc()
     assert isinstance(now, dt.datetime)
-    assert now.tzinfo == dt.timezone.utc
+    assert now.tzinfo == dt.UTC
 
 
 def test_now_utc_mocked():
     with patch("repository_automation_common.dt.datetime") as mock_datetime:
-        expected = dt.datetime(2025, 1, 1, 12, 0, 0, tzinfo=dt.timezone.utc)
+        expected = dt.datetime(2025, 1, 1, 12, 0, 0, tzinfo=dt.UTC)
         mock_datetime.now.return_value = expected
         assert now_utc() == expected
         mock_datetime.now.assert_called_once_with(dt.UTC)

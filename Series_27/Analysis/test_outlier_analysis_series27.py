@@ -28,7 +28,11 @@ except ImportError:
     sys.modules["matplotlib.pyplot"] = MagicMock()
 
 import pytest
-from outlier_analysis_series27 import apply_corrections, detect_outliers, secure_filename
+from outlier_analysis_series27 import (
+    apply_corrections,
+    detect_outliers,
+    secure_filename,
+)
 
 
 @pytest.mark.skipif(

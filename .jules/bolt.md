@@ -439,3 +439,7 @@ generic dispatch overhead.
 overhead of the sd() function on guaranteed numeric vectors in high-frequency
 loops. **Action:** Replace sd() with sqrt(var()) for guaranteed numeric vectors
 in performance-critical paths.
+
+## 2025-05-24 - Optimize mean calculation in performance-critical paths
+**Learning:** In performance-critical execution paths where vectors are guaranteed to have no NA values, using `sum(x) / length(x)` is significantly faster than `mean(x)` or `mean.default(x)` by bypassing function call and S3 method dispatch overhead. In R, `length()` is an O(1) operation, so `sum(x) / length(x)` is efficient. When `length(x)` is already pre-calculated as `n`, `sum(x) / n` provides an additional slight speedup.
+**Action:** In performance-critical loops where `NA` values are already handled, replace `mean(x)` or `mean.default(x)` with `sum(x) / length(x)` (or `sum(x) / n` if `n` is pre-calculated) for measurable execution speedup.

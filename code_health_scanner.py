@@ -111,4 +111,3 @@ def read_file_safe(filepath):
             return content.splitlines(True)
     except (OSError, UnicodeDecodeError, ValueError):
         return []
-# Trigger new commit for Octopus Review retry

@@ -7,9 +7,9 @@ library(data.table)
 env <- globalenv()
 
 if (file.exists("../../Updated_Seatek_Analysis.R")) {
-  source("../../Updated_Seatek_Analysis.R", local=env)
+  source("../../Updated_Seatek_Analysis.R", local = env)
 } else if (file.exists("Updated_Seatek_Analysis.R")) {
-  source("Updated_Seatek_Analysis.R", local=env)
+  source("Updated_Seatek_Analysis.R", local = env)
 } else {
   stop("Main analysis script not found.")
 }
@@ -28,7 +28,7 @@ test_that("write_year_sheet works correctly", {
   )
 
   # Create mock styles
-  header_style <- createStyle(textDecoration = "Bold", border = "Bottom")
+  header_style <- createStyle(textDecoration = "Bold", border = "Bottom", fontColour = "#FFFFFF", bgFill = "#4F81BD")
   highlight_style_yearly <- createStyle(fontColour = "#006100", bgFill = "#C6EFCE")
 
   # Call the function
@@ -65,8 +65,8 @@ test_that("write_year_sheet works correctly", {
   found_highlight <- FALSE
   for (obj in style_objs) {
     if (obj$sheet == year && 3 %in% obj$rows && 5 %in% obj$cols) {
-       found_highlight <- TRUE
-       break
+      found_highlight <- TRUE
+      break
     }
   }
   expect_true(found_highlight, label = "Highlight style should be applied to correct cell (row 3, col 5).")
@@ -95,8 +95,8 @@ test_that("write_year_sheet skips highlighting all-NA within_diff", {
     full = c(1, 2),
     within_diff = c(NA_real_, NA_real_)
   )
-  header_style <- createStyle(textDecoration = "Bold")
-  highlight_style_yearly <- createStyle(bgFill = "#C6EFCE")
+  header_style <- createStyle(textDecoration = "Bold", fontColour = "#FFFFFF", bgFill = "#4F81BD")
+  highlight_style_yearly <- createStyle(fontColour = "#006100", bgFill = "#C6EFCE")
 
   expect_no_error(
     write_year_sheet(wb, "2030", d, header_style, highlight_style_yearly)
@@ -120,8 +120,8 @@ test_that("write_year_sheet handles empty data", {
     full = numeric(),
     within_diff = numeric()
   )
-  header_style <- createStyle(textDecoration = "Bold")
-  highlight_style_yearly <- createStyle(bgFill = "#C6EFCE")
+  header_style <- createStyle(textDecoration = "Bold", fontColour = "#FFFFFF", bgFill = "#4F81BD")
+  highlight_style_yearly <- createStyle(fontColour = "#006100", bgFill = "#C6EFCE")
 
   expect_no_error(
     write_year_sheet(wb, "2031", d, header_style, highlight_style_yearly)
@@ -138,8 +138,8 @@ test_that("write_year_sheet skips malformed within_diff", {
     full = c(1, 2),
     within_diff = c("a", "b")
   )
-  header_style <- createStyle(textDecoration = "Bold")
-  highlight_style_yearly <- createStyle(bgFill = "#C6EFCE")
+  header_style <- createStyle(textDecoration = "Bold", fontColour = "#FFFFFF", bgFill = "#4F81BD")
+  highlight_style_yearly <- createStyle(fontColour = "#006100", bgFill = "#C6EFCE")
 
   expect_no_error(
     write_year_sheet(wb, "2032", d, header_style, highlight_style_yearly)
@@ -155,8 +155,8 @@ test_that("write_year_sheet skips highlighting without within_diff", {
     last5 = c(1, 2),
     full = c(1, 2)
   )
-  header_style <- createStyle(textDecoration = "Bold")
-  highlight_style_yearly <- createStyle(bgFill = "#C6EFCE")
+  header_style <- createStyle(textDecoration = "Bold", fontColour = "#FFFFFF", bgFill = "#4F81BD")
+  highlight_style_yearly <- createStyle(fontColour = "#006100", bgFill = "#C6EFCE")
 
   expect_no_error(
     write_year_sheet(wb, "2033", d, header_style, highlight_style_yearly)

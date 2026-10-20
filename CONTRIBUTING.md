@@ -140,6 +140,7 @@ label(s) when opening or updating an issue or PR.
 ## 5. Additional Resources
 
 - [Code of Conduct](./CODE_OF_CONDUCT.md)
+- [Data format](./docs/data-format.md)
 - [Project Wiki](https://github.com/abhimehro/Seatek_Analysis/wiki)
 - [Changelog](./CHANGELOG.md)
 

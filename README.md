@@ -8,6 +8,9 @@
 [![CodeScene Hotspot Code Health](https://codescene.io/projects/80826/status-badges/hotspot-code-health)](https://codescene.io/projects/80826)
 [![CodeScene System Mastery](https://codescene.io/projects/80826/status-badges/system-mastery)](https://codescene.io/projects/80826)
 [![CodeScene Missed Goals](https://codescene.io/projects/80826/status-badges/missed-goals)](https://codescene.io/projects/80826)
+![CodeRabbit Pull Request Reviews](https://img.shields.io/coderabbit/prs/github/abhimehro/Seatek_Analysis?utm_source=oss&utm_medium=github&utm_campaign=abhimehro%2FSeatek_Analysis&labelColor=171717&color=FF570A&link=https%3A%2F%2Fcoderabbit.ai&label=CodeRabbit+Reviews)
+
+[![SonarQube Cloud](https://sonarcloud.io/images/project_badges/sonarcloud-highlight.svg)](https://sonarcloud.io/summary/new_code?id=abhimehro_Seatek_Analysis)
 
 ---
 
@@ -16,11 +19,13 @@
 This repository contains the R-based analysis tier for processing Seatek sensor
 data and generating Excel workbooks. It is part of a three-tier analysis system:
 
-1. **R-Tier (This Repository):** Ingests, validates, and processes raw Seatek
-   sensor data (primarily `SS_Yxx.txt` for Series 28, and `S26_Yxx.txt` for
-   Series 26), exports cleaned data and summary metrics (first 10, last 5, full,
-   and within_diff for each sensor) to Excel, and generates a combined summary
-   workbook. Robust logging and error handling are included.
+1. **R-Tier (This Repository):** Ingests, validates, and processes raw Series 28
+   sensor data from tracked `Data/SS_Yxx.txt` files, exports cleaned data and
+   summary metrics (first 10, last 5, full, and within_diff for each sensor) to
+   Excel, and generates a combined summary workbook. Series 26 text stays under
+   `Series_26/Raw_Data/Text_Files/` for older manual processing. File layout is
+   in [docs/data-format.md](docs/data-format.md). Robust logging and error
+   handling are included.
 2. **Excel-Tier:** Manages intermediate data processing and basic
    visualizations.
 3. **Python-Tier:** Handles advanced data visualization and large-scale data
@@ -44,6 +49,15 @@ This script will:
 - Create a Python virtual environment (if it doesn't exist) and install required
   Python packages.
 
+Sensor text-file layout and canonical input locations are documented in
+[docs/data-format.md](docs/data-format.md).
+
+### Regenerable local artifacts
+
+`Seatek_Analysis_project_code.txt` concatenates repository code for external
+review or LLM context. It is untracked and ignored, safe to delete locally, and
+regenerable from the source tree; neither the application nor CI reads it.
+
 ---
 
 ## Repository Structure
@@ -51,9 +65,7 @@ This script will:
 ```Markdown
 ├── Data/                             # Primary working directory for Updated_Seatek_Analysis.R
 │   ├── SS_Yxx.txt                    # Raw Series 28 data files (input, tracked)
-│   ├── S26_Yxx.txt                   # Raw Series 26 data files (input, tracked)
 │   ├── SS_Yxx.xlsx                   # Processed Series 28 data per year (output, gitignored / regenerable)
-│   ├── S26_Yxx.xlsx                  # Processed Series 26 data per year (output, gitignored / regenerable)
 │   ├── Seatek_Summary.xlsx           # Main summary Excel workbook (output, gitignored / regenerable)
 │   ├── Seatek_Summary.csv            # Main summary CSV (output, gitignored / regenerable)
 │   ├── Seatek_Summary_all.csv        # Comprehensive summary CSV (output, gitignored / regenerable)
@@ -63,7 +75,7 @@ This script will:
 ├── Series_26/                        # Data and analysis specific to Series 26 sensors
 │   ├── Raw_Data/
 │   │   ├── Text_Files/
-│   │   │   └── S26_Yxx.txt           # Raw Series 26 text files (input to Updated_Seatek_Analysis.R)
+│   │   │   └── S26_Yxx.txt           # Raw Series 26 text for older manual processing (see docs/data-format.md)
 │   │   └── Excel_Files/
 │   │       └── Raw_Data_Year_*.xlsx  # Raw Series 26 data in Excel format (often manually curated or from other processes)
 │   ├── Processed_Data/
@@ -72,7 +84,7 @@ This script will:
 │       ├── Seatek_Summary.xlsx
 │       ├── Seatek_Comprehensive_Analysis.xlsx
 │       ├── analysis_report_log.txt
-│       └── processing_log.txt
+│       └── processing_log.txt        # Optional local artifact (gitignored)
 ├── Series_27/                        # Data and analysis specific to Series 27 sensors
 │   └── Analysis/                     # Main working directory for Series 27
 │       ├── Raw_Data/                 # Raw data for Series 27 (organized by year within Text_Files/ and Excel_Files/)
@@ -85,31 +97,27 @@ This script will:
 │       ├── Seatek_Summary.xlsx
 │       ├── Seatek_Comprehensive_Analysis.xlsx
 │       ├── analysis_report_log.txt
-│       ├── processing_log.txt
+│       ├── processing_log.txt        # Optional local artifact (gitignored)
 │       ├── requirements.txt          # Python requirements for outlier_analysis_series27.py
 │       └── validation_log.txt
-├── Series_28/                        # Data and analysis specific to Series 28 sensors (primary input for SS_Yxx files)
-│   ├── Raw_Data/
-│   │   └── SS_Yxx.txt                # Raw Series 28 text files (chronologically organized, primary input for Updated_Seatek_Analysis.R)
+├── Series_28/                        # Processed data and analysis for Series 28; raw SS inputs live in Data/
 │   ├── Processed_Data/
-│   │   └── SS_Yxx.xlsx               # Processed Series 28 data per year (can be an output of Updated_Seatek_Analysis.R if configured, or manual)
+│   │   └── SS_Yxx.xlsx               # Tracked Series 28 outputs (archival; current pipeline writes Data/SS_Yxx.xlsx)
 │   └── Analysis/                     # Summary outputs specific to Series 28 processing (often mirrors content of top-level Data/ for SS_Yxx files)
 │       ├── Seatek_Summary.xlsx
 │       ├── Seatek_Summary.csv
 │       └── (other Seatek_Summary*.csv files like _all, _robust, _sufficient, _top_sensors)
 ├── Updated_Seatek_Analysis.R   # Primary R analysis script.
-│                                     # Processes S26_Yxx.txt (from Series_26/Raw_Data/Text_Files/) and
-│                                     # SS_Yxx.txt (from Data/ or Series_28/Raw_Data/).
+│                                     # Reads Data/SS_Yxx.txt (Series 28).
 │                                     # Key outputs are generated in the top-level Data/ directory:
-│                                     #   - Individual year Excel files: Data/SS_Yxx.xlsx, Data/S26_Yxx.xlsx
+│                                     #   - Individual year Excel files: Data/SS_Yxx.xlsx
 │                                     #   - Main summary workbook: Data/Seatek_Summary.xlsx
 │                                     #   - Summary CSVs: Data/Seatek_Summary.csv, Data/Seatek_Summary_all.csv,
 │                                     #     Data/Seatek_Summary_robust.csv, Data/Seatek_Summary_sufficient.csv,
 │                                     #     Data/Seatek_Summary_top_sensors.csv.
 ├── requirements.R              # R package requirements for R scripts, managed by renv (see renv.lock).
-├── seatek_analysis.log         # General log file, may be used by Updated_Seatek_Analysis.R or other processes.
-├── processing_log.txt          # Detailed processing log, often appended to by analysis scripts.
-├── analysis_report_log.txt     # Log specific to analysis report generation.
+├── seatek_analysis.log         # Local log (gitignored; regenerate on run).
+├── processing_log.txt          # Local processing log (gitignored).
 ├── Seatek_Analysis.Rproj       # RStudio Project file.
 ├── renv.lock                   # renv lockfile for reproducible R environment.
 ├── renv/                         # renv library and activation scripts.

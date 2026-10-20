@@ -6,8 +6,9 @@ from unittest.mock import MagicMock, patch
 sys.path.insert(
     0, os.path.abspath(os.path.join(os.path.dirname(__file__), "../.github/scripts"))
 )
+
+import pytest
 from repository_automation_common import (
-    BASH_BIN,
     _remove_heuristic_secrets,
     command_env,
     filter_env_securely,
@@ -40,7 +41,6 @@ def test_run_shell_command_string_raises_value_error(mock_run_process):
         run_shell_command("echo hello")
 
     mock_run_process.assert_not_called()
-
 
 
 @patch("repository_automation_common.run_process")
@@ -142,16 +142,15 @@ def test_command_env() -> None:
 def test_now_utc():
     now = now_utc()
     assert isinstance(now, dt.datetime)
-    assert now.tzinfo == dt.timezone.utc
+    assert now.tzinfo == dt.UTC
 
 
 def test_now_utc_mocked():
     with patch("repository_automation_common.dt.datetime") as mock_datetime:
-        expected = dt.datetime(2025, 1, 1, 12, 0, 0, tzinfo=dt.timezone.utc)
+        expected = dt.datetime(2025, 1, 1, 12, 0, 0, tzinfo=dt.UTC)
         mock_datetime.now.return_value = expected
         assert now_utc() == expected
         mock_datetime.now.assert_called_once_with(dt.UTC)
-
 
 
 @patch("repository_automation_common.Path.read_text")
@@ -185,6 +184,7 @@ def test_load_config_empty_file(mock_read_text):
 
     assert result == {}
     mock_read_text.assert_called_once()
+
 
 def test_iso_day_with_value():
     known_time = dt.datetime(2024, 10, 15, 12, 30, 45, tzinfo=dt.UTC)
@@ -268,14 +268,15 @@ def test_filter_env_securely():
     assert "GITHUB_TOKEN" not in result
 
 
-import pytest
-
-
 @pytest.mark.parametrize(
     "used_val, context, expected_err",
     [
         ("default_val", "", "Warning: Using default value 'default_val' for MY_VAR\n"),
-        ("default_val", "unit-test", "Warning: Using default value 'default_val' for MY_VAR in unit-test\n"),
+        (
+            "default_val",
+            "unit-test",
+            "Warning: Using default value 'default_val' for MY_VAR in unit-test\n",
+        ),
         ("other", "", ""),
     ],
 )
@@ -289,6 +290,7 @@ def test_warn_on_default_param(used_val, context, expected_err, capsys):
 
 def test_warn_on_failure_emits(capsys):
     from repository_automation_common import warn_on_failure
+
     # MagicMock imported at module scope
 
     proc = MagicMock()

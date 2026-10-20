@@ -53,11 +53,11 @@ mb <- microbenchmark(
       h <- head(x, 10)
       mean(h[which(h > 0)])
     })
-    last5   <- sapply(df[, ..sensor_names], function(x) {
+    last5 <- sapply(df[, ..sensor_names], function(x) {
       t <- tail(x, 5)
       mean(t[which(t > 0)])
     })
-    full    <- sapply(df[, ..sensor_names], function(x) {
+    full <- sapply(df[, ..sensor_names], function(x) {
       mean(x[which(x > 0)])
     })
   },
@@ -67,14 +67,13 @@ mb <- microbenchmark(
     first10 <- unlist(df[1:min(10, .N), lapply(.SD, function(x) {
       mean(x[which(x > 0)])
     }), .SDcols = sensor_names])
-    last5   <- unlist(df[max(1, .N - 4):.N, lapply(.SD, function(x) {
+    last5 <- unlist(df[max(1, .N - 4):.N, lapply(.SD, function(x) {
       mean(x[which(x > 0)])
     }), .SDcols = sensor_names])
-    full    <- unlist(df[, lapply(.SD, function(x) {
+    full <- unlist(df[, lapply(.SD, function(x) {
       mean(x[which(x > 0)])
     }), .SDcols = sensor_names])
   },
-
   times = 10
 )
 

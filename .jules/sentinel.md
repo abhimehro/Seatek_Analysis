@@ -220,12 +220,28 @@ checking `shutil.which('binary')` but falling back to `"binary"` if it was not
 found (e.g., `GH_BIN = shutil.which("gh") or "gh"`). This makes the application
 vulnerable to path hijacking (where an attacker modifies the PATH environment
 variable to point to a malicious executable, or places one in the current
-working directory).
-**Learning:** Falling back to a bare executable name when `shutil.which` fails
-defeats the purpose of the security check and introduces unnecessary risk,
-especially on systems where the OS might search the current working directory
-first (e.g. Windows).
-**Prevention:** Always exclusively use `shutil.which("executable_name")` to
-resolve the absolute path of system binaries before passing them to `subprocess`
-functions, and raise a clear exception or fail gracefully if the absolute path
-cannot be resolved.
+working directory). **Learning:** Falling back to a bare executable name when
+`shutil.which` fails defeats the purpose of the security check and introduces
+unnecessary risk, especially on systems where the OS might search the current
+working directory first (e.g. Windows). **Prevention:** Always exclusively use
+`shutil.which("executable_name")` to resolve the absolute path of system
+binaries before passing them to `subprocess` functions, and raise a clear
+exception or fail gracefully if the absolute path cannot be resolved.
+
+## 2026-07-29 - [File Read DoS via Special Files]
+
+**Vulnerability:** The `_hotspot_line_count` function in
+`.github/scripts/repository_automation_tasks.py` attempted to read files using
+`open()` without first verifying that the file was a regular file. If a path
+pointing to a special file, such as a FIFO (named pipe) or device file, was
+passed to the function, the `open()` call or subsequent `read()` could block
+indefinitely, causing the scanner process to hang (Denial of Service).
+**Learning:** Checking for file existence and size is insufficient when
+interacting with untrusted file paths. Special file types can have blocking
+behaviors or infinite streams (e.g., `/dev/zero`) that circumvent simple size
+checks if the check is performed after opening the file, or if the metadata
+check doesn't identify the file type. **Prevention:** Always verify that a file
+is a regular file using `os.path.isfile()` or
+`stat.S_ISREG(os.stat(path).st_mode)` before attempting to open and read its
+contents, especially in security wrappers designed to read untrusted files
+safely.

@@ -2,6 +2,8 @@ import os
 import subprocess
 from unittest.mock import patch
 
+import pytest
+
 from code_health_scanner import (
     MAX_FILE_SIZE,
     get_repo_info,
@@ -75,8 +77,16 @@ def test_read_file_safe_too_large():
             os.remove(test_file)
 
 
-def test_read_file_safe_non_existent():
-    assert read_file_safe("non_existent_file_12345.txt") == []
+@pytest.mark.parametrize(
+    "filepath",
+    ["non_existent_file_12345.txt", "."],
+    ids=["missing-file", "directory"],
+)
+def test_read_file_safe_non_regular_file(filepath):
+    """Reject missing files and directories without attempting to open them."""
+    with patch("builtins.open") as mock_open:
+        assert read_file_safe(filepath) == []
+        mock_open.assert_not_called()
 
 
 def test_get_repo_info_exception_logging(caplog):

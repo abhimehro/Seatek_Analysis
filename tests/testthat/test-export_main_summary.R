@@ -26,7 +26,7 @@ test_that("export_main_summary works correctly", {
   )
 
   output_file <- file.path(temp_dir_path, "test_main_summary.xlsx")
-  header_style <- createStyle(textDecoration = "Bold", border = "Bottom")
+  header_style <- createStyle(textDecoration = "Bold", border = "Bottom", fontColour = "#FFFFFF", bgFill = "#4F81BD")
   highlight_style_summary <- createStyle(
     fontColour = "#9C0006",
     bgFill = "#FFC7CE"

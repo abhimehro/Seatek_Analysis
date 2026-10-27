@@ -14,6 +14,7 @@ from repository_automation_tasks import (
     _hotspot_line_count,
     configured_commands,
     flattened_updates,
+    render_entry_section,
 )
 
 
@@ -73,9 +74,6 @@ def test_configured_commands_extra_keys():
     result = configured_commands(section)
     assert len(result) == 1
     assert result[0] == ("command", {"name": "cmd1", "run": "c1"})
-
-
-from repository_automation_tasks import render_entry_section
 
 
 def test_render_entry_section_empty():

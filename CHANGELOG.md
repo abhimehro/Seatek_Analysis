@@ -233,6 +233,8 @@
 
 **Merged pull requests:**
 
+- chore\(deps\): bump codescene-oss/pr-refactoring-agent from 1.1.7 to 1.1.9 [\#1072](https://github.com/abhimehro/Seatek_Analysis/pull/1072) ([dependabot[bot]](https://github.com/apps/dependabot))
+- chore\(deps\): bump actions/setup-python from 7.0.0 to 7.1.0 [\#1071](https://github.com/abhimehro/Seatek_Analysis/pull/1071) ([dependabot[bot]](https://github.com/apps/dependabot))
 - chore\(deps\): bump ruby/setup-ruby from 1.327.0 to 1.335.0 [\#1070](https://github.com/abhimehro/Seatek_Analysis/pull/1070) ([dependabot[bot]](https://github.com/apps/dependabot))
 - chore\(deps\): bump actions/setup-node from 7.0.0 to 7.1.0 [\#1056](https://github.com/abhimehro/Seatek_Analysis/pull/1056) ([dependabot[bot]](https://github.com/apps/dependabot))
 - chore\(deps\): bump codescene-oss/pr-refactoring-agent from 1.1.3 to 1.1.7 [\#1053](https://github.com/abhimehro/Seatek_Analysis/pull/1053) ([dependabot[bot]](https://github.com/apps/dependabot))

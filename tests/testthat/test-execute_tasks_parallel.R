@@ -45,35 +45,35 @@ test_that("execute_tasks_parallel handles detectCores errors gracefully", {
   # SECURITY: Use testthat::with_mocked_bindings instead of deparse + eval(parse(text=...))
   # to prevent unsafe code injection patterns.
   testthat::with_mocked_bindings(
-    detectCores = function() stop("Mock Error"),
     {
       # Now it should fall back to cores=1L
       tasks <- list(1, 2)
       res <- execute_tasks_parallel(tasks, function(x) x * 4)
       expect_equal(res, list(4, 8))
     },
+    detectCores = function() stop("Mock Error"),
     .package = "parallel"
   )
 })
 
 test_that("execute_tasks_parallel executes gracefully on non-unix platforms", {
-  # SECURITY: Use testthat::with_mocked_bindings to mock both cluster functions and .Platform
-  # avoiding any dynamic eval(parse()) code execution.
+  # SECURITY: Avoid dynamic eval(parse(text=...)). Encapsulate the function in a local
+  # environment that masks .Platform$OS.type safely without mutating global/base state.
+  local_env <- new.env(parent = globalenv())
+  local_env$execute_tasks_parallel <- execute_tasks_parallel
+  local_env$.Platform <- .Platform
+  local_env$.Platform$OS.type <- "windows"
+  environment(local_env$execute_tasks_parallel) <- local_env
+
   testthat::with_mocked_bindings(
+    {
+      tasks <- list(1, 2)
+      res <- local_env$execute_tasks_parallel(tasks, function(x) x * 5)
+      expect_equal(res, list(5, 10))
+    },
     makeCluster = function(...) "mock_cl",
     stopCluster = function(...) TRUE,
     parLapply = function(cl, tasks, func) lapply(tasks, func),
-    {
-      testthat::with_mocked_bindings(
-        .Platform = list(OS.type = "windows"),
-        {
-          tasks <- list(1, 2)
-          res <- execute_tasks_parallel(tasks, function(x) x * 5)
-          expect_equal(res, list(5, 10))
-        },
-        .package = "base"
-      )
-    },
     .package = "parallel"
   )
 })

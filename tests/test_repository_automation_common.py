@@ -10,6 +10,7 @@ sys.path.insert(
 import pytest
 from repository_automation_common import (
     _remove_heuristic_secrets,
+    command_block,
     command_env,
     filter_env_securely,
     is_commit_sha,
@@ -313,8 +314,7 @@ def test_task_dir(tmp_path):
 
 
 def test_command_block_basic():
-    from repository_automation_common import command_block
-
+    """Test basic formatting with exit code and no output."""
     entry = {
         "name": "git status",
         "exit_code": 0,
@@ -323,9 +323,8 @@ def test_command_block_basic():
     assert command_block(entry) == expected
 
 
-def test_command_block_with_stdout():
-    from repository_automation_common import command_block
-
+def test_command_block_stdout():
+    """Test formatting with stdout and stripped whitespace."""
     entry = {
         "name": "pytest",
         "exit_code": 0,
@@ -335,9 +334,8 @@ def test_command_block_with_stdout():
     assert command_block(entry) == expected
 
 
-def test_command_block_with_stderr():
-    from repository_automation_common import command_block
-
+def test_command_block_stderr():
+    """Test formatting with stderr and stripped whitespace."""
     entry = {
         "name": "lint",
         "exit_code": 1,
@@ -347,9 +345,8 @@ def test_command_block_with_stderr():
     assert command_block(entry) == expected
 
 
-def test_command_block_with_stdout_and_stderr():
-    from repository_automation_common import command_block
-
+def test_command_block_both():
+    """Test formatting with both stdout and stderr."""
     entry = {
         "name": "build",
         "exit_code": 2,
@@ -364,10 +361,8 @@ def test_command_block_with_stdout_and_stderr():
     assert command_block(entry) == expected
 
 
-def test_command_block_empty_or_whitespace_output():
-    from repository_automation_common import command_block
-
-    # Test that empty string stdout/stderr does not create empty code fence blocks
+def test_command_block_empty():
+    """Test formatting when stdout and stderr are empty strings."""
     entry = {
         "name": "check",
         "exit_code": 0,

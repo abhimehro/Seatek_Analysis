@@ -213,9 +213,10 @@ def warn_on_default(
     param_name: str, used_value: str, default_value: str, context: str = ""
 ) -> None:
     if used_value == default_value:
-        msg = f"Warning: Using default value '{default_value}' for {param_name}"
         if context:
-            msg += f" in {context}"
+            msg = f"Warning: Using default value '{default_value}' for {param_name} in {context}"
+        else:
+            msg = f"Warning: Using default value '{default_value}' for {param_name}"
         print(msg, file=sys.stderr)
 
 

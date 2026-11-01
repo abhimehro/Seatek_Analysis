@@ -439,3 +439,8 @@ generic dispatch overhead.
 overhead of the sd() function on guaranteed numeric vectors in high-frequency
 loops. **Action:** Replace sd() with sqrt(var()) for guaranteed numeric vectors
 in performance-critical paths.
+
+## 2026-11-01 - Eliminate intermediate string concatenation in conditional formatting
+
+**Learning:** Using conditional `+=` string concatenation to build formatted messages creates intermediate string allocations and executes multiple bytecode instructions compared to direct ternary/conditional expressions in f-strings.
+**Action:** Replace two-step conditional string formatting (`msg = ...; if cond: msg += ...`) with a direct conditional expression (`f"... in {context}" if context else f"..."`) to construct the result in a single step.

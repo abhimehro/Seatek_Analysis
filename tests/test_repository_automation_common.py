@@ -310,3 +310,46 @@ def test_task_dir(tmp_path):
         result = task_dir("test_task")
         assert result == tmp_path / "test_task"
         assert result.is_dir()
+
+
+@patch("repository_automation_common.run_process")
+def test_gh_json_raises_json_decode_error_on_invalid_json(mock_run_process):
+    from json import JSONDecodeError
+    from repository_automation_common import gh_json
+
+    mock_proc = MagicMock()
+    mock_proc.returncode = 0
+    mock_proc.stdout = "not valid json {"
+    mock_proc.stderr = ""
+    mock_run_process.return_value = mock_proc
+
+    with pytest.raises(JSONDecodeError):
+        gh_json(["api", "repos/test"])
+
+
+@patch("repository_automation_common.run_process")
+def test_gh_json_valid_json(mock_run_process):
+    from repository_automation_common import gh_json
+
+    mock_proc = MagicMock()
+    mock_proc.returncode = 0
+    mock_proc.stdout = '{"key": "value"}'
+    mock_proc.stderr = ""
+    mock_run_process.return_value = mock_proc
+
+    result = gh_json(["api", "repos/test"])
+    assert result == {"key": "value"}
+
+
+@patch("repository_automation_common.run_process")
+def test_gh_json_empty_output_returns_default(mock_run_process):
+    from repository_automation_common import gh_json
+
+    mock_proc = MagicMock()
+    mock_proc.returncode = 0
+    mock_proc.stdout = "   \n"
+    mock_proc.stderr = ""
+    mock_run_process.return_value = mock_proc
+
+    result = gh_json(["api", "repos/test"], default={"default_key": 123})
+    assert result == {"default_key": 123}

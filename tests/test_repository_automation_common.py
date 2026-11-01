@@ -7,6 +7,7 @@ sys.path.insert(
     0, os.path.abspath(os.path.join(os.path.dirname(__file__), "../.github/scripts"))
 )
 
+import subprocess
 import pytest
 from repository_automation_common import (
     _remove_heuristic_secrets,
@@ -16,6 +17,7 @@ from repository_automation_common import (
     iso_day,
     now_utc,
     numeric_version,
+    run_checked,
     run_shell_command,
     target_ref,
     truncate,
@@ -53,6 +55,31 @@ def test_run_shell_command_list(mock_run_process):
     args = mock_run_process.call_args[0][0]
     assert args == ["echo", "hello"]
     assert result["exit_code"] == 0
+
+
+@patch("repository_automation_common.run_process")
+def test_run_checked_success(mock_run_process):
+    setup_mock_process(mock_run_process)
+
+    result = run_checked(["git", "status"])
+
+    mock_run_process.assert_called_once_with(["git", "status"], check=True)
+    assert result == mock_run_process.return_value
+    assert result.returncode == 0
+    assert result.stdout == "output"
+
+
+@patch("repository_automation_common.run_process")
+def test_run_checked_raises_on_failure(mock_run_process):
+    mock_run_process.side_effect = subprocess.CalledProcessError(
+        returncode=1, cmd=["git", "status"], output="", stderr="error"
+    )
+
+    with pytest.raises(subprocess.CalledProcessError) as exc_info:
+        run_checked(["git", "status"])
+
+    assert exc_info.value.returncode == 1
+    mock_run_process.assert_called_once_with(["git", "status"], check=True)
 
 
 def test_is_commit_sha_detects_full_length_pins() -> None:

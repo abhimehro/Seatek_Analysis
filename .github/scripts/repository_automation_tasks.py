@@ -272,7 +272,8 @@ def _parse_workflow_files() -> tuple[set[str], list[dict[str, Any]]]:
                 continue
             repo_id = "/".join(parts[:2])
             repo_ids_to_fetch.add(repo_id)
-            matches.append(match)
+            # ⚡ Bolt: Store (match, repo_id) to avoid redundant split and join allocations in _compute_workflow_replacements
+            matches.append((match, repo_id))
         file_data.append({"path": file_path, "text": text, "matches": matches})
     return repo_ids_to_fetch, file_data
 
@@ -284,11 +285,16 @@ def _compute_workflow_replacements(
     for data in file_data:
         text = data["text"]
         replacements = []
-        for match in data["matches"]:
+        for item in data["matches"]:
+            # ⚡ Bolt: Reuse precomputed repo_id from _parse_workflow_files, falling back safely for raw match objects
+            if isinstance(item, tuple):
+                match, repo_id = item
+            else:
+                match = item
+                parts = match.group(2).split("/")
+                repo_id = "/".join(parts[:2])
             action_ref = match.group(2)
             current = match.group(3)
-            parts = action_ref.split("/")
-            repo_id = "/".join(parts[:2])
             latest = latest_cache.get(repo_id, "")
 
             proposed = target_ref(current, latest) if latest else None

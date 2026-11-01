@@ -178,19 +178,25 @@ execute_tasks_parallel <- function(tasks, task_func) {
   }
 }
 
-# Helper to compute metrics for a single sensor dataframe
-compute_sensor_metrics <- function(df, filename) {
-  # OPTIMIZATION: which(x > 0) is natively faster at dropping NAs than
-  # !is.na() &
-  # ⚡ Bolt: Replace regex grep with native startsWith for faster column
-  # name subsetting
-  sensor_names <- names(df)[startsWith(names(df), "Sensor")]
+# Helper to derive sheet name from sensor data filename
+derive_sheet_name <- function(filename) {
+  # Derive sheet/year name
+  year_tag <- sub("^SS_Y([0-9]{2})\\.txt$", "\\1", basename(filename))
+  # Map Y01=1995, Y02=1996, ..., Y20=2014
+  year_num <- as.integer(year_tag)
+  if (!is.na(year_num) && year_num >= 1 && year_num <= 20) {
+    as.character(1994 + year_num)
+  } else {
+    basename(filename)
+  }
+}
 
+# Helper to calculate summary metrics for all sensor columns
+calculate_sensor_metrics_table <- function(df, sensor_names) {
   # ⚡ Bolt: Replace multiple lapply(.SD, ...) calls with a direct for loop
   # over sensor columns using pre-calculated row indices. This significantly
   # reduces execution time by avoiding .SD closure and redundant subsetting
   # overhead.
-
   n_rows <- nrow(df)
   idx_first <- 1:min(10, n_rows)
   idx_last <- max(1, n_rows - 4):n_rows
@@ -216,25 +222,27 @@ compute_sensor_metrics <- function(df, filename) {
     full[j] <- sum(v[w_full]) / length(w_full)
   }
   diff <- full - first10
-  # Derive sheet/year name
-  year_tag <- sub("^SS_Y([0-9]{2})\\.txt$", "\\1", basename(filename))
-  # Map Y01=1995, Y02=1996, ..., Y20=2014
-  year_num <- as.integer(year_tag)
-  sheet_name <- if (!is.na(year_num) && year_num >= 1 && year_num <= 20) {
-    as.character(1994 + year_num)
-  } else {
-    basename(filename)
-  }
 
   # ⚡ Bolt: Store results natively as data.table with explicit Sensor ID
   # Avoids data.frame/row.names overhead and enables fast rbindlist downstream
-  dt <- data.table(
+  data.table(
     Sensor = sensor_names,
     first10 = first10,
     last5 = last5,
     full = full,
     within_diff = diff
   )
+}
+
+# Helper to compute metrics for a single sensor dataframe
+compute_sensor_metrics <- function(df, filename) {
+  # OPTIMIZATION: which(x > 0) is natively faster at dropping NAs than
+  # !is.na() &
+  # ⚡ Bolt: Replace regex grep with native startsWith for faster column
+  # name subsetting
+  sensor_names <- names(df)[startsWith(names(df), "Sensor")]
+  dt <- calculate_sensor_metrics_table(df, sensor_names)
+  sheet_name <- derive_sheet_name(filename)
 
   list(dt = dt, sheet_name = sheet_name)
 }

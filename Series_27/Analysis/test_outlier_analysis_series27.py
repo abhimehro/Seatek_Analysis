@@ -29,6 +29,7 @@ except ImportError:
 
 import pytest
 from outlier_analysis_series27 import (
+    _is_safe_path,
     apply_corrections,
     detect_outliers,
     secure_filename,
@@ -216,3 +217,63 @@ def test_apply_corrections_path_traversal(tmp_path):
         # The corrections summary should also reference the safe path
         assert not result.empty
         assert result.iloc[0]["CorrectedFile"] == out_file
+
+
+def test_is_safe_path_valid(tmp_path):
+    base = str(tmp_path)
+    file_inside = str(tmp_path / "subdir" / "file.xlsx")
+    assert _is_safe_path(base, file_inside) is True
+    # The base directory itself is also considered inside base
+    assert _is_safe_path(base, base) is True
+
+
+def test_is_safe_path_traversal(tmp_path):
+    base = str(tmp_path / "base")
+    os.makedirs(base, exist_ok=True)
+    traversal_path = str(tmp_path / "base" / ".." / "escaped.xlsx")
+    assert _is_safe_path(base, traversal_path) is False
+    deep_traversal = str(tmp_path / "base" / "sub" / ".." / ".." / "escaped.xlsx")
+    assert _is_safe_path(base, deep_traversal) is False
+
+
+def test_is_safe_path_sibling_prefix(tmp_path):
+    # Ensure /path/to/base_sibling is not accepted when basedir is /path/to/base
+    base = str(tmp_path / "base")
+    sibling = str(tmp_path / "base_sibling" / "file.xlsx")
+    os.makedirs(base, exist_ok=True)
+    os.makedirs(os.path.dirname(sibling), exist_ok=True)
+    assert _is_safe_path(base, sibling) is False
+
+
+def test_is_safe_path_null_byte(tmp_path):
+    base = str(tmp_path)
+    assert _is_safe_path(base, f"{base}/file\0.xlsx") is False
+    assert _is_safe_path(f"{base}\0", f"{base}/file.xlsx") is False
+
+
+def test_is_safe_path_symlink(tmp_path):
+    base = tmp_path / "base"
+    outside = tmp_path / "outside"
+    base.mkdir()
+    outside.mkdir()
+
+    outside_file = outside / "secret.xlsx"
+    outside_file.write_text("data")
+
+    # Symlink inside base pointing outside
+    symlink_to_outside = base / "sym_outside"
+    try:
+        os.symlink(str(outside), str(symlink_to_outside))
+        assert _is_safe_path(str(base), str(symlink_to_outside / "secret.xlsx")) is False
+    except (OSError, NotImplementedError):
+        pytest.skip("Symlinks not supported in this environment")
+
+    # Symlink outside pointing inside base
+    inside_file = base / "legit.xlsx"
+    inside_file.write_text("data")
+    symlink_inside = base / "sym_inside"
+    try:
+        os.symlink(str(inside_file), str(symlink_inside))
+        assert _is_safe_path(str(base), str(symlink_inside)) is True
+    except (OSError, NotImplementedError):
+        pass

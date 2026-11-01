@@ -11,6 +11,7 @@ sys.path.insert(
 )
 
 from repository_automation_tasks import (
+    _compute_workflow_replacements,
     _hotspot_line_count,
     configured_commands,
     flattened_updates,
@@ -268,3 +269,50 @@ def test_hotspot_line_count_rejects_symlink(tmp_path: Path) -> None:
     except OSError:
         pytest.skip("symlink creation not permitted")
     assert _hotspot_line_count(str(link)) is None
+
+
+def test_compute_workflow_replacements():
+    import re
+    from repository_automation_common import ROOT
+
+    pattern = re.compile(r"(uses:\s*)([^@\s]+)@([^\s#]+)")
+    sample_text = (
+        "uses: actions/checkout@v3\n"
+        "uses: actions/setup-python@v4\n"
+        "uses: actions/checkout@v3\n"
+        "uses: github/codeql-action/init@v2\n"
+        "uses: actions/upload-artifact@v4\n"
+    )
+    matches = list(pattern.finditer(sample_text))
+    test_file_path = ROOT / ".github" / "workflows" / "test.yml"
+    file_data = [{"path": test_file_path, "text": sample_text, "matches": matches}]
+    latest_cache = {
+        "actions/checkout": "v4",
+        "actions/setup-python": "v5",
+        "github/codeql-action": "v3",
+        "actions/upload-artifact": "v4",  # Already at target
+    }
+
+    plans = _compute_workflow_replacements(file_data, latest_cache)
+    assert len(plans) == 1
+    replacements = plans[0]["replacements"]
+    # actions/upload-artifact is already at target, so 4 replacements expected
+    assert len(replacements) == 4
+
+    assert replacements[0]["action"] == "actions/checkout"
+    assert replacements[0]["current"] == "v3"
+    assert replacements[0]["target"] == "v4"
+
+    assert replacements[1]["action"] == "actions/setup-python"
+    assert replacements[1]["current"] == "v4"
+    assert replacements[1]["target"] == "v5"
+
+    # Second actions/checkout should reuse cached resolution
+    assert replacements[2]["action"] == "actions/checkout"
+    assert replacements[2]["current"] == "v3"
+    assert replacements[2]["target"] == "v4"
+
+    # Nested action path github/codeql-action/init
+    assert replacements[3]["action"] == "github/codeql-action/init"
+    assert replacements[3]["current"] == "v2"
+    assert replacements[3]["target"] == "v3"

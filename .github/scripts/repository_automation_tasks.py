@@ -281,15 +281,22 @@ def _compute_workflow_replacements(
     file_data: list[dict[str, Any]], latest_cache: dict[str, str]
 ) -> list[dict[str, Any]]:
     plans = []
+    # ⚡ Bolt: Cache action_ref resolution to latest tag across matches and files,
+    # and use string slicing rather than split/join to avoid temporary list/string allocations.
+    action_to_latest: dict[str, str] = {}
     for data in file_data:
         text = data["text"]
         replacements = []
         for match in data["matches"]:
             action_ref = match.group(2)
             current = match.group(3)
-            parts = action_ref.split("/")
-            repo_id = "/".join(parts[:2])
-            latest = latest_cache.get(repo_id, "")
+            latest = action_to_latest.get(action_ref)
+            if latest is None:
+                first = action_ref.find("/")
+                second = action_ref.find("/", first + 1) if first != -1 else -1
+                repo_id = action_ref if second == -1 else action_ref[:second]
+                latest = latest_cache.get(repo_id, "")
+                action_to_latest[action_ref] = latest
 
             proposed = target_ref(current, latest) if latest else None
             if not proposed or proposed == current:

@@ -192,28 +192,36 @@ compute_sensor_metrics <- function(df, filename) {
   # overhead.
 
   n_rows <- nrow(df)
-  idx_first <- 1:min(10, n_rows)
-  idx_last <- max(1, n_rows - 4):n_rows
-
   len_sensors <- length(sensor_names)
-  first10 <- numeric(len_sensors)
-  last5 <- numeric(len_sensors)
-  full <- numeric(len_sensors)
 
-  # ⚡ Bolt: Use .subset2 to avoid [[.data.frame dispatch overhead
-  for (j in seq_len(len_sensors)) {
-    v <- .subset2(df, sensor_names[j])
+  if (len_sensors == 0L || n_rows == 0L) {
+    first10 <- numeric(0)
+    last5 <- numeric(0)
+    full <- numeric(0)
+  } else {
+    idx_first <- 1:min(10, n_rows)
+    idx_last <- max(1, n_rows - 4):n_rows
 
-    v_first <- v[idx_first]
-    w_first <- which(v_first > 0)
-    first10[j] <- sum(v_first[w_first]) / length(w_first)
+    # ⚡ Bolt: Vectorize sensor loop by converting sensor columns to a numeric
+    # matrix and using colSums() to calculate positive values across subsets
+    # at C-speed, avoiding scalar iteration and repeated function dispatch overhead.
+    m <- matrix(
+      unlist(.subset(df, sensor_names), use.names = FALSE),
+      nrow = n_rows,
+      ncol = len_sensors
+    )
 
-    v_last <- v[idx_last]
-    w_last <- which(v_last > 0)
-    last5[j] <- sum(v_last[w_last]) / length(w_last)
+    pos_mask <- !is.na(m) & m > 0
+    m[!pos_mask] <- 0
 
-    w_full <- which(v > 0)
-    full[j] <- sum(v[w_full]) / length(w_full)
+    cnt_first <- colSums(pos_mask[idx_first, , drop = FALSE])
+    first10 <- unname(colSums(m[idx_first, , drop = FALSE]) / cnt_first)
+
+    cnt_last <- colSums(pos_mask[idx_last, , drop = FALSE])
+    last5 <- unname(colSums(m[idx_last, , drop = FALSE]) / cnt_last)
+
+    cnt_full <- colSums(pos_mask)
+    full <- unname(colSums(m) / cnt_full)
   }
   diff <- full - first10
   # Derive sheet/year name

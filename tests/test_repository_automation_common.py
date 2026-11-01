@@ -8,9 +8,11 @@ sys.path.insert(
 )
 
 import pytest
+import json
 from repository_automation_common import (
     _remove_heuristic_secrets,
     command_env,
+    enforce_result,
     filter_env_securely,
     is_commit_sha,
     iso_day,
@@ -310,3 +312,31 @@ def test_task_dir(tmp_path):
         result = task_dir("test_task")
         assert result == tmp_path / "test_task"
         assert result.is_dir()
+
+
+def test_enforce_result_missing_file(tmp_path, capsys):
+    non_existent = tmp_path / "non_existent_result.json"
+    exit_code = enforce_result(str(non_existent))
+
+    assert exit_code == 1
+    captured = capsys.readouterr()
+    assert f"Missing task result: {non_existent}" in captured.out
+
+
+@pytest.mark.parametrize(
+    "status, expected_exit_code",
+    [
+        ("failure", 1),
+        ("needs_review", 1),
+        ("success", 0),
+        ("warning", 0),
+        ("skipped", 0),
+        ("unknown_status", 0),
+    ],
+)
+def test_enforce_result_statuses(tmp_path, status, expected_exit_code):
+    result_file = tmp_path / "result.json"
+    result_file.write_text(json.dumps({"status": status}))
+
+    exit_code = enforce_result(str(result_file))
+    assert exit_code == expected_exit_code

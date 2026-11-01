@@ -108,6 +108,7 @@ test_that("compute_vector_summary_stats calculates correct statistics", {
 })
 
 test_that("generate_summary_stat_names generates consistent column schema", {
+  # Verify generated column names align with expected metric prefixes and statistics
   names_out <- generate_summary_stat_names(c("first10", "full"))
   expect_equal(names_out[1], "Sensor")
   expect_true("first10_mean" %in% names_out)

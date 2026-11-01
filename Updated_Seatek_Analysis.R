@@ -255,14 +255,35 @@ export_raw_data_parallel <- function(raw_export_tasks) {
   }
 }
 
-# Process all sensor files: export raw, compute metrics
-process_all_data <- function(data_dir) {
-  data_dir <- auto_detect_data_dir(data_dir)
-  pattern <- "^SS_Y[0-9]{2}\\.txt$" # Updated pattern to match your files
+# Discover and validate sensor data files
+find_sensor_files <- function(data_dir, pattern = "^SS_Y[0-9]{2}\\.txt$") {
   files <- list.files(data_dir, pattern = pattern, full.names = TRUE)
   if (length(files) == 0) {
     stop(sprintf("No sensor files found matching %s in %s", pattern, data_dir))
   }
+  files
+}
+
+# Read and process metrics for a single sensor data file
+process_sensor_file <- function(file_path, data_dir) {
+  df <- read_sensor_data(file_path, verbose = FALSE)
+  # Export raw data to Excel
+  # ⚡ Bolt: sub() is ~3x faster than tools::file_path_sans_ext + paste0
+  out_raw <- file.path(data_dir, sub("\\.txt$", ".xlsx", basename(file_path)))
+  raw_task <- list(df = df, out_raw = out_raw)
+
+  # Compute summary metrics
+  metrics_res <- compute_sensor_metrics(df, file_path)
+
+  list(
+    dt = metrics_res$dt,
+    sheet_name = metrics_res$sheet_name,
+    raw_task = raw_task
+  )
+}
+
+# Process a batch of sensor files with progress tracking
+process_sensor_files_batch <- function(files, data_dir) {
   cat(sprintf(
     "\n🚀 Found %d sensor files. Starting processing...\n",
     length(files)
@@ -282,24 +303,32 @@ process_all_data <- function(data_dir) {
     },
     add = TRUE
   )
-  i <- 0
-  for (f in files) {
-    df <- read_sensor_data(f, verbose = FALSE)
-    # Export raw data to Excel
-    # ⚡ Bolt: sub() is ~3x faster than tools::file_path_sans_ext + paste0
-    out_raw <- file.path(data_dir, sub("\\.txt$", ".xlsx", basename(f)))
-    raw_export_tasks[[i + 1]] <- list(df = df, out_raw = out_raw)
 
-    # Compute summary metrics
-    metrics_res <- compute_sensor_metrics(df, f)
-
-    results[[i + 1]] <- metrics_res$dt
-    sheet_names[i + 1] <- metrics_res$sheet_name
-    i <- i + 1
+  for (i in seq_along(files)) {
+    item <- process_sensor_file(files[i], data_dir)
+    raw_export_tasks[[i]] <- item$raw_task
+    results[[i]] <- item$dt
+    sheet_names[i] <- item$sheet_name
     setTxtProgressBar(pb, i)
   }
   close(pb)
   names(results) <- sheet_names
+
+  list(
+    results = results,
+    raw_export_tasks = raw_export_tasks
+  )
+}
+
+# Process all sensor files: export raw, compute metrics
+process_all_data <- function(data_dir) {
+  data_dir <- auto_detect_data_dir(data_dir)
+  files <- find_sensor_files(data_dir)
+
+  batch_res <- process_sensor_files_batch(files, data_dir)
+  results <- batch_res$results
+  raw_export_tasks <- batch_res$raw_export_tasks
+
   cat(paste(
     "\nℹ Sensor files read and metrics computed;",
     "starting raw Excel exports...\n"

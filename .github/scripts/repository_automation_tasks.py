@@ -9,7 +9,8 @@ import os
 import pathlib
 import re
 import stat
-from typing import Any, Iterable
+from collections.abc import Iterable
+from typing import Any
 
 from repository_automation_common import (
     DAILY_WORKFLOW_NAME,

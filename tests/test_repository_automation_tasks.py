@@ -272,14 +272,14 @@ def test_hotspot_line_count_rejects_symlink(tmp_path: Path) -> None:
 
 
 def test_discover_hotspots():
-    """Verify that discover_hotspots returns a list of tuples with relative paths and line counts sorted in descending order."""
+    """Verify discover_hotspots returns descending sorted relative paths and line counts."""
     hotspots = discover_hotspots(limit=5)
-    assert isinstance(hotspots, list)
-    assert len(hotspots) <= 5
-    assert len(hotspots) > 0
+    assert isinstance(hotspots, list)  # nosec B101
+    assert len(hotspots) <= 5  # nosec B101
+    assert len(hotspots) > 0  # nosec B101
     for rel_path, count in hotspots:
-        assert isinstance(rel_path, str)
-        assert isinstance(count, int)
-        assert count > 0
+        assert isinstance(rel_path, str)  # nosec B101
+        assert isinstance(count, int)  # nosec B101
+        assert count > 0  # nosec B101
     counts = [count for _, count in hotspots]
-    assert counts == sorted(counts, reverse=True)
+    assert counts == sorted(counts, reverse=True)  # nosec B101

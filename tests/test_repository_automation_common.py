@@ -10,6 +10,7 @@ sys.path.insert(
 import pytest
 from repository_automation_common import (
     _remove_heuristic_secrets,
+    command_block,
     command_env,
     filter_env_securely,
     is_commit_sha,
@@ -310,3 +311,77 @@ def test_task_dir(tmp_path):
         result = task_dir("test_task")
         assert result == tmp_path / "test_task"
         assert result.is_dir()
+
+
+def test_command_block_minimal():
+    entry = {"name": "test-command", "exit_code": 0}
+    expected = "- **test-command** -> exit `0`"
+    assert command_block(entry) == expected
+
+
+def test_command_block_with_stdout():
+    entry = {
+        "name": "lint",
+        "exit_code": 0,
+        "stdout": "Everything looks good!",
+    }
+    expected = "- **lint** -> exit `0`\n```text\nEverything looks good!\n```"
+    assert command_block(entry) == expected
+
+
+def test_command_block_with_stderr():
+    entry = {
+        "name": "typecheck",
+        "exit_code": 1,
+        "stderr": "Error: invalid syntax",
+    }
+    expected = "- **typecheck** -> exit `1`\n```text\nError: invalid syntax\n```"
+    assert command_block(entry) == expected
+
+
+def test_command_block_with_both_stdout_and_stderr():
+    entry = {
+        "name": "build",
+        "exit_code": 2,
+        "stdout": "Build started",
+        "stderr": "Build failed on step 4",
+    }
+    expected = (
+        "- **build** -> exit `2`\n"
+        "```text\nBuild started\n```\n"
+        "```text\nBuild failed on step 4\n```"
+    )
+    assert command_block(entry) == expected
+
+
+def test_command_block_strips_whitespace():
+    entry = {
+        "name": "strip-check",
+        "exit_code": 0,
+        "stdout": "  padded stdout \n\n",
+        "stderr": "\n  padded stderr \n",
+    }
+    expected = (
+        "- **strip-check** -> exit `0`\n"
+        "```text\npadded stdout\n```\n"
+        "```text\npadded stderr\n```"
+    )
+    assert command_block(entry) == expected
+
+
+def test_command_block_empty_or_falsy_streams():
+    entry = {
+        "name": "empty-streams",
+        "exit_code": 0,
+        "stdout": "",
+        "stderr": None,
+    }
+    expected = "- **empty-streams** -> exit `0`"
+    assert command_block(entry) == expected
+
+
+def test_command_block_missing_required_keys():
+    with pytest.raises(KeyError):
+        command_block({"exit_code": 0})
+    with pytest.raises(KeyError):
+        command_block({"name": "foo"})

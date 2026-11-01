@@ -439,3 +439,16 @@ generic dispatch overhead.
 overhead of the sd() function on guaranteed numeric vectors in high-frequency
 loops. **Action:** Replace sd() with sqrt(var()) for guaranteed numeric vectors
 in performance-critical paths.
+
+## 2026-10-31 - Direct list construction in candidate file discovery
+
+**Learning:** When scanning files during directory traversal, accumulating
+intermediate 2-tuples (e.g. `(rel_path, path_str)`) in a list and subsequently
+extracting path lists via a list comprehension incurs unnecessary tuple
+allocation and redundant sequence traversals. Furthermore, unpacking tuples in
+`[(rel, c) for (rel, _), c in zip(candidates, counts)]` adds unnecessary
+unpacking overhead on each element.
+**Action:** Populate separate target lists (e.g., `rel_paths` and `paths`)
+directly during the file discovery traversal. This avoids intermediate tuple
+allocations, eliminates redundant list comprehensions, and enables clean, direct
+element pairing with `zip(rel_paths, counts)`.

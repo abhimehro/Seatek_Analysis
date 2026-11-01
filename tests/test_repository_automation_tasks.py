@@ -13,6 +13,7 @@ sys.path.insert(
 from repository_automation_tasks import (
     _hotspot_line_count,
     configured_commands,
+    discover_hotspots,
     flattened_updates,
     render_entry_section,
 )
@@ -268,3 +269,35 @@ def test_hotspot_line_count_rejects_symlink(tmp_path: Path) -> None:
     except OSError:
         pytest.skip("symlink creation not permitted")
     assert _hotspot_line_count(str(link)) is None
+
+
+def test_discover_hotspots_basic(monkeypatch, tmp_path):
+    import repository_automation_tasks
+
+    root_dir = tmp_path / "test_repo"
+    root_dir.mkdir()
+    file1 = root_dir / "small.py"
+    file1.write_text("a = 1\n", encoding="utf-8")
+    file2 = root_dir / "large.sh"
+    file2.write_text("echo 1\necho 2\necho 3\n", encoding="utf-8")
+    ignored_file = root_dir / "notes.txt"
+    ignored_file.write_text("not py or sh\n", encoding="utf-8")
+
+    sub_dir = root_dir / "subdir"
+    sub_dir.mkdir()
+    file3 = sub_dir / "medium.py"
+    file3.write_text("x = 1\ny = 2\n", encoding="utf-8")
+
+    ignored_dir = root_dir / ".git"
+    ignored_dir.mkdir()
+    file_ignored = ignored_dir / "git_hook.sh"
+    file_ignored.write_text("echo git\n" * 10, encoding="utf-8")
+
+    monkeypatch.setattr(repository_automation_tasks, "ROOT", root_dir)
+
+    results = discover_hotspots(limit=10)
+    # Expected ordering: large.sh (4 lines), subdir/medium.py (3 lines), small.py (2 lines)
+    assert len(results) == 3
+    assert results[0] == ("large.sh", 4)
+    assert results[1] == (os.path.join("subdir", "medium.py"), 3)
+    assert results[2] == ("small.py", 2)

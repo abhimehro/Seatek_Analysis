@@ -263,6 +263,7 @@ def _parse_workflow_files() -> tuple[set[str], list[dict[str, Any]]]:
     texts = asyncio.run(read_workflow_files())
     for file_path, text in zip(paths, texts):
         matches = []
+        # ⚡ Bolt: Store repo_id with match tuple to eliminate redundant split/join inside replacement loop
         for match in WORKFLOW_PATTERN.finditer(text):
             action_ref = match.group(2)
             if action_ref.startswith("./") or action_ref.startswith("docker://"):
@@ -270,9 +271,9 @@ def _parse_workflow_files() -> tuple[set[str], list[dict[str, Any]]]:
             parts = action_ref.split("/")
             if len(parts) < 2:
                 continue
-            repo_id = "/".join(parts[:2])
+            repo_id = f"{parts[0]}/{parts[1]}"
             repo_ids_to_fetch.add(repo_id)
-            matches.append(match)
+            matches.append((match, repo_id))
         file_data.append({"path": file_path, "text": text, "matches": matches})
     return repo_ids_to_fetch, file_data
 
@@ -284,11 +285,17 @@ def _compute_workflow_replacements(
     for data in file_data:
         text = data["text"]
         replacements = []
-        for match in data["matches"]:
+        for item in data["matches"]:
+            # ⚡ Bolt: Unpack pre-computed repo_id or safely fallback to extracting it
+            if isinstance(item, tuple):
+                match, repo_id = item
+            else:
+                match = item
+                parts = match.group(2).split("/")
+                repo_id = f"{parts[0]}/{parts[1]}" if len(parts) >= 2 else ""
+
             action_ref = match.group(2)
             current = match.group(3)
-            parts = action_ref.split("/")
-            repo_id = "/".join(parts[:2])
             latest = latest_cache.get(repo_id, "")
 
             proposed = target_ref(current, latest) if latest else None

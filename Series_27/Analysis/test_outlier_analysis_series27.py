@@ -31,6 +31,7 @@ import pytest
 from outlier_analysis_series27 import (
     apply_corrections,
     detect_outliers,
+    parse_args,
     secure_filename,
 )
 
@@ -216,3 +217,71 @@ def test_apply_corrections_path_traversal(tmp_path):
         # The corrections summary should also reference the safe path
         assert not result.empty
         assert result.iloc[0]["CorrectedFile"] == out_file
+
+
+def test_parse_args_defaults():
+    test_args = ["outlier_analysis_series27.py", "-i", "data.xlsx"]
+    with patch.object(sys, "argv", test_args):
+        args = parse_args()
+        assert args.input == "data.xlsx"
+        assert args.sheet_summary == "Year-to-Year Differences"
+        assert args.method == "abs"
+        assert args.threshold == 0.1
+        assert args.zscore == 3.0
+        assert args.iqr_factor == 1.5
+        assert args.output == "output"
+
+
+def test_parse_args_custom():
+    test_args = [
+        "outlier_analysis_series27.py",
+        "-i",
+        "custom_data.xlsx",
+        "-s",
+        "Custom Sheet",
+        "-m",
+        "zscore",
+        "-t",
+        "0.25",
+        "-z",
+        "2.5",
+        "-q",
+        "2.0",
+        "-o",
+        "custom_out",
+    ]
+    with patch.object(sys, "argv", test_args):
+        args = parse_args()
+        assert args.input == "custom_data.xlsx"
+        assert args.sheet_summary == "Custom Sheet"
+        assert args.method == "zscore"
+        assert args.threshold == 0.25
+        assert args.zscore == 2.5
+        assert args.iqr_factor == 2.0
+        assert args.output == "custom_out"
+
+
+def test_parse_args_no_args_exits(capsys):
+    test_args = ["outlier_analysis_series27.py"]
+    with patch.object(sys, "argv", test_args):
+        with pytest.raises(SystemExit) as exc_info:
+            parse_args()
+        assert exc_info.value.code == 1
+        captured = capsys.readouterr()
+        assert "usage:" in captured.err or "usage:" in captured.out
+
+
+def test_parse_args_missing_required_input():
+    test_args = ["outlier_analysis_series27.py", "-o", "some_out"]
+    with patch.object(sys, "argv", test_args):
+        with pytest.raises(SystemExit) as exc_info:
+            parse_args()
+        assert exc_info.value.code == 2
+
+
+def test_parse_args_invalid_method():
+    test_args = ["outlier_analysis_series27.py", "-i", "data.xlsx", "-m", "invalid_method"]
+    with patch.object(sys, "argv", test_args):
+        with pytest.raises(SystemExit) as exc_info:
+            parse_args()
+        assert exc_info.value.code == 2

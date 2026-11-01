@@ -29,6 +29,7 @@ except ImportError:
 
 import pytest
 from outlier_analysis_series27 import (
+    _is_safe_path,
     apply_corrections,
     detect_outliers,
     secure_filename,
@@ -216,3 +217,81 @@ def test_apply_corrections_path_traversal(tmp_path):
         # The corrections summary should also reference the safe path
         assert not result.empty
         assert result.iloc[0]["CorrectedFile"] == out_file
+
+
+def test_is_safe_path_valid_subpaths(tmp_path):
+    base = str(tmp_path)
+    # SECURITY: Exact directory match should be considered safe
+    assert _is_safe_path(base, base) is True
+
+    # SECURITY: Nested file and subdirectory paths must be recognized as safe
+    subfile = tmp_path / "child.txt"
+    subfile.write_text("hello")
+    assert _is_safe_path(base, str(subfile)) is True
+
+    nested_dir = tmp_path / "sub" / "nested"
+    nested_dir.mkdir(parents=True)
+    assert _is_safe_path(base, str(nested_dir)) is True
+
+    # Relative paths resolving inside basedir
+    assert _is_safe_path(base, os.path.join(base, "sub", "..", "child.txt")) is True
+
+
+def test_is_safe_path_traversal_escapes(tmp_path):
+    base = tmp_path / "safe_dir"
+    base.mkdir()
+    base_str = str(base)
+
+    # Simple directory traversal via ..
+    escaping_path = os.path.join(base_str, "..", "secret.txt")
+    assert _is_safe_path(base_str, escaping_path) is False
+
+    # Multi-level traversal
+    deep_escape = os.path.join(base_str, "sub", "..", "..", "..", "etc", "passwd")
+    assert _is_safe_path(base_str, deep_escape) is False
+
+    # Unrelated absolute path outside base
+    outside_dir = tmp_path / "outside_dir"
+    outside_dir.mkdir()
+    assert _is_safe_path(base_str, str(outside_dir)) is False
+
+
+def test_is_safe_path_prefix_collision(tmp_path):
+    # SECURITY: Prevent prefix confusion attacks (e.g., '/tmp/safe_dir_attacker' matching '/tmp/safe_dir')
+    base = tmp_path / "dir"
+    base.mkdir()
+    sibling = tmp_path / "dir_sibling"
+    sibling.mkdir()
+
+    assert _is_safe_path(str(base), str(sibling)) is False
+
+
+def test_is_safe_path_null_bytes(tmp_path):
+    base = str(tmp_path)
+    # SECURITY: Null byte injections in path or basedir must fail closed
+    assert _is_safe_path(base, os.path.join(base, "file\0.txt")) is False
+    assert _is_safe_path(base + "\0", os.path.join(base, "file.txt")) is False
+
+
+def test_is_safe_path_symlinks(tmp_path):
+    base = tmp_path / "safe_dir"
+    base.mkdir()
+    base_str = str(base)
+
+    outside = tmp_path / "outside"
+    outside.mkdir()
+    outside_file = outside / "target.txt"
+    outside_file.write_text("target")
+
+    inside_file = base / "inside.txt"
+    inside_file.write_text("inside")
+
+    # Symlink inside basedir pointing outside basedir should be rejected
+    symlink_escape = base / "symlink_escape"
+    symlink_escape.symlink_to(outside_file)
+    assert _is_safe_path(base_str, str(symlink_escape)) is False
+
+    # Symlink inside basedir pointing inside basedir should be accepted
+    symlink_safe = base / "symlink_safe"
+    symlink_safe.symlink_to(inside_file)
+    assert _is_safe_path(base_str, str(symlink_safe)) is True

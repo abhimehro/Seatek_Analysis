@@ -8,10 +8,13 @@ sys.path.insert(
 )
 
 import pytest
+import json
+
 from repository_automation_common import (
     _remove_heuristic_secrets,
     command_env,
     filter_env_securely,
+    gh_json,
     is_commit_sha,
     iso_day,
     now_utc,
@@ -310,3 +313,41 @@ def test_task_dir(tmp_path):
         result = task_dir("test_task")
         assert result == tmp_path / "test_task"
         assert result.is_dir()
+
+
+@patch("repository_automation_common.run_process")
+def test_gh_json_raises_json_decode_error_on_invalid_json(mock_run_process):
+    # SECURITY: Verify that unexpected/corrupt CLI stdout raises JSONDecodeError
+    # so malformed upstream responses fail fast and do not silently pass bad data.
+    mock_proc = MagicMock()
+    mock_proc.returncode = 0
+    mock_proc.stdout = "invalid json string {not valid"
+    mock_proc.stderr = ""
+    mock_run_process.return_value = mock_proc
+
+    with pytest.raises(json.JSONDecodeError):
+        gh_json(["api", "test"])
+
+
+@patch("repository_automation_common.run_process")
+def test_gh_json_parses_valid_json(mock_run_process):
+    mock_proc = MagicMock()
+    mock_proc.returncode = 0
+    mock_proc.stdout = '{"key": "value", "count": 42}'
+    mock_proc.stderr = ""
+    mock_run_process.return_value = mock_proc
+
+    result = gh_json(["api", "test"])
+    assert result == {"key": "value", "count": 42}
+
+
+@patch("repository_automation_common.run_process")
+def test_gh_json_empty_output_returns_default(mock_run_process):
+    mock_proc = MagicMock()
+    mock_proc.returncode = 0
+    mock_proc.stdout = "   \n"
+    mock_proc.stderr = ""
+    mock_run_process.return_value = mock_proc
+
+    result = gh_json(["api", "test"], default=[])
+    assert result == []

@@ -310,3 +310,69 @@ def test_task_dir(tmp_path):
         result = task_dir("test_task")
         assert result == tmp_path / "test_task"
         assert result.is_dir()
+
+
+def test_command_block_basic():
+    from repository_automation_common import command_block
+
+    entry = {
+        "name": "git status",
+        "exit_code": 0,
+    }
+    expected = "- **git status** -> " + "exit `0`"
+    assert command_block(entry) == expected
+
+
+def test_command_block_with_stdout():
+    from repository_automation_common import command_block
+
+    entry = {
+        "name": "pytest",
+        "exit_code": 0,
+        "stdout": "  All tests passed  \n",
+    }
+    expected = "- **pytest** -> " + "exit `0`\n```text\nAll tests passed\n```"
+    assert command_block(entry) == expected
+
+
+def test_command_block_with_stderr():
+    from repository_automation_common import command_block
+
+    entry = {
+        "name": "lint",
+        "exit_code": 1,
+        "stderr": "\nwarning: line too long\n",
+    }
+    expected = "- **lint** -> " + "exit `1`\n```text\nwarning: line too long\n```"
+    assert command_block(entry) == expected
+
+
+def test_command_block_with_stdout_and_stderr():
+    from repository_automation_common import command_block
+
+    entry = {
+        "name": "build",
+        "exit_code": 2,
+        "stdout": "build started",
+        "stderr": "build error",
+    }
+    expected = (
+        "- **build** -> " + "exit `2`\n"
+        "```text\nbuild started\n```\n"
+        "```text\nbuild error\n```"
+    )
+    assert command_block(entry) == expected
+
+
+def test_command_block_empty_or_whitespace_output():
+    from repository_automation_common import command_block
+
+    # Test that empty string stdout/stderr does not create empty code fence blocks
+    entry = {
+        "name": "check",
+        "exit_code": 0,
+        "stdout": "",
+        "stderr": "",
+    }
+    expected = "- **check** -> " + "exit `0`"
+    assert command_block(entry) == expected

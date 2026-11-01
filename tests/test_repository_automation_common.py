@@ -310,3 +310,38 @@ def test_task_dir(tmp_path):
         result = task_dir("test_task")
         assert result == tmp_path / "test_task"
         assert result.is_dir()
+
+
+def test_enforce_result_missing_file(tmp_path, capsys):
+    from repository_automation_common import enforce_result
+
+    missing_path = tmp_path / "nonexistent" / "result.json"
+    exit_code = enforce_result(str(missing_path))
+
+    assert exit_code == 1
+    captured = capsys.readouterr()
+    assert f"Missing task result: {missing_path}" in captured.out
+
+
+@pytest.mark.parametrize(
+    "status, expected_exit_code",
+    [
+        ("failure", 1),
+        ("needs_review", 1),
+        ("success", 0),
+        ("skipped", 0),
+        (None, 0),
+    ],
+)
+def test_enforce_result_statuses(tmp_path, status, expected_exit_code):
+    import json
+    from repository_automation_common import enforce_result
+
+    result_file = tmp_path / "result.json"
+    data = {}
+    if status is not None:
+        data["status"] = status
+    result_file.write_text(json.dumps(data))
+
+    exit_code = enforce_result(str(result_file))
+    assert exit_code == expected_exit_code

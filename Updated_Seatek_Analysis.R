@@ -186,34 +186,34 @@ compute_sensor_metrics <- function(df, filename) {
   # name subsetting
   sensor_names <- names(df)[startsWith(names(df), "Sensor")]
 
-  # ⚡ Bolt: Replace multiple lapply(.SD, ...) calls with a direct for loop
-  # over sensor columns using pre-calculated row indices. This significantly
-  # reduces execution time by avoiding .SD closure and redundant subsetting
-  # overhead.
-
   n_rows <- nrow(df)
-  idx_first <- 1:min(10, n_rows)
-  idx_last <- max(1, n_rows - 4):n_rows
-
   len_sensors <- length(sensor_names)
-  first10 <- numeric(len_sensors)
-  last5 <- numeric(len_sensors)
-  full <- numeric(len_sensors)
 
-  # ⚡ Bolt: Use .subset2 to avoid [[.data.frame dispatch overhead
-  for (j in seq_len(len_sensors)) {
-    v <- .subset2(df, sensor_names[j])
+  # ⚡ Bolt: Vectorize sensor metrics calculation using matrix colSums.
+  # Converting columns directly via unlist without names into an (n_rows x len_sensors)
+  # matrix allows computing first10, last5, and full averages vectorially across
+  # all sensors simultaneously, avoiding per-column loop overhead.
+  if (len_sensors == 0L || n_rows == 0L) {
+    first10 <- numeric(len_sensors)
+    last5 <- numeric(len_sensors)
+    full <- numeric(len_sensors)
+  } else {
+    mat <- unlist(.subset(df, sensor_names), use.names = FALSE)
+    dim(mat) <- c(n_rows, len_sensors)
 
-    v_first <- v[idx_first]
-    w_first <- which(v_first > 0)
-    first10[j] <- sum(v_first[w_first]) / length(w_first)
+    pos <- mat > 0 & !is.na(mat)
+    mat_pos <- mat * pos
+    mat_pos[is.na(mat_pos)] <- 0
 
-    v_last <- v[idx_last]
-    w_last <- which(v_last > 0)
-    last5[j] <- sum(v_last[w_last]) / length(w_last)
+    full <- colSums(mat_pos) / colSums(pos)
 
-    w_full <- which(v > 0)
-    full[j] <- sum(v[w_full]) / length(w_full)
+    n_first <- min(10L, n_rows)
+    pos_first <- pos[1:n_first, , drop = FALSE]
+    first10 <- colSums(mat_pos[1:n_first, , drop = FALSE]) / colSums(pos_first)
+
+    idx_last <- max(1L, n_rows - 4L):n_rows
+    pos_last <- pos[idx_last, , drop = FALSE]
+    last5 <- colSums(mat_pos[idx_last, , drop = FALSE]) / colSums(pos_last)
   }
   diff <- full - first10
   # Derive sheet/year name

@@ -1,5 +1,6 @@
 import datetime as dt
 import os
+import subprocess  # nosec B404
 import sys
 from unittest.mock import MagicMock, patch
 
@@ -7,7 +8,6 @@ sys.path.insert(
     0, os.path.abspath(os.path.join(os.path.dirname(__file__), "../.github/scripts"))
 )
 
-import subprocess
 import pytest
 from repository_automation_common import (
     _remove_heuristic_secrets,
@@ -59,18 +59,20 @@ def test_run_shell_command_list(mock_run_process):
 
 @patch("repository_automation_common.run_process")
 def test_run_checked_success(mock_run_process):
+    """Test run_checked delegates to run_process with check=True."""
     setup_mock_process(mock_run_process)
 
     result = run_checked(["git", "status"])
 
     mock_run_process.assert_called_once_with(["git", "status"], check=True)
     assert result == mock_run_process.return_value
-    assert result.returncode == 0
+    assert not result.returncode
     assert result.stdout == "output"
 
 
 @patch("repository_automation_common.run_process")
-def test_run_checked_raises_on_failure(mock_run_process):
+def test_run_checked_failure(mock_run_process):
+    """Test run_checked propagates CalledProcessError on non-zero exit."""
     mock_run_process.side_effect = subprocess.CalledProcessError(
         returncode=1, cmd=["git", "status"], output="", stderr="error"
     )

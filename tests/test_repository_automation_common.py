@@ -1,4 +1,5 @@
 import datetime as dt
+import json
 import os
 import sys
 from unittest.mock import MagicMock, patch
@@ -11,6 +12,7 @@ import pytest
 from repository_automation_common import (
     _remove_heuristic_secrets,
     command_env,
+    enforce_result,
     filter_env_securely,
     is_commit_sha,
     iso_day,
@@ -312,9 +314,8 @@ def test_task_dir(tmp_path):
         assert result.is_dir()
 
 
-def test_enforce_result_missing_file(tmp_path, capsys):
-    from repository_automation_common import enforce_result
-
+def test_enforce_result_missing(tmp_path, capsys):
+    """Test enforce_result exits 1 and warns if file is missing."""
     missing_path = tmp_path / "nonexistent" / "result.json"
     exit_code = enforce_result(str(missing_path))
 
@@ -333,10 +334,8 @@ def test_enforce_result_missing_file(tmp_path, capsys):
         (None, 0),
     ],
 )
-def test_enforce_result_statuses(tmp_path, status, expected_exit_code):
-    import json
-    from repository_automation_common import enforce_result
-
+def test_enforce_result_status(tmp_path, status, expected_exit_code):
+    """Test enforce_result returns 1 for failures/needs_review and 0 otherwise."""
     result_file = tmp_path / "result.json"
     data = {}
     if status is not None:

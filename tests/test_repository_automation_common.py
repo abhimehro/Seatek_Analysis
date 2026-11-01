@@ -12,6 +12,7 @@ from repository_automation_common import (
     _remove_heuristic_secrets,
     command_env,
     filter_env_securely,
+    gh_json,
     is_commit_sha,
     iso_day,
     now_utc,
@@ -310,3 +311,19 @@ def test_task_dir(tmp_path):
         result = task_dir("test_task")
         assert result == tmp_path / "test_task"
         assert result.is_dir()
+
+
+@patch("repository_automation_common.run_process")
+def test_gh_json_invalid_json_raises_json_decode_error(mock_run_process):
+    # SECURITY: Ensure unexpected or malformed responses from CLI commands
+    # are raised properly as JSONDecodeError and not swallowed.
+    mock_proc = MagicMock()
+    mock_proc.returncode = 0
+    mock_proc.stdout = "invalid-json {"
+    mock_proc.stderr = ""
+    mock_run_process.return_value = mock_proc
+
+    import json
+
+    with pytest.raises(json.JSONDecodeError):
+        gh_json(["api", "repos/test"])

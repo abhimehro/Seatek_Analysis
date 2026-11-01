@@ -10,6 +10,7 @@ sys.path.insert(
 import pytest
 from repository_automation_common import (
     _remove_heuristic_secrets,
+    command_block,
     command_env,
     filter_env_securely,
     is_commit_sha,
@@ -310,3 +311,55 @@ def test_task_dir(tmp_path):
         result = task_dir("test_task")
         assert result == tmp_path / "test_task"
         assert result.is_dir()
+
+
+def test_command_block_base_only() -> None:
+    entry = {"name": "run-linter", "exit_code": 0}
+    expected = "- **run-linter** -> exit `0`"
+    assert command_block(entry) == expected
+
+
+def test_command_block_with_stdout() -> None:
+    entry = {
+        "name": "check-deps",
+        "exit_code": 0,
+        "stdout": "All dependencies satisfied.\n",
+    }
+    expected = "- **check-deps** -> exit `0`\n```text\nAll dependencies satisfied.\n```"
+    assert command_block(entry) == expected
+
+
+def test_command_block_with_stderr() -> None:
+    entry = {
+        "name": "build-target",
+        "exit_code": 1,
+        "stderr": "Error: missing module foo\n",
+    }
+    expected = "- **build-target** -> exit `1`\n```text\nError: missing module foo\n```"
+    assert command_block(entry) == expected
+
+
+def test_command_block_with_both_streams_and_whitespace_stripping() -> None:
+    entry = {
+        "name": "run-tests",
+        "exit_code": 2,
+        "stdout": "   Tests running...   \n\n",
+        "stderr": "\n\n   Warning: deprecation   \n",
+    }
+    expected = (
+        "- **run-tests** -> exit `2`\n"
+        "```text\nTests running...\n```\n"
+        "```text\nWarning: deprecation\n```"
+    )
+    assert command_block(entry) == expected
+
+
+def test_command_block_empty_streams() -> None:
+    entry = {
+        "name": "empty-command",
+        "exit_code": 0,
+        "stdout": "",
+        "stderr": "",
+    }
+    expected = "- **empty-command** -> exit `0`"
+    assert command_block(entry) == expected

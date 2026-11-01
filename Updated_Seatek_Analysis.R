@@ -560,17 +560,34 @@ write_summary_sheets <- function(wb, summary_df, output_file,
   )
 }
 
-# Write combined summary workbook
-dump_summary_excel <- function(results, output_file, highlight_top_n = 5) {
-  wb <- createWorkbook()
-
+# Helper function to create summary workbook styles
+create_summary_styles <- function() {
   # ⚡ Bolt: Hoisted style definitions out of inner functions/loops
   # to avoid recreating styles redundantly on every sheet generation.
-  header_style <- createStyle(textDecoration = "bold", fontColour = "#FFFFFF", bgFill = "#4F81BD")
-  highlight_style_yearly <- createStyle(fontColour = "#000000", bgFill = "#FFD700")
-  highlight_style_summary <- createStyle(fontColour = "#000000", bgFill = "#FF9999")
+  header_style <- createStyle(
+    textDecoration = "bold",
+    fontColour = "#FFFFFF",
+    bgFill = "#4F81BD"
+  )
+  highlight_style_yearly <- createStyle(
+    fontColour = "#000000",
+    bgFill = "#FFD700"
+  )
+  highlight_style_summary <- createStyle(
+    fontColour = "#000000",
+    bgFill = "#FF9999"
+  )
 
-  # Write each year's sheet
+  list(
+    header = header_style,
+    yearly = highlight_style_yearly,
+    summary = highlight_style_summary
+  )
+}
+
+# Helper function to write all yearly sheets to the workbook
+write_all_yearly_sheets <- function(wb, results, header_style,
+                                    highlight_style_yearly) {
   cat("\n📊 Generating yearly summary sheets...\n")
   message("Generating yearly summary sheets...")
   if (length(results) > 0) {
@@ -597,6 +614,16 @@ dump_summary_excel <- function(results, output_file, highlight_top_n = 5) {
     close(pb)
   }
   cat("\n✅ Yearly sheets generated.\n")
+}
+
+# Write combined summary workbook
+dump_summary_excel <- function(results, output_file, highlight_top_n = 5) {
+  wb <- createWorkbook()
+
+  styles <- create_summary_styles()
+
+  # Write each year's sheet
+  write_all_yearly_sheets(wb, results, styles$header, styles$yearly)
 
   cat("\n📈 Computing summary statistics...\n")
   # Compute summary statistics
@@ -606,7 +633,7 @@ dump_summary_excel <- function(results, output_file, highlight_top_n = 5) {
   # Write summary sheets and CSVs
   write_summary_sheets(
     wb, summary_df, output_file,
-    header_style, highlight_top_n, highlight_style_summary
+    styles$header, highlight_top_n, styles$summary
   )
 
   cat("\n✅ Summary workbook complete.\n")

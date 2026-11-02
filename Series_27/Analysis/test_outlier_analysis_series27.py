@@ -29,6 +29,7 @@ except ImportError:
 
 import pytest
 from outlier_analysis_series27 import (
+    _process_single_sheet,
     apply_corrections,
     detect_outliers,
     secure_filename,
@@ -188,14 +189,18 @@ def test_apply_corrections_path_traversal(tmp_path):
 
     output_dir = str(tmp_path)
 
-    with patch("pandas.ExcelFile") as mock_excel:
+    with patch("pandas.ExcelFile") as mock_excel, patch(
+        "pandas.read_excel"
+    ) as mock_read:
         mock_xls = MagicMock()
+        mock_xls.sheet_names = ["../../../outside/traversal_target"]
         mock_excel.return_value.__enter__.return_value = mock_xls
 
         mock_df_raw = MagicMock()
         mock_df_raw.empty = False
         mock_df_raw.columns = ["V1"]
-        mock_xls.parse.return_value = mock_df_raw
+        mock_df_raw.copy.return_value = mock_df_raw
+        mock_read.return_value = {"../../../outside/traversal_target": mock_df_raw}
 
         # Exercise the real os.path.join / _is_safe_path defense-in-depth check
         result = apply_corrections(b"dummy", "dummy.xlsx", output_dir, outliers_df)
@@ -216,3 +221,117 @@ def test_apply_corrections_path_traversal(tmp_path):
         # The corrections summary should also reference the safe path
         assert not result.empty
         assert result.iloc[0]["CorrectedFile"] == out_file
+
+
+@pytest.mark.skipif(not HAS_PANDAS, reason="Pandas not available")
+def test_process_single_sheet_empty(tmp_path):
+    df_empty = pd.DataFrame()
+    group = pd.DataFrame(
+        {
+            "Year_Pair": ["2023-2024"],
+            "Sensor": [1],
+            "Difference": [0.5],
+            "next_year": ["2024"],
+        }
+    )
+    result = _process_single_sheet(
+        df_empty, "EmptySheet", group, "input.xlsx", str(tmp_path)
+    )
+    assert result is None
+
+
+@pytest.mark.skipif(not HAS_PANDAS, reason="Pandas not available")
+def test_process_single_sheet_success(tmp_path):
+    output_dir = str(tmp_path)
+    input_path = "test_run.xlsx"
+    sheet = "Raw Data 2024"
+
+    df_raw = pd.DataFrame(
+        {
+            "V1": [10.0, 20.0],
+            "V2": [5.0, 15.0],
+            "Time": ["12:00:00", "12:01:00"],
+        }
+    )
+    group = pd.DataFrame(
+        {
+            "Year_Pair": ["2023-2024", "2023-2024"],
+            "Sensor": [1, 2],
+            "Difference": [0.5, -0.2],
+            "next_year": ["2024", "2024"],
+        }
+    )
+
+    with patch.object(pd.DataFrame, "to_excel") as mock_to_excel:
+        corrections = _process_single_sheet(
+            df_raw, sheet, group, input_path, output_dir
+        )
+
+        # "Time" column should be deleted from df_raw
+        assert "Time" not in df_raw.columns
+        assert list(df_raw.columns) == ["V1", "V2"]
+
+        # Differences subtracted: V1 -> -0.5, V2 -> -(-0.2) = +0.2
+        assert df_raw["V1"].tolist() == [9.5, 19.5]
+        assert df_raw["V2"].tolist() == [5.2, 15.2]
+
+        # Corrections DataFrame validation
+        assert corrections is not None
+        assert len(corrections) == 2
+        assert corrections["Year_Pair"].tolist() == ["2023-2024", "2023-2024"]
+        assert corrections["Sensor"].tolist() == [1, 2]
+        assert corrections["OrigDiff"].tolist() == [0.5, -0.2]
+        assert corrections["OffsetApplied"].tolist() == [-0.5, 0.2]
+
+        expected_outfile = os.path.join(
+            output_dir, "test_run_2024_Raw Data 2024_corrected.xlsx"
+        )
+        assert corrections["CorrectedFile"].tolist() == [
+            expected_outfile,
+            expected_outfile,
+        ]
+
+        # Verify to_excel was called with expected arguments
+        mock_to_excel.assert_called_once_with(
+            expected_outfile, sheet_name=sheet, index=False
+        )
+
+
+@pytest.mark.skipif(not HAS_PANDAS, reason="Pandas not available")
+def test_process_single_sheet_unsafe_path(tmp_path):
+    output_dir = str(tmp_path)
+    input_path = "test_run.xlsx"
+    sheet = "Sheet1"
+
+    df_raw = pd.DataFrame({"V1": [10.0]})
+    group = pd.DataFrame(
+        {
+            "Year_Pair": ["2023-2024"],
+            "Sensor": [1],
+            "Difference": [0.5],
+            "next_year": ["2024"],
+        }
+    )
+
+    # Patch _get_safe_output_path to simulate an unsafe path detection
+    with patch(
+        "outlier_analysis_series27._get_safe_output_path", return_value=None
+    ) as mock_safe_path:
+        result = _process_single_sheet(df_raw, sheet, group, input_path, output_dir)
+        assert result is None
+        mock_safe_path.assert_called_once()
+
+
+def test_process_single_sheet_mock():
+    # Verify logic branches using mocks when pandas is mocked
+    mock_df_empty = MagicMock()
+    mock_df_empty.empty = True
+    # output_dir is a placeholder, not a temp path: the empty-frame branch
+    # returns before _get_safe_output_path ever sees it. A real /tmp here would
+    # trip bandit B108 for a directory that is never touched.
+    assert (
+        _process_single_sheet(
+            mock_df_empty, "Sheet1", MagicMock(), "in.xlsx", "/never-written"
+        )
+        is None
+    )

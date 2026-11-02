@@ -5,6 +5,7 @@ Series_27/
 backups/
 implementation/
 processing_log.txt
+processing_warnings.log
 seatek_analysis.log
 *.xlsx
 

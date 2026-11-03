@@ -16,6 +16,7 @@ from repository_automation_common import (
     iso_day,
     now_utc,
     numeric_version,
+    gh_json,
     run_shell_command,
     target_ref,
     truncate,
@@ -310,3 +311,61 @@ def test_task_dir(tmp_path):
         result = task_dir("test_task")
         assert result == tmp_path / "test_task"
         assert result.is_dir()
+
+
+@patch("repository_automation_common.run_process")
+def test_gh_json_success(mock_run_process):
+    mock_proc = MagicMock()
+    mock_proc.returncode = 0
+    mock_proc.stdout = '{"key": "value", "count": 42}'
+    mock_proc.stderr = ""
+    mock_run_process.return_value = mock_proc
+
+    data = gh_json(["issue", "list", "--json", "number,title"])
+
+    mock_run_process.assert_called_once()
+    assert data == {"key": "value", "count": 42}
+
+
+@patch("repository_automation_common.run_process")
+def test_gh_json_empty_output_returns_default(mock_run_process):
+    mock_proc = MagicMock()
+    mock_proc.returncode = 0
+    mock_proc.stdout = "   \n"
+    mock_proc.stderr = ""
+    mock_run_process.return_value = mock_proc
+
+    data = gh_json(["issue", "list"], default=[])
+
+    mock_run_process.assert_called_once()
+    assert data == []
+
+
+@patch("repository_automation_common.run_process")
+def test_gh_json_failure_with_default(mock_run_process, capsys):
+    mock_proc = MagicMock()
+    mock_proc.returncode = 1
+    mock_proc.stdout = ""
+    mock_proc.stderr = "GraphQL error: rate limit exceeded"
+    mock_run_process.return_value = mock_proc
+
+    data = gh_json(["api", "graphql"], default={"error": True})
+
+    mock_run_process.assert_called_once()
+    assert data == {"error": True}
+    err = capsys.readouterr().err
+    assert "rate limit exceeded" in err
+
+
+@patch("repository_automation_common.run_process")
+def test_gh_json_failure_without_default_raises(mock_run_process):
+    mock_proc = MagicMock()
+    mock_proc.returncode = 1
+    mock_proc.stdout = ""
+    mock_proc.stderr = "not logged in"
+    mock_run_process.return_value = mock_proc
+
+    with pytest.raises(RuntimeError, match="not logged in"):
+        gh_json(["auth", "status"])
+
+    mock_run_process.assert_called_once()

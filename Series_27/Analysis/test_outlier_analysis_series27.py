@@ -31,6 +31,7 @@ import pytest
 from outlier_analysis_series27 import (
     apply_corrections,
     detect_outliers,
+    parse_args,
     secure_filename,
 )
 
@@ -216,3 +217,76 @@ def test_apply_corrections_path_traversal(tmp_path):
         # The corrections summary should also reference the safe path
         assert not result.empty
         assert result.iloc[0]["CorrectedFile"] == out_file
+
+
+def test_parse_args_defaults():
+    # Test parse_args with required -i argument and verify default options
+    test_args = ["outlier_analysis_series27.py", "-i", "data.xlsx"]
+    with patch.object(sys, "argv", test_args):
+        args = parse_args()
+        assert args.input == "data.xlsx"
+        assert args.sheet_summary == "Year-to-Year Differences"
+        assert args.method == "abs"
+        assert args.threshold == 0.1
+        assert args.zscore == 3.0
+        assert args.iqr_factor == 1.5
+        assert args.output == "output"
+
+
+def test_parse_args_custom_values():
+    # Test parse_args with all custom arguments supplied
+    test_args = [
+        "outlier_analysis_series27.py",
+        "-i",
+        "custom_data.xlsx",
+        "-s",
+        "Custom Differences",
+        "-m",
+        "zscore",
+        "-t",
+        "0.25",
+        "-z",
+        "2.5",
+        "-q",
+        "2.0",
+        "-o",
+        "custom_output",
+    ]
+    with patch.object(sys, "argv", test_args):
+        args = parse_args()
+        assert args.input == "custom_data.xlsx"
+        assert args.sheet_summary == "Custom Differences"
+        assert args.method == "zscore"
+        assert args.threshold == 0.25
+        assert args.zscore == 2.5
+        assert args.iqr_factor == 2.0
+        assert args.output == "custom_output"
+
+
+def test_parse_args_no_args_exits(capsys):
+    # Test parse_args exits with status 1 when len(sys.argv) == 1
+    test_args = ["outlier_analysis_series27.py"]
+    with patch.object(sys, "argv", test_args):
+        with pytest.raises(SystemExit) as exc_info:
+            parse_args()
+        assert exc_info.value.code == 1
+    captured = capsys.readouterr()
+    assert "usage:" in captured.err.lower() or "examples:" in captured.err.lower()
+
+
+def test_parse_args_missing_required_input():
+    # Test parse_args exits when required argument -i is missing but other arguments are present
+    test_args = ["outlier_analysis_series27.py", "-m", "iqr"]
+    with patch.object(sys, "argv", test_args):
+        with pytest.raises(SystemExit) as exc_info:
+            parse_args()
+        assert exc_info.value.code == 2
+
+
+def test_parse_args_invalid_method():
+    # Test parse_args exits when invalid choice for -m is provided
+    test_args = ["outlier_analysis_series27.py", "-i", "data.xlsx", "-m", "invalid_method"]
+    with patch.object(sys, "argv", test_args):
+        with pytest.raises(SystemExit) as exc_info:
+            parse_args()
+        assert exc_info.value.code == 2

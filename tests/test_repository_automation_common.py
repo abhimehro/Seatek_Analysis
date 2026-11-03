@@ -1,5 +1,6 @@
 import datetime as dt
 import os
+import subprocess  # nosec B404
 import sys
 from unittest.mock import MagicMock, patch
 
@@ -17,6 +18,7 @@ from repository_automation_common import (
     iso_day,
     now_utc,
     numeric_version,
+    run_checked,
     run_shell_command,
     target_ref,
     truncate,
@@ -54,6 +56,33 @@ def test_run_shell_command_list(mock_run_process):
     args = mock_run_process.call_args[0][0]
     assert args == ["echo", "hello"]
     assert result["exit_code"] == 0
+
+
+@patch("repository_automation_common.run_process")
+def test_run_checked_success(mock_run_process):
+    """Test run_checked delegates to run_process with check=True."""
+    setup_mock_process(mock_run_process)
+
+    result = run_checked(["git", "status"])
+
+    mock_run_process.assert_called_once_with(["git", "status"], check=True)
+    assert result == mock_run_process.return_value
+    assert not result.returncode
+    assert result.stdout == "output"
+
+
+@patch("repository_automation_common.run_process")
+def test_run_checked_failure(mock_run_process):
+    """Test run_checked propagates CalledProcessError on non-zero exit."""
+    mock_run_process.side_effect = subprocess.CalledProcessError(
+        returncode=1, cmd=["git", "status"], output="", stderr="error"
+    )
+
+    with pytest.raises(subprocess.CalledProcessError) as exc_info:
+        run_checked(["git", "status"])
+
+    assert exc_info.value.returncode == 1
+    mock_run_process.assert_called_once_with(["git", "status"], check=True)
 
 
 def test_is_commit_sha_detects_full_length_pins() -> None:
@@ -311,6 +340,42 @@ def test_task_dir(tmp_path):
         result = task_dir("test_task")
         assert result == tmp_path / "test_task"
         assert result.is_dir()
+
+
+def test_enforce_result_missing_file(tmp_path, capsys):
+    from repository_automation_common import enforce_result
+
+    missing_path = tmp_path / "nonexistent" / "result.json"
+    result = enforce_result(str(missing_path))
+
+    assert result == 1
+    captured = capsys.readouterr()
+    assert f"Missing task result: {missing_path}" in captured.out
+
+
+@pytest.mark.parametrize(
+    "status, expected_exit_code",
+    [
+        ("failure", 1),
+        ("needs_review", 1),
+        ("success", 0),
+        ("warning", 0),
+        ("skipped", 0),
+        (None, 0),
+    ],
+)
+def test_enforce_result_statuses(tmp_path, status, expected_exit_code):
+    import json
+    from repository_automation_common import enforce_result
+
+    result_file = tmp_path / "result.json"
+    data = {}
+    if status is not None:
+        data["status"] = status
+    result_file.write_text(json.dumps(data))
+
+    exit_code = enforce_result(str(result_file))
+    assert exit_code == expected_exit_code
 
 
 def test_command_block_base_only() -> None:

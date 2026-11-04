@@ -64,3 +64,57 @@ test_that("calculate_summary_stats handles empty input", {
   # or handle it and return empty.
   expect_error(calculate_summary_stats(mock_results))
 })
+
+test_that("compute_vector_summary_stats calculates correct statistics", {
+  # Regular numeric vector
+  vals <- c(10, 20, 30, 40)
+  stats_res <- compute_vector_summary_stats(vals)
+  expect_equal(stats_res$count, 4L)
+  expect_equal(stats_res$mean, 25)
+  expect_equal(stats_res$median, 25)
+  expect_equal(stats_res$min, 10)
+  expect_equal(stats_res$max, 40)
+  expect_equal(stats_res$rollmean3, (20 + 30 + 40) / 3)
+
+  # Vector with NAs
+  vals_na <- c(10, NA, 20, NA, 30)
+  stats_na <- compute_vector_summary_stats(vals_na)
+  expect_equal(stats_na$count, 3L)
+  expect_equal(stats_na$mean, 20)
+  expect_equal(stats_na$median, 20)
+  expect_equal(stats_na$min, 10)
+  expect_equal(stats_na$max, 30)
+  expect_equal(stats_na$rollmean3, 20)
+
+  # Vector with length < 3
+  stats_short <- compute_vector_summary_stats(c(5, 15))
+  expect_equal(stats_short$count, 2L)
+  expect_true(is.na(stats_short$rollmean3))
+
+  # Empty / all NA vector
+  stats_empty <- compute_vector_summary_stats(numeric(0))
+  expect_equal(stats_empty$count, 0L)
+  expect_true(is.na(stats_empty$mean))
+  expect_true(is.na(stats_empty$sd))
+  expect_true(is.na(stats_empty$median))
+  expect_true(is.na(stats_empty$mad))
+  expect_true(is.na(stats_empty$min))
+  expect_true(is.na(stats_empty$max))
+  expect_true(is.na(stats_empty$rollmean3))
+
+  stats_all_na <- compute_vector_summary_stats(c(NA_real_, NA_real_))
+  expect_equal(stats_all_na$count, 0L)
+  expect_true(is.na(stats_all_na$mean))
+})
+
+test_that("generate_summary_stat_names generates consistent column schema", {
+  # Verify generated column names align with expected metric prefixes and statistics
+  names_out <- generate_summary_stat_names(c("first10", "full"))
+  expect_equal(names_out[1], "Sensor")
+  expect_true("first10_mean" %in% names_out)
+  expect_true("first10_count" %in% names_out)
+  expect_true("first10_rollmean3" %in% names_out)
+  expect_true("full_mean" %in% names_out)
+  expect_true("full_count" %in% names_out)
+  expect_equal(length(names_out), 1 + 2 * 8)
+})

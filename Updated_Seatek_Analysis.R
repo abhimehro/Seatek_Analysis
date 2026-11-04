@@ -337,6 +337,49 @@ write_year_sheet <- function(wb, year, data, header_style,
   }
 }
 
+# Compute summary statistics for a numeric vector across years
+compute_vector_summary_stats <- function(v_val) {
+  # ⚡ Bolt: Safe inline vector filtering with short-circuit anyNA check
+  if (anyNA(v_val)) v_val <- v_val[!is.na(v_val)]
+  n <- length(v_val)
+  if (n == 0) {
+    list(
+      mean = NA_real_, sd = NA_real_, median = NA_real_, mad = NA_real_,
+      min = NA_real_, max = NA_real_, count = 0L, rollmean3 = NA_real_
+    )
+  } else {
+    # ⚡ Bolt: Pre-calculate median and pass to mad() via center argument
+    # ⚡ Bolt: Bypass S3 method dispatch overhead with median.default()
+    med <- median.default(v_val)
+    list(
+      mean      = mean.default(v_val),
+      sd        = sqrt(var(v_val)),
+      median    = med,
+      # ⚡ Bolt: Inline mad calculation to bypass function call overhead
+      mad       = 1.4826 * median.default(abs(v_val - med)),
+      min       = min(v_val),
+      max       = max(v_val),
+      count     = n,
+      rollmean3 = if (n < 3) NA_real_ else sum(v_val[(n - 2):n]) / 3
+    )
+  }
+}
+
+# Generate structured column names for summary statistics
+generate_summary_stat_names <- function(metrics) {
+  stat_names <- c(
+    "mean", "sd", "median", "mad", "min", "max",
+    "count", "rollmean3"
+  )
+  c(
+    "Sensor",
+    paste(rep(metrics, each = length(stat_names)),
+      stat_names,
+      sep = "_"
+    )
+  )
+}
+
 # Compute summary statistics across all years
 calculate_summary_stats <- function(results) {
   # Add summary sheet with overall stats
@@ -347,58 +390,21 @@ calculate_summary_stats <- function(results) {
   # Identify metric columns (numeric columns excluding ID columns)
   metrics <- setdiff(names(all_stats_dt), c("Sensor", "Year"))
 
-
   # ⚡ Bolt: Use lapply(.SD) natively grouped by Sensor to bypass the expensive
   # melt -> aggregate -> melt -> dcast pipeline, reducing memory allocation.
   # ⚡ Bolt: Use keyby = "Sensor" to ensure the output is sorted like dcast.
-
-  calc_stats <- function(v_val) {
-    if (anyNA(v_val)) v_val <- v_val[!is.na(v_val)]
-    n <- length(v_val)
-    if (n == 0) {
-      list(
-        mean = NA_real_, sd = NA_real_, median = NA_real_, mad = NA_real_,
-        min = NA_real_, max = NA_real_, count = 0L, rollmean3 = NA_real_
-      )
-    } else {
-      # ⚡ Bolt: Pre-calculate the median and pass it to mad() via the `center`
-      # argument to avoid redundant median calculations for measurable speedup.
-      # ⚡ Bolt: Bypass S3 method dispatch overhead by using median.default()
-      med <- median.default(v_val)
-      list(
-        mean      = mean.default(v_val),
-        sd        = sqrt(var(v_val)),
-        median    = med,
-        # ⚡ Bolt: Inline mad calculation to bypass function call overhead
-        mad       = 1.4826 * median.default(abs(v_val - med)),
-        min       = min(v_val),
-        max       = max(v_val),
-        count     = n,
-        rollmean3 = if (n < 3) NA_real_ else sum(v_val[(n - 2):n]) / 3
-      )
-    }
-  }
-
+  # ⚡ Bolt: Hoist compute_vector_summary_stats out of .SD to avoid closure
+  # redefinition per group.
   summary_wide <- all_stats_dt[,
     unlist(
-      unname(lapply(.SD, calc_stats)),
+      unname(lapply(.SD, compute_vector_summary_stats)),
       recursive = FALSE,
       use.names = FALSE
     ),
     keyby = "Sensor", .SDcols = metrics
   ]
 
-  stat_names <- c(
-    "mean", "sd", "median", "mad", "min", "max",
-    "count", "rollmean3"
-  )
-  new_names <- c(
-    "Sensor",
-    paste(rep(metrics, each = length(stat_names)),
-      stat_names,
-      sep = "_"
-    )
-  )
+  new_names <- generate_summary_stat_names(metrics)
   setnames(summary_wide, new_names)
 
   # Calculate percent non-missing for 'full'

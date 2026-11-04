@@ -55,12 +55,14 @@ test_that("execute_tasks_parallel handles detectCores errors gracefully", {
 
 test_that("execute_tasks_parallel executes gracefully on non-unix platforms", {
   tasks <- list(1, 2)
+  my_platform <- .Platform
+  my_platform$OS.type <- "windows"
   testthat::with_mocked_bindings(
     {
       res <- execute_tasks_parallel(tasks, function(x) x * 5)
       expect_equal(res, list(5, 10))
     },
-    .Platform = list(OS.type = "windows"),
+    .Platform = my_platform,
     .package = "base"
   )
 })

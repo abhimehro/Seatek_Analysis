@@ -245,3 +245,7 @@ is a regular file using `os.path.isfile()` or
 `stat.S_ISREG(os.stat(path).st_mode)` before attempting to open and read its
 contents, especially in security wrappers designed to read untrusted files
 safely.
+## 2025-05-24 - [Avoid dynamic code execution (`eval(parse())`) for mocking in tests]
+**Vulnerability:** Found `eval(parse(text = ...))` being used to modify the source code of functions to mock dependencies (e.g., `parallel::detectCores()` or `.Platform$OS.type`). This is a code execution vulnerability pattern, as `eval(parse())` runs arbitrary text as code. If the text being parsed ever includes unsanitized input, it can lead to arbitrary code execution.
+**Learning:** In R, `testthat::with_mocked_bindings()` provides a safe, built-in way to mock package functions and variables during tests without resorting to modifying function source code as strings and evaluating them.
+**Prevention:** Always use `testthat::with_mocked_bindings(..., .package = "<pkg>")` to mock functions or constants instead of dynamic code execution (`eval(parse())`).

@@ -278,6 +278,31 @@ main_setup <- function() {
     all_permissions_granted
 
   # Print final summary
+  print_setup_summary(
+    all_packages_installed,
+    all_packages_loaded,
+    all_permissions_granted,
+    overall_success
+  )
+
+  list(
+    success = overall_success,
+    install_results = install_results,
+    load_results = load_results,
+    permission_results = permission_results
+  )
+}
+
+#' Print final setup summary
+#'
+#' @param all_packages_installed Logical indicating if packages were installed
+#' @param all_packages_loaded Logical indicating if packages loaded successfully
+#' @param all_permissions_granted Logical indicating if permissions were granted
+#' @param overall_success Logical indicating overall setup success
+print_setup_summary <- function(all_packages_installed,
+                                all_packages_loaded,
+                                all_permissions_granted,
+                                overall_success) {
   cat("\n=== Final Setup Summary ===\n")
   cat(
     "Pkg Install: ",
@@ -299,13 +324,6 @@ main_setup <- function() {
     cat("\n⚠ Environment setup completed with issues.\n")
     cat("Please review the errors above and resolve them.\n")
   }
-
-  list(
-    success = overall_success,
-    install_results = install_results,
-    load_results = load_results,
-    permission_results = permission_results
-  )
 }
 
 # Run setup if script is executed directly

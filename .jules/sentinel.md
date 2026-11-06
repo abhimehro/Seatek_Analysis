@@ -245,3 +245,7 @@ is a regular file using `os.path.isfile()` or
 `stat.S_ISREG(os.stat(path).st_mode)` before attempting to open and read its
 contents, especially in security wrappers designed to read untrusted files
 safely.
+## 2025-05-06 - Unhandled subprocess timeout exception
+**Vulnerability:** The `run_shell_command` function in `repository_automation_common.py` did not handle `subprocess.TimeoutExpired`.
+**Learning:** External automation commands can hang indefinitely or timeout. Unhandled timeout exceptions during subprocess execution can leak stack traces and cause Denial of Service (DoS) by crashing the orchestrating script.
+**Prevention:** Always wrap `subprocess.run` calls (that use a `timeout` argument) with a `try-except subprocess.TimeoutExpired` block to securely fail and return a predefined error state or exit code (like 124).

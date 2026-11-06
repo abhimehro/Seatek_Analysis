@@ -11,6 +11,9 @@ sys.path.insert(
 )
 
 from repository_automation_tasks import (
+    ROOT,
+    WORKFLOW_PATTERN,
+    _compute_workflow_replacements,
     _hotspot_line_count,
     configured_commands,
     flattened_updates,
@@ -265,3 +268,52 @@ def test_hotspot_line_count_rejects_symlink(tmp_path: Path) -> None:
     except OSError:
         pytest.skip("symlink creation not permitted")
     assert _hotspot_line_count(str(link)) is None
+
+
+def test_compute_workflow_replacements():
+    text = (
+        "steps:\n"
+        "  - uses: actions/checkout@v3\n"
+        "  - uses: actions/setup-python@v4\n"
+    )
+    workflow_path = ROOT / ".github" / "workflows" / "test.yml"
+    matches = list(WORKFLOW_PATTERN.finditer(text))
+
+    # Test with (match, repo_id) tuples (optimized fast path)
+    file_data_tuples = [
+        {
+            "path": workflow_path,
+            "text": text,
+            "matches": [
+                (matches[0], "actions/checkout"),
+                (matches[1], "actions/setup-python"),
+            ],
+        }
+    ]
+    latest_cache = {
+        "actions/checkout": "v4",
+        "actions/setup-python": "v5",
+    }
+    plans = _compute_workflow_replacements(file_data_tuples, latest_cache)
+    assert len(plans) == 1
+    assert len(plans[0]["replacements"]) == 2
+    assert plans[0]["replacements"][0]["action"] == "actions/checkout"
+    assert plans[0]["replacements"][0]["current"] == "v3"
+    assert plans[0]["replacements"][0]["target"] == "v4"
+    assert plans[0]["replacements"][1]["action"] == "actions/setup-python"
+    assert plans[0]["replacements"][1]["current"] == "v4"
+    assert plans[0]["replacements"][1]["target"] == "v5"
+
+    # Test with raw match objects (fallback path)
+    file_data_raw = [
+        {
+            "path": workflow_path,
+            "text": text,
+            "matches": [matches[0], matches[1]],
+        }
+    ]
+    plans_raw = _compute_workflow_replacements(file_data_raw, latest_cache)
+    assert len(plans_raw) == 1
+    assert len(plans_raw[0]["replacements"]) == 2
+    assert plans_raw[0]["replacements"][0]["target"] == "v4"
+    assert plans_raw[0]["replacements"][1]["target"] == "v5"

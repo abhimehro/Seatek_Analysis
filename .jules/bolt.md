@@ -439,3 +439,11 @@ generic dispatch overhead.
 overhead of the sd() function on guaranteed numeric vectors in high-frequency
 loops. **Action:** Replace sd() with sqrt(var()) for guaranteed numeric vectors
 in performance-critical paths.
+
+## 2026-07-20 - Generator expressions for async gathering
+
+**Learning:** When passing collections of file paths to asynchronous batch
+workers (such as `asyncio.gather`), creating an intermediate list
+comprehension allocates unnecessary heap memory and requires an extra traversal
+pass. **Action:** Accept an `Iterable` in async worker functions and pass
+generator expressions directly to avoid intermediate list allocations.

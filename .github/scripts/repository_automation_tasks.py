@@ -9,6 +9,7 @@ import os
 import pathlib
 import re
 import stat
+from collections.abc import Iterable
 from typing import Any
 
 from repository_automation_common import (
@@ -199,7 +200,7 @@ def _hotspot_line_count(path_str: str) -> int | None:
         return None
 
 
-async def _gather_line_counts(paths: list[str]) -> list[int | None]:
+async def _gather_line_counts(paths: Iterable[str]) -> list[int | None]:
     return await asyncio.gather(
         *(asyncio.to_thread(_hotspot_line_count, path) for path in paths)
     )
@@ -222,8 +223,9 @@ def discover_hotspots(limit: int = 5) -> list[tuple[str, int]]:
             )
             candidates.append((rel_path, path_str))
 
-    paths = [path_str for _, path_str in candidates]
-    counts = asyncio.run(_gather_line_counts(paths))
+    counts = asyncio.run(
+        _gather_line_counts(path_str for _, path_str in candidates)
+    )
     counted = [
         (rel_path, count)
         for (rel_path, _), count in zip(candidates, counts)

@@ -245,3 +245,9 @@ is a regular file using `os.path.isfile()` or
 `stat.S_ISREG(os.stat(path).st_mode)` before attempting to open and read its
 contents, especially in security wrappers designed to read untrusted files
 safely.
+
+## 2026-11-01 - [Unsafe Dynamic Code Execution in Tests via eval(parse())]
+
+**Vulnerability:** In `tests/testthat/test-execute_tasks_parallel.R`, tests mocked function behavior by deparsing function bodies into strings, performing string substitutions (`gsub`), and evaluating the resulting text using `eval(parse(text = ...))`. This anti-pattern can lead to code injection vulnerabilities, unpredictable test behavior, and dangerous precedents that risk leaking into production code.
+**Learning:** String-based function patching with `eval(parse(text = ...))` is error-prone, bypasses static analysis, and creates execution risks. Modern test frameworks provide safe, structured mocking mechanisms such as `testthat::with_mocked_bindings()`.
+**Prevention:** Always use safe, lexical/environment-based mocking utilities like `testthat::with_mocked_bindings()` to mock functions and namespace bindings rather than deparsing and dynamically re-evaluating source strings.

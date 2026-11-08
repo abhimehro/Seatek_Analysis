@@ -245,3 +245,17 @@ is a regular file using `os.path.isfile()` or
 `stat.S_ISREG(os.stat(path).st_mode)` before attempting to open and read its
 contents, especially in security wrappers designed to read untrusted files
 safely.
+
+## 2026-08-11 - [TOCTOU File Read DoS via Special Files]
+
+**Vulnerability:** The `read_file_safe` function in `code_health_scanner.py`
+attempted to verify that a file was a regular file using `os.path.isfile()`
+before opening it. This introduced a Time-of-Check to Time-of-Use (TOCTOU)
+vulnerability where an attacker could replace a regular file with a special file
+(like a FIFO) between the check and the `open()` call, causing a Denial of Service.
+**Learning:** Checking file metadata before opening a file is insufficient when
+dealing with untrusted paths because the file can change between the check and
+the read operation.
+**Prevention:** Open the file securely first using `os.open` with `O_NOFOLLOW`
+and `O_NONBLOCK` flags, then verify its metadata using `os.fstat()` on the file
+descriptor to ensure it is a regular file before reading it.

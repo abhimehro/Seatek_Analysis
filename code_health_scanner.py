@@ -6,6 +6,7 @@ import logging
 import os
 import re
 import shutil
+import stat
 import subprocess  # nosec B404
 
 # Pre-compile the regex pattern for parsing git origin URLs.
@@ -105,17 +106,30 @@ def read_file_safe(filepath):
         ):
             return []
 
-        # SECURITY: Prevent DoS by only reading regular files.
-        if not os.path.isfile(resolved_filepath):
-            return []
+        # SECURITY: Prevent TOCTOU and DoS attacks by opening the file securely
+        # using O_NONBLOCK and O_NOFOLLOW, then verifying it is a regular file.
+        flags = os.O_RDONLY
+        if hasattr(os, "O_NONBLOCK"):
+            flags |= os.O_NONBLOCK
+        if hasattr(os, "O_NOFOLLOW"):
+            flags |= os.O_NOFOLLOW
 
-        # SECURITY: Prevent Out-Of-Memory (OOM) DoS attacks by limiting file size
-        # To avoid TOCTOU vulnerability, we read up to MAX_FILE_SIZE + 1 bytes.
-        with open(resolved_filepath, "r", encoding="utf-8") as f:
-            content = f.read(MAX_FILE_SIZE + 1)
-            if len(content) > MAX_FILE_SIZE:
+        fd = os.open(resolved_filepath, flags)
+        try:
+            file_stat = os.fstat(fd)
+            if not stat.S_ISREG(file_stat.st_mode):
                 return []
-            # Note: readlines() logic adapted to work on strings
-            return content.splitlines(True)
+
+            # SECURITY: Prevent Out-Of-Memory (OOM) DoS attacks by limiting file size
+            with os.fdopen(fd, "r", encoding="utf-8") as f:
+                fd = -1  # fd is now owned by f
+                content = f.read(MAX_FILE_SIZE + 1)
+                if len(content) > MAX_FILE_SIZE:
+                    return []
+                # Note: readlines() logic adapted to work on strings
+                return content.splitlines(True)
+        finally:
+            if fd != -1:
+                os.close(fd)
     except (OSError, UnicodeDecodeError, ValueError):
         return []

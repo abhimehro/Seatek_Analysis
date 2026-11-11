@@ -13,6 +13,7 @@ from repository_automation_common import (
     _remove_heuristic_secrets,
     command_env,
     filter_env_securely,
+    gh_json,
     is_commit_sha,
     iso_day,
     now_utc,
@@ -330,6 +331,63 @@ def test_warn_on_failure_emits(capsys):
     err = capsys.readouterr().err
     assert "gh" in err
     assert "boom" in err
+
+
+@patch("repository_automation_common.run_process")
+def test_gh_json_success(mock_run_process):
+    """Test gh_json parses valid JSON stdout on success."""
+    mock_proc = MagicMock()
+    mock_proc.returncode = 0
+    mock_proc.stdout = '{"key": "value", "count": 42}'
+    mock_proc.stderr = ""
+    mock_run_process.return_value = mock_proc
+
+    data = gh_json(["repo", "view", "--json", "name"])
+    assert data == {"key": "value", "count": 42}
+    mock_run_process.assert_called_once()
+
+
+@patch("repository_automation_common.run_process")
+def test_gh_json_nonzero_raises_error(mock_run_process):
+    """Test gh_json raises RuntimeError on non-zero returncode when no default."""
+    mock_proc = MagicMock()
+    mock_proc.returncode = 1
+    mock_proc.stdout = ""
+    mock_proc.stderr = "graphql error: not found"
+    mock_run_process.return_value = mock_proc
+
+    with pytest.raises(RuntimeError, match="graphql error: not found"):
+        gh_json(["api", "graphql"])
+
+
+@patch("repository_automation_common.run_process")
+def test_gh_json_nonzero_default_warns(mock_run_process, capsys):
+    """Test gh_json returns default and emits warning on non-zero returncode."""
+    mock_proc = MagicMock()
+    mock_proc.returncode = 1
+    mock_proc.stdout = ""
+    mock_proc.stderr = "network failure"
+    mock_run_process.return_value = mock_proc
+
+    default_val = {"fallback": True}
+    data = gh_json(["issue", "list"], default=default_val)
+    assert data == default_val
+    err = capsys.readouterr().err
+    assert "Warning: `gh issue list` failed with exit code 1" in err
+    assert "network failure" in err
+
+
+@patch("repository_automation_common.run_process")
+def test_gh_json_empty_output_default(mock_run_process):
+    """Test gh_json returns default when stdout is empty."""
+    mock_proc = MagicMock()
+    mock_proc.returncode = 0
+    mock_proc.stdout = "   \n"
+    mock_proc.stderr = ""
+    mock_run_process.return_value = mock_proc
+
+    data = gh_json(["search", "code"], default=[])
+    assert data == []
 
 
 def test_task_dir(tmp_path):

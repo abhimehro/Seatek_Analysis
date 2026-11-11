@@ -417,16 +417,8 @@ generate_summary_stat_names <- function(metrics) {
   )
 }
 
-# Compute summary statistics across all years
-calculate_summary_stats <- function(results) {
-  # Add summary sheet with overall stats
-  # ⚡ Bolt: No lapply conversion required. results list natively contains
-  # data.tables
-  all_stats_dt <- rbindlist(results, idcol = "Year")
-
-  # Identify metric columns (numeric columns excluding ID columns)
-  metrics <- setdiff(names(all_stats_dt), c("Sensor", "Year"))
-
+# Aggregate summary statistics per metric grouped by Sensor
+aggregate_metric_stats <- function(all_stats_dt, metrics) {
   # ⚡ Bolt: Use lapply(.SD) natively grouped by Sensor to bypass the expensive
   # melt -> aggregate -> melt -> dcast pipeline, reducing memory allocation.
   # ⚡ Bolt: Use keyby = "Sensor" to ensure the output is sorted like dcast.
@@ -443,20 +435,38 @@ calculate_summary_stats <- function(results) {
 
   new_names <- generate_summary_stat_names(metrics)
   setnames(summary_wide, new_names)
+  summary_wide
+}
 
-  # Calculate percent non-missing for 'full'
+# Calculate percent non-missing for 'full' metric
+add_pct_nonmissing <- function(summary_wide, results_count) {
   # ⚡ Bolt: Direct unquoted column referencing is faster than standard
   # evaluation with get()
   if (is.data.table(summary_wide)) {
     set(summary_wide,
       j = "full_pct_nonmissing", value =
       # nolint next: object_usage_linter.
-        100 * summary_wide$full_count / length(results)
+        100 * summary_wide$full_count / results_count
     )
   } else {
     summary_wide$full_pct_nonmissing <-
-      100 * summary_wide$full_count / length(results)
+      100 * summary_wide$full_count / results_count
   }
+  summary_wide
+}
+
+# Compute summary statistics across all years
+calculate_summary_stats <- function(results) {
+  # Add summary sheet with overall stats
+  # ⚡ Bolt: No lapply conversion required. results list natively contains
+  # data.tables
+  all_stats_dt <- rbindlist(results, idcol = "Year")
+
+  # Identify metric columns (numeric columns excluding ID columns)
+  metrics <- setdiff(names(all_stats_dt), c("Sensor", "Year"))
+
+  summary_wide <- aggregate_metric_stats(all_stats_dt, metrics)
+  summary_wide <- add_pct_nonmissing(summary_wide, length(results))
 
   summary_wide # Implicit return
 }

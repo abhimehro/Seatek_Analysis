@@ -196,6 +196,10 @@ def run_shell_command(
         exit_code = 127
         stdout = ""
         stderr = f"Command not found: {exc}"
+    except subprocess.TimeoutExpired as exc:
+        exit_code = 124
+        stdout = ""
+        stderr = f"Command timed out after {timeout} seconds: {exc}"
 
     return {
         "command": cmd_str,

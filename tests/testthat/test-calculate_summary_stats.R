@@ -118,3 +118,42 @@ test_that("generate_summary_stat_names generates consistent column schema", {
   expect_true("full_count" %in% names_out)
   expect_equal(length(names_out), 1 + 2 * 8)
 })
+
+test_that("aggregate_metric_stats aggregates metrics across sensors correctly", {
+  dt <- data.table::data.table(
+    Year = c("1995", "1996", "1995", "1996"),
+    Sensor = c("Sensor01", "Sensor01", "Sensor02", "Sensor02"),
+    first10 = c(10, 20, 30, 40),
+    full = c(100, 200, 300, 400)
+  )
+
+  res <- aggregate_metric_stats(dt, c("first10", "full"))
+
+  expect_true(data.table::is.data.table(res))
+  expect_equal(nrow(res), 2)
+  expect_equal(res$Sensor, c("Sensor01", "Sensor02"))
+  expect_equal(res$first10_mean, c(15, 35))
+  expect_equal(res$first10_count, c(2L, 2L))
+  expect_equal(res$full_mean, c(150, 350))
+  expect_equal(res$full_count, c(2L, 2L))
+})
+
+test_that("add_pct_nonmissing computes percentages accurately and handles edge cases", {
+  dt <- data.table::data.table(
+    Sensor = c("Sensor01", "Sensor02"),
+    full_count = c(4L, 2L)
+  )
+
+  # Standard calculation with 4 years
+  res <- add_pct_nonmissing(dt, results_count = 4)
+  expect_true("full_pct_nonmissing" %in% names(res))
+  expect_equal(res$full_pct_nonmissing, c(100, 50))
+
+  # Test data.frame fallback
+  df <- data.frame(
+    Sensor = c("Sensor01", "Sensor02"),
+    full_count = c(4L, 2L)
+  )
+  res_df <- add_pct_nonmissing(df, results_count = 4)
+  expect_equal(res_df$full_pct_nonmissing, c(100, 50))
+})

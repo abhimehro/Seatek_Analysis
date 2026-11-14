@@ -439,3 +439,8 @@ generic dispatch overhead.
 overhead of the sd() function on guaranteed numeric vectors in high-frequency
 loops. **Action:** Replace sd() with sqrt(var()) for guaranteed numeric vectors
 in performance-critical paths.
+
+## 2026-09-15 - Eliminate redundant iterations and intermediate tuple allocations in discover_hotspots
+
+**Learning:** Accumulating intermediate 2-tuples (like `(rel_path, path_str)`) in a list during directory traversal and later extracting `paths` via a separate list comprehension introduces unnecessary tuple object allocations and redundant list traversal passes.
+**Action:** Populate parallel `rel_paths` and `paths` lists directly during the `os.walk` directory traversal loop. This avoids intermediate tuple creation, eliminates the extra list comprehension pass, and allows directly zipping `rel_paths` with gathered results.

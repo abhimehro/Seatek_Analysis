@@ -206,7 +206,8 @@ async def _gather_line_counts(paths: list[str]) -> list[int | None]:
 
 
 def discover_hotspots(limit: int = 5) -> list[tuple[str, int]]:
-    candidates = []
+    rel_paths = []
+    paths = []
 
     root_str = str(ROOT) + os.sep
     root_len = len(root_str)
@@ -220,13 +221,13 @@ def discover_hotspots(limit: int = 5) -> list[tuple[str, int]]:
             rel_path = (
                 path_str[root_len:] if path_str.startswith(root_str) else path_str
             )
-            candidates.append((rel_path, path_str))
+            rel_paths.append(rel_path)
+            paths.append(path_str)
 
-    paths = [path_str for _, path_str in candidates]
     counts = asyncio.run(_gather_line_counts(paths))
     counted = [
         (rel_path, count)
-        for (rel_path, _), count in zip(candidates, counts)
+        for rel_path, count in zip(rel_paths, counts)
         if count is not None
     ]
     return sorted(counted, key=lambda item: item[1], reverse=True)[:limit]

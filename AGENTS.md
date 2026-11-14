@@ -12,7 +12,7 @@ sensor data. See `README.md` for full details.
 | Service                 | Purpose                                | How to run                                                                                              |
 | ----------------------- | -------------------------------------- | ------------------------------------------------------------------------------------------------------- |
 | R analysis script       | Core data processing                   | `Rscript Updated_Seatek_Analysis.R`                                                                     |
-| Python outlier analysis | Series 27 outlier detection (optional) | `source Series_27/Analysis/venv/bin/activate && python Series_27/Analysis/outlier_analysis_series27.py` |
+| Python outlier analysis | Series 27 outlier detection (optional) | `source Series_27/Analysis/venv/bin/activate && python Series_27/Analysis/outlier_analysis_series27.py -i <workbook>` |
 
 ### Key Commands
 

@@ -265,7 +265,15 @@ though it should be picked up from `requirements.R` during `renv::restore()`).
 You can then run the linter using:
 
 ```R
-lintr::lint_dir(".")
+lintr::lint_dir(
+  ".",
+  exclusions = list(
+    "renv/",
+    "backups/",
+    "Series_27/Analysis/venv/",
+    "implementation/"
+  )
+)
 ```
 
 The linter configuration is currently the default provided by `lintr`. Key
@@ -284,7 +292,8 @@ changes during the recent linter upgrade (February 2025):
   false positives due to `data.table`'s non-standard evaluation and have been
   left as is for now.
 
-When running CI workflows where packages are installed manually (such as GitHub
-Actions), disable renv's autoloader to avoid interfering with `install.packages`
-by setting the environment variable `RENV_CONFIG_AUTOLOADER_ENABLED=FALSE`. The
-provided `lintr` workflow already sets this variable.
+When a workflow installs packages with `install.packages()` instead of `renv`,
+set `RENV_CONFIG_AUTOLOADER_ENABLED=FALSE` so the autoloader does not fight
+that install. This repo has no lintr workflow. `.github/workflows/r-testthat.yml`
+restores the lockfile with `r-lib/actions/setup-renv` and does not set that
+variable.

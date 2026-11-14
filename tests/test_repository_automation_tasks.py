@@ -13,6 +13,7 @@ sys.path.insert(
 from repository_automation_tasks import (
     _hotspot_line_count,
     configured_commands,
+    discover_hotspots,
     flattened_updates,
     render_entry_section,
 )
@@ -265,3 +266,17 @@ def test_hotspot_line_count_rejects_symlink(tmp_path: Path) -> None:
     except OSError:
         pytest.skip("symlink creation not permitted")
     assert _hotspot_line_count(str(link)) is None
+
+
+def test_discover_hotspots():
+    """Verify discover_hotspots returns descending sorted relative paths and line counts."""
+    hotspots = discover_hotspots(limit=5)
+    assert isinstance(hotspots, list)  # nosec B101
+    assert len(hotspots) <= 5  # nosec B101
+    assert len(hotspots) > 0  # nosec B101
+    for rel_path, count in hotspots:
+        assert isinstance(rel_path, str)  # nosec B101
+        assert isinstance(count, int)  # nosec B101
+        assert count > 0  # nosec B101
+    counts = [count for _, count in hotspots]
+    assert counts == sorted(counts, reverse=True)  # nosec B101

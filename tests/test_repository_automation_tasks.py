@@ -11,6 +11,9 @@ sys.path.insert(
 )
 
 from repository_automation_tasks import (
+    ROOT,
+    WORKFLOW_PATTERN,
+    _compute_workflow_replacements,
     _hotspot_line_count,
     configured_commands,
     flattened_updates,
@@ -265,3 +268,42 @@ def test_hotspot_line_count_rejects_symlink(tmp_path: Path) -> None:
     except OSError:
         pytest.skip("symlink creation not permitted")
     assert _hotspot_line_count(str(link)) is None
+
+
+def test_compute_workflow_replacements_with_tuples():
+    """Test _compute_workflow_replacements when matches are (match, repo_id) tuples."""
+    text = "      - uses: actions/checkout@v2\n      - uses: github/codeql-action/init@v1\n"
+    matches = []
+    for match in WORKFLOW_PATTERN.finditer(text):
+        action_ref = match.group(2)
+        parts = action_ref.split("/")
+        repo_id = "/".join(parts[:2])
+        matches.append((match, repo_id))
+
+    file_data = [{"path": ROOT / ".github" / "workflows" / "ci.yml", "text": text, "matches": matches}]
+    latest_cache = {"actions/checkout": "v3", "github/codeql-action": "v2"}
+
+    plans = _compute_workflow_replacements(file_data, latest_cache)
+    assert len(plans) == 1
+    replacements = plans[0]["replacements"]
+    assert len(replacements) == 2
+    assert replacements[0]["action"] == "actions/checkout"
+    assert replacements[0]["target"] == "v3"
+    assert replacements[1]["action"] == "github/codeql-action/init"
+    assert replacements[1]["target"] == "v2"
+
+
+def test_compute_workflow_replacements_with_raw_matches():
+    """Test backward-compatibility when matches are raw re.Match objects."""
+    text = "      - uses: actions/checkout@v2\n"
+    matches = list(WORKFLOW_PATTERN.finditer(text))
+
+    file_data = [{"path": ROOT / ".github" / "workflows" / "ci.yml", "text": text, "matches": matches}]
+    latest_cache = {"actions/checkout": "v3"}
+
+    plans = _compute_workflow_replacements(file_data, latest_cache)
+    assert len(plans) == 1
+    replacements = plans[0]["replacements"]
+    assert len(replacements) == 1
+    assert replacements[0]["action"] == "actions/checkout"
+    assert replacements[0]["target"] == "v3"

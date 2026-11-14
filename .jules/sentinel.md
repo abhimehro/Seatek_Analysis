@@ -245,3 +245,11 @@ is a regular file using `os.path.isfile()` or
 `stat.S_ISREG(os.stat(path).st_mode)` before attempting to open and read its
 contents, especially in security wrappers designed to read untrusted files
 safely.
+## 2024-05-15 - TOCTOU (Time-of-Check to Time-of-Use) DoS Vulnerability Fix
+**Vulnerability:** A Time-of-Check to Time-of-Use (TOCTOU) Denial of Service (DoS) vulnerability existed in `code_health_scanner.py` because `os.path.isfile(resolved_filepath)` was called to verify a file was a regular file before calling `open(resolved_filepath, "r", encoding="utf-8")`. In a multi-user environment, a malicious user could potentially replace the file with a FIFO or special file between the check and the use, causing `open()` to hang indefinitely or behave unexpectedly.
+**Learning:** Using `os.path.isfile()` before `open()` on untrusted files introduces a TOCTOU window.
+**Prevention:** To securely read untrusted files and prevent TOCTOU DoS attacks via special files (like FIFOs), use `os.open(path, os.O_RDONLY | os.O_NONBLOCK | os.O_NOFOLLOW)` and verify `stat.S_ISREG(os.fstat(fd).st_mode)` before reading with `os.fdopen()`.
+## 2024-05-15 - Extract complex security logic to prevent Code Health decline
+**Vulnerability:** Adding the defensive `os.open` handling directly into `read_file_safe` increased the function's complexity, triggering a "Complex Method" hotspot decline in CodeScene. While the security logic was correct, overly complex methods become harder to maintain and audit, which is itself a long-term security risk.
+**Learning:** Security enhancements should not degrade code health metrics like cyclomatic complexity. Code that is hard to read is hard to secure.
+**Prevention:** When adding new security layers or heuristics to existing functions, extract the logic into small, standalone, single-responsibility helper functions (e.g., `_read_fd_safe(resolved_filepath)`) to maintain the Code Health score and improve readability.

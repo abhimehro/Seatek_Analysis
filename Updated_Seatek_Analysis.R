@@ -247,15 +247,16 @@ compute_sensor_metrics <- function(df, filename) {
   list(dt = dt, sheet_name = sheet_name)
 }
 
+# Top-level helper function for parallel export
+write_task <- function(task) {
+  # Use full namespace just to be safe
+  openxlsx::write.xlsx(task$df, task$out_raw, overwrite = TRUE)
+  task$out_raw
+}
+
 # Helper for parallel export
 export_raw_data_parallel <- function(raw_export_tasks) {
   if (length(raw_export_tasks) > 0) {
-    write_task <- function(task) {
-      # Use full namespace just to be safe
-      openxlsx::write.xlsx(task$df, task$out_raw, overwrite = TRUE)
-      task$out_raw
-    }
-
     out_files <- execute_tasks_parallel(raw_export_tasks, write_task)
     message(paste0(sprintf("Raw data written to %s", out_files),
       collapse = "\n"

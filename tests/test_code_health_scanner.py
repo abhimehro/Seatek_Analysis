@@ -83,10 +83,8 @@ def test_read_file_safe_too_large():
     ids=["missing-file", "directory"],
 )
 def test_read_file_safe_non_regular_file(filepath):
-    """Reject missing files and directories without attempting to open them."""
-    with patch("builtins.open") as mock_open:
-        assert read_file_safe(filepath) == []
-        mock_open.assert_not_called()
+    """Reject missing files and directories."""
+    assert read_file_safe(filepath) == []
 
 
 def test_get_repo_info_exception_logging(caplog):

@@ -245,3 +245,18 @@ is a regular file using `os.path.isfile()` or
 `stat.S_ISREG(os.stat(path).st_mode)` before attempting to open and read its
 contents, especially in security wrappers designed to read untrusted files
 safely.
+
+## 2026-07-29 - [File Read DoS via Special Files]
+
+**Vulnerability:** The `read_file_safe` function in `code_health_scanner.py`
+attempted to read files using `open()` without first verifying that the file was
+a regular file or properly handling Time-of-Check to Time-of-Use (TOCTOU)
+issues. If a path pointing to a special file, such as a FIFO (named pipe) or
+device file, was passed to the function, the `open()` call or subsequent `read()`
+could block indefinitely, causing the scanner process to hang (Denial of Service).
+**Learning:** Checking for file existence and size is insufficient when interacting
+with untrusted file paths. Special file types can have blocking behaviors or
+infinite streams that circumvent simple checks.
+**Prevention:** Always verify that a file is a regular file using
+`stat.S_ISREG(os.fstat(fd).st_mode)` after opening the file descriptor securely
+with `os.open()` and `os.O_NONBLOCK | os.O_NOFOLLOW` before reading.

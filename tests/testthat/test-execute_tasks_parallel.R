@@ -42,37 +42,38 @@ test_that("execute_tasks_parallel falls back to serial execution gracefully", {
 })
 
 test_that("execute_tasks_parallel handles detectCores errors gracefully", {
-  # Redefine the function body in our local env so we can control its execution context
-  local_env <- new.env(parent = globalenv())
-  local_env$execute_tasks_parallel <- execute_tasks_parallel
-
-  # We want it to use parallel namespace but intercept tryCatch or detectCores.
-  # Since tryCatch evaluates detectCores() in baseenv, masking detectCores in the function environment is hard
-  # because it specifically calls `parallel::detectCores()`.
-  # To mock a namespaced call without a mocking framework, we can redefine the function's source code text.
-
-  func_text <- deparse(execute_tasks_parallel)
-  func_text <- gsub("parallel::detectCores()", "stop('Mock Error')", func_text, fixed = TRUE)
-
-  local_env$execute_tasks_parallel_mocked <- eval(parse(text = paste(func_text, collapse = "\n")))
-
-  # Now it should fall back to cores=1L
+  # SECURITY: Use testthat::with_mocked_bindings instead of unsafe eval(parse(text=...))
   tasks <- list(1, 2)
-  res <- local_env$execute_tasks_parallel_mocked(tasks, function(x) x * 4)
+  res <- testthat::with_mocked_bindings(
+    detectCores = function() stop("Mock Error"),
+    {
+      execute_tasks_parallel(tasks, function(x) x * 4)
+    },
+    .package = "parallel"
+  )
   expect_equal(res, list(4, 8))
 })
 
 test_that("execute_tasks_parallel executes gracefully on non-unix platforms", {
-  local_env <- new.env(parent = globalenv())
-
-  # We want to force the non-unix branch: .Platform$OS.type != "unix"
-  func_text <- deparse(execute_tasks_parallel)
-  func_text <- gsub(".Platform$OS.type == \"unix\"", "FALSE", func_text, fixed = TRUE)
-
-  local_env$execute_tasks_parallel_mocked <- eval(parse(text = paste(func_text, collapse = "\n")))
+  # Mock non-unix platform using an enclosing environment mask for .Platform
+  # and mock cluster functions to avoid spawning processes in tests
+  lenv <- new.env(parent = globalenv())
+  lenv$execute_tasks_parallel <- execute_tasks_parallel
+  local_plat <- base::.Platform
+  local_plat$OS.type <- "windows"
+  assign(".Platform", local_plat, envir = lenv)
+  environment(lenv$execute_tasks_parallel) <- lenv
 
   tasks <- list(1, 2)
-  res <- local_env$execute_tasks_parallel_mocked(tasks, function(x) x * 5)
+  res <- testthat::with_mocked_bindings(
+    parLapply = function(cl, X, FUN, ...) base::lapply(X, FUN, ...),
+    makeCluster = function(...) "mock_cluster",
+    stopCluster = function(...) TRUE,
+    {
+      lenv$execute_tasks_parallel(tasks, function(x) x * 5)
+    },
+    .package = "parallel"
+  )
   expect_equal(res, list(5, 10))
 })
 

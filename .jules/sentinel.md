@@ -245,3 +245,9 @@ is a regular file using `os.path.isfile()` or
 `stat.S_ISREG(os.stat(path).st_mode)` before attempting to open and read its
 contents, especially in security wrappers designed to read untrusted files
 safely.
+
+## 2026-11-01 - [Unsafe eval(parse(text=...)) Anti-Pattern in Parallel Execution Tests]
+
+**Vulnerability:** In `tests/testthat/test-execute_tasks_parallel.R`, tests deparsed function bodies, manipulated the source code via `gsub`, and executed it via `eval(parse(text = ...))` to mock `parallel::detectCores()` and `.Platform$OS.type`.
+**Learning:** Using `eval(parse(text = ...))` is an unsafe code execution anti-pattern in R that can facilitate arbitrary code injection and sets a dangerous precedent in the codebase.
+**Prevention:** Use direct function mocking frameworks such as `testthat::with_mocked_bindings()` or environment variable overrides to safely mock behaviors without dynamically evaluating stringified code.

@@ -6,6 +6,7 @@ import logging
 import os
 import re
 import shutil
+import stat
 import subprocess  # nosec B404
 
 # Pre-compile the regex pattern for parsing git origin URLs.
@@ -79,6 +80,32 @@ CWD_REALPATH = os.path.realpath(os.getcwd())
 CWD_REALPATH_PLUS_SEP = os.path.join(CWD_REALPATH, "")
 
 
+def _read_fd_securely(fd):
+    """
+    Helper function to securely read a file descriptor after verifying it is a regular file.
+    Takes ownership of the file descriptor and ensures it is closed.
+    """
+    try:
+        if not stat.S_ISREG(os.fstat(fd).st_mode):
+            os.close(fd)
+            return []
+    except Exception:
+        try:
+            os.close(fd)
+        except OSError:
+            pass
+        raise
+
+    # SECURITY: Prevent Out-Of-Memory (OOM) DoS attacks by limiting file size
+    # To avoid TOCTOU vulnerability, we read up to MAX_FILE_SIZE + 1 bytes.
+    with os.fdopen(fd, "r", encoding="utf-8") as f:
+        content = f.read(MAX_FILE_SIZE + 1)
+        if len(content) > MAX_FILE_SIZE:
+            return []
+        # Note: readlines() logic adapted to work on strings
+        return content.splitlines(True)
+
+
 def read_file_safe(filepath):
     """Read UTF-8 text as lines, retaining normalized line endings.
 
@@ -105,17 +132,16 @@ def read_file_safe(filepath):
         ):
             return []
 
-        # SECURITY: Prevent DoS by only reading regular files.
-        if not os.path.isfile(resolved_filepath):
+        # SECURITY: Prevent TOCTOU DoS by using os.open and os.fstat to ensure
+        # the file is a regular file before reading it.
+        try:
+            fd = os.open(
+                resolved_filepath,
+                os.O_RDONLY | getattr(os, "O_NONBLOCK", 0) | getattr(os, "O_NOFOLLOW", 0),
+            )
+        except OSError:
             return []
 
-        # SECURITY: Prevent Out-Of-Memory (OOM) DoS attacks by limiting file size
-        # To avoid TOCTOU vulnerability, we read up to MAX_FILE_SIZE + 1 bytes.
-        with open(resolved_filepath, "r", encoding="utf-8") as f:
-            content = f.read(MAX_FILE_SIZE + 1)
-            if len(content) > MAX_FILE_SIZE:
-                return []
-            # Note: readlines() logic adapted to work on strings
-            return content.splitlines(True)
+        return _read_fd_securely(fd)
     except (OSError, UnicodeDecodeError, ValueError):
         return []

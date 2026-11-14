@@ -245,3 +245,8 @@ is a regular file using `os.path.isfile()` or
 `stat.S_ISREG(os.stat(path).st_mode)` before attempting to open and read its
 contents, especially in security wrappers designed to read untrusted files
 safely.
+
+## 2026-11-11 - Prevent TOCTOU (Time-of-Check to Time-of-Use) Vulnerabilities in File Reads
+**Vulnerability:** A file existence check (`os.path.isfile`) followed by a subsequent `open` call creates a race condition where a malicious actor can swap the file for a special file (e.g., a FIFO) between the two calls, causing the application to hang or behave unpredictably (Denial of Service).
+**Learning:** Checking for file properties (like whether it is a regular file) using paths is inherently vulnerable to race conditions if the file is then opened using that path.
+**Prevention:** Use `os.open` with `O_RDONLY | O_NONBLOCK | O_NOFOLLOW` flags to obtain a file descriptor securely without blocking or following symlinks. Then, use `os.fstat(fd)` to verify the file's type (e.g., `stat.S_ISREG`) using the file descriptor itself before proceeding to read via `os.fdopen()`.

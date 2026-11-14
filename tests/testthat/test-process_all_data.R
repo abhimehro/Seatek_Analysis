@@ -86,3 +86,27 @@ test_that("process_all_data handles non-existent data directory", {
 
   expect_error(process_all_data(non_existent_dir_path), regexp = "Data directory not found:")
 })
+
+test_that("process_all_data handles explicit sensor_files vector", {
+  temp_dir_name <- "temp_valid_explicit_files"
+  temp_dir_path <- file.path(getwd(), temp_dir_name)
+
+  if (dir.exists(temp_dir_path)) {
+    unlink(temp_dir_path, recursive = TRUE, force = TRUE)
+  }
+  dir.create(temp_dir_path, recursive = TRUE, showWarnings = FALSE)
+  on.exit(unlink(temp_dir_path, recursive = TRUE, force = TRUE), add = TRUE)
+
+  source_data_file <- file.path(getwd(), "data", "SS_Y01_valid.txt")
+  target_file <- file.path(temp_dir_path, "SS_Y01.txt")
+  file.copy(source_data_file, target_file)
+
+  # Explicit sensor_files vector passed to process_all_data
+  results <- process_all_data(sensor_files = c(target_file))
+
+  expect_true(is.list(results))
+  expect_equal(length(results), 1)
+  expect_true("1995" %in% names(results))
+  expect_equal(nrow(results[["1995"]]), 32)
+  expect_true(file.exists(file.path(temp_dir_path, "SS_Y01.xlsx")))
+})

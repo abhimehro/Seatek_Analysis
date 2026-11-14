@@ -2,6 +2,8 @@ import os
 import sys
 from unittest.mock import MagicMock, patch
 
+import pytest
+
 sys.path.insert(
     0, os.path.abspath(os.path.join(os.path.dirname(__file__), "../.github/scripts"))
 )
@@ -22,6 +24,36 @@ def test_main_unknown_task(capsys):
     captured = capsys.readouterr()
     assert "Unknown task: unknown-task" in captured.out
     assert "Run with --help to see available tasks." in captured.out
+    assert "Action: Verify the task name." in captured.out
+
+
+@patch("sys.argv", ["repository_automation.py", "workflow-pdate"])
+def test_main_unknown_task_with_suggestion(capsys: pytest.CaptureFixture[str]) -> None:
+    assert main() == 1
+    captured = capsys.readouterr()
+    assert "Unknown task: workflow-pdate" in captured.out
+    assert "Action: Did you mean 'workflow-updater'?" in captured.out
+
+
+@patch("sys.argv", ["repository_automation.py", "enforc"])
+def test_main_unknown_task_suggests_enforce(capsys: pytest.CaptureFixture[str]) -> None:
+    assert main() == 1
+    captured = capsys.readouterr()
+    assert "Action: Did you mean 'enforce'?" in captured.out
+
+
+@patch("sys.argv", ["repository_automation.py", "--help"])
+def test_main_help_lists_runnable_examples(capsys: pytest.CaptureFixture[str]) -> None:
+    with pytest.raises(SystemExit) as exc_info:
+        main()
+    assert exc_info.value.code == 0
+    captured = capsys.readouterr()
+    assert "Examples:" in captured.out
+    assert (
+        "python .github/scripts/repository_automation.py quality-assurance"
+        in captured.out
+    )
+    assert "(default: None)" not in captured.out
 
 
 @patch("sys.argv", ["repository_automation.py", "enforce"])
@@ -29,6 +61,7 @@ def test_main_enforce_no_result_path(capsys):
     assert main() == 1
     captured = capsys.readouterr()
     assert "enforce requires a result path" in captured.out
+    assert "Action: Provide the path to the result JSON file." in captured.out
 
 
 @patch("sys.argv", ["repository_automation.py", "enforce", "path/to/result.json"])

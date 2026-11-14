@@ -16,6 +16,38 @@ import subprocess  # nosec B404
 REPO_URL_PATTERN = re.compile(r"[:/]([^/:]+)/([^/:]+?)(?:\.git)?$")
 
 
+def _get_origin_info(git_bin, env):
+    """
+    Retrieves and parses the origin URL for the account and project name.
+    """
+    origin_url = subprocess.check_output(  # nosec B603
+        [git_bin, "remote", "get-url", "origin"],
+        stderr=subprocess.DEVNULL,
+        env=env,
+        text=True,
+        shell=False,
+    ).strip()
+
+    match = REPO_URL_PATTERN.search(origin_url)
+    if not match:
+        return "unknown", "unknown"
+
+    return match.groups()
+
+
+def _get_commit_hash(git_bin, env):
+    """
+    Retrieves the current commit hash (HEAD).
+    """
+    return subprocess.check_output(  # nosec B603
+        [git_bin, "rev-parse", "HEAD"],
+        stderr=subprocess.DEVNULL,
+        env=env,
+        text=True,
+        shell=False,
+    ).strip()
+
+
 def get_repo_info():
     """
     Retrieves the repository account, project name, and current commit hash.
@@ -35,30 +67,11 @@ def get_repo_info():
             logging.error("Git executable not found in PATH.")
             return "unknown", "unknown", "unknown"
 
-        # Get origin URL
-        origin_url = subprocess.check_output(  # nosec B603
-            [git_bin, "remote", "get-url", "origin"],
-            stderr=subprocess.DEVNULL,
-            env=env,
-            text=True,
-            shell=False,
-        ).strip()
-
-        # Parse account and project from URL
-        match = REPO_URL_PATTERN.search(origin_url)
-        if not match:
+        account, project = _get_origin_info(git_bin, env)
+        if account == "unknown":
             return "unknown", "unknown", "unknown"
 
-        account, project = match.groups()
-
-        # Get current commit hash
-        commit_hash = subprocess.check_output(  # nosec B603
-            [git_bin, "rev-parse", "HEAD"],
-            stderr=subprocess.DEVNULL,
-            env=env,
-            text=True,
-            shell=False,
-        ).strip()
+        commit_hash = _get_commit_hash(git_bin, env)
 
         return account, project, commit_hash
 

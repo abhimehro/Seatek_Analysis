@@ -263,6 +263,7 @@ def _parse_workflow_files() -> tuple[set[str], list[dict[str, Any]]]:
     texts = asyncio.run(read_workflow_files())
     for file_path, text in zip(paths, texts):
         matches = []
+        # ⚡ Bolt: Store repo_id with match tuple to eliminate redundant split/join inside replacement loop
         for match in WORKFLOW_PATTERN.finditer(text):
             action_ref = match.group(2)
             if action_ref.startswith("./") or action_ref.startswith("docker://"):
@@ -270,45 +271,68 @@ def _parse_workflow_files() -> tuple[set[str], list[dict[str, Any]]]:
             parts = action_ref.split("/")
             if len(parts) < 2:
                 continue
-            repo_id = "/".join(parts[:2])
+            repo_id = f"{parts[0]}/{parts[1]}"
             repo_ids_to_fetch.add(repo_id)
-            matches.append(match)
+            matches.append((match, repo_id))
         file_data.append({"path": file_path, "text": text, "matches": matches})
     return repo_ids_to_fetch, file_data
+
+
+def _extract_match_and_repo_id(item: Any) -> tuple[Any, str]:
+    if isinstance(item, tuple):
+        return item[0], item[1]
+    match = item
+    parts = match.group(2).split("/")
+    repo_id = f"{parts[0]}/{parts[1]}" if len(parts) >= 2 else ""
+    return match, repo_id
+
+
+def _item_replacement(
+    item: Any, rel_file_path: str, latest_cache: dict[str, str]
+) -> dict[str, str] | None:
+    match, repo_id = _extract_match_and_repo_id(item)
+    action_ref = match.group(2)
+    current = match.group(3)
+    latest = latest_cache.get(repo_id, "")
+    if not latest:
+        return None
+
+    proposed = target_ref(current, latest)
+    if not proposed or proposed == current:
+        return None
+
+    return {
+        "old": match.group(0),
+        "new": f"{match.group(1)}{action_ref}@{proposed}",
+        "file": rel_file_path,
+        "action": action_ref,
+        "current": current,
+        "target": proposed,
+    }
+
+
+def _file_plan(
+    data: dict[str, Any], latest_cache: dict[str, str]
+) -> dict[str, Any] | None:
+    rel_file = str(data["path"].relative_to(ROOT))
+    replacements = [
+        rep
+        for item in data.get("matches", [])
+        if (rep := _item_replacement(item, rel_file, latest_cache)) is not None
+    ]
+    if not replacements:
+        return None
+    return {"path": data["path"], "text": data["text"], "replacements": replacements}
 
 
 def _compute_workflow_replacements(
     file_data: list[dict[str, Any]], latest_cache: dict[str, str]
 ) -> list[dict[str, Any]]:
-    plans = []
-    for data in file_data:
-        text = data["text"]
-        replacements = []
-        for match in data["matches"]:
-            action_ref = match.group(2)
-            current = match.group(3)
-            parts = action_ref.split("/")
-            repo_id = "/".join(parts[:2])
-            latest = latest_cache.get(repo_id, "")
-
-            proposed = target_ref(current, latest) if latest else None
-            if not proposed or proposed == current:
-                continue
-            replacements.append(
-                {
-                    "old": match.group(0),
-                    "new": f"{match.group(1)}{action_ref}@{proposed}",
-                    "file": str(data["path"].relative_to(ROOT)),
-                    "action": action_ref,
-                    "current": current,
-                    "target": proposed,
-                }
-            )
-        if replacements:
-            plans.append(
-                {"path": data["path"], "text": text, "replacements": replacements}
-            )
-    return plans
+    return [
+        plan
+        for data in file_data
+        if (plan := _file_plan(data, latest_cache)) is not None
+    ]
 
 
 def workflow_file_plans() -> list[dict[str, Any]]:

@@ -439,3 +439,14 @@ generic dispatch overhead.
 overhead of the sd() function on guaranteed numeric vectors in high-frequency
 loops. **Action:** Replace sd() with sqrt(var()) for guaranteed numeric vectors
 in performance-critical paths.
+
+## 2026-11-01 - Avoid redundant string split and join in workflow replacement loops
+
+**Learning:** Re-parsing action references with `.split("/")` and `"/".join(...)`
+inside `_compute_workflow_replacements` on every matched action in every workflow
+file creates unnecessary string allocations and list operations. Because
+`repo_id` is already computed when collecting action IDs to fetch during
+initial parsing, recomputing it inside inner loops is redundant.
+**Action:** Pair the parsed `repo_id` with the regex match during initial
+workflow parsing (as `(match, repo_id)` tuples) and directly unpack it in the
+replacement loop to eliminate repeated string split/join operations.

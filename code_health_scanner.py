@@ -16,6 +16,33 @@ import subprocess  # nosec B404
 REPO_URL_PATTERN = re.compile(r"[:/]([^/:]+)/([^/:]+?)(?:\.git)?$")
 
 
+def _extract_origin_url(git_bin: str, env: dict[str, str]) -> tuple[str, str] | None:
+    """Extract origin URL and parse account and project name."""
+    origin_url = subprocess.check_output(  # nosec B603
+        [git_bin, "remote", "get-url", "origin"],
+        stderr=subprocess.DEVNULL,
+        env=env,
+        text=True,
+        shell=False,
+    ).strip()
+
+    match = REPO_URL_PATTERN.search(origin_url)
+    if not match:
+        return None
+    return match.group(1), match.group(2)
+
+
+def _extract_commit_hash(git_bin: str, env: dict[str, str]) -> str:
+    """Extract current HEAD commit hash."""
+    return subprocess.check_output(  # nosec B603
+        [git_bin, "rev-parse", "HEAD"],
+        stderr=subprocess.DEVNULL,
+        env=env,
+        text=True,
+        shell=False,
+    ).strip()
+
+
 def get_repo_info():
     """
     Retrieves the repository account, project name, and current commit hash.
@@ -35,31 +62,12 @@ def get_repo_info():
             logging.error("Git executable not found in PATH.")
             return "unknown", "unknown", "unknown"
 
-        # Get origin URL
-        origin_url = subprocess.check_output(  # nosec B603
-            [git_bin, "remote", "get-url", "origin"],
-            stderr=subprocess.DEVNULL,
-            env=env,
-            text=True,
-            shell=False,
-        ).strip()
-
-        # Parse account and project from URL
-        match = REPO_URL_PATTERN.search(origin_url)
-        if not match:
+        repo_identity = _extract_origin_url(git_bin, env)
+        if not repo_identity:
             return "unknown", "unknown", "unknown"
 
-        account, project = match.groups()
-
-        # Get current commit hash
-        commit_hash = subprocess.check_output(  # nosec B603
-            [git_bin, "rev-parse", "HEAD"],
-            stderr=subprocess.DEVNULL,
-            env=env,
-            text=True,
-            shell=False,
-        ).strip()
-
+        account, project = repo_identity
+        commit_hash = _extract_commit_hash(git_bin, env)
         return account, project, commit_hash
 
     except Exception as e:  # pylint: disable=broad-exception-caught

@@ -2,6 +2,8 @@
 from __future__ import annotations
 
 import argparse
+import difflib
+import sys
 
 from repository_automation_common import enforce_result, load_config
 from repository_automation_tasks import (
@@ -21,6 +23,27 @@ TASK_RUNNERS = {
     "daily-status-report": run_daily_status_report,
     "weekly-retrospective": run_weekly_retrospective,
 }
+ENFORCE_TASK = "enforce"
+SCRIPT_INVOCATION = "python .github/scripts/repository_automation.py"
+
+
+def _handle_enforce(result_path: str | None) -> int:
+    if not result_path:
+        print("enforce requires a result path")
+        print("Action: Provide the path to the result JSON file.")
+        return 1
+    return enforce_result(result_path)
+
+
+def _handle_unknown_task(task: str) -> int:
+    print(f"Unknown task: {task}. Run with --help to see available tasks.")
+    candidates = [*TASK_RUNNERS, ENFORCE_TASK]
+    matches = difflib.get_close_matches(task, candidates)
+    if matches:
+        print(f"Action: Did you mean '{matches[0]}'? Verify the task name.")
+    else:
+        print("Action: Verify the task name.")
+    return 1
 
 
 def main() -> int:
@@ -29,7 +52,9 @@ def main() -> int:
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="Available tasks:\n  "
         + "\n  ".join(TASK_RUNNERS.keys())
-        + "\n  enforce",
+        + f"\n  {ENFORCE_TASK}\n\nExamples:\n"
+        + f"  {SCRIPT_INVOCATION} quality-assurance\n"
+        + f"  {SCRIPT_INVOCATION} {ENFORCE_TASK} path/to/result.json",
     )
     parser.add_argument(
         "task", help="The automation task to run, or 'enforce' to evaluate results."
@@ -40,24 +65,18 @@ def main() -> int:
         help="Path to result JSON file (required for 'enforce').",
     )
 
-    import sys
-
     if len(sys.argv) == 1:
         parser.print_help(sys.stderr)
         return 1
 
     args = parser.parse_args()
 
-    if args.task == "enforce":
-        if not args.result_path:
-            print("enforce requires a result path")
-            return 1
-        return enforce_result(args.result_path)
+    if args.task == ENFORCE_TASK:
+        return _handle_enforce(args.result_path)
 
     runner = TASK_RUNNERS.get(args.task)
     if runner is None:
-        print(f"Unknown task: {args.task}. Run with --help to see available tasks.")
-        return 1
+        return _handle_unknown_task(args.task)
 
     runner(load_config())
     return 0

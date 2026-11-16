@@ -13,6 +13,7 @@ sys.path.insert(
 from repository_automation_tasks import (
     _hotspot_line_count,
     configured_commands,
+    discover_hotspots,
     flattened_updates,
     render_entry_section,
 )
@@ -265,3 +266,57 @@ def test_hotspot_line_count_rejects_symlink(tmp_path: Path) -> None:
     except OSError:
         pytest.skip("symlink creation not permitted")
     assert _hotspot_line_count(str(link)) is None
+
+
+def test_discover_hotspots_returns_sorted_counts(monkeypatch, tmp_path):
+    """
+    Test that discover_hotspots correctly respects limit, filters for .py and .sh
+    files, excludes ignored directories, sorts by line count descending, and
+    ignores unreadable or None count results.
+    """
+    import repository_automation_tasks
+
+    # Point ROOT to tmp_path
+    monkeypatch.setattr(repository_automation_tasks, "ROOT", tmp_path)
+
+    # Valid files
+    file_a = tmp_path / "file_a.py"
+    file_a.write_text("line1\nline2\n", encoding="utf-8")
+
+    file_b = tmp_path / "file_b.sh"
+    file_b.write_text("line1\nline2\nline3\nline4\n", encoding="utf-8")
+
+    sub_dir = tmp_path / "sub"
+    sub_dir.mkdir()
+    file_c = sub_dir / "file_c.py"
+    file_c.write_text("line1\n", encoding="utf-8")
+
+    # Ignored directory
+    ignored_dir = tmp_path / ".git"
+    ignored_dir.mkdir()
+    ignored_file = ignored_dir / "ignored.py"
+    ignored_file.write_text("line1\nline2\nline3\nline4\nline5\n", encoding="utf-8")
+
+    # Non-matching extension
+    txt_file = tmp_path / "readme.txt"
+    txt_file.write_text("line1\nline2\nline3\n", encoding="utf-8")
+
+    # Unreadable file that returns None
+    unsafe_file = tmp_path / "unsafe.py"
+    unsafe_file.write_text("line1\n", encoding="utf-8")
+
+    real_hotspot_line_count = repository_automation_tasks._hotspot_line_count
+
+    def mock_line_count(path_str):
+        if "unsafe.py" in path_str:
+            return None
+        return real_hotspot_line_count(path_str)
+
+    monkeypatch.setattr(
+        repository_automation_tasks, "_hotspot_line_count", mock_line_count
+    )
+
+    results = discover_hotspots(limit=2)
+    assert len(results) == 2
+    assert results[0] == ("file_b.sh", 5)
+    assert results[1] == ("file_a.py", 3)

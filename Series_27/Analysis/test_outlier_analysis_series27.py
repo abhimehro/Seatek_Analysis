@@ -211,9 +211,9 @@ def test_apply_corrections_path_traversal(tmp_path):
         assert "outside_traversal_target" in filename
 
         # Defense-in-depth: resolved path must remain within output_dir
-        assert os.path.realpath(out_file).startswith(
-            os.path.realpath(output_dir)
-        ), f"Output path {out_file} escapes {output_dir}"
+        assert os.path.realpath(out_file).startswith(os.path.realpath(output_dir)), (
+            f"Output path {out_file} escapes {output_dir}"
+        )
 
         # The corrections summary should also reference the safe path
         assert not result.empty
@@ -383,7 +383,13 @@ def test_safe_path_symlink(tmp_path):
 
 def test_parse_args_invalid_method():
     # Test parse_args exits when invalid choice for -m is provided
-    test_args = ["outlier_analysis_series27.py", "-i", "data.xlsx", "-m", "invalid_method"]
+    test_args = [
+        "outlier_analysis_series27.py",
+        "-i",
+        "data.xlsx",
+        "-m",
+        "invalid_method",
+    ]
     with patch.object(sys, "argv", test_args):
         with pytest.raises(SystemExit) as exc_info:
             parse_args()

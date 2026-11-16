@@ -102,36 +102,27 @@ def test_flattened_updates_empty():
     assert flattened_updates([]) == []
 
 
-def test_flattened_updates_basic():
-    plans = [
+def _build_sample_workflow_plans() -> list[dict[str, Any]]:
+    return [
         {
             "path": ".github/workflows/ci.yml",
             "text": "...",
             "replacements": [
-                {
-                    "action": "actions/checkout",
-                    "current": "v2",
-                    "target": "v3",
-                },
-                {
-                    "action": "actions/setup-python",
-                    "current": "v4",
-                    "target": "v5",
-                },
+                {"action": "actions/checkout", "current": "v2", "target": "v3"},
+                {"action": "actions/setup-python", "current": "v4", "target": "v5"},
             ],
         },
         {
             "path": ".github/workflows/deploy.yml",
             "text": "...",
             "replacements": [
-                {
-                    "action": "actions/checkout",
-                    "current": "v3",
-                    "target": "v4",
-                },
+                {"action": "actions/checkout", "current": "v3", "target": "v4"},
             ],
         },
     ]
+
+
+def _verify_flattened_updates(actual: list[dict[str, str]]) -> None:
     expected = [
         {
             "file": ".github/workflows/ci.yml",
@@ -152,7 +143,13 @@ def test_flattened_updates_basic():
             "target": "v4",
         },
     ]
-    assert flattened_updates(plans) == expected
+    assert actual == expected
+
+
+def test_flattened_updates_basic():
+    plans = _build_sample_workflow_plans()
+    actual = flattened_updates(plans)
+    _verify_flattened_updates(actual)
 
 
 def test_flattened_updates_missing_replacements():

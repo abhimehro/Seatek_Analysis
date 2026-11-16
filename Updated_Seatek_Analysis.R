@@ -178,19 +178,25 @@ execute_tasks_parallel <- function(tasks, task_func) {
   }
 }
 
-# Helper to compute metrics for a single sensor dataframe
-compute_sensor_metrics <- function(df, filename) {
-  # OPTIMIZATION: which(x > 0) is natively faster at dropping NAs than
-  # !is.na() &
-  # ⚡ Bolt: Replace regex grep with native startsWith for faster column
-  # name subsetting
-  sensor_names <- names(df)[startsWith(names(df), "Sensor")]
+# Helper to derive sheet name from sensor data filename
+derive_sheet_name <- function(filename) {
+  # Derive sheet/year name
+  year_tag <- sub("^SS_Y([0-9]{2})\\.txt$", "\\1", basename(filename))
+  # Map Y01=1995, Y02=1996, ..., Y20=2014
+  year_num <- as.integer(year_tag)
+  if (!is.na(year_num) && year_num >= 1 && year_num <= 20) {
+    as.character(1994 + year_num)
+  } else {
+    basename(filename)
+  }
+}
 
+# Helper to calculate summary metrics for all sensor columns
+calculate_sensor_metrics_table <- function(df, sensor_names) {
   # ⚡ Bolt: Replace multiple lapply(.SD, ...) calls with a direct for loop
   # over sensor columns using pre-calculated row indices. This significantly
   # reduces execution time by avoiding .SD closure and redundant subsetting
   # overhead.
-
   n_rows <- nrow(df)
   idx_first <- 1:min(10, n_rows)
   idx_last <- max(1, n_rows - 4):n_rows
@@ -216,38 +222,41 @@ compute_sensor_metrics <- function(df, filename) {
     full[j] <- sum(v[w_full]) / length(w_full)
   }
   diff <- full - first10
-  # Derive sheet/year name
-  year_tag <- sub("^SS_Y([0-9]{2})\\.txt$", "\\1", basename(filename))
-  # Map Y01=1995, Y02=1996, ..., Y20=2014
-  year_num <- as.integer(year_tag)
-  sheet_name <- if (!is.na(year_num) && year_num >= 1 && year_num <= 20) {
-    as.character(1994 + year_num)
-  } else {
-    basename(filename)
-  }
 
   # ⚡ Bolt: Store results natively as data.table with explicit Sensor ID
   # Avoids data.frame/row.names overhead and enables fast rbindlist downstream
-  dt <- data.table(
+  data.table(
     Sensor = sensor_names,
     first10 = first10,
     last5 = last5,
     full = full,
     within_diff = diff
   )
+}
+
+# Helper to compute metrics for a single sensor dataframe
+compute_sensor_metrics <- function(df, filename) {
+  # OPTIMIZATION: which(x > 0) is natively faster at dropping NAs than
+  # !is.na() &
+  # ⚡ Bolt: Replace regex grep with native startsWith for faster column
+  # name subsetting
+  sensor_names <- names(df)[startsWith(names(df), "Sensor")]
+  dt <- calculate_sensor_metrics_table(df, sensor_names)
+  sheet_name <- derive_sheet_name(filename)
 
   list(dt = dt, sheet_name = sheet_name)
+}
+
+# Top-level helper function for parallel export
+write_task <- function(task) {
+  # Use full namespace just to be safe
+  openxlsx::write.xlsx(task$df, task$out_raw, overwrite = TRUE)
+  task$out_raw
 }
 
 # Helper for parallel export
 export_raw_data_parallel <- function(raw_export_tasks) {
   if (length(raw_export_tasks) > 0) {
-    write_task <- function(task) {
-      # Use full namespace just to be safe
-      openxlsx::write.xlsx(task$df, task$out_raw, overwrite = TRUE)
-      task$out_raw
-    }
-
     out_files <- execute_tasks_parallel(raw_export_tasks, write_task)
     message(paste0(sprintf("Raw data written to %s", out_files),
       collapse = "\n"
@@ -255,14 +264,35 @@ export_raw_data_parallel <- function(raw_export_tasks) {
   }
 }
 
-# Process all sensor files: export raw, compute metrics
-process_all_data <- function(data_dir) {
-  data_dir <- auto_detect_data_dir(data_dir)
-  pattern <- "^SS_Y[0-9]{2}\\.txt$" # Updated pattern to match your files
+# Discover and validate sensor data files
+find_sensor_files <- function(data_dir, pattern = "^SS_Y[0-9]{2}\\.txt$") {
   files <- list.files(data_dir, pattern = pattern, full.names = TRUE)
   if (length(files) == 0) {
     stop(sprintf("No sensor files found matching %s in %s", pattern, data_dir))
   }
+  files
+}
+
+# Read and process metrics for a single sensor data file
+process_sensor_file <- function(file_path, data_dir) {
+  df <- read_sensor_data(file_path, verbose = FALSE)
+  # Export raw data to Excel
+  # ⚡ Bolt: sub() is ~3x faster than tools::file_path_sans_ext + paste0
+  out_raw <- file.path(data_dir, sub("\\.txt$", ".xlsx", basename(file_path)))
+  raw_task <- list(df = df, out_raw = out_raw)
+
+  # Compute summary metrics
+  metrics_res <- compute_sensor_metrics(df, file_path)
+
+  list(
+    dt = metrics_res$dt,
+    sheet_name = metrics_res$sheet_name,
+    raw_task = raw_task
+  )
+}
+
+# Process a batch of sensor files with progress tracking
+process_sensor_files_batch <- function(files, data_dir) {
   cat(sprintf(
     "\n🚀 Found %d sensor files. Starting processing...\n",
     length(files)
@@ -282,24 +312,32 @@ process_all_data <- function(data_dir) {
     },
     add = TRUE
   )
-  i <- 0
-  for (f in files) {
-    df <- read_sensor_data(f, verbose = FALSE)
-    # Export raw data to Excel
-    # ⚡ Bolt: sub() is ~3x faster than tools::file_path_sans_ext + paste0
-    out_raw <- file.path(data_dir, sub("\\.txt$", ".xlsx", basename(f)))
-    raw_export_tasks[[i + 1]] <- list(df = df, out_raw = out_raw)
 
-    # Compute summary metrics
-    metrics_res <- compute_sensor_metrics(df, f)
-
-    results[[i + 1]] <- metrics_res$dt
-    sheet_names[i + 1] <- metrics_res$sheet_name
-    i <- i + 1
+  for (i in seq_along(files)) {
+    item <- process_sensor_file(files[i], data_dir)
+    raw_export_tasks[[i]] <- item$raw_task
+    results[[i]] <- item$dt
+    sheet_names[i] <- item$sheet_name
     setTxtProgressBar(pb, i)
   }
   close(pb)
   names(results) <- sheet_names
+
+  list(
+    results = results,
+    raw_export_tasks = raw_export_tasks
+  )
+}
+
+# Process all sensor files: export raw, compute metrics
+process_all_data <- function(data_dir) {
+  data_dir <- auto_detect_data_dir(data_dir)
+  files <- find_sensor_files(data_dir)
+
+  batch_res <- process_sensor_files_batch(files, data_dir)
+  results <- batch_res$results
+  raw_export_tasks <- batch_res$raw_export_tasks
+
   cat(paste(
     "\nℹ Sensor files read and metrics computed;",
     "starting raw Excel exports...\n"
@@ -337,6 +375,49 @@ write_year_sheet <- function(wb, year, data, header_style,
   }
 }
 
+# Compute summary statistics for a numeric vector across years
+compute_vector_summary_stats <- function(v_val) {
+  # ⚡ Bolt: Safe inline vector filtering with short-circuit anyNA check
+  if (anyNA(v_val)) v_val <- v_val[!is.na(v_val)]
+  n <- length(v_val)
+  if (n == 0) {
+    list(
+      mean = NA_real_, sd = NA_real_, median = NA_real_, mad = NA_real_,
+      min = NA_real_, max = NA_real_, count = 0L, rollmean3 = NA_real_
+    )
+  } else {
+    # ⚡ Bolt: Pre-calculate median and pass to mad() via center argument
+    # ⚡ Bolt: Bypass S3 method dispatch overhead with median.default()
+    med <- median.default(v_val)
+    list(
+      mean      = mean.default(v_val),
+      sd        = sqrt(var(v_val)),
+      median    = med,
+      # ⚡ Bolt: Inline mad calculation to bypass function call overhead
+      mad       = 1.4826 * median.default(abs(v_val - med)),
+      min       = min(v_val),
+      max       = max(v_val),
+      count     = n,
+      rollmean3 = if (n < 3) NA_real_ else sum(v_val[(n - 2):n]) / 3
+    )
+  }
+}
+
+# Generate structured column names for summary statistics
+generate_summary_stat_names <- function(metrics) {
+  stat_names <- c(
+    "mean", "sd", "median", "mad", "min", "max",
+    "count", "rollmean3"
+  )
+  c(
+    "Sensor",
+    paste(rep(metrics, each = length(stat_names)),
+      stat_names,
+      sep = "_"
+    )
+  )
+}
+
 # Compute summary statistics across all years
 calculate_summary_stats <- function(results) {
   # Add summary sheet with overall stats
@@ -347,58 +428,21 @@ calculate_summary_stats <- function(results) {
   # Identify metric columns (numeric columns excluding ID columns)
   metrics <- setdiff(names(all_stats_dt), c("Sensor", "Year"))
 
-
   # ⚡ Bolt: Use lapply(.SD) natively grouped by Sensor to bypass the expensive
   # melt -> aggregate -> melt -> dcast pipeline, reducing memory allocation.
   # ⚡ Bolt: Use keyby = "Sensor" to ensure the output is sorted like dcast.
-
-  calc_stats <- function(v_val) {
-    if (anyNA(v_val)) v_val <- v_val[!is.na(v_val)]
-    n <- length(v_val)
-    if (n == 0) {
-      list(
-        mean = NA_real_, sd = NA_real_, median = NA_real_, mad = NA_real_,
-        min = NA_real_, max = NA_real_, count = 0L, rollmean3 = NA_real_
-      )
-    } else {
-      # ⚡ Bolt: Pre-calculate the median and pass it to mad() via the `center`
-      # argument to avoid redundant median calculations for measurable speedup.
-      # ⚡ Bolt: Bypass S3 method dispatch overhead by using median.default()
-      med <- median.default(v_val)
-      list(
-        mean      = mean.default(v_val),
-        sd        = sqrt(var(v_val)),
-        median    = med,
-        # ⚡ Bolt: Inline mad calculation to bypass function call overhead
-        mad       = 1.4826 * median.default(abs(v_val - med)),
-        min       = min(v_val),
-        max       = max(v_val),
-        count     = n,
-        rollmean3 = if (n < 3) NA_real_ else sum(v_val[(n - 2):n]) / 3
-      )
-    }
-  }
-
+  # ⚡ Bolt: Hoist compute_vector_summary_stats out of .SD to avoid closure
+  # redefinition per group.
   summary_wide <- all_stats_dt[,
     unlist(
-      unname(lapply(.SD, calc_stats)),
+      unname(lapply(.SD, compute_vector_summary_stats)),
       recursive = FALSE,
       use.names = FALSE
     ),
     keyby = "Sensor", .SDcols = metrics
   ]
 
-  stat_names <- c(
-    "mean", "sd", "median", "mad", "min", "max",
-    "count", "rollmean3"
-  )
-  new_names <- c(
-    "Sensor",
-    paste(rep(metrics, each = length(stat_names)),
-      stat_names,
-      sep = "_"
-    )
-  )
+  new_names <- generate_summary_stat_names(metrics)
   setnames(summary_wide, new_names)
 
   # Calculate percent non-missing for 'full'
@@ -560,17 +604,34 @@ write_summary_sheets <- function(wb, summary_df, output_file,
   )
 }
 
-# Write combined summary workbook
-dump_summary_excel <- function(results, output_file, highlight_top_n = 5) {
-  wb <- createWorkbook()
-
+# Helper function to create summary workbook styles
+create_summary_styles <- function() {
   # ⚡ Bolt: Hoisted style definitions out of inner functions/loops
   # to avoid recreating styles redundantly on every sheet generation.
-  header_style <- createStyle(textDecoration = "bold", fontColour = "#FFFFFF", bgFill = "#4F81BD")
-  highlight_style_yearly <- createStyle(fontColour = "#000000", bgFill = "#FFD700")
-  highlight_style_summary <- createStyle(fontColour = "#000000", bgFill = "#FF9999")
+  header_style <- createStyle(
+    textDecoration = "bold",
+    fontColour = "#FFFFFF",
+    bgFill = "#4F81BD"
+  )
+  highlight_style_yearly <- createStyle(
+    fontColour = "#000000",
+    bgFill = "#FFD700"
+  )
+  highlight_style_summary <- createStyle(
+    fontColour = "#000000",
+    bgFill = "#FF9999"
+  )
 
-  # Write each year's sheet
+  list(
+    header = header_style,
+    yearly = highlight_style_yearly,
+    summary = highlight_style_summary
+  )
+}
+
+# Helper function to write all yearly sheets to the workbook
+write_all_yearly_sheets <- function(wb, results, header_style,
+                                    highlight_style_yearly) {
   cat("\n📊 Generating yearly summary sheets...\n")
   message("Generating yearly summary sheets...")
   if (length(results) > 0) {
@@ -597,6 +658,16 @@ dump_summary_excel <- function(results, output_file, highlight_top_n = 5) {
     close(pb)
   }
   cat("\n✅ Yearly sheets generated.\n")
+}
+
+# Write combined summary workbook
+dump_summary_excel <- function(results, output_file, highlight_top_n = 5) {
+  wb <- createWorkbook()
+
+  styles <- create_summary_styles()
+
+  # Write each year's sheet
+  write_all_yearly_sheets(wb, results, styles$header, styles$yearly)
 
   cat("\n📈 Computing summary statistics...\n")
   # Compute summary statistics
@@ -606,7 +677,7 @@ dump_summary_excel <- function(results, output_file, highlight_top_n = 5) {
   # Write summary sheets and CSVs
   write_summary_sheets(
     wb, summary_df, output_file,
-    header_style, highlight_top_n, highlight_style_summary
+    styles$header, highlight_top_n, styles$summary
   )
 
   cat("\n✅ Summary workbook complete.\n")

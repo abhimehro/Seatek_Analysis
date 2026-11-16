@@ -375,3 +375,60 @@ def test_enforce_result_statuses(tmp_path, status, expected_exit_code):
 
     exit_code = enforce_result(str(result_file))
     assert exit_code == expected_exit_code
+
+
+def test_command_block_all_fields():
+    from repository_automation_common import command_block
+
+    entry = {
+        "name": "lint_check",
+        "exit_code": 0,
+        "stdout": "  All checks passed!  \n",
+        "stderr": "  Warning: deprecation  \n",
+    }
+    expected = (
+        "- **lint_check** -> exit `0`\n"
+        "```text\n"
+        "All checks passed!\n"
+        "```\n"
+        "```text\n"
+        "Warning: deprecation\n"
+        "```"
+    )
+    assert command_block(entry) == expected
+
+
+def test_command_block_no_output():
+    from repository_automation_common import command_block
+
+    entry = {
+        "name": "quick_cmd",
+        "exit_code": 1,
+    }
+    assert command_block(entry) == "- **quick_cmd** -> exit `1`"
+
+
+def test_command_block_stdout_only():
+    from repository_automation_common import command_block
+
+    entry = {
+        "name": "test_cmd",
+        "exit_code": 0,
+        "stdout": "Success output\n",
+        "stderr": "",
+    }
+    expected = "- **test_cmd** -> exit `0`\n```text\nSuccess output\n```"
+    assert command_block(entry) == expected
+
+
+def test_command_block_stderr_only():
+    from repository_automation_common import command_block
+
+    entry = {
+        "name": "fail_cmd",
+        "exit_code": 2,
+        "stdout": "",
+        "stderr": "Error: bad input\n",
+    }
+    expected = "- **fail_cmd** -> exit `2`\n```text\nError: bad input\n```"
+    assert command_block(entry) == expected

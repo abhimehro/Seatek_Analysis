@@ -103,3 +103,47 @@ test_that("dump_summary_excel creates correct Excel and CSV files", {
   unlink(temp_dir_path, recursive = TRUE, force = TRUE)
   expect_false(dir.exists(temp_dir_path), label = "Temporary directory should be deleted after test.")
 })
+
+test_that("create_summary_styles returns valid style objects", {
+  styles <- create_summary_styles()
+
+  expect_type(styles, "list")
+  expect_named(styles, c("header", "yearly", "summary"))
+  expect_s4_class(styles$header, "Style")
+  expect_s4_class(styles$yearly, "Style")
+  expect_s4_class(styles$summary, "Style")
+})
+
+test_that("write_all_yearly_sheets writes worksheets to workbook", {
+  wb <- openxlsx::createWorkbook()
+  styles <- create_summary_styles()
+
+  mock_data <- data.table::data.table(
+    Sensor = c("Sensor01", "Sensor02"),
+    first10 = c(10.5, 12.3),
+    last5 = c(11.0, 11.5),
+    full = c(10.8, 12.0),
+    within_diff = c(0.5, -0.8)
+  )
+
+  results <- list(
+    "1995" = mock_data,
+    "1996" = mock_data
+  )
+
+  suppressMessages({
+    write_all_yearly_sheets(wb, results, styles$header, styles$yearly)
+  })
+
+  expect_true(all(c("1995", "1996") %in% names(wb)))
+  expect_equal(length(names(wb)), 2)
+
+  # Check that empty results list is handled gracefully without error
+  wb_empty <- openxlsx::createWorkbook()
+  suppressMessages({
+    expect_no_error(
+      write_all_yearly_sheets(wb_empty, list(), styles$header, styles$yearly)
+    )
+  })
+  expect_equal(length(names(wb_empty)), 0)
+})

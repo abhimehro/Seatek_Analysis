@@ -29,8 +29,10 @@ except ImportError:
 
 import pytest
 from outlier_analysis_series27 import (
+    _is_safe_path,
     apply_corrections,
     detect_outliers,
+    parse_args,
     secure_filename,
 )
 
@@ -216,3 +218,173 @@ def test_apply_corrections_path_traversal(tmp_path):
         # The corrections summary should also reference the safe path
         assert not result.empty
         assert result.iloc[0]["CorrectedFile"] == out_file
+
+
+def test_parse_args_defaults():
+    # Test parse_args with required -i argument and verify default options
+    test_args = ["outlier_analysis_series27.py", "-i", "data.xlsx"]
+    with patch.object(sys, "argv", test_args):
+        args = parse_args()
+        assert args.input == "data.xlsx"
+        assert args.sheet_summary == "Year-to-Year Differences"
+        assert args.method == "abs"
+        assert args.threshold == 0.1
+        assert args.zscore == 3.0
+        assert args.iqr_factor == 1.5
+        assert args.output == "output"
+
+
+def test_parse_args_custom_values():
+    # Test parse_args with all custom arguments supplied
+    test_args = [
+        "outlier_analysis_series27.py",
+        "-i",
+        "custom_data.xlsx",
+        "-s",
+        "Custom Differences",
+        "-m",
+        "zscore",
+        "-t",
+        "0.25",
+        "-z",
+        "2.5",
+        "-q",
+        "2.0",
+        "-o",
+        "custom_output",
+    ]
+    with patch.object(sys, "argv", test_args):
+        args = parse_args()
+        assert args.input == "custom_data.xlsx"
+        assert args.sheet_summary == "Custom Differences"
+        assert args.method == "zscore"
+        assert args.threshold == 0.25
+        assert args.zscore == 2.5
+        assert args.iqr_factor == 2.0
+        assert args.output == "custom_output"
+
+
+def test_parse_args_no_args_exits(capsys):
+    # Test parse_args exits with status 1 when len(sys.argv) == 1
+    test_args = ["outlier_analysis_series27.py"]
+    with patch.object(sys, "argv", test_args):
+        with pytest.raises(SystemExit) as exc_info:
+            parse_args()
+        assert exc_info.value.code == 1
+    captured = capsys.readouterr()
+    assert "usage:" in captured.err.lower() or "examples:" in captured.err.lower()
+
+
+def test_parse_args_missing_required_input():
+    # Test parse_args exits when required argument -i is missing but other arguments are present
+    test_args = ["outlier_analysis_series27.py", "-m", "iqr"]
+    with patch.object(sys, "argv", test_args):
+        with pytest.raises(SystemExit) as exc_info:
+            parse_args()
+        assert exc_info.value.code == 2
+
+
+def test_safe_path_valid_contained(tmp_path):
+    """Test path containment for valid subpaths and exact base path."""
+    base_dir = tmp_path / "basedir"
+    base_dir.mkdir()
+    child_file = base_dir / "report.xlsx"
+    child_file.touch()
+    nested_dir = base_dir / "sub" / "folder"
+    nested_dir.mkdir(parents=True)
+    nested_file = nested_dir / "data.csv"
+    nested_file.touch()
+
+    # Exact base path is considered contained
+    assert _is_safe_path(str(base_dir), str(base_dir))
+    # Directly contained file
+    assert _is_safe_path(str(base_dir), str(child_file))
+    # Deeply nested file
+    assert _is_safe_path(str(base_dir), str(nested_file))
+    # Relative path within base directory
+    rel_path = os.path.join(str(base_dir), ".", "report.xlsx")
+    assert _is_safe_path(str(base_dir), rel_path)
+
+
+def test_safe_path_traversal(tmp_path):
+    """Test that path traversal using parent directory dots is blocked."""
+    base_dir = tmp_path / "basedir"
+    base_dir.mkdir()
+
+    # Direct parent traversal escape
+    escape_path = str(base_dir / ".." / "escaped.txt")
+    assert not _is_safe_path(str(base_dir), escape_path)
+
+    # Multi-level parent traversal escape
+    deep_escape = str(base_dir / "sub" / ".." / ".." / "etc" / "passwd")
+    assert not _is_safe_path(str(base_dir), deep_escape)
+
+    # Completely external path
+    outside_dir = tmp_path / "other"
+    outside_dir.mkdir()
+    assert not _is_safe_path(str(base_dir), str(outside_dir))
+
+
+def test_safe_path_sibling_prefix(tmp_path):
+    """Test that sibling directories sharing prefix name are rejected."""
+    # basedir: /tmp/.../base
+    # sibling: /tmp/.../base_evil (starts with prefix but not inside)
+    base_dir = tmp_path / "data"
+    base_dir.mkdir()
+    sibling_dir = tmp_path / "data_extra"
+    sibling_dir.mkdir()
+    sibling_file = sibling_dir / "leak.txt"
+    sibling_file.touch()
+
+    assert not _is_safe_path(str(base_dir), str(sibling_file))
+    assert not _is_safe_path(str(base_dir), str(sibling_dir))
+
+
+def test_safe_path_null_byte(tmp_path):
+    """Test that null byte injection in either argument is rejected."""
+    base_dir = tmp_path / "basedir"
+    base_dir.mkdir()
+
+    # Null byte in target path
+    assert not _is_safe_path(str(base_dir), f"{base_dir}/file.xlsx\0.evil")
+    assert not _is_safe_path(str(base_dir), "\0/etc/passwd")
+
+    # Null byte in base directory
+    valid_file = str(base_dir / "test.txt")
+    assert not _is_safe_path(f"{base_dir}\0", valid_file)
+
+
+def test_safe_path_symlink(tmp_path):
+    """Test symlinks resolving outside versus inside basedir."""
+    base_dir = tmp_path / "basedir"
+    base_dir.mkdir()
+    outside_dir = tmp_path / "outside"
+    outside_dir.mkdir()
+    secret_file = outside_dir / "secret.txt"
+    secret_file.touch()
+
+    # Symlink inside basedir pointing to outside target should be rejected
+    symlink_escape = base_dir / "symlink_to_secret"
+    try:
+        os.symlink(str(secret_file), str(symlink_escape))
+    except (OSError, NotImplementedError):
+        pytest.skip("Symlink creation not supported in this environment")
+
+    assert not _is_safe_path(str(base_dir), str(symlink_escape))
+
+    # Symlink inside basedir pointing to inside target should be accepted
+    internal_file = base_dir / "internal.txt"
+    internal_file.touch()
+    internal_symlink = base_dir / "symlink_to_internal"
+    os.symlink(str(internal_file), str(internal_symlink))
+
+    assert _is_safe_path(str(base_dir), str(internal_symlink))
+
+
+def test_parse_args_invalid_method():
+    # Test parse_args exits when invalid choice for -m is provided
+    test_args = ["outlier_analysis_series27.py", "-i", "data.xlsx", "-m", "invalid_method"]
+    with patch.object(sys, "argv", test_args):
+        with pytest.raises(SystemExit) as exc_info:
+            parse_args()
+        assert exc_info.value.code == 2

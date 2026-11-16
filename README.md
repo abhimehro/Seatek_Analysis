@@ -116,8 +116,7 @@ regenerable from the source tree; neither the application nor CI reads it.
 │                                     #     Data/Seatek_Summary_robust.csv, Data/Seatek_Summary_sufficient.csv,
 │                                     #     Data/Seatek_Summary_top_sensors.csv.
 ├── requirements.R              # R package requirements for R scripts, managed by renv (see renv.lock).
-├── seatek_analysis.log         # Local log (gitignored; regenerate on run).
-├── processing_log.txt          # Local processing log (gitignored).
+├── processing_warnings.log     # Log written by Updated_Seatek_Analysis.R (gitignored).
 ├── Seatek_Analysis.Rproj       # RStudio Project file.
 ├── renv.lock                   # renv lockfile for reproducible R environment.
 ├── renv/                         # renv library and activation scripts.

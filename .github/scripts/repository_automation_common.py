@@ -127,7 +127,8 @@ def iso_day(value: dt.datetime | None = None) -> str:
 
 
 def load_config() -> dict[str, Any]:
-    data = yaml.safe_load(CONFIG_PATH.read_text()) or {}
+    # SECURITY: Enforce UTF-8 encoding to prevent UnicodeDecodeError DoS on non-UTF-8 systems.
+    data = yaml.safe_load(CONFIG_PATH.read_text(encoding="utf-8")) or {}
     return data.get("automation", {})
 
 
@@ -282,9 +283,10 @@ def write_result(
 ) -> dict[str, Any]:
     result = build_result(task, status, summary, extra)
     directory = task_dir(task)
-    (directory / "report.md").write_text(body.rstrip() + "\n")
+    # SECURITY: Enforce UTF-8 encoding to prevent implicit encoding bugs across systems.
+    (directory / "report.md").write_text(body.rstrip() + "\n", encoding="utf-8")
     (directory / "result.json").write_text(
-        json.dumps(result, indent=2, sort_keys=True) + "\n"
+        json.dumps(result, indent=2, sort_keys=True) + "\n", encoding="utf-8"
     )
     print(body)
     summary_path = os.environ.get("GITHUB_STEP_SUMMARY")
@@ -299,7 +301,8 @@ def enforce_result(path_str: str) -> int:
     if not path.exists():
         print(f"Missing task result: {path}")
         return 1
-    data = json.loads(path.read_text())
+    # SECURITY: Enforce UTF-8 encoding to prevent UnicodeDecodeError DoS on non-UTF-8 systems.
+    data = json.loads(path.read_text(encoding="utf-8"))
     return 1 if data.get("status") in {"failure", "needs_review"} else 0
 
 

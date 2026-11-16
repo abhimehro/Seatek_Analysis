@@ -98,6 +98,42 @@ def secure_filename(filename: str) -> str:
     return filename if filename else "unnamed"
 
 
+# Characters that mark a cell as a formula in Excel/Sheets/LibreOffice.
+# A leading apostrophe is the standard neutralizer: it forces the cell to
+# be treated as text by every major spreadsheet application.
+_FORMULA_PREFIXES = ("=", "+", "-", "@", "\t", "\r")
+
+
+def sanitize_cell(value):
+    """Neutralize spreadsheet formula injection (CWE-1236) in cell values.
+
+    Data sourced from untrusted Excel inputs can carry values that begin
+    with =, +, -, @, or a control character; when written back to output
+    workbooks these execute as formulas on open. Prefixing with a single
+    quote forces text interpretation in Excel, Google Sheets, and
+    LibreOffice Calc.
+    """
+    if not isinstance(value, str):
+        return value
+    if value.startswith(_FORMULA_PREFIXES):
+        return "'" + value
+    return value
+
+
+def _sanitize_dataframe_for_export(df):
+    """Return a formula-injection-safe copy of a DataFrame for Excel export.
+
+    Only real DataFrames are sanitized; other objects (e.g. mocks in
+    tests, or future non-DataFrame payloads) pass through unchanged.
+    Uses DataFrame.map (pandas >= 2.1) with applymap fallback for older
+    pandas versions.
+    """
+    if isinstance(df, pd.DataFrame):
+        sanitize = getattr(df, "map", df.applymap)
+        return sanitize(sanitize_cell)
+    return df
+
+
 def detect_outliers(df, method, abs_thr, z_thr, iqr_fac):
     """Detects outliers in a DataFrame based on a specified method.
 
@@ -231,6 +267,7 @@ def _process_single_sheet(df_raw, sheet, group, input_path, output_dir):
         }
     )
 
+    df_raw = _sanitize_dataframe_for_export(df_raw)
     df_raw.to_excel(out_file, sheet_name=sheet, index=False)
     return new_corrections
 
@@ -412,6 +449,7 @@ def main():
     corr_df = apply_corrections(file_buffer, args.input, args.output, outliers_df)
 
     corr_file = os.path.join(args.output, "corrections_summary.xlsx")
+    corr_df = _sanitize_dataframe_for_export(corr_df)
     corr_df.to_excel(corr_file, index=False)
     logging.info(f"Saved corrections summary to '{corr_file}'")
 

@@ -317,6 +317,7 @@
 - chore\(deps\): bump actions/download-artifact from 8.0.1 to 8.0.2 [\#1050](https://github.com/abhimehro/Seatek_Analysis/pull/1050) ([dependabot[bot]](https://github.com/apps/dependabot))
 - 🛡️ Sentinel: Fix Ruff code quality errors [\#1040](https://github.com/abhimehro/Seatek_Analysis/pull/1040) ([abhimehro](https://github.com/abhimehro))
 - Autofix-PR: Ruff deprecation warning [\#1036](https://github.com/abhimehro/Seatek_Analysis/pull/1036) ([abhimehro](https://github.com/abhimehro))
+- docs: drop the nonexistent lintr workflow claim [\#1014](https://github.com/abhimehro/Seatek_Analysis/pull/1014) ([cursor[bot]](https://github.com/apps/cursor))
 - Daily QA Review: Fix Ruff E402 Import Errors [\#1011](https://github.com/abhimehro/Seatek_Analysis/pull/1011) ([abhimehro](https://github.com/abhimehro))
 - docs\(readme\): match the R pipeline to Series 28 SS\_Y inputs [\#988](https://github.com/abhimehro/Seatek_Analysis/pull/988) ([cursor[bot]](https://github.com/apps/cursor))
 - fix: atomic hotspot file open + enforce pytest in CI \(salvage \#819/\#821\) [\#978](https://github.com/abhimehro/Seatek_Analysis/pull/978) ([abhimehro](https://github.com/abhimehro))

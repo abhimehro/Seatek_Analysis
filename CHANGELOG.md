@@ -21,6 +21,8 @@
 
 **Closed issues:**
 
+- Daily QA & Agentic Review — 2026-11-15 [\#1175](https://github.com/abhimehro/Seatek_Analysis/issues/1175)
+- Daily QA & Agentic Review — 2026-11-14 [\#1173](https://github.com/abhimehro/Seatek_Analysis/issues/1173)
 - Daily QA & Agentic Review — 2026-11-13 [\#1171](https://github.com/abhimehro/Seatek_Analysis/issues/1171)
 - Daily QA & Agentic Review — 2026-11-12 [\#1168](https://github.com/abhimehro/Seatek_Analysis/issues/1168)
 - Daily QA & Agentic Review — 2026-11-11 [\#1166](https://github.com/abhimehro/Seatek_Analysis/issues/1166)
@@ -41,8 +43,12 @@
 - Jules Daily QA & Agentic Review [\#1039](https://github.com/abhimehro/Seatek_Analysis/issues/1039)
 - Daily QA & Agentic Review — 2026-10-15 [\#1037](https://github.com/abhimehro/Seatek_Analysis/issues/1037)
 - Jules Daily QA & Agentic Review [\#1035](https://github.com/abhimehro/Seatek_Analysis/issues/1035)
+- Unknown-task fuzzy match omits valid 'enforce' task from suggestions [\#1034](https://github.com/abhimehro/Seatek_Analysis/issues/1034)
+- Restore HTTPS CRAN mirror in microbenchmark install hint [\#1033](https://github.com/abhimehro/Seatek_Analysis/issues/1033)
+- \[repo-automation\] Daily Status Report - 2026-10-15 [\#1031](https://github.com/abhimehro/Seatek_Analysis/issues/1031)
 - Daily QA & Agentic Review — 2026-10-14 [\#1030](https://github.com/abhimehro/Seatek_Analysis/issues/1030)
 - Jules Daily QA & Agentic Review - Code Health Findings [\#1028](https://github.com/abhimehro/Seatek_Analysis/issues/1028)
+- \[repo-automation\] Daily Status Report - 2026-10-14 [\#1026](https://github.com/abhimehro/Seatek_Analysis/issues/1026)
 - Daily QA & Agentic Review — 2026-10-13 [\#1024](https://github.com/abhimehro/Seatek_Analysis/issues/1024)
 - Jules Daily QA & Agentic Review - Healthy Repository [\#1023](https://github.com/abhimehro/Seatek_Analysis/issues/1023)
 - \[repo-automation\] Daily Status Report - 2026-10-13 [\#1021](https://github.com/abhimehro/Seatek_Analysis/issues/1021)
@@ -292,6 +298,7 @@
 - ⚡ Bolt: hoist write\_task to top level for parallel export \(recovers \#936\) [\#1164](https://github.com/abhimehro/Seatek_Analysis/pull/1164) ([abhimehro](https://github.com/abhimehro))
 - 🧪 Add unit tests for \_is\_safe\_path path traversal prevention [\#1156](https://github.com/abhimehro/Seatek_Analysis/pull/1156) ([abhimehro](https://github.com/abhimehro))
 - chore\(deps\): bump ruby/setup-ruby from 1.335.0 to 1.336.0 [\#1126](https://github.com/abhimehro/Seatek_Analysis/pull/1126) ([dependabot[bot]](https://github.com/apps/dependabot))
+- 🔒 Sentinel: Fix unsafe eval\(parse\(\)\) in execute\_tasks\_parallel tests [\#1117](https://github.com/abhimehro/Seatek_Analysis/pull/1117) ([abhimehro](https://github.com/abhimehro))
 - 🧹 Refactor dump\_summary\_excel into modular helpers [\#1116](https://github.com/abhimehro/Seatek_Analysis/pull/1116) ([abhimehro](https://github.com/abhimehro))
 - 🧹 Refactor compute\_sensor\_metrics into focused helper functions [\#1113](https://github.com/abhimehro/Seatek_Analysis/pull/1113) ([abhimehro](https://github.com/abhimehro))
 - 🧹 Refactor process\_all\_data to reduce complexity [\#1108](https://github.com/abhimehro/Seatek_Analysis/pull/1108) ([abhimehro](https://github.com/abhimehro))

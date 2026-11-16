@@ -11,8 +11,11 @@ sys.path.insert(
 )
 
 from repository_automation_tasks import (
+    _discover_hotspot_candidates,
+    _gather_hotspots,
     _hotspot_line_count,
     configured_commands,
+    discover_hotspots,
     flattened_updates,
     render_entry_section,
 )
@@ -265,3 +268,34 @@ def test_hotspot_line_count_rejects_symlink(tmp_path: Path) -> None:
     except OSError:
         pytest.skip("symlink creation not permitted")
     assert _hotspot_line_count(str(link)) is None
+
+
+def test_discover_hotspot_candidates_finds_python_and_sh_files():
+    candidates = _discover_hotspot_candidates()
+    assert isinstance(candidates, list)
+    assert len(candidates) > 0
+    for rel_path, path_str in candidates:
+        assert rel_path.endswith((".py", ".sh"))
+        assert os.path.exists(path_str)
+
+
+def test_discover_hotspots_behavior():
+    results = discover_hotspots(limit=3)
+    assert isinstance(results, list)
+    assert len(results) <= 3
+    for rel_path, line_count in results:
+        assert isinstance(rel_path, str)
+        assert isinstance(line_count, int)
+        assert line_count > 0
+
+
+def test_gather_hotspots_async_behavior():
+    import asyncio
+
+    results = asyncio.run(_gather_hotspots(limit=2))
+    assert isinstance(results, list)
+    assert len(results) <= 2
+    for rel_path, line_count in results:
+        assert isinstance(rel_path, str)
+        assert isinstance(line_count, int)
+        assert line_count > 0

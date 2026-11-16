@@ -439,3 +439,8 @@ generic dispatch overhead.
 overhead of the sd() function on guaranteed numeric vectors in high-frequency
 loops. **Action:** Replace sd() with sqrt(var()) for guaranteed numeric vectors
 in performance-critical paths.
+
+## 2026-09-04 - Offload blocking filesystem traversal in async context
+
+**Learning:** Traversing the repository directory tree with `os.walk()` is a synchronous, blocking I/O operation. In asynchronous workflows or mixed event loops, running `os.walk()` directly on the main event loop thread blocks the entire thread, preventing any other concurrent coroutines or async tasks from progressing while traversing large directory structures.
+**Action:** Extract the synchronous filesystem traversal into a candidate discovery helper and offload it to a worker thread using `await asyncio.to_thread(_discover_candidates)`. This frees the main event loop thread to process concurrent tasks while the I/O-bound traversal runs in a background thread.

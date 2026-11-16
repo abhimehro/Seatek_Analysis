@@ -205,9 +205,9 @@ async def _gather_line_counts(paths: list[str]) -> list[int | None]:
     )
 
 
-def discover_hotspots(limit: int = 5) -> list[tuple[str, int]]:
+def _discover_hotspot_candidates() -> list[tuple[str, str]]:
+    """Traverse the repository directory tree and collect candidate source files."""
     candidates = []
-
     root_str = str(ROOT) + os.sep
     root_len = len(root_str)
 
@@ -221,15 +221,25 @@ def discover_hotspots(limit: int = 5) -> list[tuple[str, int]]:
                 path_str[root_len:] if path_str.startswith(root_str) else path_str
             )
             candidates.append((rel_path, path_str))
+    return candidates
 
+
+async def _gather_hotspots(limit: int = 5) -> list[tuple[str, int]]:
+    # ⚡ Bolt: Offload blocking os.walk filesystem traversal to a worker thread
+    # so that large directory scans do not block the event loop or main thread.
+    candidates = await asyncio.to_thread(_discover_hotspot_candidates)
     paths = [path_str for _, path_str in candidates]
-    counts = asyncio.run(_gather_line_counts(paths))
+    counts = await _gather_line_counts(paths)
     counted = [
         (rel_path, count)
         for (rel_path, _), count in zip(candidates, counts)
         if count is not None
     ]
     return sorted(counted, key=lambda item: item[1], reverse=True)[:limit]
+
+
+def discover_hotspots(limit: int = 5) -> list[tuple[str, int]]:
+    return asyncio.run(_gather_hotspots(limit))
 
 
 # ⚡ Bolt: Fetch tags concurrently to avoid sequential blocking I/O bottleneck

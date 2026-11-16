@@ -29,9 +29,11 @@ except ImportError:
 
 import pytest
 from outlier_analysis_series27 import (
+    _sanitize_dataframe_for_export,
     apply_corrections,
     detect_outliers,
     parse_args,
+    sanitize_cell,
     secure_filename,
 )
 
@@ -290,3 +292,50 @@ def test_parse_args_invalid_method():
         with pytest.raises(SystemExit) as exc_info:
             parse_args()
         assert exc_info.value.code == 2
+
+
+@pytest.mark.skipif(not HAS_PANDAS, reason="Pandas not available")
+def test_sanitize_cell_neutralizes_formula_triggers():
+    # Formula-injection trigger characters must be neutralized (CWE-1236)
+    assert sanitize_cell("=cmd|/c calc") == "'=cmd|/c calc"
+    assert sanitize_cell("+SUM(A1:A2)") == "'+SUM(A1:A2)"
+    assert sanitize_cell("-2+3|cmd") == "'-2+3|cmd"
+    assert sanitize_cell("@SUM(A1)") == "'@SUM(A1)"
+    # Control-character smuggling (newline, tab, CR, VT, FF)
+    assert sanitize_cell("\n=HYPERLINK('http://evil')") == "'\n=HYPERLINK('http://evil')"
+    assert sanitize_cell("\t=1+1") == "'\t=1+1"
+    assert sanitize_cell("\r=1+1") == "'\r=1+1"
+
+
+@pytest.mark.skipif(not HAS_PANDAS, reason="Pandas not available")
+def test_sanitize_cell_passes_through_non_formulas():
+    # Normal strings, non-strings, and empty values pass through unchanged
+    assert sanitize_cell("normal value") == "normal value"
+    # Trigger char must be leading; embedded equals are fine
+    assert sanitize_cell("a = b") == "a = b"
+    assert sanitize_cell(42) == 42
+    assert sanitize_cell(3.14) == 3.14
+    assert sanitize_cell(None) is None
+    assert sanitize_cell("") == ""
+
+
+@pytest.mark.skipif(not HAS_PANDAS, reason="Pandas not available")
+def test_sanitize_dataframe_for_export():
+    # DataFrame sanitization works on the pinned pandas (map, no applymap)
+    df = pd.DataFrame(
+        {
+            "a": ["=cmd", "normal", 42, None, "+SUM(A1)", "\n=1+1"],
+            "b": ["plain", "-1", "text", 0, "@x", "ok"],
+        }
+    )
+    out = _sanitize_dataframe_for_export(df)
+    assert out["a"][0] == "'=cmd"
+    assert out["a"][1] == "normal"
+    assert out["a"][2] == 42
+    assert out["a"][4] == "'+SUM(A1)"
+    assert out["a"][5] == "'\n=1+1"
+    assert out["b"][1] == "'-1"
+    assert out["b"][4] == "'@x"
+    # Non-DataFrame objects pass through unchanged
+    sentinel = object()
+    assert _sanitize_dataframe_for_export(sentinel) is sentinel

@@ -101,7 +101,7 @@ def secure_filename(filename: str) -> str:
 # Characters that mark a cell as a formula in Excel/Sheets/LibreOffice.
 # A leading apostrophe is the standard neutralizer: it forces the cell to
 # be treated as text by every major spreadsheet application.
-_FORMULA_PREFIXES = ("=", "+", "-", "@", "\t", "\r")
+_FORMULA_PREFIXES = ("=", "+", "-", "@", "\t", "\r", "\n", "\v", "\f")
 
 
 def sanitize_cell(value):
@@ -129,7 +129,10 @@ def _sanitize_dataframe_for_export(df):
     pandas versions.
     """
     if isinstance(df, pd.DataFrame):
-        sanitize = getattr(df, "map", df.applymap)
+        # Lazy getattr: df.applymap no longer exists on pandas >= 2.1 (and
+        # eager evaluation of the default would raise AttributeError before
+        # the fallback could be used), so resolve the method lazily.
+        sanitize = getattr(df, "map", None) or df.applymap
         return sanitize(sanitize_cell)
     return df
 

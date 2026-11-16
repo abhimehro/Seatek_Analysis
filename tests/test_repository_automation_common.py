@@ -8,11 +8,14 @@ sys.path.insert(
     0, os.path.abspath(os.path.join(os.path.dirname(__file__), "../.github/scripts"))
 )
 
+import json
+
 import pytest
 from repository_automation_common import (
     _remove_heuristic_secrets,
     command_env,
     filter_env_securely,
+    gh_json,
     is_commit_sha,
     iso_day,
     now_utc,
@@ -375,3 +378,77 @@ def test_enforce_result_statuses(tmp_path, status, expected_exit_code):
 
     exit_code = enforce_result(str(result_file))
     assert exit_code == expected_exit_code
+
+
+@patch("repository_automation_common.run_process")
+def test_gh_json_invalid_json_raises_decode_error(mock_run_process):
+    """Test gh_json raises JSONDecodeError when output is invalid JSON."""
+    mock_proc = MagicMock()
+    mock_proc.returncode = 0
+    mock_proc.stdout = "not valid json {["
+    mock_proc.stderr = ""
+    mock_run_process.return_value = mock_proc
+
+    with pytest.raises(json.JSONDecodeError):
+        gh_json(["repo", "view"])
+
+    mock_run_process.assert_called_once()
+
+
+@patch("repository_automation_common.run_process")
+def test_gh_json_success(mock_run_process):
+    """Test gh_json successfully decodes valid JSON."""
+    mock_proc = MagicMock()
+    mock_proc.returncode = 0
+    mock_proc.stdout = '{"name": "test-repo", "stars": 42}\n'
+    mock_proc.stderr = ""
+    mock_run_process.return_value = mock_proc
+
+    result = gh_json(["repo", "view"])
+    assert result == {"name": "test-repo", "stars": 42}
+    mock_run_process.assert_called_once()
+
+
+@patch("repository_automation_common.run_process")
+def test_gh_json_empty_output_returns_default(mock_run_process):
+    """Test gh_json returns default when stdout is empty."""
+    mock_proc = MagicMock()
+    mock_proc.returncode = 0
+    mock_proc.stdout = "   \n"
+    mock_proc.stderr = ""
+    mock_run_process.return_value = mock_proc
+
+    result = gh_json(["issue", "list"], default=[])
+    assert result == []
+    mock_run_process.assert_called_once()
+
+
+@patch("repository_automation_common.run_process")
+def test_gh_json_nonzero_exit_raises_runtime_error(mock_run_process):
+    """Test gh_json raises RuntimeError on non-zero exit when default is None."""
+    mock_proc = MagicMock()
+    mock_proc.returncode = 1
+    mock_proc.stdout = ""
+    mock_proc.stderr = "graphql error: unauthorized"
+    mock_run_process.return_value = mock_proc
+
+    with pytest.raises(RuntimeError, match="graphql error: unauthorized"):
+        gh_json(["api", "graphql"])
+
+    mock_run_process.assert_called_once()
+
+
+@patch("repository_automation_common.warn_on_failure")
+@patch("repository_automation_common.run_process")
+def test_gh_json_nonzero_exit_returns_default(mock_run_process, mock_warn):
+    """Test gh_json warns and returns default on non-zero exit when default is provided."""
+    mock_proc = MagicMock()
+    mock_proc.returncode = 1
+    mock_proc.stdout = ""
+    mock_proc.stderr = "api error"
+    mock_run_process.return_value = mock_proc
+
+    result = gh_json(["issue", "list"], default={"items": []})
+    assert result == {"items": []}
+    mock_run_process.assert_called_once()
+    mock_warn.assert_called_once_with("gh", ["issue", "list"], mock_proc)

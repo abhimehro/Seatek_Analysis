@@ -38,3 +38,27 @@ test_that("compute_sensor_metrics handles invalid year filenames", {
   res2 <- suppressWarnings(compute_sensor_metrics(df, "random.txt"))
   expect_equal(res2$sheet_name, "random.txt")
 })
+
+test_that("derive_sheet_name maps filenames to years or basenames correctly", {
+  expect_equal(derive_sheet_name("SS_Y01.txt"), "1995")
+  expect_equal(derive_sheet_name("path/to/SS_Y20.txt"), "2014")
+  expect_equal(derive_sheet_name("SS_Y00.txt"), "SS_Y00.txt")
+  expect_equal(derive_sheet_name("SS_Y21.txt"), "SS_Y21.txt")
+  expect_equal(suppressWarnings(derive_sheet_name("custom_file.csv")), "custom_file.csv")
+})
+
+test_that("calculate_sensor_metrics_table computes metrics for sensors correctly", {
+  library(data.table)
+  df <- data.table(
+    Time = 1:12,
+    SensorA = rep(5, 12),
+    SensorB = c(rep(0, 10), rep(10, 2))
+  )
+  dt <- calculate_sensor_metrics_table(df, c("SensorA", "SensorB"))
+
+  expect_equal(dt$Sensor, c("SensorA", "SensorB"))
+  expect_equal(dt$first10, c(5, NaN))
+  expect_equal(dt$last5, c(5, 10))
+  expect_equal(dt$full, c(5, 10))
+  expect_equal(dt$within_diff, c(0, NaN))
+})

@@ -205,31 +205,54 @@ async def _gather_line_counts(paths: list[str]) -> list[int | None]:
     )
 
 
-def discover_hotspots(limit: int = 5) -> list[tuple[str, int]]:
+def _scan_candidate_hotspots(root_dir: pathlib.Path = ROOT) -> list[tuple[str, str]]:
+    """Scan root_dir iteratively with os.scandir to avoid blocking synchronous stat calls."""
     candidates = []
-
-    root_str = str(ROOT) + os.sep
+    root_str = str(root_dir) + os.sep
     root_len = len(root_str)
+    stack = [str(root_dir)]
 
-    for current_dir, dirs, files in os.walk(ROOT, topdown=True):
-        dirs[:] = [d for d in dirs if d not in IGNORED_DIRS]
-        for file in files:
-            if not file.endswith((".py", ".sh")):
-                continue
-            path_str = os.path.join(current_dir, file)
-            rel_path = (
-                path_str[root_len:] if path_str.startswith(root_str) else path_str
-            )
-            candidates.append((rel_path, path_str))
+    while stack:
+        current_dir = stack.pop()
+        try:
+            with os.scandir(current_dir) as entries:
+                for entry in entries:
+                    try:
+                        # SECURITY: Do not follow symlinks to avoid symlink traversal / loops
+                        if entry.is_dir(follow_symlinks=False):
+                            if entry.name not in IGNORED_DIRS:
+                                stack.append(entry.path)
+                        elif entry.is_file(follow_symlinks=False):
+                            if entry.name.endswith((".py", ".sh")):
+                                rel_path = (
+                                    entry.path[root_len:]
+                                    if entry.path.startswith(root_str)
+                                    else entry.path
+                                )
+                                candidates.append((rel_path, entry.path))
+                    except OSError:
+                        continue
+        except OSError:
+            continue
 
+    return candidates
+
+
+async def _discover_hotspots_async(limit: int = 5) -> list[tuple[str, int]]:
+    # ⚡ Bolt: Offload blocking filesystem traversal to a thread pool via asyncio.to_thread
+    candidates = await asyncio.to_thread(_scan_candidate_hotspots, ROOT)
     paths = [path_str for _, path_str in candidates]
-    counts = asyncio.run(_gather_line_counts(paths))
+    counts = await _gather_line_counts(paths)
     counted = [
         (rel_path, count)
         for (rel_path, _), count in zip(candidates, counts)
         if count is not None
     ]
     return sorted(counted, key=lambda item: item[1], reverse=True)[:limit]
+
+
+def discover_hotspots(limit: int = 5) -> list[tuple[str, int]]:
+    return asyncio.run(_discover_hotspots_async(limit))
 
 
 # ⚡ Bolt: Fetch tags concurrently to avoid sequential blocking I/O bottleneck

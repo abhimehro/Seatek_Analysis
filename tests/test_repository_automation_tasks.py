@@ -12,7 +12,9 @@ sys.path.insert(
 
 from repository_automation_tasks import (
     _hotspot_line_count,
+    _scan_candidate_hotspots,
     configured_commands,
+    discover_hotspots,
     flattened_updates,
     render_entry_section,
 )
@@ -265,3 +267,45 @@ def test_hotspot_line_count_rejects_symlink(tmp_path: Path) -> None:
     except OSError:
         pytest.skip("symlink creation not permitted")
     assert _hotspot_line_count(str(link)) is None
+
+
+def test_scan_candidate_hotspots_and_discover_hotspots(tmp_path):
+    root_dir = tmp_path / "repo"
+    root_dir.mkdir()
+
+    # Create files
+    file1 = root_dir / "script1.py"
+    file1.write_text("a = 1\nb = 2\nc = 3\n", encoding="utf-8")
+
+    file2 = root_dir / "script2.sh"
+    file2.write_text("#!/bin/bash\necho 'hi'\n", encoding="utf-8")
+
+    ignored_dir = root_dir / ".venv"
+    ignored_dir.mkdir()
+    ignored_file = ignored_dir / "ignored.py"
+    ignored_file.write_text("print('ignored')\n", encoding="utf-8")
+
+    other_ext = root_dir / "notes.txt"
+    other_ext.write_text("hello\nworld\n", encoding="utf-8")
+
+    sub_dir = root_dir / "subdir"
+    sub_dir.mkdir()
+    sub_file = sub_dir / "tool.py"
+    sub_file.write_text("x = 10\n", encoding="utf-8")
+
+    candidates = _scan_candidate_hotspots(root_dir)
+    candidate_paths = {rel_path for rel_path, _ in candidates}
+
+    assert candidate_paths == {"script1.py", "script2.sh", "subdir/tool.py"}
+    assert "notes.txt" not in candidate_paths
+    assert ".venv/ignored.py" not in candidate_paths
+
+
+def test_discover_hotspots_executes_successfully():
+    hotspots = discover_hotspots(limit=3)
+    assert isinstance(hotspots, list)
+    assert len(hotspots) <= 3
+    for rel_path, count in hotspots:
+        assert isinstance(rel_path, str)
+        assert isinstance(count, int)
+        assert count > 0

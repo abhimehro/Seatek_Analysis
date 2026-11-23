@@ -439,3 +439,8 @@ generic dispatch overhead.
 overhead of the sd() function on guaranteed numeric vectors in high-frequency
 loops. **Action:** Replace sd() with sqrt(var()) for guaranteed numeric vectors
 in performance-critical paths.
+
+## 2026-08-12 - Cache action_ref lookups and avoid split/join allocations
+
+**Learning:** Repeatedly splitting and joining string paths like `action_ref` (e.g. `parts = action_ref.split('/'); '/'.join(parts[:2])`) inside nested loops creates intermediate list and string allocations. In GitHub workflows, action references are heavily duplicated across jobs and steps.
+**Action:** Cache the resolved `latest` version by `action_ref` across matches using a lookup dictionary, and extract prefix substrings using `find('/')` and direct index slicing instead of allocating split lists.

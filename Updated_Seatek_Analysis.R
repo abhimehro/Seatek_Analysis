@@ -329,12 +329,45 @@ process_sensor_files_batch <- function(files, data_dir) {
   )
 }
 
-# Process all sensor files: export raw, compute metrics
-process_all_data <- function(data_dir) {
-  data_dir <- auto_detect_data_dir(data_dir)
-  files <- find_sensor_files(data_dir)
+# Resolve input files and output directory for batch processing
+resolve_sensor_inputs <- function(sensor_files = NULL, data_dir = NULL) {
+  if (is.null(sensor_files)) {
+    if (is.null(data_dir)) {
+      stop("Data directory not provided.")
+    }
+    target_dir <- auto_detect_data_dir(data_dir)
+    files <- find_sensor_files(target_dir)
+    return(list(files = files, data_dir = target_dir))
+  }
 
-  batch_res <- process_sensor_files_batch(files, data_dir)
+  if (length(sensor_files) == 0) {
+    stop("No sensor files provided.")
+  }
+
+  # If a single argument is provided without .txt extension, treat as data_dir
+  if (length(sensor_files) == 1 && !endsWith(sensor_files[1], ".txt")) {
+    target_dir <- auto_detect_data_dir(sensor_files[1])
+    files <- find_sensor_files(target_dir)
+    return(list(files = files, data_dir = target_dir))
+  }
+
+  # If explicit vector of files is provided
+  target_dir <- if (!is.null(data_dir)) {
+    auto_detect_data_dir(data_dir)
+  } else {
+    dirname(sensor_files[1])
+  }
+
+  list(files = sensor_files, data_dir = target_dir)
+}
+
+# Process all sensor files: export raw, compute metrics
+process_all_data <- function(sensor_files = NULL, data_dir = NULL) {
+  inputs <- resolve_sensor_inputs(sensor_files, data_dir)
+  files <- inputs$files
+  target_dir <- inputs$data_dir
+
+  batch_res <- process_sensor_files_batch(files, target_dir)
   results <- batch_res$results
   raw_export_tasks <- batch_res$raw_export_tasks
 

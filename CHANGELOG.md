@@ -306,6 +306,7 @@
 
 - ⚡ Bolt: hoist write\_task to top level for parallel export \(recovers \#936\) [\#1164](https://github.com/abhimehro/Seatek_Analysis/pull/1164) ([abhimehro](https://github.com/abhimehro))
 - 🧪 test: expand unit test coverage for enforce\_result [\#1160](https://github.com/abhimehro/Seatek_Analysis/pull/1160) ([abhimehro](https://github.com/abhimehro))
+- 🧪 Add JSONDecodeError and comprehensive error tests for gh\_json [\#1157](https://github.com/abhimehro/Seatek_Analysis/pull/1157) ([abhimehro](https://github.com/abhimehro))
 - 🧪 Add unit tests for \_is\_safe\_path path traversal prevention [\#1156](https://github.com/abhimehro/Seatek_Analysis/pull/1156) ([abhimehro](https://github.com/abhimehro))
 - 🧪 add unit tests for command\_block [\#1152](https://github.com/abhimehro/Seatek_Analysis/pull/1152) ([abhimehro](https://github.com/abhimehro))
 - chore\(deps\): bump ruby/setup-ruby from 1.335.0 to 1.336.0 [\#1126](https://github.com/abhimehro/Seatek_Analysis/pull/1126) ([dependabot[bot]](https://github.com/apps/dependabot))

@@ -14,6 +14,7 @@ import pytest
 from repository_automation_common import (
     _remove_heuristic_secrets,
     command_env,
+    enforce_result,
     filter_env_securely,
     gh_json,
     is_commit_sha,
@@ -345,8 +346,7 @@ def test_task_dir(tmp_path):
 
 
 def test_enforce_result_missing_file(tmp_path, capsys):
-    from repository_automation_common import enforce_result
-
+    """Test enforce_result reports error and exits 1 when result file is missing."""
     missing_path = tmp_path / "nonexistent" / "result.json"
     result = enforce_result(str(missing_path))
 
@@ -363,12 +363,13 @@ def test_enforce_result_missing_file(tmp_path, capsys):
         ("success", 0),
         ("warning", 0),
         ("skipped", 0),
+        ("unknown_status", 0),
         (None, 0),
     ],
 )
 def test_enforce_result_statuses(tmp_path, status, expected_exit_code):
+    """Test enforce_result maps status codes to appropriate exit codes."""
     import json
-    from repository_automation_common import enforce_result
 
     result_file = tmp_path / "result.json"
     data = {}

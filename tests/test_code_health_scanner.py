@@ -6,6 +6,8 @@ import pytest
 
 from code_health_scanner import (
     MAX_FILE_SIZE,
+    _extract_commit_hash,
+    _extract_origin_url,
     get_repo_info,
     read_file_safe,
 )
@@ -45,6 +47,27 @@ def test_get_repo_info_failure():
         assert account == "unknown"
         assert project == "unknown"
         assert commit_hash == "unknown"
+
+
+def test_extract_origin_url_success():
+    with patch("subprocess.check_output") as mock_run:
+        mock_run.return_value = "git@github.com:myorg/myproject.git\n"
+        result = _extract_origin_url("/usr/bin/git", {})
+        assert result == ("myorg", "myproject")
+
+
+def test_extract_origin_url_unmatched():
+    with patch("subprocess.check_output") as mock_run:
+        mock_run.return_value = "invalid-url\n"
+        result = _extract_origin_url("/usr/bin/git", {})
+        assert result is None
+
+
+def test_extract_commit_hash_success():
+    with patch("subprocess.check_output") as mock_run:
+        mock_run.return_value = "abcdef123456\n"
+        result = _extract_commit_hash("/usr/bin/git", {})
+        assert result == "abcdef123456"
 
 
 def test_read_file_safe_happy_path():

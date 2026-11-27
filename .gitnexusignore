@@ -1,0 +1,7 @@
+# GitNexus indexing exclusions (gitignore-style syntax).
+#
+# renv/library holds vendored R package sources (~88MB). It is already
+# excluded via renv/.gitignore, but stating it here keeps the exclusion
+# explicit and independent of that file being present.
+renv/library/
+renv/staging/
